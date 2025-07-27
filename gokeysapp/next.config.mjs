@@ -3,9 +3,8 @@ const nextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: 'http',
-        hostname: 'localhost',
-        port: '8000',
+        protocol: 'https',
+        hostname: 'api.gokeys.in',
         pathname: '/media/**',
       },
       {
@@ -35,7 +34,7 @@ const nextConfig = {
     return [
       {
         source: '/:slug',
-        destination: 'http://localhost:8000/:slug', // Pass to Django backend
+        destination: 'https://api.gokeys.in/:slug', // Pass to Django backend
       },
     ];
   },
