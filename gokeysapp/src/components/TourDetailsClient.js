@@ -174,7 +174,7 @@ const tourSchema = buildTourSchema({
   slug: tourData.slug,
   name: tourData.name,
   description: tourData.meta_description || tourData.excerpt,
-  imageUrl: tourData.featured_image?.optimized_banner || "/images/default-tour.png",
+  imageUrl: tourData.featured_image?.image || "/images/default-tour.png",
   price: selectedPackage?.discount_price || selectedPackage?.price,
   itineraryItems,
 });
