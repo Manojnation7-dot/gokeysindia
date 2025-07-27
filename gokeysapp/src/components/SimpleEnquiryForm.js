@@ -41,7 +41,7 @@ export default function InquiryFormCard({ placeName = "this place" }) {
     try {
       const csrfToken = await getCSRFToken();
 
-      const res = await fetch("http://localhost:8000/api/enquiries/", {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/enquiries/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

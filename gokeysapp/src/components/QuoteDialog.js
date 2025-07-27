@@ -47,7 +47,7 @@ export default function QuoteDialog({
     try {
       const csrfToken = getCSRFToken(); // 🍪 grab token from cookies
 
-      const res = await fetch(`http://localhost:8000/api/tour-enquiries/`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/tour-enquiries/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
