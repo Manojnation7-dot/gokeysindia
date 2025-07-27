@@ -174,7 +174,7 @@ const tourSchema = buildTourSchema({
   slug: tourData.slug,
   name: tourData.name,
   description: tourData.meta_description || tourData.excerpt,
-  imageUrl: tourData.featured_image?.image || "/images/default-tour.png",
+  imageUrl: tourData.featured_image?.optimized_banner || tourData.featured_image?.image,
   price: selectedPackage?.discount_price || selectedPackage?.price,
   itineraryItems,
 });
@@ -214,7 +214,7 @@ const faqSchema = tourData.faqs?.length > 0 ? buildFAQSchema(tourData.faqs) : nu
        
           <section className="relative h-[70vh] w-full overflow-hidden">
             <Image
-              src={tourData.featured_image?.image || "/images/banner-image.png"}
+              src={tourData.featured_image?.optimized_banner || tourData.featured_image?.image}
               alt={`${tourData.title} Banner`}
               fill
               style={{ objectFit: "cover" }}
