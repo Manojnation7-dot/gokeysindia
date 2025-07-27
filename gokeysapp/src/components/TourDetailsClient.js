@@ -214,7 +214,7 @@ const faqSchema = tourData.faqs?.length > 0 ? buildFAQSchema(tourData.faqs) : nu
        
           <section className="relative h-[70vh] w-full overflow-hidden">
             <Image
-              src={tourData.featured_image?.optimized_banner || "/images/banner-image.png"}
+              src={tourData.featured_image?.image || "/images/banner-image.png"}
               alt={`${tourData.title} Banner`}
               fill
               style={{ objectFit: "cover" }}
