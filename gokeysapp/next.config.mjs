@@ -30,17 +30,21 @@ const nextConfig = {
     ],
   },
 
-   async rewrites() {
-    return [
-      {
-        source: '/:slug',
-        destination: 'https://api.gokeys.in/:slug', // Pass to Django backend
-      },
-    ];
-  },
+  async rewrites() {
+  return [
+    {
+      source: '/trip/:slug*',
+      destination: 'https://api.gokeys.in/trip/:slug*', // Let Django handle redirection
+    },
+    {
+      source: '/:slug',
+      destination: 'https://api.gokeys.in/:slug', // Existing rewrite
+    },
+  ];
+}
 };
 
 export default nextConfig;
-
+s
 
 
