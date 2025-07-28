@@ -16,7 +16,7 @@ export default function Tracker() {
 
     const track = async () => {
       try {
-        await fetch('https://api.gokeys.in/api/track', {
+        await fetch('https://api.gokeys.in/api/track/', { // ✅ trailing slash here
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({

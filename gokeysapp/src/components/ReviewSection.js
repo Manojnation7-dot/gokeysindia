@@ -53,7 +53,7 @@ const fetchReviews = async (url) => {
 
 // ✅ On mount, call it with the initial URL
 useEffect(() => {
-  const initialUrl = `${process.env.NEXT_PUBLIC_API_URL}/${contentType}/${objectSlug}/reviews/`;
+  const initialUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/${contentType}/${objectSlug}/reviews/`;
   fetchReviews(initialUrl);
 }, [contentType, objectSlug]);
 
