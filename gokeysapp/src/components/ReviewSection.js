@@ -53,7 +53,7 @@ const fetchReviews = async (url) => {
 
 // ✅ On mount, call it with the initial URL
 useEffect(() => {
-  const initialUrl = `http://localhost:8000/api/${contentType}/${objectSlug}/reviews/`;
+  const initialUrl = `${process.env.NEXT_PUBLIC_API_URL}/${contentType}/${objectSlug}/reviews/`;
   fetchReviews(initialUrl);
 }, [contentType, objectSlug]);
 
@@ -113,7 +113,7 @@ useEffect(() => {
 
   try {
     const csrfToken = getCSRFToken(); // 👈 Get token from helper
-    const url = `http://localhost:8000/api/${contentType}/${objectSlug}/reviews/`;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/api/${contentType}/${objectSlug}/reviews/`;
     const res = await fetch(url, {
       method: 'POST',
       headers: {
