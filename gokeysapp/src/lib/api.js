@@ -1,5 +1,5 @@
 export async function fetchData(endpoint, slug = null, notFoundOnError = true) {
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.gokeys.in";
   const url = slug ? `${apiUrl}/api/${endpoint}/${slug}/` : `${apiUrl}/api/${endpoint}/`;
   const res = await fetch(url, { cache: "no-store" });
 
@@ -12,7 +12,7 @@ export async function fetchData(endpoint, slug = null, notFoundOnError = true) {
 }
 
 export async function fetchListData(endpoint, query = {}, notFoundOnError = false) {
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.gokeys.in";
 
   const url = new URL(`${apiUrl}/api/${endpoint}/`);
   Object.entries(query).forEach(([key, value]) => {

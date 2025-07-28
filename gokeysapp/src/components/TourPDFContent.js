@@ -2,10 +2,10 @@ import React from 'react';
 
 export default function TourPDFContent({ tourData, documentNumber, currentDate,baseUrl,tourPath}) {
   const companyInfo = {
-    name: 'GoKeys Travels',
-    email: 'info@gokeys.in',
-    phone: '+91-1234567890',
-    address: '123 Travel Plaza, Mumbai, Maharashtra - 400001',
+    name: 'GoKeys India',
+    email: 'helpdesk@gokeys.in',
+    phone: '+91-7830718687',
+    address: 'Near Bus Stand, Haridwar Uttarakhand',
     logo: '/images/gokeyslogo.png',
     externalLogo: 'https://gokeysindia.com/uploads/gokeyslogo.png',
   };
