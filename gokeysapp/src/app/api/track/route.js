@@ -4,7 +4,7 @@ export async function POST(req) {
   try {
     const data = await req.json();
 
-    const response = await fetch("https://api.gokeys.in/track/", {
+    const response = await fetch("https://api.gokeys.in/api/track/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
