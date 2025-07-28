@@ -16,9 +16,12 @@ export async function generateMetadata() {
 
 export default async function DestinationsPage() {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/destinations/`, {
-    next: { revalidate: 60 }, // optional: ISR
+    next: { revalidate: 60 },
   });
-  const destinations = await res.json();
+  const data = await res.json();
+
+  // ✅ Extract only the destinations array
+  const destinations = data.results;
 
   return <DestinationListPage destinations={destinations} />;
 }

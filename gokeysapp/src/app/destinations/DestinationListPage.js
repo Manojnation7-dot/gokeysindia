@@ -57,7 +57,7 @@ const DestinationListPage = ({destinations}) => {
     getItemSchema: (destination, schema) => ({
       ...schema,
       name: destination.name || "Unnamed Destination",
-      url: `${process.env.NEXT_PUBLIC_BASE_URL || "https://gokeys.in"}/destinations/${destination.slug}`,
+      url: `${process.env.NEXT_PUBLIC_BASE_URL}/destinations/${destination.slug}`,
       description:
         destination.overview?.replace(/<\/?[^>]+(>|$)/g, "") ||
         destination.state ||
