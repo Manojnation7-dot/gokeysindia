@@ -168,24 +168,21 @@ if (!destination) {
 
                 {/* Popular Activities */}
                 <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl p-6 shadow-md">
-                  <div className="flex items-center mb-4">
-                    <div className="bg-amber-100 p-3 rounded-xl mr-4">
-                      <ActivityIcon />
-                    </div>
-                    <h2 className="text-2xl font-bold text-gray-800">Popular Activities</h2>
+                <div className="flex items-center mb-4">
+                  <div className="bg-amber-100 p-3 rounded-xl mr-4">
+                    <ActivityIcon />
                   </div>
-                  <ul className="space-y-3 pl-16">
-                    {(destination.popular_activities || '')
-                      .split(/\r?\n/)
-                      .filter(Boolean)
-                      .map((activity, index) => (
-                        <li key={index} className="flex items-center">
-                          <div className="w-2 h-2 bg-amber-500 rounded-full mr-3"></div>
-                          <span className="text-lg text-gray-700">{activity.trim()}</span>
-                        </li>
-                    ))}
-                  </ul>
+                  <h2 className="text-2xl font-bold text-gray-800">Popular Activities</h2>
                 </div>
+                <ul className="space-y-3 pl-16">
+                  {extractParagraphTexts(destination.popular_activities).map((activity, index) => (
+                    <li key={index} className="flex items-center">
+                      <div className="w-2 h-2 bg-amber-500 rounded-full mr-3"></div>
+                      <span className="text-lg text-gray-700">{activity}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             {/* Nearby Attractions */}
               <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl p-6 shadow-md">
                 <div className="flex items-center mb-4">
