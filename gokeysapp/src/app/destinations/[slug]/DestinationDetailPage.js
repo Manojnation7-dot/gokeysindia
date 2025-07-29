@@ -48,14 +48,21 @@ export default function DestinationDetailPage({ destination, tours, hotels, slug
     setExpandedDay(expandedDay === index ? null : index);
   };
   
-  const extractParagraphTexts = (htmlString) => {
-    if (typeof window === 'undefined' || !htmlString) return [];
-    const wrapper = document.createElement('div');
-    wrapper.innerHTML = htmlString;
-    return Array.from(wrapper.querySelectorAll('p'))
-      .map(p => p.textContent.trim())
-      .filter(Boolean);
-  };
+function extractParagraphTexts(htmlString) {
+  if (!htmlString) return [];
+
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(htmlString, "text/html");
+
+  const paragraphs = [...doc.querySelectorAll("p")].map(p => p.textContent.trim());
+
+  // Fallback: if no <p> found, treat entire string as one paragraph
+  if (paragraphs.length === 0 && htmlString.trim()) {
+    return [htmlString.trim()];
+  }
+
+  return paragraphs;
+}
   // Helper function to parse HTML strings
   const parseHTML = (htmlString) => {
     return { __html: htmlString };
@@ -152,6 +159,8 @@ if (!destination) {
         <section className="max-w-6xl mx-auto px-4 py-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {/* Best Time to Visit */}
+                {/* Best Time to Visit */}
+              {typeof destination.best_time_to_visit === "string" && destination.best_time_to_visit.trim() && (
                 <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-2xl p-6 shadow-md">
                   <div className="flex items-center mb-4">
                     <div className="bg-blue-100 p-3 rounded-xl mr-4">
@@ -165,24 +174,27 @@ if (!destination) {
                     ))}
                   </ul>
                 </div>
+              )}
 
-                {/* Popular Activities */}
+              {/* Popular Activities */}
+              {typeof destination.popular_activities === "string" && destination.popular_activities.trim() && (
                 <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl p-6 shadow-md">
-                <div className="flex items-center mb-4">
-                  <div className="bg-amber-100 p-3 rounded-xl mr-4">
-                    <ActivityIcon />
+                  <div className="flex items-center mb-4">
+                    <div className="bg-amber-100 p-3 rounded-xl mr-4">
+                      <ActivityIcon />
+                    </div>
+                    <h2 className="text-2xl font-bold text-gray-800">Popular Activities</h2>
                   </div>
-                  <h2 className="text-2xl font-bold text-gray-800">Popular Activities</h2>
+                  <ul className="space-y-3 pl-16">
+                    {extractParagraphTexts(destination.popular_activities).map((activity, index) => (
+                      <li key={index} className="flex items-center">
+                        <div className="w-2 h-2 bg-amber-500 rounded-full mr-3"></div>
+                        <span className="text-lg text-gray-700">{activity}</span>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-                <ul className="space-y-3 pl-16">
-                  {extractParagraphTexts(destination.popular_activities).map((activity, index) => (
-                    <li key={index} className="flex items-center">
-                      <div className="w-2 h-2 bg-amber-500 rounded-full mr-3"></div>
-                      <span className="text-lg text-gray-700">{activity}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+              )}
             {/* Nearby Attractions */}
               <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl p-6 shadow-md">
                 <div className="flex items-center mb-4">
