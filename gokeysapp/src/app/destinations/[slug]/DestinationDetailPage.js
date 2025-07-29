@@ -129,7 +129,7 @@ if (!destination) {
           </div>
         </section>
 
-        {/* Destination Info */}
+
         {/* Destination Info */}
         <section className="max-w-7xl mx-auto px-6 py-12">
           <h2 className="text-3xl font-semibold text-gray-800 mb-4">About {destination.name}</h2>
@@ -151,35 +151,41 @@ if (!destination) {
         {/* Destination Information Cards */}
         <section className="max-w-6xl mx-auto px-4 py-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Best Time to Visit */}
-            <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-2xl p-6 shadow-md">
-              <div className="flex items-center mb-4">
-                <div className="bg-blue-100 p-3 rounded-xl mr-4">
-                  <CalendarIcon />
+              {/* Best Time to Visit */}
+                <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-2xl p-6 shadow-md">
+                  <div className="flex items-center mb-4">
+                    <div className="bg-blue-100 p-3 rounded-xl mr-4">
+                      <CalendarIcon />
+                    </div>
+                    <h2 className="text-2xl font-bold text-gray-800">Best Time to Visit</h2>
+                  </div>
+                  <ul className="space-y-3 pl-16">
+                    {extractParagraphTexts(destination.best_time_to_visit).map((para, index) => (
+                      <li key={index} className="text-lg text-gray-700 list-disc list-inside">{para}</li>
+                    ))}
+                  </ul>
                 </div>
-                <h2 className="text-2xl font-bold text-gray-800">Best Time to Visit</h2>
-              </div>
-              <p className="text-lg text-gray-700 pl-16">{destination.best_time_to_visit || "Year-round"}</p>
-            </div>
 
-            {/* Popular Activities */}
-            <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl p-6 shadow-md">
-              <div className="flex items-center mb-4">
-                <div className="bg-amber-100 p-3 rounded-xl mr-4">
-                  <ActivityIcon />
+                {/* Popular Activities */}
+                <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl p-6 shadow-md">
+                  <div className="flex items-center mb-4">
+                    <div className="bg-amber-100 p-3 rounded-xl mr-4">
+                      <ActivityIcon />
+                    </div>
+                    <h2 className="text-2xl font-bold text-gray-800">Popular Activities</h2>
+                  </div>
+                  <ul className="space-y-3 pl-16">
+                    {(destination.popular_activities || '')
+                      .split(/\r?\n/)
+                      .filter(Boolean)
+                      .map((activity, index) => (
+                        <li key={index} className="flex items-center">
+                          <div className="w-2 h-2 bg-amber-500 rounded-full mr-3"></div>
+                          <span className="text-lg text-gray-700">{activity.trim()}</span>
+                        </li>
+                    ))}
+                  </ul>
                 </div>
-                <h2 className="text-2xl font-bold text-gray-800">Popular Activities</h2>
-              </div>
-              <ul className="space-y-3 pl-16">
-                {destination.popular_activities && destination.popular_activities.split('\r\n').map((activity, index) => (
-                  <li key={index} className="flex items-center">
-                    <div className="w-2 h-2 bg-amber-500 rounded-full mr-3"></div>
-                    <span className="text-lg text-gray-700">{activity}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
             {/* Nearby Attractions */}
               <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl p-6 shadow-md">
                 <div className="flex items-center mb-4">
