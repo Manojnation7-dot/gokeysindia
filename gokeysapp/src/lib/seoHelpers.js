@@ -4,7 +4,7 @@ export function buildMetadata({
   path = "/",
   image = "/images/default-og.jpg",
 }) {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https//gokeys.in";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
   const normalizedSiteUrl = siteUrl.replace(/\/+$/, "");
   const normalizedImage = image.startsWith("http") ? image : `${normalizedSiteUrl}${image.startsWith("/") ? "" : "/"}${image}`;
 
