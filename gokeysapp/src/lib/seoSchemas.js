@@ -5,7 +5,7 @@
  * with auto SITE_URL prefixing.
  */
 
-const SITE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://gokeys.in";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://gokeys.in";
 
 export function buildOrganizationSchema({ name, logoUrl, sameAs = [], contactPoint }) {
   return {
