@@ -26,8 +26,10 @@ export default async function DestinationPage({ params }) {
   const destination = await destRes.json();
 
 const nearbyAttractionsList = (destination.nearby_attractions || "")
-  .match(/<p[^>]*>(.*?)<\/p>/gis) // match <p> blocks with content
-  ?.map((p) => p.replace(/^<p[^>]*>|<\/p>$/gi, "").trim()) // strip only outer <p>
+  .match(/<p[^>]*>(.*?)<\/p>/gi)
+  ?.map((p) =>
+    p.replace(/^<p[^>]*>/i, "").replace(/<\/p>$/i, "").trim()
+  )
   .filter(Boolean) || [];
 
   const toursRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/tours/?destination=${encodeURIComponent(slug)}`, {
@@ -54,7 +56,7 @@ const nearbyAttractionsList = (destination.nearby_attractions || "")
       destination={destination}
       tours={safeTours}
       hotels={hotels}
-      nearbyAttractionsList={paragraphs}
+      nearbyAttractionsList={nearbyAttractionsList}
     />
   );
 }

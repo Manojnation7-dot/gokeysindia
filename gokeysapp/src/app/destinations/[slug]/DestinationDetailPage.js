@@ -195,27 +195,27 @@ if (!destination) {
                   </ul>
                 </div>
               )}
-             {/* Nearby Attractions */}
-            <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl p-6 shadow-md">
-              <div className="flex items-center mb-4">
-                <div className="bg-emerald-100 p-3 rounded-xl mr-4">
-                  <LocationIcon />
+            {/* Nearby Attractions */}
+              <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl p-6 shadow-md">
+                <div className="flex items-center mb-4">
+                  <div className="bg-emerald-100 p-3 rounded-xl mr-4">
+                    <LocationIcon />
+                  </div>
+                  <h2 className="text-2xl font-bold text-gray-800">Nearby Attractions</h2>
                 </div>
-                <h2 className="text-2xl font-bold text-gray-800">Nearby Attractions</h2>
-              </div>
 
-              <ul className="space-y-3 pl-16">
+               <ul className="space-y-3 pl-16">
                 {nearbyAttractionsList.map((attraction, index) => (
                   <li key={index} className="flex items-center">
                     <div className="w-2 h-2 bg-emerald-500 rounded-full mr-3"></div>
                     <span
                       className="text-lg text-gray-700"
                       dangerouslySetInnerHTML={{ __html: attraction }}
-                    />
+                    ></span>
                   </li>
                 ))}
               </ul>
-            </div>
+              </div>
 
             {/* How to Reach */}
             <div className="bg-gradient-to-br from-purple-50 to-violet-50 rounded-2xl p-6 shadow-md">
