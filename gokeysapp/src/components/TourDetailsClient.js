@@ -323,7 +323,7 @@ const faqSchema = tourData.faqs?.length > 0 ? buildFAQSchema(tourData.faqs) : nu
                 <div>
                   <h2 className="text-3xl font-bold mb-6">Tour Overview</h2>
                   <div
-                    className="text-gray-700 mb-6"
+                    className="text-gray-700 mb-6 prose"
                     dangerouslySetInnerHTML={{ __html: tourData.content }}
                   />
                   {/* Package Selection */}
