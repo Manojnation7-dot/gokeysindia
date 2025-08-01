@@ -71,7 +71,7 @@ export default function BestSellingTrips({ tours }) {
             return (
               <motion.div
                 key={tour.id}
-                className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition"
+                className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition flex flex-col"
                 variants={cardVariants}
                 initial="hidden"
                 whileInView="visible"
@@ -89,7 +89,7 @@ export default function BestSellingTrips({ tours }) {
                   />
                 </div>
 
-                <div className="p-4 flex flex-col gap-2">
+                <div className="p-4 flex flex-col flex-grow gap-2">
                   <h3 className="text-lg font-semibold text-gray-800">{tour.name}</h3>
 
                   {tour.duration_days && (
@@ -118,7 +118,7 @@ export default function BestSellingTrips({ tours }) {
                     </p>
                   ) : null}
 
-                  <div className="flex flex-wrap justify-between gap-2 mt-4">
+                  <div className="flex flex-wrap justify-between gap-2 mt-auto pt-4 border-t">
                     <Link
                       href={`/tours/${tour.slug}`}
                       className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm"

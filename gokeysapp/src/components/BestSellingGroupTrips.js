@@ -58,73 +58,72 @@ export default function BestSellingGroupTrips({ tours }) {
 
             return (
               <motion.div
-                key={tour.id}
-                className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition"
-                variants={cardVariants}
-                initial="hidden"
-                whileInView="visible"
-                custom={index}
-                viewport={{ once: true, amount: 0.3 }}
-              >
-                <div className="relative w-full h-48">
-                  <Image
-                    src={imageUrl}
-                    alt={tour.name}
-                    fill
-                    style={{ objectFit: 'cover' }}
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 33vw, 25vw"
-                    priority={index < 2}
-                    placeholder="blur"
-                    blurDataURL="data:image/jpeg;base64,..."
-                  />
-                </div>
-                <div className="p-4 flex flex-col gap-2">
-                  <h3 className="text-lg font-semibold text-gray-800">{tour.name}</h3>
-
-                  {tour.duration_days && (
-                    <p className="text-sm text-gray-500">🕒 {tour.duration_days} Days</p>
-                  )}
-
-                  {isPriceOnRequest(standardPackage) ? (
-                    <p className="text-base text-gray-600 font-semibold">Price on Request</p>
-                  ) : (
-                    <div className="text-base">
-                      <span className="text-black-600 font-semibold">
-                        {formatPrice(
-                          standardPackage?.discount_price || standardPackage?.price
-                        )}
-                      </span>
-                      {standardPackage?.discount_price &&
-                        standardPackage?.price &&
-                        parseFloat(standardPackage.price) > parseFloat(standardPackage.discount_price) && (
-                          <>
-                            <span className="line-through text-gray-400 ml-2">
-                              {formatPrice(standardPackage.price)}
-                            </span>
-                            <span className="text-sm text-green-500 ml-2">
-                              {getSavings(standardPackage)}
-                            </span>
-                          </>
-                        )}
-                    </div>
-                  )}
-
-                  <div className="flex flex-wrap justify-between gap-2 mt-4">
-                    <Link
-                      href={`/grouptour/${tour.slug}`}
-                      className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm"
-                    >
-                      Explore
-                    </Link>
-                    <button
-                      onClick={() => handleQuoteClick(tour)}
-                      className="bg-white border border-blue-600 text-blue-600 px-6 py-2 rounded hover:bg-blue-50 text-sm"
-                    >
-                      Request Quote
-                    </button>
+                  key={tour.id}
+                  className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition flex flex-col"
+                  variants={cardVariants}
+                  initial="hidden"
+                  whileInView="visible"
+                  custom={index}
+                  viewport={{ once: true, amount: 0.3 }}
+                >
+                  <div className="relative w-full h-48">
+                    <Image
+                      src={imageUrl}
+                      alt={tour.name}
+                      fill
+                      style={{ objectFit: 'cover' }}
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 33vw, 25vw"
+                      priority={index < 2}
+                      placeholder="blur"
+                      blurDataURL="data:image/jpeg;base64,..." // ← replace with real blur data
+                    />
                   </div>
-                </div>
-              </motion.div>
+
+                  <div className="p-4 flex flex-col flex-grow gap-2">
+                    <h3 className="text-lg font-semibold text-gray-800">{tour.name}</h3>
+
+                    {tour.duration_days && (
+                      <p className="text-sm text-gray-500">🕒 {tour.duration_days} Days</p>
+                    )}
+
+                    {isPriceOnRequest(standardPackage) ? (
+                      <p className="text-base text-gray-600 font-semibold">Price on Request</p>
+                    ) : (
+                      <div className="text-base">
+                        <span className="text-black-600 font-semibold">
+                          {formatPrice(standardPackage?.discount_price || standardPackage?.price)}
+                        </span>
+                        {standardPackage?.discount_price &&
+                          standardPackage?.price &&
+                          parseFloat(standardPackage.price) > parseFloat(standardPackage.discount_price) && (
+                            <>
+                              <span className="line-through text-gray-400 ml-2">
+                                {formatPrice(standardPackage.price)}
+                              </span>
+                              <span className="text-sm text-green-500 ml-2">
+                                {getSavings(standardPackage)}
+                              </span>
+                            </>
+                          )}
+                      </div>
+                    )}
+
+                    <div className="flex flex-wrap justify-between gap-2 mt-auto pt-4 border-t">
+                      <Link
+                        href={`/grouptour/${tour.slug}`}
+                        className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm"
+                      >
+                        Explore
+                      </Link>
+                      <button
+                        onClick={() => handleQuoteClick(tour)}
+                        className="bg-white border border-blue-600 text-blue-600 px-6 py-2 rounded hover:bg-blue-50 text-sm"
+                      >
+                        Request Quote
+                      </button>
+                    </div>
+                  </div>
+                </motion.div>
             );
           })}
         </div>
