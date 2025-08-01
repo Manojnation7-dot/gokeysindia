@@ -10,8 +10,9 @@ export default function TourPDFContent({ tourData, documentNumber, currentDate,b
     externalLogo: 'https://gokeysindia.com/uploads/gokeyslogo.png',
   };
 
+ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://gokeys.in";
 
- const tourUrl = `${baseUrl}/${tourPath}/${tourData.slug}`;
+ const tourUrl = `${siteUrl}/${tourPath}/${tourData.slug}`;
 
   if (!tourData) {
     return <div style={{ color: '#000000', fontSize: '10pt', padding: '20mm' }}>No tour data available</div>;
