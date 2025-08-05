@@ -246,7 +246,7 @@ schemas.push(
                 </div>
                 
                 <p className="text-sm text-gray-600 line-clamp-2 mt-1 flex-grow"> {/* Adjusted margin */}
-                  {tour.description}
+                  {tour.content}
                 </p>
                 
                 {/* Price & CTA Section */}
