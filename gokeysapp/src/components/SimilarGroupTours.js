@@ -63,11 +63,12 @@ export default function SimilarTours({ currentTourSlug, currentDestinations }) {
         <p className="text-gray-500 mb-8 text-center">You might also like these group tours</p>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {similarTours.map((tour) => (
+         {similarTours.map((tour) => (
             <div
               key={tour.id}
-              className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition overflow-hidden"
+              className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition flex flex-col"
             >
+              {/* Image */}
               <div className="relative h-48 w-full">
                 <Image
                   src={tour.featured_image?.image || "/images/placeholder.jpg"}
@@ -76,7 +77,9 @@ export default function SimilarTours({ currentTourSlug, currentDestinations }) {
                   className="object-cover"
                 />
               </div>
-              <div className="p-4">
+
+              {/* Content */}
+              <div className="flex flex-col flex-1 p-4">
                 <h3 className="text-lg font-semibold text-gray-800">{tour.name}</h3>
                 <p className="text-sm text-gray-600">
                   {tour.duration_days} Days / {tour.duration_nights} Nights | {tour.starting_from}
@@ -84,11 +87,14 @@ export default function SimilarTours({ currentTourSlug, currentDestinations }) {
                 <p className="mt-2 text-base font-bold text-indigo-600">
                   ₹{parseFloat(tour.base_price).toLocaleString()}
                 </p>
-                <Link href={`/tours/${tour.slug}`}>
-                  <button className="mt-4 w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 transition">
-                    View Tour
-                  </button>
-                </Link>
+
+                <div className="mt-auto">
+                  <Link href={`/tours/${tour.slug}`}>
+                    <button className="mt-4 w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 transition">
+                      View Tour
+                    </button>
+                  </Link>
+                </div>
               </div>
             </div>
           ))}
