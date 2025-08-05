@@ -14,23 +14,23 @@ export default function SimilarTours({ currentTourSlug, currentDestinations }) {
           cache: "no-store",
         });
         if (!res.ok) throw new Error("Failed to fetch tours");
-        const data = await res.json();
+      const data = await res.json();
+      console.log("SimilarTours API response:", data);
 
-     
+      const tours = data.results || data; // supports both formats
+      const filtered = tours.filter((tour) => {
+        if (tour.slug === currentTourSlug) return false;
 
-        const filtered = data.filter((tour) => {
-          if (tour.slug === currentTourSlug) return false;
+        const tourDestNames = (tour.destinations || []).map((d) =>
+          typeof d === "string" ? d.toLowerCase() : d.name.toLowerCase()
+        );
 
-          const tourDestNames = (tour.destinations || []).map((d) =>
-              typeof d === "string" ? d.toLowerCase() : d.name.toLowerCase()
-            );
+        return currentDestinations.some((cd) =>
+          tourDestNames.includes(cd.toLowerCase())
+        );
+      });
 
-            return currentDestinations.some((cd) =>
-              tourDestNames.includes(cd.toLowerCase())
-            );
-        });
-
-        setSimilarTours(filtered.slice(0, 6)); // Show max 6 similar tours
+setSimilarTours(filtered.slice(0, 6));
       } catch (err) {
         console.error("Error loading similar tours:", err.message);
       }
