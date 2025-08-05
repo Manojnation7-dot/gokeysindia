@@ -19,21 +19,21 @@ export default function SimilarTours({ currentTourSlug, currentDestinations }) {
         const data = await res.json();
         const tours = data.results || data;
 
-        const filtered = tours.filter((tour) => {
-          if (tour.slug === currentTourSlug) return false;
+       const filtered = tours.filter((tour) => {
+        if (tour.slug === currentTourSlug) return false;
 
-          const tourDestNames = (tour.destinations || [])
-            .map((d) => {
-              if (typeof d === "string") return d.toLowerCase();
-              if (d && typeof d.name === "string") return d.name.toLowerCase();
-              return null;
-            })
-            .filter(Boolean);
+        const tourDestNames = (tour.destinations || [])
+          .map((d) => {
+            if (typeof d === "string") return d.toLowerCase();
+            if (d && typeof d.name === "string") return d.name.toLowerCase();
+            return null;
+          })
+          .filter(Boolean);
 
-          return currentDestinations.some((cd) =>
-            tourDestNames.includes(cd.toLowerCase())
-          );
-        });
+        return (currentDestinations || [])
+          .filter((cd) => typeof cd === "string")
+          .some((cd) => tourDestNames.includes(cd.toLowerCase()));
+      });
 
         setSimilarTours(filtered.slice(0, 6)); // Show max 6 similar tours
       } catch (err) {
