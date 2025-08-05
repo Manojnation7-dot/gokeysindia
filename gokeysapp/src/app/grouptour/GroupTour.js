@@ -245,7 +245,7 @@ schemas.push(
                   </span>
                 </div>
                 
-                <p className="text-sm text-gray-600 line-clamp-3 mt-1 flex-grow"> {/* Adjusted margin */}
+                <p className="text-sm text-gray-600 line-clamp-2 mt-1 flex-grow"> {/* Adjusted margin */}
                   {tour.description}
                 </p>
                 
