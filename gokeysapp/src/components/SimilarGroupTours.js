@@ -82,7 +82,7 @@ export default function SimilarTours({ currentTourSlug, currentDestinations }) {
               <div className="flex flex-col flex-1 p-4">
                 <h3 className="text-lg font-semibold text-gray-800">{tour.name}</h3>
                 <p className="text-sm text-gray-600">
-                  {tour.duration_days} Days / {tour.duration_nights} Nights | {tour.starting_from}
+                  {tour.duration} Days | {tour.starting_from}
                 </p>
                 <p className="mt-2 text-base font-bold text-indigo-600">
                   ₹{parseFloat(tour.base_price).toLocaleString()}
