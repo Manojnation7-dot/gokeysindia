@@ -43,20 +43,23 @@ export default async function TourDetailPage({ params }) {
       `${apiUrl}/api/tours/similar/${tour.destinations[0].id}/${tour.id}/`,
       { cache: "no-store" }
     );
-    if (resSimilar.ok) {
-      similarTours = await resSimilar.json();
-    }
+      if (resSimilar.ok) {
+  const data = await resSimilar.json();
+  similarTours = (data.results || []).slice(0, 3); // 👈 limit to 3
+  console.log("Similar tours response:", similarTours);
+}
   }
 
-   // ✅ Fallback if needed
-  if (!similarTours.length) {
-    const resFallback = await fetch(`${apiUrl}/api/tours/?limit=3`, {
-      cache: "no-store",
-    });
-    if (resFallback.ok) {
-      similarTours = await resFallback.json();
+    if (!similarTours.length) {
+      const resFallback = await fetch(`${apiUrl}/api/tours/?limit=3`, {
+        cache: "no-store",
+      });
+      if (resFallback.ok) {
+        const data = await resFallback.json();
+        similarTours = data.results || [];
+        console.log("Fallback tours used:", similarTours);
+      }
     }
-  }
 
   return (
     <TourDetailClient

@@ -17,10 +17,9 @@ export function getEffectivePrice(pkg) {
   return pkg.discount_price || pkg.price || null;
 }
 
-export function getSavings(pkg) {
-  if (!pkg || isPriceOnRequest(pkg)) return null;
-  if (pkg.discount_price && pkg.price > pkg.discount_price) {
-    return formatPrice(pkg.price - pkg.discount_price);
-  }
-  return null;
-}
+export const getSavings = (pkg) => {
+  const price = Number(pkg.price);
+  const discount = Number(pkg.discount_price);
+
+  return discount && price > discount ? formatPrice(price - discount) : null;
+};

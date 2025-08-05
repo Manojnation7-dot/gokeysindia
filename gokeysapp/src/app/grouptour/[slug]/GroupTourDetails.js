@@ -78,6 +78,7 @@ export default function GroupTourDetails({ tourData, baseUrl, documentNumber, cu
     message: '',
   });
 
+
   const capitalizeFirst = (str) =>
     str ? str.charAt(0).toUpperCase() + str.slice(1) : '';
 
@@ -356,51 +357,57 @@ const [isLoading, setIsLoading] = useState(false);
                     dangerouslySetInnerHTML={{ __html: tourData.content }}
                   />
                   {/* Package Selection */}
-                  {Array.isArray(tourData.pricing) && tourData.pricing.length > 0 && (
-                    <div className="my-8">
-                      <h3 className="text-lg font-semibold mb-4">Choose Your Package</h3>
-                      <div className="flex flex-wrap gap-4">
-                           {tourData?.pricing?.map((pkg, index) => {
-                                const effectivePrice = getEffectivePrice(pkg);
-                                return (
-                                  <button
-                                    key={index}
-                                    onClick={() => handlePackageSelect(pkg)}
-                                    className={`px-4 py-2 rounded-lg border text-center ${
-                                      selectedPackage?.package_type === pkg.package_type
-                                        ? 'bg-blue-600 text-white -ml-2'
-                                        : 'bg-white text-black hover:bg-gray-100'
-                                    }`}
-                                  >
-                                    <div className="text-sm font-medium">
-                                      {capitalizeFirst(pkg.package_type)}
-                                    </div>
+                 {Array.isArray(tourData.pricing) && tourData.pricing.length > 0 && (
+                  <div className="my-8">
+                    <h3 className="text-lg font-semibold mb-4">Choose Your Package</h3>
+                    <div className="flex flex-wrap gap-4">
+                      {tourData?.pricing?.map((pkg, index) => {
+                        const effectivePrice = getEffectivePrice(pkg);
+                        const isDiscounted =
+                          Number(pkg.discount_price) &&
+                          Number(pkg.discount_price) < Number(pkg.price);
 
-                                    <div className="text-sm">
-                                      {isPriceOnRequest(pkg) ? (
-                                        <span className="font-semibold">Price on Request</span>
-                                      ) : (
-                                        <>
-                                          {pkg.discount_price && pkg.discount_price < pkg.price ? (
-                                            <>
-                                              <span className="line-through">{formatPrice(pkg.price)}</span>{' '}
-                                              <span className="font-semibold">{formatPrice(pkg.discount_price)}</span>
-                                              {getSavings(pkg) && (
-                                                <div className="text-xs text-green-500">Save {getSavings(pkg)}</div>
-                                              )}
-                                            </>
-                                          ) : (
-                                            <span className="font-semibold">{formatPrice(pkg.price)}</span>
-                                          )}
-                                        </>
-                                      )}
+                        return (
+                          <button
+                            key={index}
+                            onClick={() => handlePackageSelect(pkg)}
+                            className={`px-4 py-2 rounded-lg border text-center ${
+                              selectedPackage?.package_type === pkg.package_type
+                                ? 'bg-blue-600 text-white -ml-2'
+                                : 'bg-white text-black hover:bg-gray-100'
+                            }`}
+                          >
+                            <div className="text-sm font-medium">
+                              {capitalizeFirst(pkg.package_type)}
+                            </div>
+
+                            <div className="text-sm mt-1">
+                              {isPriceOnRequest(pkg) ? (
+                                <span className="font-semibold">Price on Request</span>
+                              ) : isDiscounted ? (
+                                <>
+                                  <span className="line-through text-white-500">
+                                    {formatPrice(pkg.price)}
+                                  </span>{' '}
+                                  <span className="font-semibold text-white-600">
+                                    {formatPrice(pkg.discount_price)}
+                                  </span>
+                                  {getSavings(pkg) && (
+                                    <div className="text-xs text-yellow-200">
+                                      Save {getSavings(pkg)}
                                     </div>
-                                  </button>
-                                );
-                              })}
-                      </div>
+                                  )}
+                                </>
+                              ) : (
+                                <span className="font-semibold">{formatPrice(pkg.price)}</span>
+                              )}
+                            </div>
+                          </button>
+                        );
+                      })}
                     </div>
-                  )}
+                  </div>
+                )}
                  {/* Tour Highlights */}
               <div className="mb-8">
                 <h3 className="text-xl font-semibold mb-4">Tour Highlights</h3>
@@ -523,12 +530,10 @@ const [isLoading, setIsLoading] = useState(false);
         </div>
 
         {/* Popular Group Tours Section */}
-            {tourData && (
-                <SimilarTours
-                  currentTourSlug={tourData.slug}
-                  currentDestinations={tourData.destinations || []}
-                />
-              )}
+            <SimilarTours
+              currentTourSlug={tourData.slug}
+              currentDestinations={tourData.destinations.map(d => d.name)}
+            />
 
         {/* FAQ Section */}
         <section className="py-12 max-w-6xl mx-auto px-4">

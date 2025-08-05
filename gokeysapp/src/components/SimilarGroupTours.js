@@ -21,8 +21,13 @@ export default function SimilarTours({ currentTourSlug, currentDestinations }) {
         const filtered = data.filter((tour) => {
           if (tour.slug === currentTourSlug) return false;
 
-          const tourDestNames = (tour.destinations || []).map((d) => d.toLowerCase());
-          return currentDestinations.some((cd) => tourDestNames.includes(cd.toLowerCase()));
+          const tourDestNames = (tour.destinations || []).map((d) =>
+              typeof d === "string" ? d.toLowerCase() : d.name.toLowerCase()
+            );
+
+            return currentDestinations.some((cd) =>
+              tourDestNames.includes(cd.toLowerCase())
+            );
         });
 
         setSimilarTours(filtered.slice(0, 6)); // Show max 6 similar tours
