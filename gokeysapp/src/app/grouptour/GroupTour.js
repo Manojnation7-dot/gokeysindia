@@ -79,7 +79,7 @@ export default function GroupTour({ tours = [] }) {
       type: tour.trip_types?.length > 0 ? tour.trip_types[0].name : 'Group Tour',
       price: standardPackage,
       image: tour.featured_image?.image || 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e',
-      description: tour.meta_description || 'Explore this amazing group tour!',
+      description: tour.content || 'Explore this amazing group tour!',
     };
   });
 
@@ -245,9 +245,12 @@ schemas.push(
                   </span>
                 </div>
                 
-                <p className="text-sm text-gray-600 line-clamp-2 mt-1 flex-grow"> {/* Adjusted margin */}
-                  {tour.content}
-                </p>
+                <div className="text-sm text-gray-600 mt-1 flex-grow line-clamp-2 overflow-hidden">
+                  <div
+                    dangerouslySetInnerHTML={{ __html: tour.description }}
+                    className="line-clamp-2"
+                  />
+                </div>
                 
                 {/* Price & CTA Section */}
                 <div className="flex justify-between items-center pt-3 border-t border-gray-100 mt-2">
