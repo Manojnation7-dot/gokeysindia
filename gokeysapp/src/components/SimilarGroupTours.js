@@ -16,10 +16,10 @@ export default function SimilarTours({ currentTourSlug, currentDestinations }) {
 
         if (!res.ok) throw new Error("Failed to fetch tours");
 
-        const data = await res.json();
-        const tours = data.results || data;
+     const data = await res.json();
+      const tours = data.results || [];
 
-       const filtered = tours.filter((tour) => {
+      const filtered = tours.filter((tour) => {
         if (tour.slug === currentTourSlug) return false;
 
         const tourDestNames = (tour.destinations || [])
@@ -35,7 +35,7 @@ export default function SimilarTours({ currentTourSlug, currentDestinations }) {
           .some((cd) => tourDestNames.includes(cd.toLowerCase()));
       });
 
-        setSimilarTours(filtered.slice(0, 6)); // Show max 6 similar tours
+setSimilarTours(filtered.slice(0, 6));
       } catch (err) {
         console.error("Error loading similar tours:", err.message);
       }
