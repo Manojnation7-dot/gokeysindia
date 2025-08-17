@@ -2,57 +2,73 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { motion } from "framer-motion";
 
 export default function SimilarTours({ tours }) {
   if (!tours || !tours.length) return null;
 
   return (
-    <section className="py-12 bg-gray-50">
+    <section className="py-16 bg-gray-50">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 className="text-3xl font-bold mb-4 text-gray-800 text-center">
+        {/* Heading */}
+        <motion.h2
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="text-3xl font-bold mb-4 text-gray-800 text-center"
+        >
           Similar Tour Packages
-        </h2>
-        <p className="text-gray-500 mb-8 text-center">
-          You might also like these group tours
+        </motion.h2>
+        <p className="text-gray-500 mb-10 text-center">
+          You might also like these carefully picked tours
         </p>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
-          {tours.map((tour) => (
-            <div
+        {/* Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8">
+          {tours.map((tour, index) => (
+            <motion.div
               key={tour.id}
-              className="bg-white rounded-2xl shadow hover:shadow-lg transition p-4 flex flex-col"
+              initial={{ opacity: 0, y: 40 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: index * 0.15 }}
+              className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-all overflow-hidden flex flex-col"
             >
               {/* Image */}
-              <div className="relative h-48 w-full rounded-xl overflow-hidden">
+              <div className="relative h-52 w-full">
                 <Image
                   src={tour.featured_image?.image || "/images/placeholder.jpg"}
                   alt={tour.name}
                   fill
-                  className="object-cover rounded-xl"
+                  className="object-cover"
                 />
+                <span className="absolute top-3 left-3 bg-indigo-600 text-white text-xs px-3 py-1 rounded-full shadow">
+                  {tour.duration_days}D / {tour.duration_nights}N
+                </span>
               </div>
 
-              {/* Tour Info */}
-              <div className="flex-1 flex flex-col mt-4">
-                <h3 className="text-lg font-semibold text-gray-800">{tour.name}</h3>
-                <p className="text-sm text-gray-500 mt-1">
-                  {tour.duration_days} Days / {tour.duration_nights} Nights |{" "}
-                  {tour.starting_location}
+              {/* Info */}
+              <div className="p-5 flex flex-col flex-1">
+                <h3 className="text-lg font-semibold text-gray-800 line-clamp-2">
+                  {tour.name}
+                </h3>
+                <p className="text-sm text-gray-500 mt-2">
+                  Starting from <span className="font-medium">{tour.starting_location}</span>
                 </p>
-                <p className="text-md font-bold text-indigo-600 mt-2">
+
+                <p className="text-lg font-bold text-indigo-600 mt-3">
                   ₹{parseFloat(tour.base_price).toLocaleString()}
                 </p>
 
-                {/* Button pinned to bottom */}
-                <div className="mt-auto pt-4">
+                {/* Button at bottom */}
+                <div className="mt-auto pt-5">
                   <Link href={`/tours/${tour.slug}`}>
-                    <button className="w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 transition">
+                    <button className="w-full bg-indigo-600 text-white py-2.5 rounded-lg hover:bg-indigo-700 transition font-medium">
                       View Tour
                     </button>
                   </Link>
                 </div>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>

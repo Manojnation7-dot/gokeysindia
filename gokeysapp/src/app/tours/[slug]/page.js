@@ -37,19 +37,21 @@ export default async function TourDetailPage({ params }) {
 
   let similarTours = [];
 
-  // ✅ Try to get similar tours
-  if (tour.destinations?.[0]?.id && tour.id) {
-    const resSimilar = await fetch(
-      `${apiUrl}/api/tours/similar/${tour.destinations[0].id}/${tour.id}/`,
-      { cache: "no-store" }
-    );
-      if (resSimilar.ok) {
-  const data = await resSimilar.json();
-  similarTours = (data.results || []).slice(0, 3); // 👈 limit to 3
-  console.log("Similar tours response:", similarTours);
-}
-  }
+    // ✅ Try to get similar tours (smart backend version)
+    if (tour.id) {
+      const resSimilar = await fetch(
+        `${apiUrl}/api/tours/similar-smart/${tour.id}/`,
+        { cache: "no-store" }
+      );  
 
+      if (resSimilar.ok) {
+        const data = await resSimilar.json();
+        similarTours = (data.results || []).slice(0, 3); // 👈 limit to 3
+        console.log("Similar tours (smart) response:", similarTours);
+      }
+    }
+
+    // ✅ Fallback if no smart results
     if (!similarTours.length) {
       const resFallback = await fetch(`${apiUrl}/api/tours/?limit=3`, {
         cache: "no-store",
