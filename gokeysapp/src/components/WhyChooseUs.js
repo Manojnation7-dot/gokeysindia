@@ -35,7 +35,7 @@ export default function WhyChooseUs() {
               From budget trips to luxury escapes, we make travel safe and memorable.
             </p>
           </div>
-        <div className="grid md:grid-cols-3 gap-8">
+        <div className="grid md:grid-cols-3 gap-8 mt-5">
           {items.map((item, idx) => (
             <div
               key={idx}

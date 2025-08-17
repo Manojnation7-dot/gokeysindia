@@ -13,17 +13,34 @@ export default function FeaturedDestinations({ initialDestinations }) {
 
   return (
     <section className="py-16 px-6 bg-gray-100">
-      <div className="max-w-7xl mx-auto">
-        <h2 className="text-4xl font-bold text-blue-900 mb-6">
-          Explore Amazing Destinations
-        </h2>
-        <p className="text-lg text-gray-700 max-w-3xl mx-auto leading-relaxed">
-          Discover breathtaking destinations across India with 
-          <strong> Gokeys India</strong>. From holy shrines to hidden valleys, 
-          we bring you detailed travel guides and hassle-free packages 
-          — so you can explore without worry, backed by 
-          <strong> authorized travel agents in Haridwar</strong>.
+      <div className="max-w-7xl mx-auto mb-5">
+          <h2 className="text-4xl font-bold text-center mb-12">
+            Explore Amazing Destinations
+          </h2>
+          <div className="space-y-6 text-gray-700 text-lg leading-relaxed">
+        <p>
+          Welcome to <strong>Gokeys India</strong> — your trusted 
+          <strong> travel agent in Haridwar</strong> for spiritual journeys, 
+          Himalayan adventures, and unforgettable holidays. With over 10 years of 
+          experience and authorization from <strong>Uttarakhand Tourism</strong>, 
+          we craft customized and group travel packages including 
+          <strong> Char Dham Yatra 2025</strong>.
         </p>
+        <p>
+          From <strong>Auli</strong> and <strong>Chopta</strong> to the 
+          <strong> Valley of Flowers</strong> and <strong>Hemkund Sahib</strong>, 
+          or rafting & camping in <strong>Rishikesh</strong> — we deliver with 
+          transparent pricing and personalized service.
+        </p>
+        <p>
+          Our Haridwar-based team ensures smooth <strong>cab rentals</strong>, 
+          hotel bookings, and guided tours. Explore our 
+          <a href="/tours" className="text-blue-600 font-semibold hover:underline"> best-selling tours</a> 
+          or 
+          <a href="/contact" className="text-blue-600 font-semibold hover:underline"> contact us</a> today.  
+          From budget trips to luxury escapes, we make travel safe and memorable.
+        </p>
+      </div>
         <Slider
           dots
           infinite
