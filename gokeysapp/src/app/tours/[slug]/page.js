@@ -40,7 +40,7 @@ export default async function TourDetailPage({ params }) {
     // ✅ Try to get similar tours (smart backend version)
     if (tour.id) {
       const resSimilar = await fetch(
-        `${apiUrl}/api/tours/similar-smart/${tour.id}/`,
+        `${apiUrl}/api/similar-smart/${tour.id}/`,
         { cache: "no-store" }
       );  
 
