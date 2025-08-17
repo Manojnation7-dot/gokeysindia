@@ -17,7 +17,7 @@ export default function FeaturedDestinations({ initialDestinations }) {
           <h2 className="text-4xl font-bold text-center mb-12">
             Explore Amazing Destinations
           </h2>
-          <div className="space-y-6 text-gray-700 text-lg leading-relaxed">
+          <div className="space-y-6 text-gray-700 text-lg mb-5">
         <p>
           Welcome to <strong>Gokeys India</strong> — your trusted 
           <strong> travel agent in Haridwar</strong> for spiritual journeys, 

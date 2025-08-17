@@ -30,7 +30,7 @@ export default function WhyChooseUs() {
               Our Haridwar-based team ensures smooth <strong>cab rentals</strong>, 
               hotel bookings, and guided tours. Explore our 
               <a href="/tours" className="text-blue-600 font-semibold hover:underline"> best-selling tours</a> 
-              or 
+                or 
               <a href="/contact" className="text-blue-600 font-semibold hover:underline"> contact us</a> today.  
               From budget trips to luxury escapes, we make travel safe and memorable.
             </p>
