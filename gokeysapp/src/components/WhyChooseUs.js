@@ -11,17 +11,30 @@ export default function WhyChooseUs() {
         <h2 className="text-4xl font-bold text-blue-900 mb-8">
           Why Travel with Gokeys?
         </h2>
-        <section>
-          <p>
-            Welcome to <strong>Gokeys India</strong> — your trusted <strong>travel agent in Haridwar</strong> for spiritual journeys, Himalayan adventures, and unforgettable holidays. With over 10 years of experience and official authorization from <strong>Uttarakhand Tourism</strong>, we specialize in crafting customized and group travel packages for Char Dham Yatra 2025, Do Dham tours, and sacred pilgrimages like <strong>Badrinath</strong>, <strong>Kedarnath</strong>, <strong>Gangotri</strong>, and <strong>Yamunotri</strong>.  
-          </p>
-          <p>
-            Whether you’re seeking the snow-clad beauty of <strong>Auli</strong> and <strong>Chopta</strong>, the serene landscapes of <strong>Valley of Flowers</strong> and <strong>Hemkund Sahib</strong>, or adrenaline-filled camping and rafting experiences in <strong>Rishikesh</strong>, Gokeys delivers with transparent pricing and personalized service.  
-          </p>
-          <p>
-            Our team is based in Haridwar, giving us the local knowledge to arrange reliable <strong>cab rentals</strong>, hotel bookings, and guided tours across Uttarakhand. Explore our <a href="/tours">best-selling tours</a> or <a href="/contact">contact us today</a> to start your journey. From budget trips to luxury escapes, we’re here to make your travel smooth, safe, and memorable.
-          </p>
-        </section>
+        <div className="space-y-6 text-gray-700 text-lg leading-relaxed">
+            <p>
+              Welcome to <strong>Gokeys India</strong> — your trusted 
+              <strong> travel agent in Haridwar</strong> for spiritual journeys, 
+              Himalayan adventures, and unforgettable holidays. With over 10 years of 
+              experience and authorization from <strong>Uttarakhand Tourism</strong>, 
+              we craft customized and group travel packages including 
+              <strong> Char Dham Yatra 2025</strong>.
+            </p>
+            <p>
+              From <strong>Auli</strong> and <strong>Chopta</strong> to the 
+              <strong> Valley of Flowers</strong> and <strong>Hemkund Sahib</strong>, 
+              or rafting & camping in <strong>Rishikesh</strong> — we deliver with 
+              transparent pricing and personalized service.
+            </p>
+            <p>
+              Our Haridwar-based team ensures smooth <strong>cab rentals</strong>, 
+              hotel bookings, and guided tours. Explore our 
+              <a href="/tours" className="text-blue-600 font-semibold hover:underline"> best-selling tours</a> 
+              or 
+              <a href="/contact" className="text-blue-600 font-semibold hover:underline"> contact us</a> today.  
+              From budget trips to luxury escapes, we make travel safe and memorable.
+            </p>
+          </div>
         <div className="grid md:grid-cols-3 gap-8">
           {items.map((item, idx) => (
             <div
