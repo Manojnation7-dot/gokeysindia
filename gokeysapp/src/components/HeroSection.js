@@ -21,7 +21,7 @@ export default function HeroSection() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1 }}
         >
-          Embark on Your Spiritual Journey
+          Explore India with Gokeys
         </motion.h1>
         <motion.p
           className="mt-2 sm:mt-4 text-lg sm:text-xl md:text-2xl hero-text"
@@ -29,7 +29,7 @@ export default function HeroSection() {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5, duration: 1 }}
         >
-          Char Dham, Adi Kailash, Valley of Flowers & Beyond
+          Group Tours to Char Dham, Kedarnath, 12 Jyotirling, Adi Kailash, Treks and more.
         </motion.p>
         <motion.div
           className="mt-4 sm:mt-6 px-4 sm:px-0 w-full flex justify-center"

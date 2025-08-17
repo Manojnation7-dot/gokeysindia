@@ -17,6 +17,9 @@ export default function FeaturedDestinations({ initialDestinations }) {
         <h2 className="text-4xl font-bold text-center mb-12">
           Explore Amazing Destinations
         </h2>
+        <section>
+        <p>Explore the Amazing destination with detailed Travel Guide to make your holiday perfect with Authorized Travel Agents in Haridwar. Gokeys India's includes various destination throughout the India, so you can explore without worry.</p>
+        </section>
         <Slider
           dots
           infinite
