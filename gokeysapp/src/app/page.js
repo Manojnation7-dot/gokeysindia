@@ -18,6 +18,7 @@ import {
   buildImageObject,
   buildBreadcrumbList,
 } from "@/lib/seoSchemas";
+import HomeReviews from "@/components/HomeReviews";
 
 async function getFeaturedDestinations() {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/featured-destinations/`, {
@@ -62,6 +63,8 @@ export default async function HomePage() {
       <BestSellingGroupTripsWrapper />
 
       <SightseeingSliderWrapper limit={8} />
+
+      <HomeReviews />
 
       <CabSlider />
 

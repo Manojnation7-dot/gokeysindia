@@ -50,15 +50,17 @@ export default function SightseeingSlider({ places }) {
           {places.map((place, index) => (
             <motion.div
               key={place.id}
-              className="px-3"
+              className="px-3 pb-10 relative z-10"
               variants={cardVariants}
               initial="hidden"
               whileInView="visible"
+              whileHover={{ scale: 1.03 }}
+              transition={{ type: "spring", stiffness: 300 }}
               custom={index}
               viewport={{ once: true, amount: 0.2 }}
             >
-              <div className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all border border-gray-100">
-                <div className="relative h-48">
+              <div className="bg-white rounded-xl shadow-md hover:shadow-xl transition duration-300 overflow-hidden border border-gray-100 flex flex-col">
+                <div className="relative h-48 group overflow-hidden">
                   <Image
                     src={
                       place.featured_image?.optimized_card ||
@@ -67,13 +69,16 @@ export default function SightseeingSlider({ places }) {
                     }
                     alt={place.name}
                     fill
-                    className="object-cover"
+                    className="object-cover group-hover:scale-105 transition-transform duration-500 ease-in-out"
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 33vw, 25vw"
                   />
                 </div>
                 <div className="p-4">
                   <h3 className="text-lg font-semibold text-gray-800 mb-1">
-                    <Link href={`/sightseeing/${place.slug}`} className="hover:underline">
+                    <Link
+                      href={`/sightseeing/${place.slug}`}
+                      className="hover:underline"
+                    >
                       {place.name}
                     </Link>
                   </h3>

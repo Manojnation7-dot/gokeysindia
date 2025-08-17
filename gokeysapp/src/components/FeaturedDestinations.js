@@ -14,34 +14,21 @@ export default function FeaturedDestinations({ initialDestinations }) {
   return (
     <section className="py-16 px-6 bg-gray-100">
       <div className="max-w-7xl mx-auto mb-5">
-          <h2 className="text-4xl font-bold text-center mb-12">
-            Explore Amazing Destinations
-          </h2>
-          <div className="space-y-6 text-gray-700 text-lg mb-5">
-        <p>
-          Welcome to <strong>Gokeys India</strong> — your trusted 
-          <strong> travel agent in Haridwar</strong> for spiritual journeys, 
-          Himalayan adventures, and unforgettable holidays. With over 10 years of 
-          experience and authorization from <strong>Uttarakhand Tourism</strong>, 
-          we craft customized and group travel packages including 
-          <strong> Char Dham Yatra 2025</strong>.
-        </p>
-        <p>
-          From <strong>Auli</strong> and <strong>Chopta</strong> to the 
-          <strong> Valley of Flowers</strong> and <strong>Hemkund Sahib</strong>, 
-          or rafting & camping in <strong>Rishikesh</strong> — we deliver with 
-          transparent pricing and personalized service.
-        </p>
-        <p>
-          Our Haridwar-based team ensures smooth <strong>cab rentals</strong>, 
-          hotel bookings, and guided tours. Explore our 
-          <a href="/tours" className="text-blue-600 font-semibold hover:underline"> best-selling tours</a> 
-          or 
-          <a href="/contact" className="text-blue-600 font-semibold hover:underline"> contact us</a> today.  
-          From budget trips to luxury escapes, we make travel safe and memorable.
-        </p>
-      </div>
+        <h2 className="text-4xl font-bold text-blue-900 text-center mb-12">
+          Explore Amazing Destinations
+        </h2>
+        <div className="space-y-6 text-gray-700 text-lg mb-5">
+          <p className="text-lg text-gray-700">
+            Discover breathtaking destinations across India with
+            <strong> Gokeys India</strong>. From holy shrines to hidden valleys,
+            we bring you detailed travel guides and hassle-free packages — so
+            you can explore without worry, backed by
+            <strong> authorized travel agents in Haridwar</strong>.
+          </p>
+        </div>
+
         <Slider
+          className="pb-10"
           dots
           infinite
           speed={500}
@@ -56,12 +43,14 @@ export default function FeaturedDestinations({ initialDestinations }) {
           ]}
         >
           {destinations.map((place) => (
-            <div key={place.id} className="px-2">
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                className="bg-white rounded-lg shadow-lg overflow-hidden"
-              >
-                <div className="relative w-full h-40">
+            <motion.div
+              key={place.id}
+              whileHover={{ scale: 1.03 }}
+              transition={{ type: "spring", stiffness: 300 }}
+              className="px-2 pb-10 relative z-10"
+            >
+              <div className="bg-white rounded-lg shadow-md hover:shadow-xl transition duration-300 overflow-hidden min-h-[280px] flex flex-col">
+                <div className="relative w-full h-48 group overflow-hidden">
                   <Image
                     src={
                       place.featured_image?.optimized_card ||
@@ -71,6 +60,7 @@ export default function FeaturedDestinations({ initialDestinations }) {
                     alt={place.name}
                     fill
                     style={{ objectFit: "cover" }}
+                    className="group-hover:scale-105 transition-transform duration-500 ease-in-out"
                   />
                 </div>
                 <div className="p-4 text-center">
@@ -84,8 +74,8 @@ export default function FeaturedDestinations({ initialDestinations }) {
                     Explore
                   </Link>
                 </div>
-              </motion.div>
-            </div>
+              </div>
+            </motion.div>
           ))}
         </Slider>
       </div>

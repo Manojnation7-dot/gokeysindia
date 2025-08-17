@@ -70,14 +70,16 @@ export default function TravelStories({ posts = [], error = null }) {
 
         <Slider {...sliderSettings}>
           {posts.map((post, idx) => (
-            <div key={post.id || idx} className="px-3">
-              <motion.div
-                className="bg-white rounded-xl shadow-lg overflow-hidden card-hover"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: idx * 0.2, duration: 0.5 }}
-              >
-                <div className="relative w-full h-48">
+            <motion.div
+              key={post.id || idx}
+              className="px-3 pb-10 relative z-10"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              whileHover={{ scale: 1.03 }}
+              transition={{ type: "spring", stiffness: 300 }}
+            >
+              <div className="bg-white rounded-xl shadow-md hover:shadow-xl transition duration-300 overflow-hidden border border-gray-100 flex flex-col min-h-[360px]">
+                <div className="relative w-full h-48 group overflow-hidden">
                   <Image
                     src={
                       post.cover_image?.[0]?.optimized_card ||
@@ -86,22 +88,28 @@ export default function TravelStories({ posts = [], error = null }) {
                     }
                     alt={`Cover image for ${post.title}`}
                     fill
-                    style={{ objectFit: "cover" }}
+                    className="object-cover group-hover:scale-105 transition-transform duration-500 ease-in-out"
                     sizes="(max-width: 768px) 100vw, 33vw"
                     priority={idx === 0}
-                    placeholder="blur"
-                    blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAAAAAAAD/2wBDAAoHBwkHBgoJ..."
                   />
                 </div>
-                <div className="p-4 flex flex-col flex-1">
-                  <h3 className="text-xl font-semibold text-gray-800 mb-2">{post.title}</h3>
-                  <p className="text-gray-600 mb-4">{truncateContent(post.content)}</p>
+                <div className="p-4 flex flex-col flex-1 justify-between">
+                  <div>
+                    <h3 className="text-xl font-semibold text-gray-800 mb-2">
+                      {post.title}
+                    </h3>
+                    <p className="text-gray-600 mb-4">
+                      {truncateContent(post.content)}
+                    </p>
+                  </div>
                   <Link href={`/blog/${post.slug}`}>
-                    <span className="text-blue-600 hover:underline font-medium">Read More →</span>
+                    <span className="text-blue-600 hover:underline font-medium">
+                      Read More →
+                    </span>
                   </Link>
                 </div>
-              </motion.div>
-            </div>
+              </div>
+            </motion.div>
           ))}
         </Slider>
       </div>
