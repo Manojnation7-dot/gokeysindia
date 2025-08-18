@@ -442,23 +442,27 @@ const faqSchema = tourData.faqs?.length > 0 ? buildFAQSchema(tourData.faqs) : nu
                     <span className="text-gray-600">Best Season</span>
                     <span className="font-medium">{tourData.best_season || "Year Round"}</span>
                   </div>
-                  <form onSubmit={handleEnquirySubmit}>
-                    <EnquiryForm
-                      isInline={true}
-                      showSubmitButton={false}
-                      formData={enquiryFormData}
-                      onChange={setEnquiryFormData}
-                      onSubmit={handleEnquirySubmit}
-                    />
-                    <div className="pt-4 mt-4 border-t border-gray-200">
-                      <button
-                        type="submit"
-                        className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-medium transition-all"
-                      >
-                        Enquire Now
-                      </button>
-                    </div>
-                  </form>
+              <form onSubmit={handleEnquirySubmit}>
+                <EnquiryForm
+                  isInline={true}
+                  showSubmitButton={false}
+                  formData={enquiryFormData}
+                  onChange={setEnquiryFormData}
+                  onSubmit={handleEnquirySubmit}
+                />
+                <div className="pt-4 mt-4 border-t border-gray-200">
+                  <button
+                    type="submit"
+                    className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-medium transition-all"
+                  >
+                    Enquire Now
+                  </button>
+                  {/* Contact info below the button */}
+                  <p className="mt-3 text-center text-gray-700 text-sm">
+                    Need More Information? Call/WhatsApp our Yatra Expert on <span className="font-semibold">+91-78307-18687</span>
+                  </p>
+                </div>
+              </form>
                 </div>
               </div>
             </div>
