@@ -19,6 +19,7 @@ import {
   buildBreadcrumbList,
 } from "@/lib/seoSchemas";
 import HomeReviews from "@/components/HomeReviews";
+import GoogleMap from "@/components/MapIframe";
 
 async function getFeaturedDestinations() {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/featured-destinations/`, {
@@ -71,6 +72,11 @@ export default async function HomePage() {
       <TravelStoriesWrapper limit={8} />
 
       <MostSearchedPackages />
+
+       <section className="py-10">
+        <h2 className="text-2xl font-bold text-center text-blue-900 mb-4">Find Us on Map</h2>
+        <GoogleMap />
+      </section>
 
       <CTASection />
 
