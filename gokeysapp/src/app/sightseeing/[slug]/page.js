@@ -1,7 +1,7 @@
 import SightseeingDetailPage from "./SightseeingDetailPage";
 
 export async function generateMetadata({ params }) {
-  const { slug } = params;
+  const { slug } = await params;
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
   const res = await fetch(`${apiUrl}/api/sightseeing/${slug}/`, { cache: "no-store" });
   const place = await res.json();
@@ -16,7 +16,7 @@ export async function generateMetadata({ params }) {
 }
 
 export default async function Page({ params }) {
-  const { slug } = params;
+  const { slug } = await params;
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
   // 1️⃣ Fetch the main place

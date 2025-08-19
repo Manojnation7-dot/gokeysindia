@@ -26,49 +26,53 @@ export default function SimilarTours({ tours }) {
         {/* Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8">
           {tours.map((tour, index) => (
-            <motion.div
-              key={tour.id}
-              initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: index * 0.15 }}
-              className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-all overflow-hidden flex flex-col"
-            >
-              {/* Image */}
-              <div className="relative h-52 w-full">
-                <Image
-                  src={tour.featured_image?.image || "/images/placeholder.jpg"}
-                  alt={tour.name}
-                  fill
-                  className="object-cover"
-                />
-                <span className="absolute top-3 left-3 bg-indigo-600 text-white text-xs px-3 py-1 rounded-full shadow">
-                  {tour.duration_days}D / {tour.duration_nights}N
-                </span>
-              </div>
+           <motion.div
+            key={tour.id}
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: index * 0.15 }}
+            className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-all overflow-hidden flex flex-col h-[480px]" // fixed height
+          >
+            {/* Image */}
+            <div className="relative h-52 w-full">
+              <Image
+                src={tour.featured_image?.image || "/images/placeholder.jpg"}
+                alt={tour.name}
+                fill
+                className="object-cover"
+              />
+              <span className="absolute top-3 left-3 bg-indigo-600 text-white text-xs px-3 py-1 rounded-full shadow">
+                {tour.duration_days}D / {tour.duration_nights}N
+              </span>
+            </div>
 
-              {/* Info */}
-              <div className="p-5 flex flex-col flex-1">
+            {/* Info */}
+            <div className="p-5 flex flex-col flex-1 justify-between">
+              <div>
                 <h3 className="text-lg font-semibold text-gray-800 line-clamp-2">
                   {tour.name}
                 </h3>
                 <p className="text-sm text-gray-500 mt-2">
-                  Starting from <span className="font-medium">{tour.starting_location}</span>
+                  Starting from{" "}
+                  <span className="font-medium">{tour.starting_location}</span>
                 </p>
 
                 <p className="text-lg font-bold text-indigo-600 mt-3">
                   ₹{parseFloat(tour.base_price).toLocaleString()}
                 </p>
-
-                {/* Button at bottom */}
-                <div className="mt-auto pt-5">
-                  <Link href={`/tours/${tour.slug}`}>
-                    <button className="w-full bg-indigo-600 text-white py-2.5 rounded-lg hover:bg-indigo-700 transition font-medium">
-                      View Tour
-                    </button>
-                  </Link>
-                </div>
               </div>
-            </motion.div>
+
+              {/* Button at bottom */}
+              <div className="pt-5">
+                <Link href={`/tours/${tour.slug}`} className="block">
+                  <button className="w-full bg-indigo-600 text-white py-2.5 rounded-lg hover:bg-indigo-700 transition font-medium">
+                    View Tour
+                  </button>
+                </Link>
+              </div>
+            </div>
+          </motion.div>
+
           ))}
         </div>
       </div>

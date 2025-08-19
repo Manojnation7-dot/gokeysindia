@@ -32,18 +32,24 @@ const nearbyAttractionsList = (destination.nearby_attractions || "")
   )
   .filter(Boolean) || [];
 
-  const toursRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/tours/?destination=${encodeURIComponent(slug)}`, {
+const toursRes = await fetch(
+  `${process.env.NEXT_PUBLIC_API_URL}/api/tours/?destination=${encodeURIComponent(slug)}`, 
+  {
     next: { revalidate: 60 },
-  });
-  const toursRaw = await toursRes.json();
+  }
+);
 
-  const safeTours = Array.isArray(toursRaw.results)
-  ? toursRaw.results.map(tour => ({
-      ...tour,
-      content: tour.content
-        ? tour.content.replace(/<\/?[^>]+(>|$)/g, "").slice(0, 160) + "..."
-        : "No description available."
-    }))
+const toursRaw = await toursRes.json();
+
+const safeTours = Array.isArray(toursRaw.results)
+  ? toursRaw.results
+      .map(tour => ({
+        ...tour,
+        content: tour.content
+          ? tour.content.replace(/<\/?[^>]+(>|$)/g, "").slice(0, 160) + "..."
+          : "No description available."
+      }))
+      .slice(0, 3) // ✅ limit to 3 tours
   : [];
 
   const hotelsRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/hotels/?destination=${encodeURIComponent(slug)}`, {

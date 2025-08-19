@@ -182,7 +182,10 @@ const tourListSchema = buildItemListSchema({
            {/* Tour Listings */}
           <section className="lg:col-span-3 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
             {filteredTours.map((tour) => (
-              <div key={tour.id} className="bg-white rounded-xl p-4 shadow">
+              <div
+                key={tour.id}
+                className="bg-white rounded-xl p-4 shadow flex flex-col"
+              >
                 <div className="relative h-48 w-full rounded-xl overflow-hidden">
                   <Image
                     src={tour.featured_image?.image || "https://via.placeholder.com/300x200"}
@@ -191,20 +194,28 @@ const tourListSchema = buildItemListSchema({
                     className="object-cover rounded-xl"
                   />
                 </div>
-                <h3 className="mt-4 text-lg font-semibold">{tour.name}</h3>
+
+                <h3 className="mt-4 text-lg font-semibold line-clamp-2">
+                  {tour.name}
+                </h3>
                 <p className="text-sm text-gray-500">
                   {tour.duration_days} Days / {tour.duration_nights} Nights
                 </p>
-                <p className="mt-2 font-bold text-indigo-600">
+                <p className="mt-2 font-bold text-indigo-600 mb-4">
                   ₹{parseFloat(tour.base_price).toLocaleString()}
                 </p>
-                <Link href={`/tours/${tour.slug}`}>
-                  <button className="mt-4 w-full bg-indigo-600 text-white py-2 rounded-lg">
-                    View Tour
-                  </button>
-                </Link>
+
+                {/* Button stays at bottom */}
+                <div className="mt-auto">
+                  <Link href={`/tours/${tour.slug}`}>
+                    <button className="w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 transition">
+                      View Tour
+                    </button>
+                  </Link>
+                </div>
               </div>
             ))}
+
             {filteredTours.length === 0 && (
               <div className="col-span-full text-center text-gray-500">
                 No tours match the selected filters.

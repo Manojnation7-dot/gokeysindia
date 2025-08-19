@@ -258,47 +258,63 @@ if (!destination) {
         </section>
 
         {/* Tours Section */}
-        <section id="tours-section" className="bg-white py-12">
-          <div className="max-w-6xl mx-auto px-6">
-            <h2 className="text-3xl font-semibold text-gray-800">Available Tour Packages</h2>
-            {tours.length > 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">
-                {tours.map(tour => (
-                  <div
-                    key={tour.id}
-                    className="bg-white rounded-2xl shadow hover:shadow-lg transition p-4"
-                  >
-                    <div>
-                      <div className="relative h-48 w-full rounded-xl overflow-hidden">
-                        <Image
-                          src={tour.featured_image?.image || "/images/placeholder.jpg"}
-                          alt={tour.name}
-                          fill
-                          className="object-cover rounded-xl"
-                        />
-                      </div>
-                      <h3 className="text-xl font-bold text-gray-800 mt-4">{tour.name}</h3>
-                      <p className="text-gray-600 mt-2 text-sm line-clamp-2" dangerouslySetInnerHTML={{ __html: tour.content }} />
-                      <p className="mt-3 text-sm text-gray-500">
-                        Duration: {tour.duration_days} days / {tour.duration_nights} nights
-                      </p>
-                      <p className="mt-1 text-lg text-indigo-600 font-semibold">
-                        From ₹{(parseFloat(tour.base_price) || 20000).toLocaleString()}
-                      </p>
+      <section id="tours-section" className="bg-white py-12">
+        <div className="max-w-6xl mx-auto px-6">
+          <h2 className="text-3xl font-semibold text-gray-800">Available Tour Packages</h2>
+
+          {tours.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">
+              {tours.map((tour) => (
+                <div
+                  key={tour.id}
+                  className="bg-white rounded-2xl shadow hover:shadow-lg transition flex flex-col h-[500px] p-4"
+                >
+                  {/* Top Content */}
+                  <div className="flex-1 flex flex-col">
+                    <div className="relative h-48 w-full rounded-xl overflow-hidden">
+                      <Image
+                        src={tour.featured_image?.image || "/images/placeholder.jpg"}
+                        alt={tour.name}
+                        fill
+                        className="object-cover rounded-xl"
+                      />
                     </div>
-                    <Link href={`/tours/${tour.slug}`} className="mt-4 block">
+
+                    <h3 className="text-xl font-bold text-gray-800 mt-4 line-clamp-2">
+                      {tour.name}
+                    </h3>
+
+                    <p
+                      className="text-gray-600 mt-2 text-sm line-clamp-2"
+                      dangerouslySetInnerHTML={{ __html: tour.content }}
+                    />
+
+                    <p className="mt-3 text-sm text-gray-500">
+                      Duration: {tour.duration_days} days / {tour.duration_nights} nights
+                    </p>
+
+                    <p className="mt-1 text-lg text-indigo-600 font-semibold">
+                      From ₹{(parseFloat(tour.base_price) || 20000).toLocaleString()}
+                    </p>
+                  </div>
+
+                  {/* Button at Bottom */}
+                  <div className="mt-4">
+                    <Link href={`/tours/${tour.slug}`} className="block">
                       <button className="w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 transition">
                         View Details
                       </button>
                     </Link>
                   </div>
-                ))}
-              </div>
-            ) : (
-              <p className="mt-6 text-gray-600">No tours available for this destination.</p>
-            )}
-          </div>
-        </section>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="mt-6 text-gray-600">No tours available for this destination.</p>
+          )}
+        </div>
+      </section>
+
                 {/* Hotels Section */}
            <section id="hotels-section" className="bg-white py-12 border-t border-gray-200">
               <div className="max-w-6xl mx-auto px-6">
