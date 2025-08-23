@@ -60,21 +60,24 @@ const Footer = () => {
           <p className="text-lg">Stay connected with us on our social media platforms!</p>
           <ul className="flex space-x-4 mt-4 text-2xl">
             <li>
-              <Link href="https://facebook.com" target="_blank" className="hover:text-blue-500">
+              <Link href="https://facebook.com/gokeysindia" target="_blank" className="hover:text-blue-500">
                 <FaFacebookF />
               </Link>
             </li>
             <li>
-              <Link href="https://twitter.com" target="_blank" className="hover:text-sky-500">
+              <Link href="https://twitter.com/gokeys4" target="_blank" className="hover:text-sky-500">
                 <FaTwitter />
               </Link>
             </li>
             <li>
-              <Link href="https://instagram.com" target="_blank" className="hover:text-pink-500">
+              <Link href="https://instagram.com/gokeysharidwar" target="_blank" className="hover:text-pink-500">
                 <FaInstagram />
               </Link>
             </li>
           </ul>
+          <div className='mt-5'>
+            <div id="TA_certificateOfExcellence316" class="TA_certificateOfExcellence"><ul id="wHnvSMMXm" class="TA_links 3371AUO9iaf7"><li id="fLLA1ov9ne" class="kcyW6gx"><a target="_blank" href="https://www.tripadvisor.in/Attraction_Review-g616028-d15685215-Reviews-Gokeys_India-Haridwar_Haridwar_District_Uttarakhand.html"><img src="https://static.tacdn.com/img2/travelers_choice/widgets/tchotel_2025_LL.png" alt="TripAdvisor" class="widCOEImg" id="CDSWIDCOELOGO"/></a></li></ul></div><script async src="https://www.jscache.com/wejs?wtype=certificateOfExcellence&amp;uniq=316&amp;locationId=15685215&amp;lang=en_IN&amp;year=2025&amp;display_version=2" data-loadtrk onload="this.loadtrk=true"></script>
+          </div>
         </div>
       </div>
 
