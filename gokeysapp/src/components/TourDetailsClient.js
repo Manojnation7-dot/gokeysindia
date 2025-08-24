@@ -61,16 +61,11 @@ export default function TourDetailClient({ tourData,baseUrl,tourPath,similarTour
 
   const formatPrice = (price) => `₹${Number(price).toLocaleString()}`;
 
-  const normalizeNumber = (val) =>
-  Number(String(val).replace(/,/g, "").trim()) || 0;
-
-  const getSavings = (pkg) => {
-    const price = normalizeNumber(pkg.price);
-    const discount = normalizeNumber(pkg.discount_price);
-    return discount > 0 && price > discount
-      ? formatPrice(price - discount)
+  const getSavings = (pkg) =>
+    pkg.discount_price && pkg.price > pkg.discount_price
+      ? formatPrice(pkg.price - pkg.discount_price)
       : null;
-  };
+      
 
   const capitalizeFirst = (str) => {
   if (!str || typeof str !== 'string') return '';
