@@ -47,7 +47,7 @@ export default async function TourDetailPage({ params }) {
       if (resSimilar.ok) {
         const data = await resSimilar.json();
         similarTours = (data.results || []).slice(0, 3); // 👈 limit to 3
-        console.log("Similar tours (smart) response:", similarTours);
+
       }
     }
 
@@ -59,7 +59,7 @@ export default async function TourDetailPage({ params }) {
       if (resFallback.ok) {
         const data = await resFallback.json();
         similarTours = data.results || [];
-        console.log("Fallback tours used:", similarTours);
+  
       }
     }
 
