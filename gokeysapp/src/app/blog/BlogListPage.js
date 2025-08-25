@@ -11,7 +11,7 @@ import { useSearchParams, usePathname, useRouter } from 'next/navigation';
 export default function BlogListPage({ blogPosts, currentPage = 1, totalPages = 1 }) {
   const searchParams = useSearchParams();
   const pathname = usePathname();
-  const { replace } = useRouter();
+  const { push } = useRouter();
 
   const truncateHtmlToText = (html, maxLength = 150) => {
     if (!html) return '';
@@ -27,7 +27,7 @@ export default function BlogListPage({ blogPosts, currentPage = 1, totalPages = 
   const handlePageChange = (newPage) => {
     const params = new URLSearchParams(searchParams);
     params.set('page', newPage);
-    replace(`${pathname}?${params.toString()}`);
+    push(`${pathname}?${params.toString()}`);
   };
 
   return (
