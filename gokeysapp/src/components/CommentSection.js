@@ -45,10 +45,10 @@ export default function CommentSection({ blogSlug }) {
 
       const res = await fetch(`${apiUrl}/api/blogs/${blogSlug}/comments/`, {
         method: "POST",
-        // headers: {
-        //   "Content-Type": "application/json",
+        headers: {
+          "Content-Type": "application/json",
         //   "X-CSRFToken": csrfToken,
-        // },
+        },
         // credentials: "include",
         body: JSON.stringify(formData),
       });
