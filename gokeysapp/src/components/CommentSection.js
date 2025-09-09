@@ -12,7 +12,6 @@ export default function CommentSection({ blogSlug }) {
   const [errorMessage, setErrorMessage] = useState("");
 
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-  const siteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
 
   // Fetch approved comments
   useEffect(() => {
@@ -27,30 +26,11 @@ export default function CommentSection({ blogSlug }) {
       }
     };
     fetchComments();
-  }, [blogSlug, apiUrl]);
+  }, [blogSlug]);
 
   // Handle form input changes
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  // reCAPTCHA loader (same pattern as EnquiryForm)
-  const waitForGrecaptcha = () => {
-    return new Promise((resolve, reject) => {
-      const maxAttempts = 10;
-      let attempts = 0;
-      const checkGrecaptcha = () => {
-        if (window.grecaptcha) {
-          resolve(window.grecaptcha);
-        } else if (attempts < maxAttempts) {
-          attempts++;
-          setTimeout(checkGrecaptcha, 500);
-        } else {
-          reject(new Error("reCAPTCHA script failed to load"));
-        }
-      };
-      checkGrecaptcha();
-    });
   };
 
   // Handle form submission
@@ -61,26 +41,8 @@ export default function CommentSection({ blogSlug }) {
     setErrorMessage("");
 
     try {
-      if (!siteKey) {
-        setErrorMessage("reCAPTCHA not configured.");
-        return;
-      }
-
-      // 1. Load grecaptcha
-      const grecaptcha = await waitForGrecaptcha();
-
-      // 2. Generate token
-      const recaptchaToken = await new Promise((resolve, reject) => {
-        grecaptcha.ready(() => {
-          grecaptcha
-            .execute(siteKey, { action: "submit_comment" })
-            .then(resolve)
-            .catch(reject);
-        });
-      });
-
-      // 3. Submit comment with token
       const csrfToken = getCSRFToken();
+
       const res = await fetch(`${apiUrl}/api/blogs/${blogSlug}/comments/`, {
         method: "POST",
         headers: {
@@ -88,7 +50,7 @@ export default function CommentSection({ blogSlug }) {
           "X-CSRFToken": csrfToken,
         },
         credentials: "include",
-        body: JSON.stringify({ ...formData, recaptcha_token: recaptchaToken }),
+        body: JSON.stringify(formData),
       });
 
       if (!res.ok) throw new Error("Failed to submit comment");
@@ -96,7 +58,6 @@ export default function CommentSection({ blogSlug }) {
       setSuccessMessage("Comment submitted! It will appear after approval.");
       setFormData({ name: "", email: "", message: "" });
     } catch (error) {
-      console.error("Error submitting comment:", error);
       setErrorMessage("Error submitting comment. Please try again.");
     } finally {
       setIsSubmitting(false);
