@@ -1,5 +1,5 @@
-// CommentSection.jsx
 'use client';
+
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 
@@ -10,14 +10,15 @@ export default function CommentSection({ blogSlug }) {
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
-
   // Fetch approved comments
   useEffect(() => {
     const fetchComments = async () => {
       try {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
         const res = await fetch(`${apiUrl}/api/blogs/${blogSlug}/comments/`);
-        if (!res.ok) throw new Error('Failed to fetch comments');
+        if (!res.ok) {
+          throw new Error('Failed to fetch comments');
+        }
         const data = await res.json();
         setComments(data);
       } catch (error) {
@@ -27,15 +28,19 @@ export default function CommentSection({ blogSlug }) {
     fetchComments();
   }, [blogSlug]);
 
-  const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
+  // Handle form input changes
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
     setSuccessMessage('');
     setErrorMessage('');
 
-    try {
+     try {
       if (!window.grecaptcha) throw new Error('reCAPTCHA not loaded');
       const token = await new Promise((resolve, reject) => {
         window.grecaptcha.ready(() => {
@@ -74,14 +79,15 @@ export default function CommentSection({ blogSlug }) {
   return (
     <section className="mt-12">
       <h2 className="text-2xl font-semibold text-gray-900 mb-6">Comments</h2>
-      {/* Comment list */}
+
+      {/* Comment List */}
       {comments.length > 0 ? (
         <div className="space-y-6 mb-8">
           {comments.map((comment) => (
             <div key={comment.id} className="bg-white p-4 rounded-lg shadow-md">
               <div className="flex items-center mb-2">
                 <Image
-                  src="https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_1280.png"
+                  src="https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_1280.png" // Replace with dynamic avatar if available
                   alt="Avatar"
                   width={40}
                   height={40}
@@ -112,10 +118,55 @@ export default function CommentSection({ blogSlug }) {
         {successMessage && <p className="text-green-600 mb-4">{successMessage}</p>}
         {errorMessage && <p className="text-red-600 mb-4">{errorMessage}</p>}
         <form onSubmit={handleSubmit} className="space-y-4">
-          <input type="text" name="name" value={formData.name} onChange={handleChange} required placeholder="Name" />
-          <input type="email" name="email" value={formData.email} onChange={handleChange} required placeholder="Email" />
-          <textarea name="message" value={formData.message} onChange={handleChange} required rows="4" placeholder="Message" />
-          <button type="submit" disabled={isSubmitting}>
+          <div>
+            <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+              Name
+            </label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              required
+              className="w-full p-2 border border-gray-300 rounded focus:ring-green-500 focus:border-green-500"
+            />
+          </div>
+          <div>
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+              Email
+            </label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              required
+              className="w-full p-2 border border-gray-300 rounded focus:ring-green-500 focus:border-green-500"
+            />
+          </div>
+          <div>
+            <label htmlFor="message" className="block text-sm font-medium text-gray-700">
+              Message
+            </label>
+            <textarea
+              id="message"
+              name="message"
+              value={formData.message}
+              onChange={handleChange}
+              required
+              rows="4"
+              className="w-full p-2 border border-gray-300 rounded focus:ring-green-500 focus:border-green-500"
+            />
+          </div>
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className={`w-full bg-green-700 text-white py-2 rounded hover:bg-green-800 ${
+              isSubmitting ? 'opacity-50 cursor-not-allowed' : ''
+            }`}
+          >
             {isSubmitting ? 'Submitting...' : 'Submit Comment'}
           </button>
         </form>
