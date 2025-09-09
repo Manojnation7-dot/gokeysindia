@@ -30,21 +30,18 @@ const nextConfig = {
     ],
   },
 
-async redirects() {
+  async rewrites() {
   return [
     {
       source: '/trip/:slug*',
-      destination: '/tours/:slug*',
-      permanent: true,
+      destination: 'https://api.gokeys.in/trip/:slug*', // Let Django handle redirection
     },
     {
-      // match only single-segment slugs (not empty, not blog, not tours, not group-tour)
-      source: '/:slug((?!blog$|tours$|group-tour$).+)',
-      destination: '/blog/:slug',
-      permanent: true,
+      source: '/:slug',
+      destination: 'https://api.gokeys.in/:slug', // Existing rewrite
     },
   ];
-},
+}
 };
 
 export default nextConfig;
