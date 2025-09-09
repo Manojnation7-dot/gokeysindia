@@ -5,7 +5,7 @@ import Image from 'next/image';
 
 export default function CommentSection({ blogSlug }) {
 
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.gokeys.in';
 
   const [comments, setComments] = useState([]);
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
@@ -36,7 +36,6 @@ export default function CommentSection({ blogSlug }) {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Handle form submission
   const handleSubmit = async (e) => {
   e.preventDefault();
   setIsSubmitting(true);
@@ -56,7 +55,6 @@ export default function CommentSection({ blogSlug }) {
     });
 
     const payload = { ...formData, recaptcha_token: token };
-
     const res = await fetch(`${apiUrl}/api/blogs/${blogSlug}/comments/`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -70,9 +68,9 @@ export default function CommentSection({ blogSlug }) {
 
     const newComment = await res.json();
 
-    // Safely handle single comment object
-    const commentToAdd = Array.isArray(newComment) ? newComment[0] : newComment;
-    setComments((prev) => [commentToAdd, ...prev]);
+    if (newComment && typeof newComment === 'object') {
+      setComments((prev) => [newComment, ...prev]);
+    }
 
     setSuccessMessage('Comment submitted! It will appear after approval.');
     setFormData({ name: '', email: '', message: '' });
@@ -83,7 +81,6 @@ export default function CommentSection({ blogSlug }) {
     setIsSubmitting(false);
   }
 };
-
   return (
     <section className="mt-12">
       <h2 className="text-2xl font-semibold text-gray-900 mb-6">Comments</h2>
