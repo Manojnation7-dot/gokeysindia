@@ -18,7 +18,7 @@ export async function generateMetadata({ params }) {
   }
 
   return buildMetadata({
-    title: tour.name || "Amazing Tour",
+    title: tour.meta_title || "Amazing Tour",
     description:
       tour.meta_description ||
       `Explore ${tour.name} with Gokeys Travel — ${tour.duration_days} days of unforgettable adventure!`,

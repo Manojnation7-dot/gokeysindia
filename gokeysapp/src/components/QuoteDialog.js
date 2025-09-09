@@ -28,6 +28,8 @@ export default function QuoteDialog({
     message: "",
   });
   const [dateInputType, setDateInputType] = useState("text");
+  const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const formData = isInline ? externalFormData : internalFormData;
   const setFormData = isInline ? externalOnChange : setInternalFormData;
@@ -39,13 +41,65 @@ export default function QuoteDialog({
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
+    setError(null);
 
     const finalPrice = isPriceOnRequest(packagePrice)
       ? "Price on Request"
       : packagePrice?.discount_price || packagePrice?.price || null;
 
     try {
-      const csrfToken = getCSRFToken(); // 🍪 grab token from cookies
+      const siteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
+      if (!siteKey) {
+        console.error("reCAPTCHA site key missing.");
+        setError("reCAPTCHA configuration error. Please try again later.");
+        return;
+      }
+
+      // Wait for grecaptcha to load (retry mechanism)
+      const waitForGrecaptcha = () =>
+        new Promise((resolve, reject) => {
+          let attempts = 0;
+          const maxAttempts = 10;
+          const check = () => {
+            if (window.grecaptcha) {
+              resolve(window.grecaptcha);
+            } else if (attempts < maxAttempts) {
+              attempts++;
+              setTimeout(check, 500);
+            } else {
+              reject(new Error("reCAPTCHA failed to load"));
+            }
+          };
+          check();
+        });
+
+      let grecaptcha;
+      try {
+        grecaptcha = await waitForGrecaptcha();
+      } catch (err) {
+        setError("Failed to load reCAPTCHA. Please check your connection.");
+        return;
+      }
+
+      // Generate token
+      let recaptchaToken;
+      try {
+        recaptchaToken = await new Promise((resolve, reject) => {
+          grecaptcha.ready(() => {
+            grecaptcha
+              .execute(siteKey, { action: "submit_quote" })
+              .then((token) => resolve(token))
+              .catch((err) => reject(err));
+          });
+        });
+      } catch (err) {
+        console.error("Token generation failed:", err);
+        setError("reCAPTCHA verification failed. Please try again.");
+        return;
+      }
+
+      const csrfToken = getCSRFToken();
 
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/tour-enquiries/`, {
         method: "POST",
@@ -55,20 +109,21 @@ export default function QuoteDialog({
         },
         credentials: "include",
         body: JSON.stringify({
-        tour_name: tourName,
-        package_type: packageType,
-        package_price: finalPrice,
-        name: formData.name,
-        email: formData.email,
-        contact_no: formData.contactNo,
-        total_persons: parseInt(formData.totalPersons || "0", 10),
-        travel_date: formData.travelDate, // Ensure this is in YYYY-MM-DD
-        message: formData.message,
-      }),
+          tour_name: tourName,
+          package_type: packageType,
+          package_price: finalPrice,
+          name: formData.name,
+          email: formData.email,
+          contact_no: formData.contactNo,
+          total_persons: parseInt(formData.totalPersons || "0", 10),
+          travel_date: formData.travelDate,
+          message: formData.message,
+          recaptcha_token: recaptchaToken, // ✅ attach reCAPTCHA token
+        }),
       });
 
       if (res.ok) {
-        console.log("Enquiry submitted");
+        console.log("Quote enquiry submitted successfully");
         if (!isInline) {
           setInternalFormData({
             name: "",
@@ -83,15 +138,20 @@ export default function QuoteDialog({
         }
         if (externalOnSubmit) externalOnSubmit(formData);
       } else {
-        console.error("Failed to submit enquiry");
+        const errorData = await res.json().catch(() => ({ error: "Unknown error" }));
+        setError(`Failed to submit: ${errorData.error || "Please try again."}`);
       }
     } catch (err) {
       console.error("Error:", err);
+      setError("Something went wrong. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const FormFields = (
     <div className="space-y-4">
+      {error && <div className="text-red-600 text-sm">{error}</div>}
       <input
         type="text"
         name="name"
@@ -153,18 +213,25 @@ export default function QuoteDialog({
       {showSubmitButton && (
         <motion.button
           type="submit"
-          className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-2.5 rounded-lg font-semibold hover:from-blue-700 hover:to-indigo-700"
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
+          disabled={isLoading}
+          className={`w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-2.5 rounded-lg font-semibold ${
+            isLoading ? "opacity-50 cursor-not-allowed" : "hover:from-blue-700 hover:to-indigo-700"
+          }`}
+          whileHover={{ scale: isLoading ? 1 : 1.02 }}
+          whileTap={{ scale: isLoading ? 1 : 0.98 }}
         >
-          Get a Quote Now
+          {isLoading ? "Submitting..." : "Get a Quote Now"}
         </motion.button>
       )}
     </div>
   );
 
   const FormContent = (
-    <div className={`space-y-4 ${!isInline && "p-6 bg-white rounded-2xl shadow-xl border relative"}`}>
+    <div
+      className={`space-y-4 ${
+        !isInline && "p-6 bg-white rounded-2xl shadow-xl border relative"
+      }`}
+    >
       {!isInline && (
         <>
           <motion.button
@@ -179,7 +246,11 @@ export default function QuoteDialog({
           <div className="flex items-start gap-3 mb-4 p-3 bg-blue-50 rounded-lg">
             <div className="relative w-16 h-16 flex-shrink-0">
               <img
-                src={tourImage?.optimized_card || tourImage?.image || "https://via.placeholder.com/60"}
+                src={
+                  tourImage?.optimized_card ||
+                  tourImage?.image ||
+                  "https://via.placeholder.com/60"
+                }
                 alt={`${tourName} thumbnail`}
                 className="w-full h-full object-cover rounded-lg shadow-sm"
                 loading="lazy"

@@ -96,41 +96,52 @@ useEffect(() => {
     // Add API call or state update for likes if needed
   };
 
- const handleSubmit = async (e) => {
+const handleSubmit = async (e) => {
   e.preventDefault();
   setLoading(true);
 
-  const formData = new FormData();
-  formData.append('name', form.name || 'Anonymous');
-  formData.append('email', form.email || '');
-  formData.append('travel_month', form.travel_month || '');
-  formData.append('comment', form.comment);
-  formData.append('title', form.title);
-  formData.append('rating', form.rating);
-  form.images.forEach((image) => {
-    formData.append('images', image);
-  });
-
   try {
-    const csrfToken = getCSRFToken(); // 👈 Get token from helper
+    // ✅ 1. Request token from Google
+    const token = await new Promise((resolve, reject) => {
+      if (!window.grecaptcha) return reject(new Error("reCAPTCHA not loaded"));
+      window.grecaptcha.ready(() => {
+        window.grecaptcha.execute(process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY, { action: "submit_review" })
+          .then(resolve)
+          .catch(reject);
+      });
+    });
+
+    // ✅ 2. Build FormData as before
+    const formData = new FormData();
+    formData.append("name", form.name || "Anonymous");
+    formData.append("email", form.email || "");
+    formData.append("travel_month", form.travel_month || "");
+    formData.append("comment", form.comment);
+    formData.append("title", form.title);
+    formData.append("rating", form.rating);
+    form.images.forEach((image) => {
+      formData.append("images", image);
+    });
+    formData.append("recaptcha_token", token); // 👈 send reCAPTCHA token
+
+    // ✅ 3. Submit to API
+    const csrfToken = getCSRFToken();
     const url = `${process.env.NEXT_PUBLIC_API_URL}/api/${contentType}/${objectSlug}/reviews/`;
     const res = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'X-CSRFToken': csrfToken, // 👈 Include CSRF header
-      },
-      credentials: 'include', // 👈 Ensure cookies are sent
+      method: "POST",
+      headers: { "X-CSRFToken": csrfToken },
+      credentials: "include",
       body: formData,
     });
 
     if (res.ok) {
       setSubmitted(true);
       setForm({
-        name: '',
-        email: '',
-        travel_month: '',
-        comment: '',
-        title: '',
+        name: "",
+        email: "",
+        travel_month: "",
+        comment: "",
+        title: "",
         rating: 4,
         images: [],
       });
@@ -139,12 +150,11 @@ useEffect(() => {
       setReviews((prev) => [data, ...prev]);
     } else {
       const errorText = await res.text();
-      console.error('Submission failed:', res.status, res.statusText, errorText);
       alert(`Submission failed: ${errorText || res.statusText}`);
     }
   } catch (err) {
-    console.error('Submission error:', err);
-    alert('An error occurred: ' + err.message);
+    console.error("Submission error:", err);
+    alert("An error occurred: " + err.message);
   } finally {
     setLoading(false);
   }

@@ -8,7 +8,7 @@ export async function generateMetadata({ params }) {
   const destination = await fetchData("destinations", slug);
 
   return buildMetadata({
-    title: `${destination?.name || "Destination"}`,
+    title: `${destination?.meta_title || "Destination"}`,
     description:
       destination?.meta_description ||
       `Discover ${destination?.name || "this destination"} with travel tips, tours, and hotels.`,

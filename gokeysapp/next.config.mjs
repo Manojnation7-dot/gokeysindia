@@ -30,18 +30,22 @@ const nextConfig = {
     ],
   },
 
-  async rewrites() {
-  return [
-    {
-      source: '/trip/:slug*',
-      destination: 'https://api.gokeys.in/trip/:slug*', // Let Django handle redirection
-    },
-    {
-      source: '/:slug',
-      destination: 'https://api.gokeys.in/:slug', // Existing rewrite
-    },
-  ];
-}
+
+  async redirects() {
+    return [
+      {
+        source: '/trip/:slug*',
+        destination: '/tours/:slug*',
+        permanent: true, // This is a 301 redirect
+      },
+      {
+        source: '/:slug',
+        destination: '/blog/:slug',
+        permanent: true,
+      },
+      // ... add all other redirects here
+    ];
+  },
 };
 
 export default nextConfig;

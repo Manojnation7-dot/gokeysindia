@@ -11,9 +11,11 @@ const Footer = () => {
             alt="Logo"
             className="mb-4 w-32"
           />
-          <p className="text-lg">Near Bus Stand, Haridwar, Uttarakhand, India</p>
+          <p className="text-lg">4th Shop, Zila Panchayat Market, Railway Road, Haridwwar, Uttarakhand, India</p>
           <p className="text-lg">gokeysindia@gmail.com</p>
+          <p className="text-lg">+91-9045916770</p>
           <p className="text-lg">+91-7830718687</p>
+          <p className="text-lg">+91-7830718680</p>
         </div>
 
         {/* Core Pages Section */}
