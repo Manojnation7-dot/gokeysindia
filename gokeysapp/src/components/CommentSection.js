@@ -37,49 +37,51 @@ export default function CommentSection({ blogSlug }) {
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  setIsSubmitting(true);
-  setSuccessMessage('');
-  setErrorMessage('');
+    e.preventDefault();
+    setIsSubmitting(true);
+    setSuccessMessage('');
+    setErrorMessage('');
 
-  try {
-    if (!window.grecaptcha) throw new Error('reCAPTCHA not loaded');
+    try {
+        if (!window.grecaptcha) throw new Error('reCAPTCHA not loaded');
 
-    const token = await new Promise((resolve, reject) => {
-      window.grecaptcha.ready(() => {
-        window.grecaptcha
-          .execute(process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY, { action: 'submit_comment' })
-          .then(resolve)
-          .catch(reject);
-      });
-    });
+        const token = await new Promise((resolve, reject) => {
+            window.grecaptcha.ready(() => {
+                window.grecaptcha
+                    .execute(process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY, { action: 'submit_comment' })
+                    .then(resolve)
+                    .catch(reject);
+            });
+        });
 
-    const payload = { ...formData, recaptcha_token: token };
-    const res = await fetch(`${apiUrl}/api/blogs/${blogSlug}/comments/`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    });
+        const payload = { ...formData, recaptcha_token: token };
+        const res = await fetch(`${apiUrl}/api/blogs/${blogSlug}/comments/`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+        });
 
-    if (!res.ok) {
-      const errorText = await res.text();
-      throw new Error(errorText || 'Failed to submit comment');
+        if (!res.ok) {
+            // Check if the error response is JSON
+            const errorData = await res.json().catch(() => ({}));
+            const backendErrorMessage = errorData.recaptcha?.[0] || errorData.detail || 'Failed to submit comment';
+            throw new Error(backendErrorMessage);
+        }
+
+        const newComment = await res.json();
+        if (newComment && typeof newComment === 'object') {
+            // Note: If you want to show the pending comment, add it to the list.
+            // setComments((prev) => [newComment, ...prev]);
+        }
+        
+        setSuccessMessage('Comment submitted! It will appear after approval.');
+        setFormData({ name: '', email: '', message: '' });
+    } catch (err) {
+        console.error('Submission error:', err);
+        setErrorMessage(err.message || 'Error submitting comment. Please try again.');
+    } finally {
+        setIsSubmitting(false);
     }
-
-    const newComment = await res.json();
-
-    if (newComment && typeof newComment === 'object') {
-      setComments((prev) => [newComment, ...prev]);
-    }
-
-    setSuccessMessage('Comment submitted! It will appear after approval.');
-    setFormData({ name: '', email: '', message: '' });
-  } catch (err) {
-    console.error('Submission error:', err);
-    setErrorMessage('Error submitting comment. Please try again.');
-  } finally {
-    setIsSubmitting(false);
-  }
 };
   return (
     <section className="mt-12">
