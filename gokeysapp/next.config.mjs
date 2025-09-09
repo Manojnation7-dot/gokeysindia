@@ -39,7 +39,7 @@ const nextConfig = {
         permanent: true, // This is a 301 redirect
       },
       {
-        source: '/:slug',
+        source: '/:slug((?!blog$).*)',
         destination: '/blog/:slug',
         permanent: true,
       },
