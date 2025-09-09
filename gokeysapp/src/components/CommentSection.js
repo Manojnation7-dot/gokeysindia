@@ -10,27 +10,27 @@ export default function CommentSection({ blogSlug }) {
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
-
   // Fetch approved comments
   useEffect(() => {
     const fetchComments = async () => {
       try {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
         const res = await fetch(`${apiUrl}/api/blogs/${blogSlug}/comments/`);
-        if (!res.ok) throw new Error('Failed to fetch comments');
+        if (!res.ok) {
+          throw new Error('Failed to fetch comments');
+        }
         const data = await res.json();
         setComments(data);
       } catch (error) {
-        console.error(error);
+        console.error('Error fetching comments:', error);
       }
     };
     fetchComments();
   }, [blogSlug]);
 
-  // Handle input changes
+  // Handle form input changes
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-    setErrorMessage('');
   };
 
   // Handle form submission
@@ -41,40 +41,19 @@ export default function CommentSection({ blogSlug }) {
     setErrorMessage('');
 
     try {
-      // 1️⃣ Get reCAPTCHA token
-      const token = await new Promise((resolve, reject) => {
-        if (!window.grecaptcha) return reject(new Error('reCAPTCHA not loaded'));
-        window.grecaptcha.ready(() => {
-          window.grecaptcha
-            .execute(process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY, { action: 'submit_comment' })
-            .then(resolve)
-            .catch(reject);
-        });
-      });
-
-      // 2️⃣ Send POST request
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
       const res = await fetch(`${apiUrl}/api/blogs/${blogSlug}/comments/`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
-        body: JSON.stringify({ ...formData, recaptcha_token: token }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
       });
-
       if (!res.ok) {
-        const errorData = await res.json().catch(() => null);
-        const message = errorData?.recaptcha?.[0] || errorData?.detail || 'Failed to submit comment';
-        throw new Error(message);
+        throw new Error('Failed to submit comment');
       }
-
-      const newComment = await res.json();
-      setComments((prev) => [newComment, ...prev]);
       setSuccessMessage('Comment submitted! It will appear after approval.');
       setFormData({ name: '', email: '', message: '' });
     } catch (error) {
-      console.error(error);
-      setErrorMessage(error.message || 'Error submitting comment. Please try again.');
+      setErrorMessage('Error submitting comment. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -91,7 +70,7 @@ export default function CommentSection({ blogSlug }) {
             <div key={comment.id} className="bg-white p-4 rounded-lg shadow-md">
               <div className="flex items-center mb-2">
                 <Image
-                  src="https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_1280.png"
+                  src="https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_1280.png" // Replace with dynamic avatar if available
                   alt="Avatar"
                   width={40}
                   height={40}
@@ -122,33 +101,48 @@ export default function CommentSection({ blogSlug }) {
         {successMessage && <p className="text-green-600 mb-4">{successMessage}</p>}
         {errorMessage && <p className="text-red-600 mb-4">{errorMessage}</p>}
         <form onSubmit={handleSubmit} className="space-y-4">
-          <input
-            type="text"
-            name="name"
-            placeholder="Name"
-            value={formData.name}
-            onChange={handleChange}
-            required
-            className="w-full p-2 border border-gray-300 rounded"
-          />
-          <input
-            type="email"
-            name="email"
-            placeholder="Email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-            className="w-full p-2 border border-gray-300 rounded"
-          />
-          <textarea
-            name="message"
-            placeholder="Comment"
-            value={formData.message}
-            onChange={handleChange}
-            required
-            className="w-full p-2 border border-gray-300 rounded"
-            rows={4}
-          />
+          <div>
+            <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+              Name
+            </label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              required
+              className="w-full p-2 border border-gray-300 rounded focus:ring-green-500 focus:border-green-500"
+            />
+          </div>
+          <div>
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+              Email
+            </label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              required
+              className="w-full p-2 border border-gray-300 rounded focus:ring-green-500 focus:border-green-500"
+            />
+          </div>
+          <div>
+            <label htmlFor="message" className="block text-sm font-medium text-gray-700">
+              Message
+            </label>
+            <textarea
+              id="message"
+              name="message"
+              value={formData.message}
+              onChange={handleChange}
+              required
+              rows="4"
+              className="w-full p-2 border border-gray-300 rounded focus:ring-green-500 focus:border-green-500"
+            />
+          </div>
           <button
             type="submit"
             disabled={isSubmitting}
