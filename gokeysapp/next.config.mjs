@@ -30,22 +30,21 @@ const nextConfig = {
     ],
   },
 
-
-  async redirects() {
-    return [
-      {
-        source: '/trip/:slug*',
-        destination: '/tours/:slug*',
-        permanent: true, // This is a 301 redirect
-      },
-      {
-        source: '/:slug((?!blog$).*)',
-        destination: '/blog/:slug',
-        permanent: true,
-      },
-      // ... add all other redirects here
-    ];
-  },
+async redirects() {
+  return [
+    {
+      source: '/trip/:slug*',
+      destination: '/tours/:slug*',
+      permanent: true,
+    },
+    {
+      // match only single-segment slugs (not empty, not blog, not tours, not group-tour)
+      source: '/:slug((?!blog$|tours$|group-tour$).+)',
+      destination: '/blog/:slug',
+      permanent: true,
+    },
+  ];
+},
 };
 
 export default nextConfig;
