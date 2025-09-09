@@ -41,15 +41,15 @@ export default function CommentSection({ blogSlug }) {
     setErrorMessage("");
 
     try {
-      const csrfToken = getCSRFToken();
+      // const csrfToken = getCSRFToken();
 
       const res = await fetch(`${apiUrl}/api/blogs/${blogSlug}/comments/`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-CSRFToken": csrfToken,
-        },
-        credentials: "include",
+        // headers: {
+        //   "Content-Type": "application/json",
+        //   "X-CSRFToken": csrfToken,
+        // },
+        // credentials: "include",
         body: JSON.stringify(formData),
       });
 
