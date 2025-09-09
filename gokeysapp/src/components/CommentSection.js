@@ -40,14 +40,16 @@ export default function CommentSection({ blogSlug }) {
     setSuccessMessage("");
     setErrorMessage("");
 
-    try {
-      // const csrfToken = getCSRFToken();
-
-     const res = await fetch(`${apiUrl}/api/blogs/${blogSlug}/comments/`, {
+   try {
+    const csrfToken = await getCSRFToken();
+    const res = await fetch(`${apiUrl}/api/blogs/${blogSlug}/comments/`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": csrfToken,
+      },
       body: JSON.stringify(formData),
-});
+    });
 
       if (!res.ok) throw new Error("Failed to submit comment");
 
