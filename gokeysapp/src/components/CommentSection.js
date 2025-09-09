@@ -4,6 +4,9 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 
 export default function CommentSection({ blogSlug }) {
+
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+  
   const [comments, setComments] = useState([]);
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -14,7 +17,7 @@ export default function CommentSection({ blogSlug }) {
   useEffect(() => {
     const fetchComments = async () => {
       try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+        
         const res = await fetch(`${apiUrl}/api/blogs/${blogSlug}/comments/`);
         if (!res.ok) {
           throw new Error('Failed to fetch comments');
