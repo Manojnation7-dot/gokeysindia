@@ -1,8 +1,7 @@
-"use client";
+'use client';
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { getCSRFToken } from "@/lib/getCSRFToken";
 
 export default function CommentSection({ blogSlug }) {
   const [comments, setComments] = useState([]);
@@ -28,7 +27,7 @@ export default function CommentSection({ blogSlug }) {
     fetchComments();
   }, [blogSlug]);
 
-  // Handle form input changes
+  // Handle input changes
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -40,22 +39,42 @@ export default function CommentSection({ blogSlug }) {
     setSuccessMessage("");
     setErrorMessage("");
 
-   try {
-    const csrfToken = await getCSRFToken();
-    const res = await fetch(`${apiUrl}/api/blogs/${blogSlug}/comments/`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-CSRFToken": csrfToken,
-      },
-      body: JSON.stringify(formData),
-    });
+    try {
+      // 1️⃣ Get Google reCAPTCHA token
+      const token = await new Promise((resolve, reject) => {
+        if (!window.grecaptcha) return reject(new Error("reCAPTCHA not loaded"));
+        window.grecaptcha.ready(() => {
+          window.grecaptcha.execute(process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY, { action: "submit_comment" })
+            .then(resolve)
+            .catch(reject);
+        });
+      });
 
-      if (!res.ok) throw new Error("Failed to submit comment");
+      // 2️⃣ Build FormData
+      const formPayload = new FormData();
+      formPayload.append("name", formData.name);
+      formPayload.append("email", formData.email);
+      formPayload.append("message", formData.message);
+      formPayload.append("recaptcha_token", token);
 
+      // 3️⃣ Send to API
+      const res = await fetch(`${apiUrl}/api/blogs/${blogSlug}/comments/`, {
+        method: "POST",
+        body: formPayload, // ✅ FormData, no JSON
+      });
+
+      if (!res.ok) {
+        const errorText = await res.text();
+        throw new Error(errorText || "Failed to submit comment");
+      }
+
+      const newComment = await res.json();
+      setComments((prev) => [newComment, ...prev]);
       setSuccessMessage("Comment submitted! It will appear after approval.");
       setFormData({ name: "", email: "", message: "" });
-    } catch (error) {
+
+    } catch (err) {
+      console.error("Submission error:", err);
       setErrorMessage("Error submitting comment. Please try again.");
     } finally {
       setIsSubmitting(false);
@@ -103,6 +122,7 @@ export default function CommentSection({ blogSlug }) {
         <h3 className="text-xl font-semibold text-gray-900 mb-4">Leave a Comment</h3>
         {successMessage && <p className="text-green-600 mb-4">{successMessage}</p>}
         {errorMessage && <p className="text-red-600 mb-4">{errorMessage}</p>}
+
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label htmlFor="name" className="block text-sm font-medium text-gray-700">
@@ -149,9 +169,7 @@ export default function CommentSection({ blogSlug }) {
           <button
             type="submit"
             disabled={isSubmitting}
-            className={`w-full bg-green-700 text-white py-2 rounded hover:bg-green-800 ${
-              isSubmitting ? "opacity-50 cursor-not-allowed" : ""
-            }`}
+            className={`w-full bg-green-700 text-white py-2 rounded hover:bg-green-800 ${isSubmitting ? "opacity-50 cursor-not-allowed" : ""}`}
           >
             {isSubmitting ? "Submitting..." : "Submit Comment"}
           </button>
