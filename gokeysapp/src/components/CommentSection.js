@@ -6,7 +6,7 @@ import Image from 'next/image';
 export default function CommentSection({ blogSlug }) {
 
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
-  
+
   const [comments, setComments] = useState([]);
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -38,46 +38,51 @@ export default function CommentSection({ blogSlug }) {
 
   // Handle form submission
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    setSuccessMessage('');
-    setErrorMessage('');
+  e.preventDefault();
+  setIsSubmitting(true);
+  setSuccessMessage('');
+  setErrorMessage('');
 
-     try {
-      if (!window.grecaptcha) throw new Error('reCAPTCHA not loaded');
-      const token = await new Promise((resolve, reject) => {
-        window.grecaptcha.ready(() => {
-          window.grecaptcha
-            .execute(process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY, { action: 'submit_comment' })
-            .then(resolve)
-            .catch(reject);
-        });
+  try {
+    if (!window.grecaptcha) throw new Error('reCAPTCHA not loaded');
+
+    const token = await new Promise((resolve, reject) => {
+      window.grecaptcha.ready(() => {
+        window.grecaptcha
+          .execute(process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY, { action: 'submit_comment' })
+          .then(resolve)
+          .catch(reject);
       });
+    });
 
-      const payload = { ...formData, recaptcha_token: token };
+    const payload = { ...formData, recaptcha_token: token };
 
-      const res = await fetch(`${apiUrl}/api/blogs/${blogSlug}/comments/`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
+    const res = await fetch(`${apiUrl}/api/blogs/${blogSlug}/comments/`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
 
-      if (!res.ok) {
-        const errorText = await res.text();
-        throw new Error(errorText || 'Failed to submit comment');
-      }
-
-      const newComment = await res.json();
-      setComments((prev) => [newComment, ...prev]);
-      setSuccessMessage('Comment submitted! It will appear after approval.');
-      setFormData({ name: '', email: '', message: '' });
-    } catch (err) {
-      console.error('Submission error:', err);
-      setErrorMessage('Error submitting comment. Please try again.');
-    } finally {
-      setIsSubmitting(false);
+    if (!res.ok) {
+      const errorText = await res.text();
+      throw new Error(errorText || 'Failed to submit comment');
     }
-  };
+
+    const newComment = await res.json();
+
+    // Safely handle single comment object
+    const commentToAdd = Array.isArray(newComment) ? newComment[0] : newComment;
+    setComments((prev) => [commentToAdd, ...prev]);
+
+    setSuccessMessage('Comment submitted! It will appear after approval.');
+    setFormData({ name: '', email: '', message: '' });
+  } catch (err) {
+    console.error('Submission error:', err);
+    setErrorMessage('Error submitting comment. Please try again.');
+  } finally {
+    setIsSubmitting(false);
+  }
+};
 
   return (
     <section className="mt-12">
