@@ -11,6 +11,7 @@ import ReviewSection from "@/components/ReviewSection";
 import EnquiryForm from "@/components/EnquiryForm";
 import TourItineraryMain from "@/components/TourItineraryMain";
 import { getCSRFToken } from "@/lib/getCSRFToken";
+import ImageGallery from "@/components/ImageGallery";
 
 import {
   CalendarIcon,
@@ -212,58 +213,69 @@ const faqSchema = tourData.faqs?.length > 0 ? buildFAQSchema(tourData.faqs) : nu
       <Header />
       <div className="text-gray-800 bg-white">
         {/* Hero Banner */}
-       
-          <section className="relative h-[70vh] w-full overflow-hidden">
-            <Image
-              src={tourData.featured_image?.optimized_banner || tourData.featured_image?.image}
-              alt={`${tourData.title} Banner`}
-              fill
-              style={{ objectFit: "cover" }}
-              className="z-0"
-              priority
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-black/30 z-[5]"></div>
-            <div className="absolute inset-0 flex items-end pb-16 md:items-center justify-center z-[6]">
-              <div className="text-center text-white px-4 max-w-4xl">
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6 }}
-                >
-                  <h1 className="text-4xl md:text-6xl font-bold mb-2">{tourData.name}</h1>
-                  <p className="text-lg md:text-2xl mb-6">
-                    {`${tourData.duration_nights ? `${tourData.duration_nights} Nights ` : ""}${
-                      tourData.duration_days ? `${tourData.duration_days} Days` : ""
-                    }`}{" "}
-                    • <span className="line-through">{formatPrice(selectedPackage?.price)}</span>{" "}
-                    <span className="font-semibold">{formatPrice(basePrice)}</span>
-                    {getSavings(selectedPackage) && (
-                      <span className="text-sm text-green-400"> Save {getSavings(selectedPackage)}</span>
-                    )}
-                  </p>
-                  <div className="flex gap-4 justify-center">
-                    <button
-                      onClick={() => setIsEnquiryOpen(true)}
-                      className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all font-medium shadow-lg hover:shadow-xl"
-                    >
-                      Send Query
-                    </button>
-                    <button
-                      onClick={generatePDF}
-                      disabled={!tourData}
-                      className={`px-6 py-3 rounded-lg font-medium transition-all ${
-                        !tourData
-                          ? "bg-gray-400 cursor-not-allowed text-white"
-                          : "bg-white/20 text-white hover:bg-white/30 border border-white/30"
-                      }`}
-                    >
-                      Download Itinerary
-                    </button>
-                  </div>
-                </motion.div>
-              </div>
+              
+        <div className="text-gray-800 bg-white">
+  {/* Full-width Image Gallery */}
+  <div className="w-full mt-4">
+    <ImageGallery
+      images={[
+        tourData.featured_image?.optimized_banner || tourData.featured_image?.image,
+        ...(tourData.gallery_images?.map(img => img.optimized || img.image) || [])
+      ]}
+    />
+  </div>
+
+  {/* Title + Pricing + CTAs */}
+  <div className="max-w-6xl mx-auto px-4 py-8">
+    <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 md:p-8 shadow-lg">
+      <div className="grid md:grid-cols-3 gap-6 items-center">
+        {/* Left: Title + Pricing */}
+        <div className="md:col-span-2 text-center md:text-left">
+          <h1 className="text-3xl md:text-4xl font-bold mb-3 text-gray-900">
+            {tourData.name}
+          </h1>
+
+          {/* Pricing Card */}
+          <div className="inline-block bg-white rounded-xl p-4 shadow-md">
+            <div className="flex items-baseline gap-3">
+              <span className="text-gray-400 line-through text-lg">
+                {formatPrice(selectedPackage?.price)}
+              </span>
+              <span className="text-3xl font-bold text-blue-600">
+                {formatPrice(basePrice)}
+              </span>
             </div>
-          </section>
+            {getSavings(selectedPackage) && (
+              <div className="mt-2 inline-block bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-semibold">
+                💰 Save {getSavings(selectedPackage)}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Right: CTA buttons */}
+        <div className="flex flex-col gap-3 justify-center md:justify-end">
+          <button
+            onClick={() => setIsEnquiryOpen(true)}   
+            className="px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl hover:from-blue-700 hover:to-indigo-700 shadow-lg transform hover:scale-105 transition-all duration-200 font-semibold"
+          >
+            ✨ Send Query
+          </button>
+          <button
+            onClick={generatePDF}   
+            className="px-6 py-3 bg-white border-2 border-gray-200 text-gray-800 rounded-xl hover:bg-gray-50 shadow-md transform hover:scale-105 transition-all duration-200 font-semibold"
+          >
+            📄 Download Itinerary
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
 
         {/* Quick Facts Bar */}
         <div className="bg-blue-600 text-white py-4">
