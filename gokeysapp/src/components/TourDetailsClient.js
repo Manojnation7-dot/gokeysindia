@@ -227,7 +227,7 @@ const faqSchema = tourData.faqs?.length > 0 ? buildFAQSchema(tourData.faqs) : nu
 
   {/* Title + Pricing + CTAs */}
   <div className="max-w-6xl mx-auto px-4 py-8">
-    <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 md:p-8 shadow-lg">
+    <div className="bg-gradient-to-r from-blue-50 to-brand-50 rounded-2xl p-6 md:p-8 shadow-lg">
       <div className="grid md:grid-cols-3 gap-6 items-center">
         {/* Left: Title + Pricing */}
         <div className="md:col-span-2 text-center md:text-left">
@@ -241,7 +241,7 @@ const faqSchema = tourData.faqs?.length > 0 ? buildFAQSchema(tourData.faqs) : nu
               <span className="text-gray-400 line-through text-lg">
                 {formatPrice(selectedPackage?.price)}
               </span>
-              <span className="text-3xl font-bold text-blue-600">
+              <span className="text-3xl font-bold text-brand-600">
                 {formatPrice(basePrice)}
               </span>
             </div>
@@ -257,7 +257,7 @@ const faqSchema = tourData.faqs?.length > 0 ? buildFAQSchema(tourData.faqs) : nu
         <div className="flex flex-col gap-3 justify-center md:justify-end">
           <button
             onClick={() => setIsEnquiryOpen(true)}   
-            className="px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl hover:from-blue-700 hover:to-indigo-700 shadow-lg transform hover:scale-105 transition-all duration-200 font-semibold"
+            className="px-6 py-3 bg-gradient-to-r from-brand-600 to-brand-600 text-white rounded-xl hover:from-brand-700 hover:to-brand-700 shadow-lg transform hover:scale-105 transition-all duration-200 font-semibold"
           >
             ✨ Send Query
           </button>
@@ -278,7 +278,7 @@ const faqSchema = tourData.faqs?.length > 0 ? buildFAQSchema(tourData.faqs) : nu
 
 
         {/* Quick Facts Bar */}
-        <div className="bg-blue-600 text-white py-4">
+        <div className="bg-brand-600 text-white py-4">
           <div className="max-w-6xl mx-auto px-4">
             <div className="flex flex-wrap justify-between items-center gap-4">
               <div className="flex items-center gap-2">
@@ -317,7 +317,7 @@ const faqSchema = tourData.faqs?.length > 0 ? buildFAQSchema(tourData.faqs) : nu
                 key={tab}
                 className={`py-3 px-6 font-medium ${
                   activeTab === tab
-                    ? "text-blue-600 border-b-2 border-blue-600"
+                    ? "text-brand-600 border-b-2 border-brand-600"
                     : "text-gray-500 hover:text-gray-700"
                 }`}
                 onClick={() => setActiveTab(tab)}
@@ -349,7 +349,7 @@ const faqSchema = tourData.faqs?.length > 0 ? buildFAQSchema(tourData.faqs) : nu
                           onClick={() => handlePackageSelect(pkg)}
                           className={`px-4 py-2 rounded-lg border text-center ${
                             selectedPackage?.package_type === pkg.package_type
-                              ? "bg-blue-600 text-white -ml-2"
+                              ? "bg-brand-600 text-white -ml-2"
                               : "bg-white text-black hover:bg-gray-100"
                           }`}
                         >
@@ -377,7 +377,7 @@ const faqSchema = tourData.faqs?.length > 0 ? buildFAQSchema(tourData.faqs) : nu
                     <div className="grid sm:grid-cols-2 gap-4">
                       {(tourData.highlights || []).map((highlight, index) => (
                         <div key={index} className="flex items-start gap-3">
-                          <div className="mt-1 text-blue-600">
+                          <div className="mt-1 text-brand-600">
                             <CheckCircleIcon />
                           </div>
                           <span className="text-gray-700">{highlight.highlight}</span>
@@ -466,7 +466,7 @@ const faqSchema = tourData.faqs?.length > 0 ? buildFAQSchema(tourData.faqs) : nu
                 <div className="pt-4 mt-4 border-t border-gray-200">
                   <button
                     type="submit"
-                    className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-medium transition-all"
+                    className="w-full bg-brand-600 hover:bg-brand-700 text-white py-3 rounded-lg font-medium transition-all"
                   >
                     Enquire Now
                   </button>
@@ -517,7 +517,7 @@ const faqSchema = tourData.faqs?.length > 0 ? buildFAQSchema(tourData.faqs) : nu
         </section>
 
         {/* CTA Section */}
-        <div className="sticky bottom-0 w-full bg-gradient-to-r from-blue-600 to-blue-800 text-white py-4 flex justify-between items-center px-4 md:px-16 z-50 shadow-lg">
+        <div className="sticky bottom-0 w-full bg-gradient-to-r from-brand-600 to-brand-800 text-white py-4 flex justify-between items-center px-4 md:px-16 z-50 shadow-lg">
           <div>
             <p className="text-sm md:text-base font-medium">
               <span className="line-through">{formatPrice(selectedPackage?.price)}</span>{" "}
@@ -532,7 +532,7 @@ const faqSchema = tourData.faqs?.length > 0 ? buildFAQSchema(tourData.faqs) : nu
           </div>
           <button
             onClick={() => setIsEnquiryOpen(true)}
-            className="bg-white text-blue-600 font-semibold px-6 py-3 rounded-lg hover:bg-gray-100 transition shadow-md"
+            className="bg-white text-brand-600 font-semibold px-6 py-3 rounded-lg hover:bg-gray-100 transition shadow-md"
           >
             Send Query
           </button>

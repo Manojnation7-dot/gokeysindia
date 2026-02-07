@@ -3,133 +3,169 @@
 import { useState } from "react";
 
 export default function TourItineraryMain({ tourData }) {
-  const [openIndex, setOpenIndex] = useState(null);
+  const [openIndex, setOpenIndex] = useState(0);
 
-  const toggleAccordion = (index) => {
-    setOpenIndex(openIndex === index ? null : index);
-  };
-
-  if (!tourData || !tourData.itineraries) {
-    return <p className="text-gray-500 text-center py-8">Itinerary not available.</p>;
+  if (!tourData || !tourData.itineraries?.length) {
+    return <p className="text-gray-500 text-center py-10">Itinerary not available.</p>;
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div className="text-center mb-10">
-        <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-          Tour Itinerary
+    <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
+      {/* Heading */}
+      <div className="text-center mb-14">
+        <h2 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white">
+          Day Wise Tour Itinerary
         </h2>
-        <p className="text-gray-600 dark:text-gray-400">
-          Explore your journey day by day
+        <p className="mt-3 text-slate-600 dark:text-slate-400">
+          Explore your journey step by step
         </p>
       </div>
-      
-      <div className="relative">
-        {/* Timeline line */}
-        <div className="absolute h-full w-0.5 bg-blue-200 dark:bg-blue-900 left-6 top-4"></div>
-        
-        <div className="space-y-8">
-          {tourData.itineraries?.map((item, index) => (
-            <div key={index} className="relative pl-16">
-              {/* Timeline marker */}
-              <div className="absolute left-0 flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 text-white shadow-lg -translate-x-1/2 ring-4 ring-white dark:ring-gray-800">
-                <span className="font-bold">{index + 1}</span>
+
+      {/* Timeline */}
+      <div className="relative space-y-12">
+        {/* Main vertical line */}
+        <div className="absolute left-4 md:left-10 top-0 bottom-0 w-[2px] bg-gradient-to-b from-indigo-200 via-indigo-300 to-indigo-200 dark:from-slate-700 dark:via-slate-600 dark:to-slate-700"></div>
+
+        {tourData.itineraries.map((item, index) => {
+          const isOpen = openIndex === index;
+
+          return (
+            <div key={index} className="relative pl-12 md:pl-24">
+              {/* Day Bubble */}
+              <div
+                className={`absolute left-0 md:left-6 top-4 w-9 h-9 rounded-full border-4 border-white dark:border-slate-900 shadow flex items-center justify-center transition-all duration-300 z-10
+                ${isOpen ? "bg-indigo-600 scale-110" : "bg-slate-300 dark:bg-slate-600"}`}
+              >
+                <span className="text-[11px] font-bold text-white">
+                  D{item.day || index + 1}
+                </span>
               </div>
 
-              {/* Accordion card */}
-              <div className={`bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden transition-all duration-200 ${
-                openIndex === index ? "ring-2 ring-blue-500" : "hover:shadow-lg"
-              }`}>
-                {/* Accordion header */}
+              {/* Card */}
+              <div
+                className={`bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 overflow-hidden transition-all duration-300
+                ${isOpen ? "shadow-xl ring-2 ring-indigo-500/20" : "shadow hover:shadow-lg"}`}
+              >
+                {/* Header */}
                 <button
-                  type="button"
-                  className={`w-full flex items-center justify-between p-6 text-left ${
-                    openIndex === index ? "bg-blue-50 dark:bg-gray-700" : ""
-                  }`}
-                  onClick={() => toggleAccordion(index)}
-                  aria-expanded={openIndex === index}
-                  aria-controls={`timeline-accordion-body-${index}`}
+                  onClick={() => setOpenIndex(isOpen ? null : index)}
+                  className="w-full text-left p-6 md:p-8 flex flex-col md:flex-row md:items-center justify-between gap-4"
                 >
                   <div>
-                    <div className="flex items-center gap-3">
-                      <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
-                        {item.title}
-                      </h3>
-                      <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-blue-900 dark:text-blue-300">
-                        Day {item.day}
+                    <div className="flex items-center gap-3 mb-2">
+                      <span className="text-xs font-bold uppercase tracking-widest text-indigo-600">
+                        Day {item.day || index + 1}
                       </span>
+
+                      {item.tags?.map((tag, i) => (
+                        <span
+                          key={i}
+                          className="px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-700 text-[10px] text-slate-500 font-medium"
+                        >
+                          {tag}
+                        </span>
+                      ))}
                     </div>
-                    {openIndex !== index && (
-                      <p className="mt-1 text-sm text-gray-500 dark:text-gray-400 line-clamp-2">
-                        {item.description.replace(/<[^>]*>/g, '').substring(0, 100)}...
+
+                    <h3 className="text-xl md:text-2xl font-semibold text-slate-900 dark:text-white">
+                      {item.title}
+                    </h3>
+
+                    {item.location && (
+                      <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
+                        📍 {item.location}
                       </p>
                     )}
                   </div>
-                  <svg
-                    className={`w-5 h-5 text-gray-500 dark:text-gray-400 transition-transform duration-200 ${
-                      openIndex === index ? "transform rotate-180" : ""
-                    }`}
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M19 9l-7 7-7-7"
-                    />
-                  </svg>
+
+                  {/* Toggle */}
+                  <div
+                      className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300
+                      ${isOpen 
+                        ? "bg-indigo-600 text-white rotate-180" 
+                        : "bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300"}`}
+                    >
+                      {isOpen ? (
+                        <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 12h14" />
+                        </svg>
+                      ) : (
+                        <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 5v14m-7-7h14" />
+                        </svg>
+                      )}
+                    </div>
                 </button>
 
-                {/* Accordion content */}
+                {/* Body */}
                 <div
-                  id={`timeline-accordion-body-${index}`}
-                  className={`${openIndex === index ? "block" : "hidden"} transition-all duration-200`}
-                  aria-labelledby={`timeline-accordion-heading-${index}`}
+                  className={`grid transition-all duration-500 ease-in-out ${
+                    isOpen
+                      ? "grid-rows-[1fr] opacity-100"
+                      : "grid-rows-[0fr] opacity-0"
+                  }`}
                 >
-                  <div className="px-6 pb-6">
-                    <div
-                      className="prose prose-blue max-w-none dark:prose-invert text-gray-600 dark:text-gray-300"
-                      dangerouslySetInnerHTML={{ __html: item.description }}
-                    />
-                    
-                    {item.activities?.length > 0 && (
-                      <div className="mt-6 bg-blue-50 dark:bg-gray-700 p-4 rounded-lg border border-blue-100 dark:border-gray-600">
-                        <h4 className="font-semibold text-blue-800 dark:text-blue-300 mb-3 flex items-center">
-                          <svg
-                            className="w-5 h-5 mr-2"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth="2"
-                              d="M13 10V3L4 14h7v7l9-11h-7z"
-                            ></path>
-                          </svg>
-                          Today's Activities
-                        </h4>
-                        <ul className="space-y-2 pl-5">
-                          {item.activities.map((act, i) => (
-                            <li key={i} className="relative pl-6 text-gray-700 dark:text-gray-300">
-                              <span className="absolute left-0 top-2 w-2 h-2 bg-blue-500 rounded-full"></span>
-                              {act}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
+                  <div className="overflow-hidden border-t border-slate-100 dark:border-slate-700">
+                    <div className="p-6 md:p-8 space-y-8">
+                      {/* Description */}
+                      <div
+                        className="prose max-w-none text-slate-600 dark:text-slate-300"
+                        dangerouslySetInnerHTML={{ __html: item.description }}
+                      />
+
+                      {/* Activities */}
+                      {item.activities?.length > 0 && (
+                        <div>
+                          <h4 className="text-sm font-bold uppercase tracking-wider mb-4 text-slate-900 dark:text-white flex items-center gap-2">
+                            <span className="w-2 h-2 rounded-full bg-indigo-500"></span>
+                            Highlights & Activities
+                          </h4>
+
+                          <ul className="grid sm:grid-cols-2 gap-3">
+                            {item.activities.map((act, i) => (
+                              <li
+                                key={i}
+                                className="flex items-start gap-2 text-sm text-slate-600 dark:text-slate-400"
+                              >
+                                <span className="text-indigo-500 mt-0.5">✔</span>
+                                {act}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+
+                      {/* Meals */}
+                      {item.meals?.length > 0 && (
+                        <div>
+                          <p className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-2">
+                            Meals Included
+                          </p>
+                          <div className="flex flex-wrap gap-2">
+                            {["Breakfast", "Lunch", "Dinner"].map((meal) => (
+                              <span
+                                key={meal}
+                                className={`px-3 py-1 rounded-full text-xs border
+                                ${
+                                  item.meals.includes(meal)
+                                    ? "bg-indigo-50 border-indigo-200 text-indigo-600"
+                                    : "bg-slate-50 border-slate-200 text-slate-400"
+                                }`}
+                              >
+                                {meal}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          ))}
-        </div>
+          );
+        })}
       </div>
-    </div>
+    </section>
   );
 }

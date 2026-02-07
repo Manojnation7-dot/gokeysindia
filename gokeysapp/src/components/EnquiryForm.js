@@ -130,6 +130,15 @@ export default function EnquiryForm({
 
       if (res.ok) {
         console.log("Enquiry submitted successfully");
+        // GOOGLE ADS / GTM CONVERSION EVENT
+          if (typeof window !== "undefined") {
+            window.dataLayer = window.dataLayer || [];
+            window.dataLayer.push({
+              event: "gokeys_enquiry_submit",
+              tour_name: tourName || "",
+              package_type: packageType || ""
+            });
+          }
         setError(null);
         alert("Your enquiry has been submitted successfully!");
         if (!isInline) {

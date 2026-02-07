@@ -96,8 +96,9 @@ const breadcrumbSchema = buildBreadcrumbList([
           <div>
             <h1 className="text-4xl font-bold text-green-700 mb-4">How to Reach Us:</h1>
             <div className="space-y-1 text-gray-700">
-              <p><strong>Address:</strong> Near Bus Stand, Haridwar - 249401</p>
-              <p><strong>Phone:</strong> +91 9999999999</p>
+              <p><strong>Address:</strong>  4th Shop, Zila Panchayat Market, Railway Road,  
+            Haridwar, Uttarakhand, India - 249401</p>
+              <p><strong>Phone:</strong> +91 9045916770, 7830718687, 7830718680</p>
               <p><strong>Email:</strong> gokeysindia@gmail.com, helpdesk@gokeys.in</p>
               <p><strong>Website:</strong> www.gokeys.in</p>
             </div>

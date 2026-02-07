@@ -1,11 +1,13 @@
+
 @import "tailwindcss";
+@import "tw-animate-css";
 @tailwind utilities;
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-sans);
+  --font-serif: var(--font-serif);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -39,6 +41,17 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+  --color-brand-50: #f0f4ff;
+  --color-brand-100: #e0e9fe;
+  --color-brand-200: #c1d3fe;
+  --color-brand-300: #a2bdfe;
+  --color-brand-400: #83a7fd;
+  --color-brand-500: #6491fc;
+  --color-brand-600: #5074ca;
+  --color-brand-700: #3c5797;
+  --color-brand-800: #283a65;
+  --color-brand-900: #141d32;
+  --color-background: var(--background);
 }
 
 .prose h2 {
@@ -50,19 +63,13 @@
   font-weight: 600 !important;
 }
 
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;600&display=swap');
 
-@import "tw-animate-css";
+
+
 
 @custom-variant dark (&:is(.dark *));
 
-body {
-  font-family: var(--font-geist-sans), sans-serif;
-}
 
-h1, h2, h3 {
-  font-family: var(--font-geist-sans), sans-serif;
-}
 
 .prose table {
   width: 100%;
@@ -82,7 +89,7 @@ h1, h2, h3 {
 }
 
 .prose a {
-  color: #1e40af; /* Tailwind blue-800 for example */
+  color: var(--color-brand-600); 
   text-decoration: underline;
 }
 
@@ -186,3 +193,27 @@ h1, h2, h3 {
   }
 }
 
+.whatsapp-float {
+  position: fixed;
+  bottom: 22px;
+  left: 22px;
+  background: #25d366;
+  color: #fff;
+  border-radius: 999px;
+  padding: 12px 18px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  font-size: 15px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+  z-index: 9999;
+  transition: all 0.2s ease;
+}
+
+.whatsapp-float:hover {
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 10px 24px rgba(0,0,0,0.35);
+  color: #fff;
+  text-decoration: none;
+}

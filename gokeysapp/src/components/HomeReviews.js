@@ -19,41 +19,62 @@ export default function HomeReviews() {
   ];
 
   return (
-    <section className="py-12 bg-gray-50">
-      <div className="max-w-6xl mx-auto px-4">
-        <h2 className="text-4xl font-bold text-center text-blue-900 mb-8">
-          What Our Travelers Say
-        </h2>
-        <div className="grid md:grid-cols-3 gap-6">
+    <section className="py-20 px-6 bg-gradient-to-b from-brand-50/40 via-white to-white">
+      <div className="max-w-6xl mx-auto">
+
+        {/* Heading */}
+        <div className="text-center mb-14">
+          <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight text-gray-900">
+            What Our <span className="text-brand-600">Travelers Say</span>
+          </h2>
+          <p className="mt-4 text-gray-500 max-w-2xl mx-auto text-lg">
+            Trusted by thousands of pilgrims and travelers for safe,
+            transparent, and well-organized journeys across India.
+          </p>
+        </div>
+
+        {/* Reviews */}
+        <div className="grid md:grid-cols-3 gap-8">
           {reviews.map((review, idx) => (
             <div
               key={idx}
-              className="bg-white shadow-md rounded-lg p-6 hover:shadow-lg transition"
+              className="bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 p-8 flex flex-col"
             >
-              <div className="flex items-center mb-2">
+              {/* Stars */}
+              <div className="flex items-center mb-4">
                 {[...Array(review.rating)].map((_, i) => (
-                  <span key={i} className="text-yellow-500">★</span>
+                  <span key={i} className="text-amber-400 text-lg">★</span>
                 ))}
                 {[...Array(5 - review.rating)].map((_, i) => (
-                  <span key={i} className="text-gray-300">★</span>
+                  <span key={i} className="text-gray-300 text-lg">★</span>
                 ))}
               </div>
-              <p className="text-gray-700 italic">"{review.text}"</p>
-              <p className="mt-4 font-semibold">- {review.name}</p>
+
+              {/* Review text */}
+              <p className="text-gray-600 italic leading-relaxed">
+                “{review.text}”
+              </p>
+
+              {/* Name */}
+              <p className="mt-6 font-semibold text-gray-900">
+                — {review.name}
+              </p>
             </div>
           ))}
         </div>
 
-        <div className="text-center mt-8">
+        {/* Google CTA */}
+        <div className="text-center mt-14">
           <a
-            href="https://www.google.com/maps/place/Gokeys+(Travel+In+Himalayas)+%7C+Travel+Agency+Haridwar/@29.9441709,78.1485517,17z/data=!3m1!4b1!4m6!3m5!1s0x390947f7e97f2c95:0xf0785b5ce98c08e9!8m2!3d29.9441709!4d78.1511266!16s%2Fg%2F11h336_sxd?entry=ttu&g_ep=EgoyMDI1MDgxMy4wIKXMDSoASAFQAw%3D%3D" 
+            href="https://www.google.com/maps/place/Gokeys+(Travel+In+Himalayas)+%7C+Travel+Agency+Haridwar/@29.9441709,78.1485517,17z"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-block bg-blue-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-blue-700 transition"
+            className="inline-flex items-center gap-2 bg-brand-600 text-white px-8 py-3 rounded-xl font-semibold hover:bg-brand-700 transition shadow-sm"
           >
-            Read More Reviews on Google
+            Read More Reviews on Google →
           </a>
         </div>
+
       </div>
     </section>
   );

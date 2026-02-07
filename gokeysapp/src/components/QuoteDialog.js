@@ -124,6 +124,15 @@ export default function QuoteDialog({
 
       if (res.ok) {
         console.log("Quote enquiry submitted successfully");
+       // GOOGLE ADS / GTM CONVERSION EVENT
+            if (typeof window !== "undefined") {
+              window.dataLayer = window.dataLayer || [];
+              window.dataLayer.push({
+                event: "gokeys_quote_submit",
+                tour_name: tourName || "",
+                package_type: packageType || ""
+              });
+            }
         if (!isInline) {
           setInternalFormData({
             name: "",

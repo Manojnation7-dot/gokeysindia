@@ -12,21 +12,21 @@ export default function FeaturedDestinations({ initialDestinations }) {
   const [destinations] = useState(initialDestinations);
 
   return (
-    <section className="py-16 px-6 bg-gray-100">
-      <div className="max-w-7xl mx-auto mb-5">
-        <h2 className="text-4xl font-bold text-blue-900 text-center mb-12">
-          Explore Amazing Destinations
-        </h2>
-        <div className="space-y-6 text-gray-700 text-lg mb-5">
-          <p className="text-lg text-gray-700">
-            Discover breathtaking destinations across India with
-            <strong> Gokeys India</strong>. From holy shrines to hidden valleys,
-            we bring you detailed travel guides and hassle-free packages — so
-            you can explore without worry, backed by
-            <strong> authorized travel agents in Haridwar</strong>.
+    <section className="py-20 px-6 bg-gradient-to-b from-brand-50/40 via-white to-white">
+      <div className="max-w-7xl mx-auto">
+
+        {/* Heading */}
+        <div className="text-center mb-14">
+          <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight text-gray-900">
+            Discover Iconic <span className="text-brand-600">Destinations</span>
+          </h2>
+          <p className="mt-4 text-gray-500 max-w-2xl mx-auto text-lg">
+            From sacred pilgrimages to breathtaking Himalayan landscapes,
+            explore India with trusted local expertise.
           </p>
         </div>
 
+        {/* Slider */}
         <Slider
           className="pb-10"
           dots
@@ -47,10 +47,12 @@ export default function FeaturedDestinations({ initialDestinations }) {
               key={place.id}
               whileHover={{ scale: 1.03 }}
               transition={{ type: "spring", stiffness: 300 }}
-              className="px-2 pb-10 relative z-10"
+              className="px-2 pb-10"
             >
-              <div className="bg-white rounded-lg shadow-md hover:shadow-xl transition duration-300 overflow-hidden min-h-[280px] flex flex-col">
-                <div className="relative w-full h-48 group overflow-hidden">
+              <div className="bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col">
+
+                {/* Image */}
+                <div className="relative w-full h-52 group overflow-hidden">
                   <Image
                     src={
                       place.featured_image?.optimized_card ||
@@ -59,21 +61,25 @@ export default function FeaturedDestinations({ initialDestinations }) {
                     }
                     alt={place.name}
                     fill
-                    style={{ objectFit: "cover" }}
-                    className="group-hover:scale-105 transition-transform duration-500 ease-in-out"
+                    className="object-cover group-hover:scale-105 transition-transform duration-500 ease-in-out"
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 33vw, 25vw"
                   />
                 </div>
-                <div className="p-4 text-center">
-                  <h3 className="text-lg font-semibold text-gray-800">
+
+                {/* Content */}
+                <div className="p-6 text-center">
+                  <h3 className="text-lg font-bold text-gray-900 mb-2 tracking-tight">
                     {place.name}
                   </h3>
+
                   <Link
                     href={`/destinations/${place.slug}`}
-                    className="text-blue-600 hover:underline"
+                    className="inline-flex items-center gap-2 text-sm font-semibold text-brand-600 hover:text-brand-700 transition"
                   >
-                    Explore
+                    Explore Destination →
                   </Link>
                 </div>
+
               </div>
             </motion.div>
           ))}

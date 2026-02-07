@@ -35,7 +35,6 @@ export default function Header() {
           <a href="/hotels" className="text-gray-700 hover:text-blue-600 font-medium">Hotels</a>
           <a href="/grouptour" className="text-gray-700 hover:text-blue-600 font-medium">Group Tours</a>
           <a href="/sightseeing" className="text-gray-700 hover:text-blue-600 font-medium">Sightseeing</a>
-          <a href="/cabs" className="text-gray-700 hover:text-blue-600 font-medium">Cabs</a>
           <a href="/blog" className="text-gray-700 hover:text-blue-600 font-medium">Blog</a>
         </nav>
 
@@ -106,13 +105,13 @@ export default function Header() {
             >
               Group Tours
             </a>
-            <a
+            {/* <a
               href="/cabs"
               onClick={() => setIsOpen(false)}
               className="text-white text-2xl font-medium hover:text-blue-600"
             >
               Cabs
-            </a>
+            </a> */}
             <a
               href="/blog"
               onClick={() => setIsOpen(false)}

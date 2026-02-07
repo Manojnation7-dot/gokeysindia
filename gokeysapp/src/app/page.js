@@ -73,10 +73,19 @@ export default async function HomePage() {
 
       <MostSearchedPackages />
 
-       <section className="py-10">
-        <h2 className="text-2xl font-bold text-center text-blue-900 mb-4">Find Us on Map</h2>
-        <GoogleMap />
-      </section>
+       <section className="py-20 px-6 bg-gradient-to-b from-white via-indigo-50/40 to-white">
+          <div className="max-w-7xl mx-auto text-center mb-10">
+            <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight text-gray-900">
+              Find Us <span className="text-brand-600">On Map</span>
+            </h2>
+            <p className="mt-4 text-gray-500 text-lg max-w-2xl mx-auto">
+              Visit our Haridwar office or get directions instantly via Google Maps.
+              Our team is always happy to assist you.
+            </p>
+          </div>
+
+          <GoogleMap />
+        </section>
 
       <CTASection />
 

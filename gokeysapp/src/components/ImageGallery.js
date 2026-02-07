@@ -21,7 +21,7 @@ export default function ImageGallery({ images }) {
               src={images[0]}
               alt="Main Image"
               fill
-              className="object-cover rounded-xl"
+              className="object-cover rounded-sm"
             />
           </div>
         )}
@@ -37,7 +37,7 @@ export default function ImageGallery({ images }) {
                 src={images[1]}
                 alt="Image 2"
                 fill
-                className="object-cover rounded-xl"
+                className="object-cover rounded-sm"
               />
             </div>
           )}
@@ -50,7 +50,7 @@ export default function ImageGallery({ images }) {
                 src={images[2]}
                 alt="Image 3"
                 fill
-                className="object-cover rounded-xl"
+                className="object-cover rounded-sm"
               />
             </div>
           )}
@@ -68,7 +68,7 @@ export default function ImageGallery({ images }) {
                   src={images[3]}
                   alt="Image 4"
                   fill
-                  className="object-cover rounded-xl"
+                  className="object-cover rounded-sm"
                 />
               </div>
               <div
@@ -79,7 +79,7 @@ export default function ImageGallery({ images }) {
                   src={images[4]}
                   alt="Image 5"
                   fill
-                  className="object-cover rounded-xl"
+                  className="object-cover rounded-sm"
                 />
               </div>
             </div>
@@ -93,7 +93,7 @@ export default function ImageGallery({ images }) {
                   src={images[3]}
                   alt="Image 4"
                   fill
-                  className="object-cover rounded-xl"
+                  className="object-cover rounded-sm"
                 />
               </div>
             )
@@ -113,7 +113,7 @@ export default function ImageGallery({ images }) {
               src={img}
               alt={`Gallery image ${idx + 1}`}
               fill
-              className="object-cover rounded-lg"
+              className="object-cover rounded-sm"
             />
           </div>
         ))}

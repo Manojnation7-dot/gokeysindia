@@ -1,43 +1,48 @@
-import { Geist, Geist_Mono } from "next/font/google";
+import { Plus_Jakarta_Sans, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import Tracker from "@/components/Tracker";
 import SmartSEO from "@/components/SmartSEO";
 import { buildOrganizationSchema, buildWebsiteSchema } from "@/lib/seoSchemas";
 import Script from "next/script";
+import WhatsAppFloat from "@/components/WhatsAppFloat";
 
 
 // Fonts
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const plusJakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700", "800"],
+  variable: "--font-sans",
+  display: "swap",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const playfair = Playfair_Display({
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
+  variable: "--font-serif",
+  display: "swap",
 });
 
 // Metadata
 export const metadata = {
   title: {
-    default: 'Gokeys India',
-    template: '%s | Gokeys India',
+    default: 'Gokeys Travel In Himalayas | Travel Agency Haridwar',
+    template: '%s | Gokeys Travel In Himalayas',
   },
   description:
-    'Explore the Amazing Tours with Group and Individual Travel in India. Gokeys India Haridwar offers various Tour Package, Char Dham Yatra, Taxi Services, North India Tour, Kedarnath Dham Helicopter and more.',
+    'Gokeys Travel In Himalayas (Gokeys India), a trusted Travel Agent in Haridwar near Har Ki Pauri. Char Dham Yatra, hill station tours, car rentals – 24×7.',
 
   metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL || 'localhost:3000'
+    process.env.NEXT_PUBLIC_SITE_URL || 'https://gokeys.in'
   ),
 
   openGraph: {
-    title: 'Gokeys India',
+    title: 'Gokeys Travel In Himalayas | Travel Agency Haridwar',
     description: 'Explore the Amazing Tours with Group and Individual Travel in India.',
-    url: process.env.NEXT_PUBLIC_SITE_URL || 'localhost:3000',
-    siteName: 'Gokeys India',
+    url: process.env.NEXT_PUBLIC_SITE_URL || 'https://gokeys.in',
+    siteName: 'Gokeys Travel In Himalayas',
     images: [
       {
-        url: `${process.env.NEXT_PUBLIC_SITE_URL || 'localhost:3000'}/images/gokeyslogo.png`,
+        url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://gokeys.in'}/images/gokeyslogo.png`,
         width: 1200,
         height: 630,
         alt: 'Gokeys India Logo',
@@ -52,20 +57,20 @@ export const metadata = {
     title: 'Gokeys India',
     description: 'Explore the Amazing Tours with Group and Individual Travel in India.',
     images: [
-      `${process.env.NEXT_PUBLIC_SITE_URL || 'localhost:3000'}/images/gokeyslogo.png`,
+      `${process.env.NEXT_PUBLIC_SITE_URL || 'https://gokeys.in'}/images/gokeyslogo.png`,
     ],
   },
 
   alternates: {
-    canonical: process.env.NEXT_PUBLIC_SITE_URL || 'localhost:3000',
+    canonical: process.env.NEXT_PUBLIC_SITE_URL || 'https://gokeys.in',
   },
 };
-
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://gokeys.in";
 // ✅ Build your static site-wide schemas
 const siteSchemas = [
   buildOrganizationSchema({
     name: "Gokeys India",
-    logoUrl: "/images/gokeyslogo.png",
+    logoUrl: `${siteUrl}/images/gokeyslogo.png`,
     sameAs: [
       "https://facebook.com/gokeysindia",
       "https://instagram.com/gokeysharidwar",
@@ -76,13 +81,13 @@ const siteSchemas = [
   }),
   buildWebsiteSchema({
     name: "Gokeys India",
-    searchUrlPattern: "/search?q={search_term_string}",
+    searchUrlPattern: `${siteUrl}/search?q={search_term_string}`,
   }),
 ];
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
+    <html lang="en" className={`${plusJakarta.variable} ${playfair.variable}`}>
       <head>
         <SmartSEO schema={siteSchemas} />
       </head>
@@ -93,6 +98,7 @@ export default function RootLayout({ children }) {
         />
         <Tracker />
         {children}
+        <WhatsAppFloat />
       </body>
     </html>
   );

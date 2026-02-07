@@ -91,52 +91,79 @@ if (!destination) {
       />
       <main className="bg-gray-50">
         {/* Hero Section */}
-        <section className="relative h-[70vh] w-full">
-          <Image
-            src={destination.featured_image?.image || "/placeholder.jpg"}
-            alt={destination.name}
-            layout="fill"
-            objectFit="cover"
-            className="object-center"
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-black/30 z-10" />
-          <div className="absolute inset-0 flex items-center justify-center z-20">
-            <div className="text-center text-white space-y-4 px-6">
-              <h1 className="text-4xl md:text-5xl font-extrabold">{destination.name}</h1>
-              <div className="bg-black/50 backdrop-blur-sm rounded-xl p-4 mt-4 max-w-4xl mx-auto">
-                <h2 className="text-xl font-semibold text-white mb-4">Travel Tips</h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3">
+        {/* Hero Section – Premium Design (No Enquiry Box) */}
+        <section className="relative h-screen flex items-center overflow-hidden">
+          {/* Background Image */}
+          <div className="absolute inset-0 z-0">
+            <Image
+              src={destination.featured_image?.image || "/placeholder.jpg"}
+              alt={destination.name}
+              fill
+              priority
+              className="object-cover scale-105"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
+          </div>
+
+          {/* Content */}
+          <div className="relative z-10 w-full max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
+            <div className="space-y-8">
+              {/* Badge */}
+              {/* <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-white/10 backdrop-blur-md rounded-full text-white text-xs font-bold tracking-widest uppercase">
+                <span className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" />
+                Featured Destination
+              </div> */}
+
+              {/* Heading */}
+              <h1 className="text-5xl md:text-7xl font-black leading-[1.05] tracking-tight text-white">
+                Explore <br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-emerald-400">
+                  {destination.name}
+                </span>
+              </h1>
+
+              {/* Travel Tips Glass Card */}
+              <div className="bg-white/10 backdrop-blur-xl rounded-3xl p-6 max-w-lg">
+                <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                  <svg className="w-5 h-5 text-emerald-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                  </svg>
+                  Traveler Insights
+                </h3>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {destination.travel_tips
                     .split(/\r?\n/)
                     .filter(Boolean)
-                    .map((tip, index) => (
-                      <div key={index} className="flex items-start text-white text-sm md:text-base">
-                        <svg
-                          className="w-5 h-5 text-green-400 mt-1 mr-2 flex-shrink-0"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth={2}
-                          viewBox="0 0 24 24"
-                        >
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                        </svg>
-                        <span>{tip.trim()}</span>
+                    .map((tip, idx) => (
+                      <div key={idx} className="text-sm text-white/80 flex items-start">
+                        <span className="mr-2 text-emerald-400 font-bold">•</span>
+                        {tip}
                       </div>
                     ))}
                 </div>
               </div>
 
+              {/* CTA */}
               <a
                 href="#tours-section"
-                className="inline-block mt-6 px-6 py-3 bg-indigo-600 rounded-lg text-white font-semibold hover:bg-indigo-700 transition"
+                className="inline-block mt-4 px-8 py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-2xl transition shadow-lg"
               >
                 Explore Tours
               </a>
             </div>
           </div>
+
+          {/* Scroll Indicator */}
+          <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center text-white/50 animate-bounce">
+            <span className="text-xs uppercase font-bold tracking-widest mb-2">
+              Scroll to explore
+            </span>
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 14l-7 7-7-7m7 7V3" />
+            </svg>
+          </div>
         </section>
-
-
         {/* Destination Info */}
         <section className="max-w-7xl mx-auto px-6 py-12">
           <h2 className="text-3xl font-semibold text-gray-800 mb-4">About {destination.name}</h2>
@@ -233,29 +260,73 @@ if (!destination) {
           </div>
         </section>
         
+     
         {/* FAQ Section */}
-        <section className="py-12 max-w-6xl mx-auto px-4">
-          <h2 className="text-3xl font-bold mb-8">Frequently Asked Questions</h2>
-          <div className="space-y-4">
-            {(destination.faqs || []).map((faq, index) => (
-              <div key={index} className="border border-gray-200 rounded-lg overflow-hidden">
-                <button
-                  className="w-full flex justify-between items-center p-4 text-left font-medium hover:bg-gray-50 transition-all"
-                  onClick={() => toggleDay(index + 10)}
-                >
-                  <span>{faq.question}</span>
-                  {expandedDay === index + 10 ? <MinusIcon /> : <PlusIcon />}
-                </button>
-                {expandedDay === index + 10 && (
+          <section className="py-16 max-w-6xl mx-auto px-4">
+            <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900 mb-12">
+              Frequently Asked Questions
+            </h2>
+
+            <div className="space-y-6">
+              {(destination.faqs || []).map((faq, index) => {
+                const isOpen = expandedDay === index + 10;
+
+                return (
                   <div
-                    className="p-4 pt-2 text-gray-700"
-                    dangerouslySetInnerHTML={{ __html: faq.answer }}
-                  />
-                )}
-              </div>
-            ))}
-          </div>
-        </section>
+                    key={index}
+                    className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden transition-all"
+                  >
+                    {/* Question */}
+                    <button
+                      onClick={() => toggleDay(index + 10)}
+                      className="w-full flex items-center justify-between gap-6 p-6 md:p-8 text-left group"
+                    >
+                      <span
+                        className={`text-lg md:text-xl font-bold transition-colors ${
+                          isOpen ? "text-indigo-600" : "text-gray-900 group-hover:text-indigo-600"
+                        }`}
+                      >
+                        {faq.question}
+                      </span>
+
+                      {/* Arrow */}
+                      <div
+                        className={`flex items-center justify-center w-10 h-10 rounded-full transition-all ${
+                          isOpen
+                            ? "bg-indigo-600 text-white rotate-180"
+                            : "bg-gray-100 text-gray-500 group-hover:bg-indigo-50"
+                        }`}
+                      >
+                        <svg
+                          className="w-5 h-5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M19 9l-7 7-7-7"
+                          />
+                        </svg>
+                      </div>
+                    </button>
+
+                    {/* Answer */}
+                    {isOpen && (
+                      <div className="px-6 md:px-8 pb-8 pt-0 text-gray-600 text-base leading-relaxed">
+                        <div
+                          dangerouslySetInnerHTML={{ __html: faq.answer }}
+                        />
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </section>
+
 
         {/* Tours Section */}
       <section id="tours-section" className="bg-white py-12">
@@ -264,50 +335,56 @@ if (!destination) {
 
           {tours.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">
-              {tours.map((tour) => (
-                <div
-                  key={tour.id}
-                  className="bg-white rounded-2xl shadow hover:shadow-lg transition flex flex-col h-[500px] p-4"
-                >
-                  {/* Top Content */}
-                  <div className="flex-1 flex flex-col">
-                    <div className="relative h-48 w-full rounded-xl overflow-hidden">
-                      <Image
-                        src={tour.featured_image?.image || "/images/placeholder.jpg"}
-                        alt={tour.name}
-                        fill
-                        className="object-cover rounded-xl"
-                      />
+            {tours.map((tour) => (
+              <div
+                key={tour.id}
+                className="group bg-white rounded-[2rem] overflow-hidden border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-500 flex flex-col"
+              >
+                {/* Image */}
+                <div className="relative h-64 overflow-hidden">
+                  <Image
+                    src={tour.featured_image?.image || "/images/placeholder.jpg"}
+                    alt={tour.name}
+                    fill
+                    className="object-cover transition-transform duration-700 group-hover:scale-110"
+                  />
+
+                  {/* Duration badge */}
+                  <div className="absolute top-4 left-4 px-3 py-1 bg-white/90 backdrop-blur rounded-full text-xs font-bold text-gray-900">
+                    {tour.duration_days}D / {tour.duration_nights}N
+                  </div>
+                </div>
+
+                {/* Content */}
+                <div className="p-8 flex flex-col flex-grow">
+                  <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-indigo-600 transition-colors">
+                    {tour.name}
+                  </h3>
+
+                  <p
+                    className="text-gray-500 text-sm mb-6 line-clamp-2 leading-relaxed"
+                    dangerouslySetInnerHTML={{ __html: tour.content }}
+                  />
+
+                  <div className="mt-auto flex items-center justify-between">
+                    <div>
+                      <span className="text-xs font-bold text-gray-400 uppercase tracking-widest block mb-1">
+                        Starting from
+                      </span>
+                      <span className="text-2xl font-extrabold text-indigo-600">
+                        ₹{parseFloat(tour.base_price || 0).toLocaleString()}
+                      </span>
                     </div>
 
-                    <h3 className="text-xl font-bold text-gray-800 mt-4 line-clamp-2">
-                      {tour.name}
-                    </h3>
-
-                    <p
-                      className="text-gray-600 mt-2 text-sm line-clamp-2"
-                      dangerouslySetInnerHTML={{ __html: tour.content }}
-                    />
-
-                    <p className="mt-3 text-sm text-gray-500">
-                      Duration: {tour.duration_days} days / {tour.duration_nights} nights
-                    </p>
-
-                    <p className="mt-1 text-lg text-indigo-600 font-semibold">
-                      From ₹{(parseFloat(tour.base_price) || 20000).toLocaleString()}
-                    </p>
-                  </div>
-
-                  {/* Button at Bottom */}
-                  <div className="mt-4">
-                    <Link href={`/tours/${tour.slug}`} className="block">
-                      <button className="w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 transition">
-                        View Details
+                    <Link href={`/tours/${tour.slug}`}>
+                      <button className="px-6 py-3 bg-gray-900 hover:bg-indigo-600 text-white rounded-2xl text-sm font-bold transition shadow-md">
+                        Details
                       </button>
                     </Link>
                   </div>
                 </div>
-              ))}
+              </div>
+            ))}
             </div>
           ) : (
             <p className="mt-6 text-gray-600">No tours available for this destination.</p>
@@ -322,32 +399,74 @@ if (!destination) {
 
                 {hotels.length > 0 ? (
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">
-                    {hotels.map((hotel) => (
-                      <div
-                        key={hotel.id}
-                        className="bg-white rounded-2xl shadow hover:shadow-lg transition p-4"
-                      >
+                  {hotels.map((hotel) => (
+                  <div
+                    key={hotel.id}
+                    className="group bg-white rounded-[2.5rem] overflow-hidden border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-500 flex flex-col"
+                  >
+                    {/* Image */}
+                    <div className="relative h-56 overflow-hidden">
+                      <Image
+                        src={hotel.front_image_url || "/images/placeholder.jpg"}
+                        alt={hotel.name}
+                        fill
+                        className="object-cover transition-transform duration-700 group-hover:scale-110"
+                      />
+
+                      {/* Star Rating Badge */}
+                      <div className="absolute top-4 right-4 px-3 py-1 bg-yellow-400/90 text-yellow-900 rounded-full text-[11px] font-extrabold tracking-widest uppercase backdrop-blur">
+                        {hotel.star_rating} ★
+                      </div>
+                    </div>
+
+                    {/* Content */}
+                    <div className="p-8 flex flex-col flex-grow">
+                      <h3 className="text-lg font-bold text-gray-900 mb-1 group-hover:text-emerald-600 transition-colors">
+                        {hotel.name}
+                      </h3>
+
+                      <div className="flex items-center text-gray-400 text-xs font-semibold mb-5">
+                        <svg
+                          className="w-4 h-4 mr-1"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                          />
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                          />
+                        </svg>
+                        {hotel.location}
+                      </div>
+
+                      <div className="mt-auto flex items-center justify-between">
                         <div>
-                          <div className="relative h-48 w-full rounded-xl overflow-hidden">
-                            <Image
-                              src={hotel.front_image_url || "/images/placeholder.jpg"}
-                              alt={hotel.name}
-                              fill
-                              className="object-cover rounded-xl"
-                            />
-                          </div>
-                          <h3 className="text-xl font-bold text-gray-800 mt-4">{hotel.name}</h3>
-                          <p className="text-sm text-gray-600 mt-1">{hotel.location}</p>
-                          <p className="text-sm text-gray-500 mt-1">Starting at ₹{parseFloat(hotel.tariff_starting_from).toLocaleString()}</p>
-                          <p className="mt-1 text-sm text-gray-500">Star Rating: {hotel.star_rating} ⭐</p>
+                          <span className="text-xs font-bold text-gray-400 uppercase tracking-widest block mb-1">
+                            Starting from
+                          </span>
+                          <span className="text-2xl font-extrabold text-emerald-600">
+                            ₹{parseFloat(hotel.tariff_starting_from).toLocaleString()}
+                          </span>
                         </div>
-                        <Link href={`/hotels/${slug}/${hotel.slug}`} className="mt-4 block">
-                          <button className="w-full bg-emerald-600 text-white py-2 rounded-lg hover:bg-emerald-700 transition">
-                            View Details
+
+                        <Link href={`/hotels/${slug}/${hotel.slug}`}>
+                          <button className="px-6 py-3 bg-gray-900 hover:bg-emerald-600 text-white rounded-2xl text-sm font-bold transition shadow-md">
+                            Details
                           </button>
                         </Link>
                       </div>
-                    ))}
+                    </div>
+                  </div>
+                ))}
                   </div>
                 ) : (
                   <p className="mt-6 text-gray-600">No hotels available for this destination.</p>

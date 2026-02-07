@@ -1,4 +1,4 @@
-// HotelsHomePage.jsx
+
 "use client";
 
 import Header from "@/components/Header";
@@ -8,31 +8,45 @@ import Link from "next/link";
 import { buildBreadcrumbList } from "@/lib/seoSchemas";
 import SmartSEO from "@/components/SmartSEO";
 
+const toSlug = (text = "") =>
+  text
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, "-");
+
 export default function HotelsHomePage({ hotels }) {
 
   const groupedHotels = hotels.reduce((acc, hotel) => {
-    const destination = hotel.destination.toLowerCase();
-    if (!acc[destination]) {
-      acc[destination] = {
-        destination: hotel.destination,
-        front_image_url: hotel.front_image_url || "https://via.placeholder.com/300x200",
-        tariff_starting_from: hotel.tariff_starting_from || Infinity,
-        count: 1,
-      };
-    } else {
-      acc[destination].count += 1;
-      if (hotel.tariff_starting_from && hotel.tariff_starting_from < acc[destination].tariff_starting_from) {
-        acc[destination].tariff_starting_from = hotel.tariff_starting_from;
-        acc[destination].front_image_url = hotel.front_image_url || acc[destination].front_image_url;
-      }
+  const destinationKey = hotel.destination.toLowerCase().trim();
+
+  if (!acc[destinationKey]) {
+    acc[destinationKey] = {
+      destination: hotel.destination.trim(),
+      front_image_url: hotel.front_image_url || "https://via.placeholder.com/300x200",
+      tariff_starting_from: Number(hotel.tariff_starting_from) || Infinity,
+      count: 1,
+    };
+  } else {
+    acc[destinationKey].count += 1;
+
+    const price = Number(hotel.tariff_starting_from);
+    if (!isNaN(price) && price < acc[destinationKey].tariff_starting_from) {
+      acc[destinationKey].tariff_starting_from = price;
+      acc[destinationKey].front_image_url =
+        hotel.front_image_url || acc[destinationKey].front_image_url;
     }
-    return acc;
-  }, {});
+  }
+
+  return acc;
+}, {});
+
+
   const destinations = Object.values(groupedHotels);
   const breadcrumbSchema = buildBreadcrumbList([
     { name: "Home", url: "/" },
     { name: "Best Hotels in India", url: "/hotels" },
   ]);
+
   return (
     <>
       <Header />
@@ -42,7 +56,7 @@ export default function HotelsHomePage({ hotels }) {
         {destinations.length ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {destinations.map((destination) => (
-              <Link key={destination.destination} href={`/hotels/${destination.destination.toLowerCase()}`}>
+              <Link key={destination.destination} href={`/hotels/${toSlug(destination.destination)}`}>
                 <div className="bg-white shadow rounded-2xl overflow-hidden hover:shadow-lg transition">
                   <div className="relative h-56">
                     <Image

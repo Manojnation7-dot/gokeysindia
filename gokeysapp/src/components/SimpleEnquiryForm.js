@@ -16,7 +16,7 @@ export default function InquiryFormCard({ placeName = "this place" }) {
   if (typeof window !== "undefined") {
     setFormData(prev => ({
       ...prev,
-      page_url: window.location.href,
+      page_url: window.location.href || "direct",
     }));
   }
 }, []);
@@ -39,6 +39,50 @@ export default function InquiryFormCard({ placeName = "this place" }) {
     setSuccess(false);
 
     try {
+      const siteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
+      if (!siteKey) {
+        setError("reCAPTCHA configuration error.");
+        setLoading(false);
+        return;
+      }
+
+      // wait for grecaptcha
+      const waitForGrecaptcha = () =>
+        new Promise((resolve, reject) => {
+          let attempts = 0;
+          const maxAttempts = 10;
+          const check = () => {
+            if (window.grecaptcha) resolve(window.grecaptcha);
+            else if (attempts++ < maxAttempts) setTimeout(check, 500);
+            else reject(new Error("reCAPTCHA failed to load"));
+          };
+          check();
+        });
+
+      let grecaptcha;
+      try {
+        grecaptcha = await waitForGrecaptcha();
+      } catch {
+        setError("Failed to load reCAPTCHA.");
+        setLoading(false);
+        return;
+      }
+
+      let recaptchaToken;
+      try {
+        recaptchaToken = await new Promise((resolve, reject) => {
+          grecaptcha.ready(() => {
+            grecaptcha
+              .execute(siteKey, { action: "general_enquiry" })
+              .then(resolve)
+              .catch(reject);
+          });
+        });
+      } catch {
+        setError("reCAPTCHA verification failed.");
+        setLoading(false);
+        return;
+      }
       const csrfToken = await getCSRFToken();
 
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/enquiries/`, {
@@ -48,15 +92,25 @@ export default function InquiryFormCard({ placeName = "this place" }) {
           "X-CSRFToken": csrfToken,
         },
         credentials: "include",
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          ...formData,
+          recaptcha_token: recaptchaToken,
+        }),
       });
 
       if (!res.ok) {
-        throw new Error("Something went wrong!");
+        const data = await res.json();
+        console.log("API Error:", data);
+        throw new Error(JSON.stringify(data));
       }
 
       setSuccess(true);
-      setFormData({ name: "", email: "", message: "" });
+      setFormData({
+      name: "",
+      email: "",
+      message: `I'd like to know more about ${placeName}...`,
+      page_url: window.location.href || "direct",
+    });
     } catch (err) {
       setError(err.message || "Submission failed.");
     } finally {
@@ -88,7 +142,7 @@ export default function InquiryFormCard({ placeName = "this place" }) {
             id="name"
             value={formData.name}
             onChange={handleChange}
-            placeholder="John Doe"
+            placeholder="Your Name"
             required
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition"
           />

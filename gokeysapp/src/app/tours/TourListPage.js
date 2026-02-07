@@ -131,14 +131,14 @@ const tourListSchema = buildItemListSchema({
                 <input
                   type="number"
                   placeholder="Min"
-                  className="w-1/2 border border-gray-300 rounded-md p-1 focus:ring-indigo-500 focus:border-indigo-500"
+                  className="w-1/2 border border-gray-300 rounded-md p-1 focus:ring-brand-500 focus:border-brand-500"
                   value={minPrice}
                   onChange={(e) => setMinPrice(e.target.value)}
                 />
                 <input
                   type="number"
                   placeholder="Max"
-                  className="w-1/2 border border-gray-300 rounded-md p-1 focus:ring-indigo-500 focus:border-indigo-500"
+                  className="w-1/2 border border-gray-300 rounded-md p-1 focus:ring-brand-500 focus:border-brand-500"
                   value={maxPrice}
                   onChange={(e) => setMaxPrice(e.target.value)}
                 />
@@ -149,7 +149,7 @@ const tourListSchema = buildItemListSchema({
             <label className="block mb-4">
               <span className="text-gray-700">Duration</span>
               <select
-                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-brand-500 focus:border-brand-500"
                 value={selectedDuration}
                 onChange={(e) => setSelectedDuration(e.target.value)}
               >
@@ -201,14 +201,14 @@ const tourListSchema = buildItemListSchema({
                 <p className="text-sm text-gray-500">
                   {tour.duration_days} Days / {tour.duration_nights} Nights
                 </p>
-                <p className="mt-2 font-bold text-indigo-600 mb-4">
+                <p className="mt-2 font-bold text-brand-600 mb-4">
                   ₹{parseFloat(tour.base_price).toLocaleString()}
                 </p>
 
                 {/* Button stays at bottom */}
                 <div className="mt-auto">
                   <Link href={`/tours/${tour.slug}`}>
-                    <button className="w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 transition">
+                    <button className="w-full bg-brand-600 text-white py-2 rounded-lg hover:bg-brand-700 transition">
                       View Tour
                     </button>
                   </Link>

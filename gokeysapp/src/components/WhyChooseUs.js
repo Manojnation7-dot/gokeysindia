@@ -1,53 +1,101 @@
 export default function WhyChooseUs() {
   const items = [
-    { title: "✔ Govt. Registered", desc: "Authorized by Uttarakhand Tourism" },
-    { title: "✔ 10+ Years Experience", desc: "Handled 1000+ successful trips" },
-    { title: "✔ Transparent Pricing", desc: "No fake offers or hidden costs" },
+    {
+      title: "Government Registered",
+      desc: "Authorized & recognized by Uttarakhand Tourism",
+    },
+    {
+      title: "10+ Years of Expertise",
+      desc: "Successfully delivered 1000+ spiritual & leisure journeys",
+    },
+    {
+      title: "Transparent Pricing",
+      desc: "No hidden charges, no misleading offers — ever",
+    },
   ];
 
   return (
-    <section className="py-16 px-6 bg-white">
-      <div className="max-w-7xl mx-auto text-center">
-        <h2 className="text-4xl font-bold text-blue-900 mb-8">
-          Why Travel with Gokeys?
-        </h2>
-        <div className="space-y-6 text-gray-700 text-lg leading-relaxed">
-            <p>
-              Welcome to <strong>Gokeys India</strong> — your trusted 
-              <strong> travel agent in Haridwar</strong> for spiritual journeys, 
-              Himalayan adventures, and unforgettable holidays. With over 10 years of 
-              experience and authorization from <strong>Uttarakhand Tourism</strong>, 
-              we craft customized and group travel packages including 
-              <strong> Char Dham Yatra 2025</strong>.
-            </p>
-            <p>
-              From <strong>Auli</strong> and <strong>Chopta</strong> to the 
-              <strong> Valley of Flowers</strong> and <strong>Hemkund Sahib</strong>, 
-              or rafting & camping in <strong>Rishikesh</strong> — we deliver with 
-              transparent pricing and personalized service.
-            </p>
-            <p>
-              Our Haridwar-based team ensures smooth <strong>cab rentals</strong>, 
-              hotel bookings, and guided tours. Explore our 
-              <a href="/tours" className="text-blue-600 font-semibold hover:underline"> best-selling tours</a> 
-                or 
-              <a href="/contact" className="text-blue-600 font-semibold hover:underline"> contact us</a> today.  
-              From budget trips to luxury escapes, we make travel safe and memorable.
-            </p>
-          </div>
-        <div className="grid md:grid-cols-3 gap-8 mt-5">
+    <section className="py-20 px-6 bg-gradient-to-b from-brand-50/40 via-white to-white">
+      <div className="max-w-7xl mx-auto">
+        
+        {/* Heading */}
+        <div className="text-center mb-14">
+          <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight text-gray-900">
+            Why Travel with <span className="text-brand-600">Gokeys</span>
+          </h2>
+          <p className="mt-4 text-gray-500 max-w-2xl mx-auto">
+            Trusted by thousands of travelers for spiritual journeys, Himalayan adventures,
+            and thoughtfully curated holidays across India.
+          </p>
+        </div>
+
+        {/* Content */}
+        <div className="max-w-4xl mx-auto space-y-6 text-gray-700 text-lg leading-relaxed">
+          <p>
+            Welcome to <strong>Gokeys India</strong>, a trusted{" "}
+            <strong>travel company based in Haridwar</strong>, specializing in
+            spiritual journeys and Himalayan experiences. With over a decade of
+            expertise and official authorization from{" "}
+            <strong>Uttarakhand Tourism</strong>, we design seamless group and
+            customized travel programs including{" "}
+            <strong>Char Dham Yatra</strong>.
+          </p>
+
+          <p>
+            From the serene landscapes of <strong>Auli</strong> and{" "}
+            <strong>Chopta</strong> to the breathtaking{" "}
+            <strong>Valley of Flowers</strong>, <strong>Hemkund Sahib</strong>,
+            and adventure experiences like rafting and camping in{" "}
+            <strong>Rishikesh</strong> — every journey is crafted with care,
+            safety, and local expertise.
+          </p>
+
+          <p>
+            Our dedicated team ensures smooth{" "}
+            <strong>cab services</strong>, hotel bookings, and guided tours with
+            complete pricing transparency. Explore our{" "}
+            <a
+              href="/tours"
+              className="text-brand-600 font-semibold hover:underline"
+            >
+              best-selling tours
+            </a>{" "}
+            or{" "}
+            <a
+              href="/contact"
+              className="text-brand-600 font-semibold hover:underline"
+            >
+              connect with our travel experts
+            </a>{" "}
+            to plan your next journey with confidence.
+          </p>
+        </div>
+
+        {/* Trust Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16">
           {items.map((item, idx) => (
             <div
-              key={idx}
-              className="p-6 bg-gradient-to-br from-blue-50 to-gray-100 rounded-xl shadow-lg"
-            >
-              <h4 className="text-xl font-semibold text-blue-800">
-                {item.title}
-              </h4>
-              <p className="mt-2 text-gray-600">{item.desc}</p>
-            </div>
+            key={idx}
+            className={`relative bg-white rounded-2xl p-8 border border-gray-100 shadow-sm hover:shadow-lg transition-all
+              ${
+                idx === 0
+                  ? "before:bg-orange-400"
+                  : idx === 1
+                  ? "before:bg-brand-500"
+                  : "before:bg-emerald-500"
+              }
+              before:absolute before:left-0 before:top-0 before:h-full before:w-1 before:rounded-l-2xl`}
+          >
+            <h4 className="text-xl font-bold text-gray-900 mb-2">
+              {item.title}
+            </h4>
+            <p className="text-gray-600 leading-relaxed">
+              {item.desc}
+            </p>
+          </div>
           ))}
         </div>
+
       </div>
     </section>
   );

@@ -193,7 +193,7 @@ const handleSubmit = async (e) => {
     <div className="max-w-6xl mx-auto px-4 py-10 bg-blue-50 min-h-screen rounded-2xl ">
       {/* Top Heading */}
       <div className="mb-8 text-center">
-        <h1 className="text-3xl font-bold text-indigo-800">Traveler Reviews</h1>
+        <h1 className="text-3xl font-bold text-brand-800">Traveler Reviews</h1>
         <p className="text-lg text-gray-600 mt-2">
           Share your amazing travel experiences with our community
         </p>
@@ -204,7 +204,7 @@ const handleSubmit = async (e) => {
         onSubmit={handleSubmit}
         className="bg-white rounded-xl shadow-lg p-6 mb-10 space-y-5 border border-gray-100"
       >
-        <h2 className="text-2xl font-bold text-indigo-700">Write a Review</h2>
+        <h2 className="text-2xl font-bold text-brand-700">Write a Review</h2>
         <div className="grid md:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Trip Name</label>
@@ -213,7 +213,7 @@ const handleSubmit = async (e) => {
               name="title"
               value={form.title}
               onChange={handleInput}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
               placeholder="Destination or Trip Name"
               required
             />
@@ -225,7 +225,7 @@ const handleSubmit = async (e) => {
               name="name"
               value={form.name}
               onChange={handleInput}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
               placeholder="Enter your name"
             />
           </div>
@@ -236,7 +236,7 @@ const handleSubmit = async (e) => {
               name="email"
               value={form.email}
               onChange={handleInput}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
               placeholder="Enter your email (optional)"
             />
           </div>
@@ -247,7 +247,7 @@ const handleSubmit = async (e) => {
               name="travel_month"
               value={form.travel_month}
               onChange={handleInput}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
             />
           </div>
         </div>
@@ -277,7 +277,7 @@ const handleSubmit = async (e) => {
             value={form.comment}
             onChange={handleInput}
             rows="4"
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
             placeholder="Share your experience..."
             required
           ></textarea>
@@ -285,7 +285,7 @@ const handleSubmit = async (e) => {
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Upload Photos</label>
           <div className="flex items-center">
-            <label className="cursor-pointer bg-indigo-50 hover:bg-indigo-100 text-indigo-700 px-4 py-2 rounded-lg border border-indigo-300 transition duration-200">
+            <label className="cursor-pointer bg-brand-50 hover:bg-brand-100 text-brand-700 px-4 py-2 rounded-lg border border-brand-300 transition duration-200">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-5 w-5 inline mr-1"
@@ -333,7 +333,7 @@ const handleSubmit = async (e) => {
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3 px-4 rounded-lg transition duration-200"
+          className="w-full bg-brand-600 hover:bg-brand-700 text-white font-medium py-3 px-4 rounded-lg transition duration-200"
         >
           {loading ? 'Submitting...' : 'Submit Review'}
         </button>
@@ -382,7 +382,7 @@ const handleSubmit = async (e) => {
                     ))}
                   </div>
                 </div>
-                <span className="bg-indigo-50 text-indigo-700 px-3 py-1 rounded-full text-sm font-medium">
+                <span className="bg-brand-50 text-brand-700 px-3 py-1 rounded-full text-sm font-medium">
                   {new Date(review.created_at).toLocaleDateString('en-US', {
                     year: 'numeric',
                     month: 'long',
@@ -408,7 +408,7 @@ const handleSubmit = async (e) => {
               <hr className="my-4 border-gray-200" />
               <div className="flex items-center justify-between">
                 <div className="flex items-center">
-                  <div className="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-700 font-semibold">
+                  <div className="w-10 h-10 bg-brand-100 rounded-full flex items-center justify-center text-brand-700 font-semibold">
                     {(review.name || 'A').charAt(0)}
                   </div>
                   <span className="ml-3 font-medium text-gray-700">
@@ -430,7 +430,7 @@ const handleSubmit = async (e) => {
         <div className="text-center mt-6">
           <button
             onClick={() => fetchReviews(nextPage)}
-            className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition"
+            className="bg-brand-600 text-white px-4 py-2 rounded-lg hover:bg-brand-700 transition"
           >
             Load More Reviews
           </button>
@@ -502,7 +502,7 @@ const handleSubmit = async (e) => {
             <button
               type="button"
               onClick={() => setSubmitted(false)}
-              className="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-6 rounded-lg transition duration-200"
+              className="bg-brand-600 hover:bg-brand-700 text-white font-medium py-2 px-6 rounded-lg transition duration-200"
             >
               Close
             </button>

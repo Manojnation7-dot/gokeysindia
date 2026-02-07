@@ -129,24 +129,48 @@ export default function HotelListByDestination({ destination, destinationData })
           {hotels.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
               {hotels.map((hotel) => (
-                <div key={hotel.id} className="bg-white rounded-xl shadow p-4">
-                  <div className="relative h-48 w-full rounded-lg overflow-hidden">
+                <Link
+                  key={hotel.id}
+                  href={`/hotels/${destination}/${hotel.slug}`}
+                  className="group bg-white rounded-[2.5rem] overflow-hidden border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-500 flex flex-col"
+                >
+                  {/* Image */}
+                  <div className="relative h-56 overflow-hidden">
                     <Image
                       src={hotel.front_image_url || "https://via.placeholder.com/300x200"}
                       alt={hotel.name}
                       fill
-                      className="object-cover"
+                      className="object-cover transition-transform duration-700 group-hover:scale-110"
                     />
+
+                    {/* Star Rating Badge */}
+                    {hotel.star_rating && (
+                      <div className="absolute top-4 right-4 px-3 py-1 bg-yellow-400/90 text-yellow-900 rounded-full text-[11px] font-extrabold tracking-widest uppercase backdrop-blur">
+                        {hotel.star_rating} ★
+                      </div>
+                    )}
                   </div>
-                  <h3 className="mt-4 text-lg font-semibold text-gray-800">
-                    <Link href={`/hotels/${destination}/${hotel.slug}`}>{hotel.name}</Link>
-                  </h3>
-                  <p className="text-sm text-gray-500">{hotel.location}</p>
-                  <p className="text-sm text-gray-500">Rating: {hotel.star_rating} Star</p>
-                  <p className="text-md font-bold text-indigo-600 mt-1">
-                    ₹{parseFloat(hotel.tariff_starting_from).toLocaleString() || "N/A"}/night
-                  </p>
-                </div>
+
+                  {/* Content */}
+                  <div className="p-6 flex flex-col flex-grow">
+                    <h3 className="text-lg font-bold text-gray-900 mb-1 group-hover:text-emerald-600 transition-colors">
+                      {hotel.name}
+                    </h3>
+
+                    <p className="text-xs text-gray-400 font-semibold mb-4 flex items-center">
+                      📍 {hotel.location}
+                    </p>
+
+                    <div className="mt-auto">
+                      <span className="text-xs font-bold text-gray-400 uppercase tracking-widest block mb-1">
+                        Starting from
+                      </span>
+                      <span className="text-xl font-extrabold text-emerald-600">
+                        ₹{parseFloat(hotel.tariff_starting_from).toLocaleString()}/night
+                      </span>
+                    </div>
+                  </div>
+                </Link>
               ))}
             </div>
           ) : (

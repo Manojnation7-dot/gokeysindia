@@ -5,15 +5,48 @@ import Image from "next/image";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Link from "next/link";
-import { MapPin, Ruler } from "lucide-react";
+import { Ruler } from "lucide-react";
 import QuoteDialog from "@/components/QuoteDialog";
 import { buildBreadcrumbList, buildHotelSchema } from "@/lib/seoSchemas";
 import SmartSEO from "@/components/SmartSEO";
+import {
+  Wifi,
+  ParkingCircle,
+  Utensils,
+  Wind,
+  Tv,
+  Bath,
+  Droplets,
+  Power,
+  Fan,
+  Heater,
+  BedDouble,
+  Coffee,
+  Refrigerator,
+  Dumbbell,
+  ShieldCheck,
+  MapPin,
+  Shirt,
+  Bus,
+  SprayCan,
+  WashingMachine,
+  Wine,
+  Briefcase,
+  ConciergeBell,
+  Sparkles,
+  Users,
+  Waves,
+  Stethoscope,
+  Clock,
+  ArrowUpDown,
+  Plane,
+} from "lucide-react";
+import HotelEnquiryModal from "@/components/HotelEnquiryModal";
 
-
-export default function HotelDetailPage({ hotelData, relatedPlaces, relatedTours }) {
+export default function HotelDetailPage({ hotelData, relatedPlaces, relatedTours, similarHotels }) {
   const [showGalleryModal, setShowGalleryModal] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
 
   // Modal navigation
   const handlePrevImage = () => {
@@ -30,6 +63,7 @@ export default function HotelDetailPage({ hotelData, relatedPlaces, relatedTours
 
   const [showEnquiry, setShowEnquiry] = useState(false);
   const [selectedTour, setSelectedTour] = useState(null);
+  const [showHotelEnquiry, setShowHotelEnquiry] = useState(false);
 
   const handleQuoteClick = (tour) => {
     const standardPackage = tour.pricing?.find(
@@ -86,7 +120,59 @@ const breadcrumbSchema = buildBreadcrumbList([
     );
   }
 
+const facilityIconMap = {
+  // Essentials
+  wifi: Wifi,
+  parking: ParkingCircle,
+  lift: ArrowUpDown,
+  elevator: ArrowUpDown,
 
+  // Room & Comfort
+  "room service": ConciergeBell,
+  "hot and cold water": Droplets,
+  toiletries: SprayCan,
+  bathroom: Bath,
+  bed: BedDouble,
+  tv: Tv,
+  ac: Wind,
+  fan: Fan,
+  heater: Heater,
+
+  // Cleaning & Laundry
+  laundry: WashingMachine,
+  "clothing iron": Shirt,
+  iron: Shirt,
+
+  // Food & Beverage
+  restaurant: Utensils,
+  bar: Wine,
+  coffee: Coffee,
+
+  // Wellness & Leisure
+  spa: Sparkles,
+  "swimming pool": Waves,
+  pool: Waves,
+  "fitness center": Dumbbell,
+  gym: Dumbbell,
+
+  // Business & Work
+  "business center": Briefcase,
+  "meeting rooms": Users,
+  conference: Users,
+
+  // Transport & Travel
+  "airport shuttle": Plane,
+  shuttle: Bus,
+  "travel desk": MapPin,
+
+  // Medical & Safety
+  "doctor on call": Stethoscope,
+  security: ShieldCheck,
+
+  // Reception & Services
+  "24/7 reception": Clock,
+  reception: Clock,
+};
 
 
   return (
@@ -103,7 +189,8 @@ const breadcrumbSchema = buildBreadcrumbList([
         </p>
 
         {/* Image Gallery + Booking */}
-        <div className="flex flex-col lg:flex-row gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+            <div className="lg:col-span-2 space-y-12">
           {/* Gallery */}
           <div className="flex-1">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -142,50 +229,145 @@ const breadcrumbSchema = buildBreadcrumbList([
               </div>
             </div>
           </div>
-
-          {/* Booking Card */}
-          <div className="lg:w-80 bg-white shadow-lg rounded-xl p-6 border border-gray-100">
-            <h3 className="text-lg font-bold mb-2">Deluxe Room</h3>
-            <p className="text-gray-600 mb-1">Fits 2 Adults</p>
-            <p className="text-gray-600 mb-1">• No meals included</p>
-            <p className="text-green-600 mb-4">• Free Cancellation till 24 hrs before check-in</p>
-            <div className="mb-4">
-              <p className="text-3xl font-bold text-gray-800">
-                ₹{parseFloat(hotelData.tariff_starting_from).toLocaleString() || "N/A"}
+            <section>
+              <h2 className="text-2xl font-bold text-gray-900 mb-3">
+                Overview
+              </h2>
+              <p className="text-gray-700 leading-relaxed">
+                {hotelData.description || "No description available."}
               </p>
-              <p className="text-sm text-gray-500">Total Price</p>
+            </section>
+            {/* Facilities  */}
+                <section>
+                  <h3 className="text-2xl font-bold text-gray-900 mb-5">
+                    Facilities
+                  </h3>
+
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                    {hotelData.facilities.map((facility, i) => {
+                      const key = facility.name?.toLowerCase().trim();
+                      const Icon = facilityIconMap[key] || Wifi;
+
+                      return (
+                        <div
+                          key={i}
+                          className="flex items-center gap-3 bg-gray-50 border rounded-xl p-4"
+                        >
+                          <Icon className="w-5 h-5 text-blue-600" />
+                          <span className="text-sm font-medium text-gray-700">
+                            {facility.name}
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </section>
+                      <section>
+                          <h3 className="text-2xl font-bold text-gray-900 mb-3">
+                            Location
+                          </h3>
+                          <p className="text-gray-700 flex gap-2">
+                            <MapPin className="w-4 h-4 mt-1 text-blue-600" />
+                            {hotelData.address}
+                          </p>
+                        </section>
+                    
             </div>
-            <button className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition">
-              BOOK THIS NOW
-            </button>
-          </div>
+            <div className="lg:col-span-1">
+              <div className="sticky top-24 bg-white rounded-2xl shadow-lg border p-6">
+
+                    <div className="mb-4">
+                      <p className="text-sm text-gray-500">Starting from</p>
+                      <p className="text-3xl font-bold text-gray-900">
+                        ₹{Number(hotelData.tariff_starting_from).toLocaleString()}
+                      </p>
+                      <p className="text-xs text-gray-500">per night</p>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-3 mb-4">
+                      <div className="border rounded-lg p-3 text-sm">
+                        <p className="text-gray-500">Check-in</p>
+                        <p className="font-semibold">01:00 PM</p>
+                      </div>
+                      <div className="border rounded-lg p-3 text-sm">
+                        <p className="text-gray-500">Check-out</p>
+                        <p className="font-semibold">11:00 AM</p>
+                      </div>
+                    </div>
+
+                    <button
+                      onClick={() => setShowHotelEnquiry(true)} // Change this
+                      className="w-full bg-blue-600 text-white py-3 rounded-xl font-semibold hover:bg-blue-700 transition"
+                    >
+                      Check Availability
+                    </button>
+
+                    <p className="text-xs text-center text-gray-500 mt-3">
+                      Free cancellation • Instant confirmation
+                    </p>
+
+                  </div>
+
+            </div>
+     
         </div>
 
-        {/* Overview */}
-        <section className="mt-10">
-          <h2 className="text-2xl font-bold mb-3">Hotel Overview</h2>
-          <p className="text-gray-700 leading-relaxed">{hotelData.description || "No description available."}</p>
-        </section>
+        {/* ✅ SIMILAR HOTELS */}
+        {similarHotels?.length > 0 && (
+          <section className="mt-16">
+            <h2 className="text-2xl font-bold mb-6">
+              More Hotels in {hotelData.destination}
+            </h2>
 
-        {/* Amenities */}
-        {hotelData.facilities?.length > 0 && (
-          <section className="mt-8">
-            <h3 className="text-xl font-semibold mb-3">Amenities</h3>
-            <div className="flex flex-wrap gap-3">
-              {hotelData.facilities.map((facility, i) => (
-                <span key={i} className="inline-flex items-center bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm">
-                  ✓ {facility.name}
-                </span>
-              ))}
-            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {similarHotels.map((hotel) => (
+                  <Link
+                    key={hotel.id}
+                    href={`/hotels/${destinationSlug}/${hotel.slug}`}
+                    className="group bg-white rounded-[2.5rem] overflow-hidden border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-500 flex flex-col"
+                  >
+                    {/* Image */}
+                    <div className="relative h-56 overflow-hidden">
+                      <Image
+                        src={hotel.front_image_url || "/images/placeholder.jpg"}
+                        alt={hotel.name}
+                        fill
+                        className="object-cover transition-transform duration-700 group-hover:scale-110"
+                      />
+
+                      {/* Star Badge */}
+                      <div className="absolute top-4 right-4 px-3 py-1 bg-yellow-400/90 text-yellow-900 rounded-full text-[11px] font-extrabold tracking-widest uppercase backdrop-blur">
+                        {hotel.star_rating} ★
+                      </div>
+                    </div>
+
+                    {/* Content */}
+                    <div className="p-6 flex flex-col flex-grow">
+                      <h3 className="text-lg font-bold text-gray-900 mb-1 group-hover:text-emerald-600 transition-colors">
+                        {hotel.name}
+                      </h3>
+
+                      <p className="text-xs text-gray-400 font-semibold mb-4 flex items-center">
+                        📍 {hotel.location}
+                      </p>
+
+                      {hotel.tariff_starting_from && (
+                        <div className="mt-auto">
+                          <span className="text-xs font-bold text-gray-400 uppercase tracking-widest block mb-1">
+                            Starting from
+                          </span>
+                          <span className="text-xl font-extrabold text-emerald-600">
+                            ₹{Number(hotel.tariff_starting_from).toLocaleString()}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  </Link>
+                ))}
+                            </div>
           </section>
         )}
 
-        {/* Location */}
-        <section className="mt-8">
-          <h3 className="text-xl font-semibold mb-3">Location</h3>
-          <p className="text-gray-700">{hotelData.address || "Address not specified."}</p>
-        </section>
       {/* ✅ RELATED TOURS */}
         {relatedTours?.length > 0 && (
           <section className="mt-16">
@@ -194,7 +376,7 @@ const breadcrumbSchema = buildBreadcrumbList([
             </h2>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {relatedTours.map((tour, index) => {
+              {relatedTours.map((tour) => {
                 const imageUrl =
                   tour.featured_image?.optimized_card ||
                   tour.featured_image?.image ||
@@ -203,70 +385,75 @@ const breadcrumbSchema = buildBreadcrumbList([
                 const standardPackage = tour.pricing?.find(
                   (pkg) => pkg.package_type === "standard"
                 );
+
                 const price = standardPackage?.price;
                 const discountPrice = standardPackage?.discount_price;
 
                 return (
                   <div
                     key={tour.id}
-                    className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition border border-gray-100"
+                    className="group bg-white rounded-[2rem] overflow-hidden border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-500 flex flex-col"
                   >
-                    <div className="relative w-full h-48">
+                    {/* Image */}
+                    <div className="relative h-56 overflow-hidden">
                       <Image
                         src={imageUrl}
                         alt={tour.name}
                         fill
-                        className="object-cover"
-                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 33vw, 25vw"
+                        className="object-cover transition-transform duration-700 group-hover:scale-110"
                       />
+
+                      {tour.duration_days && (
+                        <div className="absolute top-4 left-4 px-3 py-1 bg-white/90 backdrop-blur rounded-full text-xs font-bold text-gray-900">
+                          {tour.duration_days} Days
+                        </div>
+                      )}
                     </div>
 
-                    <div className="p-4 flex flex-col gap-2">
-                      <h3 className="text-lg font-semibold text-gray-800">
+                    {/* Content */}
+                    <div className="p-6 flex flex-col flex-grow">
+                      <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-indigo-600 transition-colors">
                         {tour.name}
                       </h3>
 
-                      {tour.duration_days && (
-                        <p className="text-sm text-gray-500">
-                          🕒 {tour.duration_days} Days
-                        </p>
-                      )}
+                      <div className="mt-auto">
+                        {discountPrice ? (
+                          <div className="text-base font-semibold">
+                            <span className="text-indigo-600">
+                              ₹{Number(discountPrice).toLocaleString()}
+                            </span>
+                            {price && (
+                              <>
+                                <span className="line-through text-gray-400 ml-2 text-sm">
+                                  ₹{Number(price).toLocaleString()}
+                                </span>
+                                <span className="text-xs text-green-600 ml-2 font-bold">
+                                  Save ₹{Number(price - discountPrice).toLocaleString()}
+                                </span>
+                              </>
+                            )}
+                          </div>
+                        ) : price ? (
+                          <p className="text-lg font-extrabold text-indigo-600">
+                            From ₹{Number(price).toLocaleString()}
+                          </p>
+                        ) : null}
 
-                      {discountPrice ? (
-                        <div className="text-base">
-                          <span className="text-black-600 font-semibold">
-                            ₹{Number(discountPrice).toLocaleString()}
-                          </span>
-                          {price && price > discountPrice && (
-                            <>
-                              <span className="line-through text-gray-400 ml-2">
-                                ₹{Number(price).toLocaleString()}
-                              </span>
-                              <span className="text-sm text-green-500 ml-2">
-                                Save ₹{Number(price - discountPrice).toLocaleString()}
-                              </span>
-                            </>
-                          )}
+                        <div className="flex gap-2 mt-4">
+                          <Link
+                            href={`/tours/${tour.slug}`}
+                            className="flex-1 bg-gray-900 hover:bg-indigo-600 text-white py-2 rounded-xl text-sm font-bold text-center transition"
+                          >
+                            Explore
+                          </Link>
+
+                          <button
+                            onClick={() => handleQuoteClick(tour)}
+                            className="flex-1 border border-indigo-600 text-indigo-600 hover:bg-indigo-50 py-2 rounded-xl text-sm font-bold transition"
+                          >
+                            Quote
+                          </button>
                         </div>
-                      ) : price ? (
-                        <p className="text-base text-green-600 font-semibold">
-                          From ₹{Number(price).toLocaleString()}
-                        </p>
-                      ) : null}
-
-                      <div className="flex flex-wrap justify-between gap-2 mt-4">
-                        <Link
-                          href={`/tours/${tour.slug}`}
-                          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm"
-                        >
-                          Explore
-                        </Link>
-                            <button
-                        onClick={() => handleQuoteClick(tour)}
-                        className="bg-white border border-blue-600 text-blue-600 px-6 py-2 rounded hover:bg-blue-50 text-sm"
-                      >
-                        Request Quote
-                      </button>
                       </div>
                     </div>
                   </div>
@@ -329,13 +516,18 @@ const breadcrumbSchema = buildBreadcrumbList([
                       </p>
                     </div>
                   </Link>
-                ))}
+                ))} 
               </div>
             </section>
           )}
       </main>
       <Footer />
-
+          {/* ✅ HOTEL WHATSAPP ENQUIRY MODAL */}
+         <HotelEnquiryModal 
+            isOpen={showHotelEnquiry} 
+            onClose={() => setShowHotelEnquiry(false)} 
+            hotel={hotelData} 
+          />
           {/* Modal */}
       {showGalleryModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4">

@@ -2,7 +2,7 @@ import { buildMetadata } from "@/lib/seoHelpers";
 import DestinationListPage from "./DestinationListPage";
 import { fetchData } from "@/lib/api";
 
-export const dynamic = "force-dynamic"; // or "auto" or "force-static"
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata() {
   return buildMetadata({
@@ -10,18 +10,20 @@ export async function generateMetadata() {
     description:
       "Discover amazing destinations across India with Gokeys. Find breathtaking places, hidden gems, and plan your next adventure.",
     path: "/destinations",
-    image: "/images/gokeyslogo.png", // Replace with your best OG image
+    image: "/images/gokeyslogo.png",
   });
 }
 
 export default async function DestinationsPage() {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/destinations/`, {
-    next: { revalidate: 60 },
-  });
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/api/destinations/`,
+    { next: { revalidate: 60 } }
+  );
+
   const data = await res.json();
 
-  // ✅ Extract only the destinations array
-  const destinations = data.results;
+  // 🔥 Works for BOTH paginated & non-paginated API
+  const destinations = data.results || data || [];
 
   return <DestinationListPage destinations={destinations} />;
 }

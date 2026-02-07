@@ -41,7 +41,7 @@ export default function SimilarTours({ tours }) {
                 fill
                 className="object-cover"
               />
-              <span className="absolute top-3 left-3 bg-indigo-600 text-white text-xs px-3 py-1 rounded-full shadow">
+              <span className="absolute top-3 left-3 bg-brand-600 text-white text-xs px-3 py-1 rounded-full shadow">
                 {tour.duration_days}D / {tour.duration_nights}N
               </span>
             </div>
@@ -57,7 +57,7 @@ export default function SimilarTours({ tours }) {
                   <span className="font-medium">{tour.starting_location}</span>
                 </p>
 
-                <p className="text-lg font-bold text-indigo-600 mt-3">
+                <p className="text-lg font-bold text-brand-600 mt-3">
                   ₹{parseFloat(tour.base_price).toLocaleString()}
                 </p>
               </div>
@@ -65,7 +65,7 @@ export default function SimilarTours({ tours }) {
               {/* Button at bottom */}
               <div className="pt-5">
                 <Link href={`/tours/${tour.slug}`} className="block">
-                  <button className="w-full bg-indigo-600 text-white py-2.5 rounded-lg hover:bg-indigo-700 transition font-medium">
+                  <button className="w-full bg-brand-600 text-white py-2.5 rounded-lg hover:bg-brand-700 transition font-medium">
                     View Tour
                   </button>
                 </Link>

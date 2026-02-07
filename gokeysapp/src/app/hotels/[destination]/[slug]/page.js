@@ -35,13 +35,19 @@ export default async function Page({ params }) {
     return notFound();
   }
 
-    const relatedPlaces = await fetchListData("sightseeing", { destination });
-    const relatedTours = await fetchListData("tours", { destination });
+    const similarHotels = (await fetchListData("hotels", { destination }))
+  ?.filter(hotelItem => hotelItem.slug !== slug);
+   const relatedToursResponse = await fetchListData("tours", { destination });
+  const relatedPlacesResponse = await fetchListData("sightseeing", { destination });
+
+  const relatedTours = relatedToursResponse?.results?.slice(0, 4) || [];
+  const relatedPlaces = relatedPlacesResponse?.results?.slice(0, 4) || [];
 
   return (
     <HotelDetailPage hotelData={hotel} 
       relatedPlaces={relatedPlaces}
       relatedTours={relatedTours}
+      similarHotels={similarHotels}
     />
   );
 }

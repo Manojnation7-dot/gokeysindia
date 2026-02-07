@@ -1,376 +1,248 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Image from "next/image";
-import Link from "next/link";
 import { motion } from "framer-motion";
 import ArrowButton from "@/components/ArrowButton";
 import { buildItemListSchema, buildBreadcrumbList } from "@/lib/seoSchemas";
 import SmartSEO from "@/components/SmartSEO";
+import Link from "next/link";
 
-
-const DestinationListPage = ({destinations}) => {
+const DestinationListPage = ({ destinations }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
 
-  const destinationsPerPage = 4;
+  const destinationsPerPage = 12;
 
-
-  // Filter destinations by search query
-  const filteredDestinations = destinations.filter((destination) =>
-    destination.name.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredDestinations = (destinations || []).filter((d) =>
+    d.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  // Paginate destinations for the "Discover More" section
-  const indexOfLastDestination = currentPage * destinationsPerPage;
-  const indexOfFirstDestination = indexOfLastDestination - destinationsPerPage;
-
-  const currentDiscoverMoreDestinations = filteredDestinations.slice(
-    indexOfFirstDestination,
-    indexOfLastDestination
+  const totalPages = Math.ceil(
+    filteredDestinations.length / destinationsPerPage
   );
 
-  const totalPages = Math.ceil(filteredDestinations.length / destinationsPerPage);
+  const indexOfLast = currentPage * destinationsPerPage;
+  const indexOfFirst = indexOfLast - destinationsPerPage;
 
-  // Handle search query
+  const visibleDestinations = filteredDestinations.slice(
+    indexOfFirst,
+    indexOfLast
+  );
+
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
     setCurrentPage(1);
   };
 
-  // Handle pagination
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
-
-    // Define breadcrumb schema
+  /* ---------------- SEO ---------------- */
   const breadcrumbSchema = buildBreadcrumbList([
     { name: "Home", url: "/" },
     { name: "Destinations", url: "/destinations" },
   ]);
 
-  // Define destination list schema
   const destinationListSchema = buildItemListSchema({
     name: "All Destinations",
     items: filteredDestinations,
     itemType: "Place",
     getItemSchema: (destination, schema) => ({
       ...schema,
-      name: destination.name || "Unnamed Destination",
+      name: destination.name,
       url: `${process.env.NEXT_PUBLIC_BASE_URL}/destinations/${destination.slug}`,
       description:
-        destination.overview?.replace(/<\/?[^>]+(>|$)/g, "") ||
-        destination.state ||
-        "Discover a stunning destination with Gokeys India.",
+        destination.state || "Discover amazing destinations with Gokeys India.",
       image:
         destination.featured_image?.image ||
         "https://images.unsplash.com/photo-1507525428034-b723cf961d3e",
-      address: {
-        "@type": "PostalAddress",
-        addressRegion: destination.state || "Unknown",
-        addressCountry: "IN",
-      },
     }),
   });
 
-  // Combine schemas for SmartSEO
   const schemas = [breadcrumbSchema, destinationListSchema];
 
   return (
     <>
       <Header />
       <SmartSEO schema={schemas} />
-      <main className="bg-gray-50">
-        {/* Hero Section */}
-        <section className="relative h-[350px] flex items-center justify-center">
+
+      <main className="bg-gradient-to-b from-white to-gray-50">
+
+        {/* PREMIUM HERO */}
+        <section className="relative h-[420px] flex items-center justify-center overflow-hidden">
           <Image
-            src="https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?q=80&w=2071&auto=format&fit=crop"
-            alt="Explore destinations with Gokeys India"
-            layout="fill"
-            objectFit="cover"
-            className="z-0"
+            src="https://images.unsplash.com/photo-1501785888041-af3ef285b470"
+            alt="Explore destinations"
+            fill
+            priority
+            className="object-cover scale-105"
           />
-          <div className="absolute inset-0 bg-black opacity-30 z-5" />
-          <div className="relative z-10 text-center text-white px-4">
-            <motion.h1
-              className="text-4xl md:text-5xl font-bold drop-shadow-lg"
-              initial={{ opacity: 0, y: -50 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1 }}
-            >
-              Explore Amazing Destinations with Gokeys India
-            </motion.h1>
-            <motion.p
-              className="mt-3 text-lg md:text-xl italic drop-shadow-md"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.5, duration: 1 }}
-            >
-              "I'm in love with cities I've never been to and people I've never met."
-            </motion.p>
-            <motion.div
-              className="mt-6"
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ delay: 1, type: "spring", stiffness: 120 }}
-            >
-              <Link href="#destinations">
-                <button className="px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold rounded-lg hover:from-blue-700 hover:to-indigo-700 transition">
-                  Discover Now
-                </button>
-              </Link>
-            </motion.div>
+          <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/60" />
+
+          <div className="relative text-center text-white px-6">
+            <h1 className="text-4xl md:text-6xl font-bold tracking-tight">
+              Discover Incredible Destinations
+            </h1>
+            <p className="mt-4 text-lg md:text-xl text-gray-200">
+              Explore handpicked places across India with comfort & trust
+            </p>
           </div>
         </section>
 
-        {/* Search Bar */}
-        <section className="max-w-7xl mx-auto px-6 sm:px-8 py-6">
-          <div className="flex justify-center items-center">
+        {/* PREMIUM SEARCH */}
+        <section className="max-w-5xl mx-auto px-6 -mt-10 relative z-10">
+          <div className="backdrop-blur-lg bg-white/70 shadow-xl rounded-2xl p-4 border border-white/40">
             <input
               type="text"
               value={searchQuery}
               onChange={handleSearchChange}
-              placeholder="Search destinations..."
-              className="py-3 px-5 bg-white border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-indigo-500 w-full max-w-md shadow-sm"
+              placeholder="Search destination (Haridwar, Kedarnath, Goa...)"
+              className="w-full py-3 px-5 bg-transparent focus:outline-none text-gray-700 placeholder-gray-500"
             />
           </div>
         </section>
 
-        {/* Top Destinations Section */}
-        {filteredDestinations.length > 0 && (
-         <section id="destinations" className="max-w-7xl mx-auto px-6 sm:px-8 py-6">
-         <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
-           {/* Left: Large Card */}
-           <div className="md:col-span-5">
-             <motion.div
-               className="relative h-[500px] md:h-full rounded-xl overflow-hidden shadow-lg group"
-               initial={{ opacity: 0, y: 20 }}
-               whileInView={{ opacity: 1, y: 0 }}
-               viewport={{ once: true }}
-               transition={{ duration: 0.5 }}
-             >
-               <Image
-                 src={
-                   filteredDestinations[0]?.featured_image?.image ||
-                   "/placeholder.jpg"
-                 }
-                 alt={filteredDestinations[0]?.name}
-                 layout="fill"
-                 objectFit="cover"
-                 className="transition-transform duration-300 group-hover:scale-105"
-               />
-               <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-0 group-hover:opacity-80 transition-opacity duration-300 z-10"></div>
-               <div className="absolute group inset-0 bg-black/30 flex flex-col justify-end p-6 z-20">
-              <div className="text-white">
-                <h3 className="text-2xl font-semibold">
-                  {filteredDestinations[0]?.name}
-                </h3>
-                <p className="text-sm mt-1">{filteredDestinations[0]?.state}</p>
-              </div>
+        {/* DESTINATION GRID */}
+        {visibleDestinations.length > 0 && (
+          <section className="max-w-7xl mx-auto px-6 py-14">
 
-              <ArrowButton
-                href={`/destinations/${filteredDestinations[0]?.slug}`}/>              
-            </div>
-             </motion.div>
-           </div>
-       
-           {/* Right: Responsive Cards */}
-           <div className="md:col-span-7 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 md:grid-rows-2 gap-4">
-             {filteredDestinations.slice(1, 4).map((destination, index) => (
-               <motion.div
-                 key={destination.id}
-                 className={`relative rounded-xl overflow-hidden shadow-lg group ${
-                   index === 2 ? "sm:col-span-2 md:col-span-2 md:row-span-2 h-[250px] md:h-full" : "h-[250px]"
-                 }`}
-                 initial={{ opacity: 0, y: 20 }}
-                 whileInView={{ opacity: 1, y: 0 }}
-                 viewport={{ once: true }}
-                 transition={{ delay: index * 0.2, duration: 0.5 }}
-               >
-                 <Image
-                   src={destination.featured_image?.image || "/placeholder.jpg"}
-                   alt={destination.name}
-                   layout="fill"
-                   objectFit="cover"
-                   className="transition-transform duration-300 group-hover:scale-105"
-                 />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-0 group-hover:opacity-80 transition-opacity duration-300 z-10"></div>
-                 <div className="absolute inset-0 bg-black/30 flex flex-col justify-end p-4 z-20">
-                   <div className="text-white">
-                     <h3 className="text-xl font-semibold">
-                       {destination.name}
-                     </h3>
-                     <p className="text-sm mt-1">{destination.state}</p>
-                   </div>
-                   <ArrowButton
-                     href={`/destinations/${destination.slug}`}
-                     className="absolute top-4 right-4 bg-white p-2 rounded-full hover:bg-indigo-600 hover:text-white transition"
-                   />
-                 </div>
-               </motion.div>
-             ))}
-           </div>
-         </div>
-       </section>
-       
-        
-        )}
-
-        {/* Explore More Stunning Destinations Section */}
-        {filteredDestinations.length > 4 && (
-          <section className="max-w-7xl mx-auto px-6 sm:px-8 py-10">
-            <h2 className="text-3xl font-bold text-center text-gray-800">
-              Explore More Stunning Destinations
-            </h2>
-            <p className="text-center text-gray-600 mt-2">
-              Discover breathtaking locations around the world and find your next adventure!
-            </p>
-            <hr className="w-24 mx-auto border-t-2 border-gray-300 my-6" />
-
-            <motion.div
-              className="relative h-[500px] rounded-xl overflow-hidden shadow-lg group"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5 }}
-            >
-              <Image
-                src={
-                  filteredDestinations[4]?.featured_image?.image ||
-                  "/placeholder.jpg"
-                }
-                alt={filteredDestinations[4]?.name}
-                layout="fill"
-                objectFit="cover"
-                className="transition-transform duration-300 group-hover:scale-105 "
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-0 group-hover:opacity-80 transition-opacity duration-300 z-10"></div>
-              <div className="absolute inset-0 bg-black/30 flex flex-col justify-end p-6 z-20">
-                <div className="text-white">
-                  <h3 className="text-2xl font-semibold">
-                    {filteredDestinations[4]?.name}
-                  </h3>
-                  <p className="text-sm mt-1 line-clamp-2">
-                    {filteredDestinations[4]?.overview}
-                  </p>
-                </div>
-                <ArrowButton
-                  href={`/destinations/${filteredDestinations[4]?.slug}`}
-                  className="absolute top-4 right-4 bg-white p-3 rounded-full hover:bg-indigo-600 hover:text-white transition"
-                />
-              </div>
-            </motion.div>
-          </section>
-        )}
-
-        {/* Discover More Destinations Section */}
-        {filteredDestinations.length > 5 && (
-          <section className="max-w-7xl mx-auto px-6 sm:px-8 py-10">
-            <h2 className="text-3xl font-bold text-center text-gray-800">
-              Discover More Destinations
-            </h2>
-            <p className="text-center text-gray-600 mt-2">
-              Uncover unique places waiting to be explored.
-            </p>
-            <hr className="w-24 mx-auto border-t-2 border-gray-300 my-6" />
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {currentDiscoverMoreDestinations.slice(5, 17).map((destination, index) => (
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+              {visibleDestinations.map((destination, index) => (
                 <motion.div
                   key={destination.id}
-                  className="relative h-[250px] rounded-xl overflow-hidden shadow-lg group"
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={{ opacity: 0, y: 25 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  transition={{ delay: index * 0.1, duration: 0.5 }}
-                >
+                  transition={{ delay: index * 0.05 }}
+                  className="group relative h-[260px] rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300">
+
                   <Image
-                    src={destination.featured_image?.image || "/placeholder.jpg"}
+                    src={
+                      destination.featured_image?.image || "/placeholder.jpg"
+                    }
                     alt={destination.name}
-                    layout="fill"
-                    objectFit="cover"
-                    className="transition-transform duration-300 group-hover:scale-105"
+                    fill
+                    loading="lazy"
+                    className="object-cover group-hover:scale-110 transition duration-500"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-0 group-hover:opacity-80 transition-opacity duration-300 z-10"></div>
-                  <div className="absolute inset-0 bg-black/30 flex flex-col justify-end p-4">
-                    <div className="text-white">
-                      <h3 className="text-xl font-semibold">
-                        {destination.name}
-                      </h3>
-                    </div>
-                    <Link
-                      href={`/destinations/${destination.slug}`}
-                      className="absolute top-4 right-4 bg-white p-2 rounded-full hover:bg-indigo-600 hover:text-white transition"
-                    >
-                      <svg
-                        className="h-4 w-4"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M9 5l7 7m0 0l-7 7m7-7H3"
-                        />
-                      </svg>
-                    </Link>
+
+                  {/* Overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-90" />
+
+                  {/* Content */}
+                  <div className="absolute bottom-0 p-4 text-white w-full">
+                    <h3 className="text-lg font-semibold tracking-wide">
+                      {destination.name}
+                    </h3>
+                    <p className="text-sm text-gray-300">
+                      {destination.state}
+                    </p>
                   </div>
+
+                  <ArrowButton
+                    href={`/destinations/${destination.slug}`}
+                    className="absolute top-3 right-3 bg-white/90 backdrop-blur p-2 rounded-full hover:bg-indigo-600 hover:text-white transition"
+                  />
                 </motion.div>
               ))}
             </div>
 
-            {/* Pagination */}
-            {filteredDestinations.length > 17 && (
-              <div className="flex justify-center items-center space-x-4 mt-8">
+            {/* PREMIUM PAGINATION */}
+            {totalPages > 1 && (
+              <div className="flex justify-center items-center gap-4 mt-12">
                 {currentPage > 1 && (
                   <button
-                    onClick={() => paginate(currentPage - 1)}
-                    className="bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-700"
+                    onClick={() => setCurrentPage(currentPage - 1)}
+                    className="px-5 py-2 rounded-full bg-gray-200 hover:bg-indigo-600 hover:text-white transition"
                   >
-                    Previous
+                    ← Previous
                   </button>
                 )}
-                <span className="text-lg font-semibold text-gray-700">
+
+                <span className="text-gray-700 font-medium">
                   Page {currentPage} of {totalPages}
                 </span>
+
                 {currentPage < totalPages && (
                   <button
-                    onClick={() => paginate(currentPage + 1)}
-                    className="bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-700"
+                    onClick={() => setCurrentPage(currentPage + 1)}
+                    className="px-5 py-2 rounded-full bg-gray-200 hover:bg-indigo-600 hover:text-white transition"
                   >
-                    Next
+                    Next →
                   </button>
                 )}
               </div>
             )}
           </section>
         )}
+        {/* PREMIUM CTA */}
+<section className="py-24 px-6 bg-gradient-to-b from-white to-gray-50">
+  <div className="max-w-7xl mx-auto relative overflow-hidden rounded-[2.5rem] shadow-2xl">
 
-        {/* Quick Links Section */}
-        {filteredDestinations.length > 0 && (
-         <section className="py-16 px-6 bg-white">
-            <div className="max-w-7xl mx-auto text-center">
-              <h2 className="text-4xl font-bold text-blue-900 mb-12">
-                Check Out the Best Destinations
-              </h2>
-              <ul className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                {filteredDestinations.slice(0, 8).map((destination) => (
-                  <li key={destination.id}>
-                    <Link
-                      href={`/destinations/${destination.slug}`}
-                      className="block p-4 bg-gradient-to-r from-red-50 to-gray-100 rounded-full shadow hover:from-yellow-100 hover:to-orange-100 transition"
-                    >
-                      {destination.name}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </section>
-        )}
+    {/* Background Image */}
+    <Image
+      src="/images/banner-image.png"
+      alt="Plan Your Group Trip"
+      fill
+      priority
+      className="object-cover scale-105"
+    />
+
+    {/* Dark Overlay */}
+    <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/85 to-slate-900/20" />
+
+    {/* Soft Glow */}
+    <div className="absolute -top-20 -left-20 w-72 h-72 bg-blue-500/20 blur-[120px] rounded-full" />
+    <div className="absolute bottom-0 right-0 w-72 h-72 bg-indigo-500/20 blur-[120px] rounded-full" />
+
+    {/* Content */}
+    <div className="relative z-10 max-w-2xl p-10 md:p-16 text-white">
+      
+      <motion.h2
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        viewport={{ once: true }}
+        className="text-4xl md:text-5xl font-bold leading-tight mb-6"
+      >
+        Ready to Plan Your <br /> Dream Journey?
+      </motion.h2>
+
+      <motion.p
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2, duration: 0.6 }}
+        viewport={{ once: true }}
+        className="text-lg text-white/90 mb-10"
+      >
+        Tell us your destination, dates, and preferences — our travel experts will craft a perfect experience for you.
+      </motion.p>
+
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.4, duration: 0.6 }}
+        viewport={{ once: true }}
+        className="flex flex-col sm:flex-row gap-4"
+      >
+        <Link href="/contact">
+          <button className="px-8 py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl shadow-lg transition duration-300">
+            Plan My Trip
+          </button>
+        </Link>
+
+        <Link href="/contact">
+          <button className="px-8 py-4 bg-white/10 hover:bg-white/20 backdrop-blur border border-white/30 text-white font-semibold rounded-xl transition duration-300">
+            Get Callback
+          </button>
+        </Link>
+      </motion.div>
+    </div>
+  </div>
+</section>
+
       </main>
+
       <Footer />
     </>
   );
