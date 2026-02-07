@@ -125,14 +125,24 @@ export default function QuoteDialog({
       if (res.ok) {
         console.log("Quote enquiry submitted successfully");
        // GOOGLE ADS / GTM CONVERSION EVENT
-            if (typeof window !== "undefined") {
-              window.dataLayer = window.dataLayer || [];
-              window.dataLayer.push({
-                event: "gokeys_quote_submit",
-                tour_name: tourName || "",
-                package_type: packageType || ""
-              });
-            }
+          // --- Google Ads Conversion (Direct gtag) ---
+          if (typeof window !== "undefined" && window.gtag) {
+            window.gtag("event", "conversion", {
+              send_to: "AW-CONVERSION_ID/CONVERSION_LABEL",
+              value: 1.0,
+              currency: "INR"
+            });
+          }
+
+          // (Optional) keep dataLayer for future GTM
+          if (typeof window !== "undefined") {
+            window.dataLayer = window.dataLayer || [];
+            window.dataLayer.push({
+              event: "gokeys_quote_submit",
+              tour_name: tourName || "",
+              package_type: packageType || ""
+            });
+          }
         if (!isInline) {
           setInternalFormData({
             name: "",

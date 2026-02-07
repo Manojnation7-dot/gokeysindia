@@ -140,7 +140,7 @@ export default async function BlogDetailPage({ params }) {
   let errorMessage = null;
   let relatedStories = []; 
   try {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.gokeys.in';
   
     const res = await fetch(`${apiUrl}/api/blogs/${slug}/`, {
       next: { revalidate: 60 },

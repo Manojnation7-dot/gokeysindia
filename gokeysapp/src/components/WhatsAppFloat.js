@@ -5,7 +5,16 @@ import { FaWhatsapp } from "react-icons/fa";
 export default function WhatsAppFloat() {
   const openWhatsApp = () => {
 
-   // GOOGLE ADS / GTM – WhatsApp Click Conversion
+    // --- Google Ads Conversion (Direct gtag) ---
+    if (typeof window !== "undefined" && window.gtag) {
+        window.gtag("event", "conversion", {
+          send_to: "AW-956670461/VvnUCP3vuPQbEP3DlsgD",
+          value: 1.0,
+          currency: "INR",
+        });
+      }
+
+    // (Optional) Keep dataLayer event for future GTM use
     if (typeof window !== "undefined") {
       window.dataLayer = window.dataLayer || [];
       window.dataLayer.push({
