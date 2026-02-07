@@ -134,7 +134,7 @@ export default function QuoteDialog({
             });
           }
 
-         //for GTM for furure use
+
           if (typeof window !== "undefined") {
             window.dataLayer = window.dataLayer || [];
             window.dataLayer.push({
