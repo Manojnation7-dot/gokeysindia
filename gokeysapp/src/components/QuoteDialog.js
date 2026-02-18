@@ -133,8 +133,6 @@ export default function QuoteDialog({
               currency: "INR"
             });
           }
-
-
           if (typeof window !== "undefined") {
             window.dataLayer = window.dataLayer || [];
             window.dataLayer.push({
