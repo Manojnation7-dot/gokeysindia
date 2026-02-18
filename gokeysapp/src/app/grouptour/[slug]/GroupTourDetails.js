@@ -37,7 +37,7 @@ import {
 } from '@/lib/seoSchemas';
 import { buildFAQSchema } from '@/lib/seoSchemas';
 
-export default function GroupTourDetails({ tourData, baseUrl, documentNumber, currentDate,tourPath  }) {
+export default function GroupTourDetails({ tourData, baseUrl, documentNumber, currentDate,tourPath,similarTours  }) {
   const [expandedDay, setExpandedDay] = useState(null);
   const [activeTab, setActiveTab] = useState('overview');
 
@@ -518,7 +518,7 @@ const [isLoading, setIsLoading] = useState(false);
                     </button>
                     {/* Contact info below the button */}
                     <p className="mt-3 text-center text-gray-700 text-sm">
-                      Need More Information? Call/WhatsApp our Yatra Coordinator on <span className="font-semibold">+91-81262-16093</span>
+                      Need More Information? Call/WhatsApp our Yatra Coordinator on <span className="font-semibold">+91-7830718687</span>
                     </p>
                   </div>
                 </form>
@@ -534,10 +534,7 @@ const [isLoading, setIsLoading] = useState(false);
         </div>
 
         {/* Popular Group Tours Section */}
-            <SimilarTours
-              currentTourSlug={tourData.slug}
-              currentDestinations={tourData.destinations.map(d => d.name)}
-            />
+          <SimilarTours tours={similarTours} />
 
         {/* FAQ Section */}
         <section className="py-12 max-w-6xl mx-auto px-4">

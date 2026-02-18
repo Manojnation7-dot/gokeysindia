@@ -187,7 +187,9 @@ const breadcrumbSchema = buildBreadcrumbList([
   { name: tourData.name, url: `/tours/${tourData.slug}` }
 ]);
 
-const faqSchema = tourData.faqs?.length > 0 ? buildFAQSchema(tourData.faqs) : null;
+const faqSchema = tourData.faqs?.length > 0 
+  ? buildFAQSchema(tourData.faqs, tourData.slug) // 👈 Pass slug here
+  : null;
 
    if (!tourData) {
     return (
@@ -203,13 +205,7 @@ const faqSchema = tourData.faqs?.length > 0 ? buildFAQSchema(tourData.faqs) : nu
 
   return (
     <>
-        <SmartSEO
-            schema={[
-              tourSchema,
-              breadcrumbSchema,
-              ...(faqSchema ? [faqSchema] : [])
-            ]}
-          />
+        <SmartSEO schema={[tourSchema, breadcrumbSchema, faqSchema]} />
       <Header />
       <div className="text-gray-800 bg-white">
         {/* Hero Banner */}

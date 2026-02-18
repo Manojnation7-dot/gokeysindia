@@ -107,39 +107,36 @@ export function buildBlogPostSchema({
   };
 }
 
-// ✅ TOUR PACKAGE
-export function buildTourSchema({
-  slug,
-  name,
-  description,
-  imageUrl,
-  price,
-  itineraryItems = []
-}) {
+// ✅ UPDATE: TOUR PACKAGE
+export function buildTourSchema({ slug, name, description, imageUrl, price, itineraryItems = [] }) {
+  const tourUrl = `${SITE_URL}/tour/${slug}`; // Define URL once
   return {
     "@context": "https://schema.org",
     "@type": "TouristTrip",
-    name,
-    description,
-    image: imageUrl,
-    touristType: "Group",
-    offers: {
+    "@id": `${tourUrl}#tour`, // 👈 ADD THIS: Unique ID for the Tour
+    "name": name,
+    "description": description,
+    "image": imageUrl,
+    "touristType": "Group",
+    "offers": {
       "@type": "Offer",
-      url: `${SITE_URL}/tour/${slug}`,
-      priceCurrency: "INR",
-      price
+      "name": name, // Best practice to include name in offer
+      "url": tourUrl,
+      "priceCurrency": "INR",
+      "price": price || "0",
+      "availability": "https://schema.org/InStock"
     },
-    itinerary: {
+    "itinerary": {
       "@type": "ItemList",
-      name: `Itinerary for ${name}`,
-      numberOfItems: itineraryItems.length,
-      itemListElement: itineraryItems.map((item, index) => ({
+      "name": `Itinerary for ${name}`,
+      "numberOfItems": itineraryItems.length,
+      "itemListElement": itineraryItems.map((item, index) => ({
         "@type": "ListItem",
-        position: index + 1,
-        item: {
+        "position": index + 1,
+        "item": {
           "@type": "TouristAttraction",
-          name: item.name,
-          description: item.description
+          "name": item.name,
+          "description": item.description
         }
       }))
     }
@@ -245,16 +242,23 @@ export function buildImageObject({ url, width, height }) {
   };
 }
 
-export function buildFAQSchema(faqs = []) {
+// ✅ UPDATE: FAQ SCHEMA
+export function buildFAQSchema(faqs = [], slug) { // 👈 ADD slug parameter
+  if (!faqs || faqs.length === 0) return null;
+
+  const tourUrl = `${SITE_URL}/tour/${slug}`;
+
   return {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    mainEntity: faqs.map((faq) => ({
+    "@id": `${tourUrl}#faq`, // 👈 ADD THIS: Unique ID for the FAQ
+    "mainEntityOfPage": { "@id": `${tourUrl}#tour` }, // 👈 LINK: Points back to the Tour ID
+    "mainEntity": faqs.map((faq) => ({
       "@type": "Question",
-      name: faq.question,
-      acceptedAnswer: {
+      "name": faq.question,
+      "acceptedAnswer": {
         "@type": "Answer",
-        text: faq.answer.replace(/<\/?[^>]+(>|$)/g, ""), // ✅ Strip HTML tags!
+        "text": (faq.answer || "").replace(/<\/?[^>]+(>|$)/g, ""),
       },
     })),
   };

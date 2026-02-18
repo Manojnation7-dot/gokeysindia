@@ -89,13 +89,34 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${plusJakarta.variable} ${playfair.variable}`}>
       <head>
-        <SmartSEO schema={siteSchemas} />
+        
+   
+       <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-WPMX23NEML"
+          strategy="afterInteractive"
+        />
+
+        <Script id="google-gtag" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+
+            // GA4
+            gtag('config', 'G-WPMX23NEML');
+
+            // Google Ads 
+            gtag('config', 'AW-956670461');
+          `}
+        </Script>
+
       </head>
       <body className="font-sans antialiased">
          <Script
           src={`https://www.google.com/recaptcha/api.js?render=${process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}`}
           strategy="beforeInteractive"
         />
+    
         <Tracker />
         {children}
         <WhatsAppFloat />

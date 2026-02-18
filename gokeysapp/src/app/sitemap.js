@@ -1,6 +1,6 @@
 export default async function sitemap() {
   const BASE_URL = "https://gokeys.in"; 
-  
+  // 🔁 Change to https://gokeys.in on launch day
 
   async function fetchUrls(endpoint, prefix, priority, freq) {
     try {

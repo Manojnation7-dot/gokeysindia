@@ -190,33 +190,35 @@ export default function CabSlider() {
         </Slider>
 
         {/* Structured Data */}
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "OfferCatalog",
-              name: "Cab Services",
-              itemListElement: cabs.map((cab) => ({
+      <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "OfferCatalog",
+          name: "Cab Services in Haridwar",
+          itemListElement: cabs.map((cab) => ({
+            "@type": "ListItem",
+            position: cab.id,
+            item: {
+              "@type": "Service",
+              name: cab.name,
+              description: `${cab.type} with ${cab.seats} seats, ${
+                cab.ac ? "AC" : "Non-AC"
+              }, available in ${cab.location}`,
+              image: "https://gokeys.in" + cab.image, // absolute URL is safer
+              offers: {
                 "@type": "Offer",
-                itemOffered: {
-                  "@type": "Product",
-                  name: cab.name,
-                  description: `${cab.type} with ${cab.seats} seats, ${
-                    cab.ac ? "AC" : "Non-AC"
-                  }, available in ${cab.location}`,
-                  image: cab.image,
-                  offers: {
-                    "@type": "Offer",
-                    price: cab.pricePerDay,
-                    priceCurrency: "INR",
-                    availability: "https://schema.org/InStock",
-                  },
-                },
-              })),
-            }),
-          }}
-        />
+                price: cab.pricePerDay,
+                priceCurrency: "INR",
+                availability: "https://schema.org/InStock",
+                priceValidUntil: "2026-12-31"
+              }
+            }
+          }))
+        })
+      }}
+    />
       </div>
     </section>
   );

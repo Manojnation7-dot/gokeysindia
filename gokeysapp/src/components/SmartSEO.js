@@ -1,17 +1,25 @@
 export default function SmartSEO({ schema }) {
   if (!schema) return null;
 
-  const schemas = Array.isArray(schema) ? schema : [schema];
+  // Flatten and filter out nulls
+  const rawSchemas = Array.isArray(schema) ? schema : [schema];
+  const schemas = rawSchemas.flat().filter(s => s && s["@type"]);
+
+  if (schemas.length === 0) return null;
+
+  // Clean the schemas for the graph (remove individual @context)
+  const graph = schemas.map(({ "@context": _, ...rest }) => rest);
+
+  const consolidatedSchema = {
+    "@context": "https://schema.org",
+    "@graph": graph
+  };
 
   return (
-    <>
-      {schemas.map((s, i) => (
-        <script
-          key={i}
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(s) }}
-        />
-      ))}
-    </>
+    <script
+      id="schema-graph"
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(consolidatedSchema) }}
+    />
   );
 }

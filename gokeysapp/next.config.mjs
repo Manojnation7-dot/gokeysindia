@@ -1,6 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
+
+      unoptimized: true,
     remotePatterns: [
       {
         protocol: 'https',
@@ -282,6 +284,24 @@ const nextConfig = {
   destination: '/tours/kedarnath-deoria-tal-sari-village-tour-package',
   permanent: true,
 },
+  {
+      source: '/tours/kedarnath-deoria-tal-sari-village-tour-package-6-days',
+      destination: '/tours/kedarnath-deoria-tal-sari-village-tour-package',
+      permanent: true,
+    },
+
+    {
+      source: '/tours/gangotri-3-days-tour-package-haridwar',
+      destination: '/tours/gangotri-3-days-tour-from-haridwar',
+      permanent: true,
+    },
+
+     {
+      source: '/trip/gangotri-3-days-tour-package-haridwar',
+      destination: '/tours/gangotri-3-days-tour-from-haridwar',
+      permanent: true,
+    },
+
 {
   source: '/trip/panch-kedar-trek-tour-package',
   destination: '/tours/panch-kedar-tour-package',
@@ -295,6 +315,11 @@ const nextConfig = {
 {
   source: '/trip/chakrata-mussoorie-tour-package',
   destination: '/tours/chakrata-mussoorie-tour-package',
+  permanent: true,
+},
+{
+  source: '/trip/auli-chopta-5-days-tour-package',
+  destination: '/tours/auli-chopta-5-days-tour-package',
   permanent: true,
 },
 {
@@ -384,6 +409,18 @@ const nextConfig = {
   destination: '/destinations/yamunotri',
   permanent: true,
 },
+
+{
+  source: '/trip/badrinath-kedarnath-yatra',
+  destination: '/tours/kedarnath-badrinath-yatra-do-dham-tour',
+  permanent: true,
+},
+
+    {
+        source: "/web-stories/:path*",
+        destination: "https://old.gokeys.in/web-stories/:path*",
+        permanent: true, 
+      },
     ];
   },
 };
