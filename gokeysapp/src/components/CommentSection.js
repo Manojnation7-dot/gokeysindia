@@ -15,21 +15,25 @@ export default function CommentSection({ blogSlug }) {
 
   // Fetch approved comments
   useEffect(() => {
-    const fetchComments = async () => {
-      try {
-        
-        const res = await fetch(`${apiUrl}/api/blogs/${blogSlug}/comments/`);
-        if (!res.ok) {
-          throw new Error('Failed to fetch comments');
-        }
-        const data = await res.json();
-        setComments(data);
-      } catch (error) {
-        console.error('Error fetching comments:', error);
+  const fetchComments = async () => {
+    try {
+      const res = await fetch(`${apiUrl}/api/blogs/${blogSlug}/comments/`);
+
+      if (!res.ok) {
+        throw new Error('Failed to fetch comments');
       }
-    };
-    fetchComments();
-  }, [blogSlug]);
+
+      const data = await res.json();
+
+      setComments(data.results || []); // FIX HERE
+
+    } catch (error) {
+      console.error('Error fetching comments:', error);
+    }
+  };
+
+  fetchComments();
+}, [blogSlug]);
 
   // Handle form input changes
   const handleChange = (e) => {
