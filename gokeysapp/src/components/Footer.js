@@ -10,7 +10,7 @@ const Footer = () => {
         {/* Brand & Address */}
         <div>
           <Image
-            src="/images/gokeyslogo.png"
+            src="/images/gokeyslogo-1.png"
             alt="Gokeys India"
             width={144}
             height={60}
