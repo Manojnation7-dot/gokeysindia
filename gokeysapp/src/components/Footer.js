@@ -8,10 +8,12 @@ const Footer = () => {
 
         {/* Brand & Address */}
         <div>
-          <img
-            src="https://gokeysindia.com/uploads/gokeyslogo.png"
+          <Image
+            src="/images/gokeyslogo.png"
             alt="Gokeys India"
-            className="mb-6 w-36"
+            width={144}
+            height={60}
+            className="mb-6"
           />
           <p className="text-sm leading-relaxed mb-4 text-slate-400">
             4th Shop, Zila Panchayat Market, Railway Road,  
