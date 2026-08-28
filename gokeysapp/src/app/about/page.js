@@ -8,19 +8,39 @@ export async function generateMetadata() {
 
   return {
     title: "About Us",
-    description: "Discover the best Char Dham, Uttarakhand, and Himalayan tours with Gokeys.",
+    description: "Discover the best Char Dham, Uttarakhand, and Himalayan tours with Gokeys. Top Travel Agents in Haridwar Uttarakhand for Travel Package, Hotel Booking and Taxi Booking.",
+    keywords: [
+      "Travel Agents in Haridwar",
+      "Tour Operators in Haridwar",
+      "Travel Agency in Haridwar",
+      "Delhi to Haridwar taxi booking",
+      "Travel Agency in Uttarakhand",
+      "Char Dham Yatra Tour Operators in Haridwar",
+      "Kedarnath Yatra Tour Operators in Haridwar",
+      "Haridwar to Delhi Taxi Services",
+      "Char Dham Yatra Packages in Haridwar",
+      "Ardh Kumbh Mela 2027 Tour Packages in Haridwar",
+      "Kumbh Mela Haridwar Tour Operators",
+      "Best travel agency in Haridwar",
+      "best travel agency in Uttarakhand",
+      "Haridwar cab booking",
+      "Haridwar taxi service",
+      "Haridwar to Dehradun Cab",
+      "Nainital tour package from haridwar",
+    ],
+
     alternates: {
       canonical: `${siteUrl}/about/`,
     },
     openGraph: {
       title: "About Us ",
-      description: "Discover the best Char Dham, Uttarakhand, and Himalayan tours with Gokeys.",
+      description: "Discover the best Char Dham, Uttarakhand, and Himalayan tours with Gokeys. Top Travel Agents in Haridwar Uttarakhand for Travel Package, Hotel Booking and Taxi Booking.",
       url: `${siteUrl}/about/`,
     },
     twitter: {
       card: "summary_large_image",
       title: "About Us ",
-      description: "Discover the best Char Dham, Uttarakhand, and Himalayan tours with Gokeys.",
+      description: "Discover the best Char Dham, Uttarakhand, and Himalayan tours with Gokeys. Top Travel Agents in Haridwar Uttarakhand for Travel Package, Hotel Booking and Taxi Booking.",
     },
   };
 }
@@ -47,7 +67,7 @@ const breadcrumbSchema = buildBreadcrumbList([
           </div>
           <div>
             <p className="text-md text-gray-700 mb-3">
-              Welcome to Gokeys India, a premier subsidiary of Travel In Himalayas, a leading travel agency based in the amazing city of Haridwar, Uttarakhand. With a decade of rich experience in the travel industry, Gokeys India has emerged as one of the finest travel agencies not only in Haridwar but throughout Uttarakhand. Our dedication to providing exceptional service and unforgettable experiences has earned us the reputation of being among the best in the region.
+              Welcome to Gokeys India - Travel In Himalayas, a leading travel agency based in the amazing city of Haridwar, Uttarakhand. With a decade of rich experience in the travel industry, Gokeys India has emerged as one of the finest travel agencies not only in Haridwar but throughout Uttarakhand. Our dedication to providing exceptional service and unforgettable experiences has earned us the reputation of being among the best in the region.
               At Gokeys India. </p>
             <p className="text-md text-gray-700 mb-3">
              we specialize in crafting unparalleled tour packages for Uttarakhand, including revered pilgrimages like Char Dham Yatra, Kedarnath Yatra, Badrinath Yatra, Yamunotri Yatra, and Gangotri Yatra, all at the most competitive prices. With a highly skilled and dedicated team available round the clock, we ensure that every guest receives top-notch service at every step of their journey. Whether it's hotel bookings, ticketing for buses, trains, or flights, tour packages across India, cab bookings, corporate event planning (MICE), trekking trips, or tour guide services, Gokeys India is your trusted partner for all your travel needs.</p>
@@ -61,7 +81,7 @@ const breadcrumbSchema = buildBreadcrumbList([
           
          <div>
             <p className="text-md text-gray-700 mb-3">
-            Established in 2011 as Travel In Himalayas, our parent company laid the foundation for exceptional travel experiences in the Himalayan regions of Northern India. In our quest to offer even better deals and expand our services across the country, Gokeys India was founded on January 1, 2019. Since then, we have been dedicated to exploring new territories and providing comprehensive travel packages throughout India. Our journey from Travel In Himalayas to Gokeys India represents our commitment to innovation and excellence in the travel industry. </p>
+            Established in 2011 as Travel In Himalayas, as we laid the foundation for exceptional travel experiences in the Himalayan regions of Northern India. In our quest to offer even better deals and expand our services across the country, Gokeys India was founded on January 1, 2019. Since then, we have been dedicated to exploring new territories and providing comprehensive travel packages throughout India. Our journey from Travel In Himalayas to Gokeys India represents our commitment to innovation and excellence in the travel industry. </p>
             <p className="text-md text-gray-700 mb-3">
             Here,s the complete story behind how the Idea came to us. One day, we were reading reviews of different travel company and found complaints and in various forums peoples were still trying to find their trip solution in best possible way, so we thought of doing something, that will give customers exception services and then the Idea of travel services throughout the India is started at Gokeys. We started providing services to our customers to different parts of India and many happy customers returned to us with their next packages.</p>
             <p className="text-md text-gray-700 mb-3">
