@@ -571,7 +571,7 @@ export default function UttarakhandTourOperatorsPage() {
               <div className="flex flex-wrap gap-4 mt-7">
 
                 <a
-                  href="/services/taxi-services-haridwar/"
+                  href="/services/taxi-service-haridwar/"
                   className="bg-green-700 text-white px-6 py-3 rounded-lg font-semibold"
                 >
                   View Taxi Services
@@ -709,7 +709,7 @@ export default function UttarakhandTourOperatorsPage() {
                     </p>
 
                     <a
-                      href="/services/taxi-services-haridwar/"
+                      href="/services/taxi-service-haridwar/"
                       className="inline-flex items-center text-green-700 font-semibold hover:text-green-800 transition"
                     >
                       Taxi Services in Haridwar

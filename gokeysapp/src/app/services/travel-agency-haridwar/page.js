@@ -335,7 +335,7 @@ export default function TravelAgencyHaridwarPage() {
                   </p>
 
                   <a
-                    href="/services/taxi-services-haridwar/"
+                    href="/services/taxi-service-haridwar/"
                     className="inline-block mt-4 text-green-700 font-semibold"
                   >
                     Taxi Services →
