@@ -2,6 +2,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { buildBreadcrumbList } from "@/lib/seoSchemas";
 import SmartSEO from "@/components/SmartSEO";
+import GoogleMap from "@/components/MapIframe";
 
 export async function generateMetadata() {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
@@ -111,6 +112,8 @@ const breadcrumbSchema = buildBreadcrumbList([
               <li>Tour Guide Services</li>
             </ul>
           </div>
+
+         <GoogleMap />
 
           {/* Contact Info Section */}
           <div>

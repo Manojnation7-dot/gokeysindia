@@ -29,15 +29,29 @@ export const metadata = {
     template: '%s | Gokeys Travel In Himalayas',
   },
   description:
-    'Gokeys Travel In Himalayas (Gokeys India), a trusted Travel Agent in Haridwar near Har Ki Pauri. Char Dham Yatra, hill station tours, car rentals – 24×7.',
+    'Gokeys Travel In Himalayas (Gokeys India), a top Travel Agent in Haridwar near Har Ki Pauri. Char Dham Yatra, hill station tours, car rentals – 24×7.',
 
   metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL || 'https://gokeys.in'
+    process.env.NEXT_PUBLIC_SITE_URL || 'https://www.gokeys.in'
   ),
+
+    keywords: [
+    "travel agency in Haridwar",
+    "travel agent in Haridwar",
+    "Uttarakhand travel agency",
+    "Uttarakhand tour packages",
+    "Char Dham Yatra",
+    "Char Dham tour package",
+    "taxi service in Haridwar",
+    "Uttarakhand taxi service",
+    "cab booking in Haridwar",
+    "hotel booking in Uttarakhand",
+    "Tour Operators in Uttarakhand for Char Dham Yatra"
+  ],
 
   openGraph: {
     title: 'Gokeys Travel In Himalayas | Travel Agency Haridwar',
-    description: 'Explore the Amazing Tours with Group and Individual Travel in India.',
+    description: 'Uttarakhand Top Travel Agents and Tour Operators for Char Dham Yatra, Mussoorie Nainital Tour, Taxi Services in Uttarakhand and Hotel Bookings agent.',
     url: process.env.NEXT_PUBLIC_SITE_URL || 'https://gokeys.in',
     siteName: 'Gokeys Travel In Himalayas',
     images: [
@@ -55,7 +69,7 @@ export const metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Gokeys India',
-    description: 'Explore the Amazing Tours with Group and Individual Travel in India.',
+    description: 'Uttarakhand Top Travel Agents and Tour Operators for Char Dham Yatra, Mussoorie Nainital Tour, Taxi Services in Uttarakhand and Hotel Bookings agent.',
     images: [
       `${process.env.NEXT_PUBLIC_SITE_URL || 'https://gokeys.in'}/images/gokeyslogo.png`,
     ],

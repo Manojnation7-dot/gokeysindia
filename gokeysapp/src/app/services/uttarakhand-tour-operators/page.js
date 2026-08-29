@@ -3,6 +3,7 @@ import Footer from "@/components/Footer";
 import SmartSEO from "@/components/SmartSEO";
 import { buildBreadcrumbList } from "@/lib/seoSchemas";
 import Image from "next/image";
+import GoogleMap from "@/components/MapIframe";
 
 const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL || "https://www.gokeys.in";
@@ -1025,6 +1026,8 @@ export default function UttarakhandTourOperatorsPage() {
 
           </div>
         </section>
+
+         <GoogleMap />
 
         {/* FINAL CTA */}
         <section className="bg-green-700 text-white">

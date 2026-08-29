@@ -31,7 +31,7 @@ export function buildOrganizationSchema({ name, logoUrl, sameAs = [], contactPoi
 export function buildLocalBusinessSchema({
   name = "Gokeys India",
   logoUrl = "/images/gokeyslogo.png",
-  streetAddress = "Near Bus Stand",
+  streetAddress = "4th Shop, Zila Panchayat Market, Railway Road",
   addressLocality = "Haridwar",
   addressRegion = "Uttarakhand",
   postalCode = "249401",
@@ -39,8 +39,11 @@ export function buildLocalBusinessSchema({
   telephone = "+91-9045916770",
   email = "gokeysindia@gmail.com",
   openingHours = "Mo-Su 09:00-20:00",
-  priceRange = "₹1,000 - ₹50,0000",
-} = {}) { 
+  priceRange = "₹1,000 - ₹50,000",
+  latitude = "29.944171",
+  longitude = "78.146256",
+  hasMap = "https://maps.google.com/?cid=17331082390865979113",
+} = {}) {
   return {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
@@ -55,6 +58,12 @@ export function buildLocalBusinessSchema({
       postalCode,
       addressCountry,
     },
+    geo: {
+      "@type": "GeoCoordinates",
+      latitude,
+      longitude,
+    },
+    hasMap,
     telephone,
     email,
     openingHours,
