@@ -81,7 +81,7 @@ export async function generateMetadata({ params }) {
   }
 
   const primaryCategory = post.categories?.[0];
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://gokeysindia.vercel.app";// Replace with production domain
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://gokeys.in/";// Replace with production domain
 
   const breadcrumbList = {
     '@context': 'https://schema.org',
@@ -121,6 +121,9 @@ export async function generateMetadata({ params }) {
   return {
     title: post.meta_title || post.title,
     description: post.meta_description || post.excerpt,
+      alternates: {
+    canonical: `${baseUrl}/blog/${post.slug}`,
+  },
     openGraph: {
       title: post.meta_title || post.title,
       description: post.meta_description || post.excerpt,
