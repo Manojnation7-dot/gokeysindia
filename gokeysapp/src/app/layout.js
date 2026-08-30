@@ -68,6 +68,7 @@ export const metadata = {
 
   twitter: {
     card: 'summary_large_image',
+    site: '@gokeys4',
     title: 'Gokeys India',
     description: 'Uttarakhand Top Travel Agents and Tour Operators for Char Dham Yatra, Mussoorie Nainital Tour, Taxi Services in Uttarakhand and Hotel Bookings agent.',
     images: [
@@ -79,6 +80,7 @@ export const metadata = {
     canonical: process.env.NEXT_PUBLIC_SITE_URL || 'https://gokeys.in',
   },
 };
+
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://gokeys.in";
 // ✅ Build your static site-wide schemas
 const siteSchemas = [

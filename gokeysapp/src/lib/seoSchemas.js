@@ -43,10 +43,20 @@ export function buildLocalBusinessSchema({
   latitude = "29.944171",
   longitude = "78.146256",
   hasMap = "https://maps.google.com/?cid=17331082390865979113",
+  areaServed = ["Haridwar", "Rishikesh", "Uttarakhand", "Char Dham","Nainital"],
+  sameAs = [
+    "https://facebook.com/gokeysindia",
+    "https://instagram.com/gokeysharidwar",
+    "https://twitter.com/gokeys4",
+    "https://www.tripadvisor.in/Attraction_Review-g616028-d15685215-Reviews-Gokeys_India-Haridwar_Haridwar_District_Uttarakhand.html",
+  ],
+ 
+  ratingValue = "4.8",
+  reviewCount = "159",
 } = {}) {
   return {
     "@context": "https://schema.org",
-    "@type": "LocalBusiness",
+    "@type": ["LocalBusiness", "TravelAgency"],
     name,
     image: SITE_URL + logoUrl,
     url: SITE_URL,
@@ -68,6 +78,13 @@ export function buildLocalBusinessSchema({
     email,
     openingHours,
     priceRange,
+    areaServed,
+    sameAs,
+    aggregateRating: {
+      "@type": "AggregateRating",
+      ratingValue,
+      reviewCount,
+    },
   };
 }
 

@@ -33,8 +33,7 @@ export default function HeroSection() {
         animate={{ opacity: 1 }}
         transition={{ delay: 0.4, duration: 1 }}
       >
-        Curated group journeys across India — from sacred Char Dham and Kedarnath to
-        Adi Kailash, 12 Jyotirling pilgrimages, and unforgettable Himalayan treks.
+        India's trusted travel agency based in Haridwar — curated group journeys from sacred Char Dham and Kedarnath to Adi Kailash, 12 Jyotirlinga pilgrimages, and unforgettable Himalayan treks.
       </motion.p>
 
       <motion.div

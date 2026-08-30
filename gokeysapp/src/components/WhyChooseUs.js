@@ -1,7 +1,7 @@
 export default function WhyChooseUs() {
   const items = [
     {
-      title: "Government Registered",
+      title: "Registered Travel Agent in Haridwar",
       desc: "Authorized & recognized by Uttarakhand Tourism",
     },
     {
@@ -10,50 +10,73 @@ export default function WhyChooseUs() {
     },
     {
       title: "Transparent Pricing",
-      desc: "No hidden charges, no misleading offers — ever",
+      desc: "No hidden charges on any Char Dham Yatra or tour package — ever",
     },
   ];
 
   return (
-    <section className="py-20 px-6 bg-gradient-to-b from-brand-50/40 via-white to-white">
+    <section className="py-20 px-6 bg-linear-to-b from-brand-50/40 via-white to-white">
       <div className="max-w-7xl mx-auto">
         
         {/* Heading */}
         <div className="text-center mb-14">
           <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight text-gray-900">
-            Why Travel with <span className="text-brand-600">Gokeys</span>
+            Why Gokeys is a Trusted <span className="text-brand-600">Travel Agent in Haridwar</span>
           </h2>
           <p className="mt-4 text-gray-500 max-w-2xl mx-auto">
-            Trusted by thousands of travelers for spiritual journeys, Himalayan adventures,
-            and thoughtfully curated holidays across India.
+            Trusted by thousands of travelers as a leading travel agency in Haridwar
+            for spiritual journeys, Himalayan adventures, and thoughtfully curated
+            Uttarakhand tour packages.
           </p>
         </div>
 
         {/* Content */}
         <div className="max-w-4xl mx-auto space-y-6 text-gray-700 text-lg leading-relaxed">
           <p>
-            Welcome to <strong>Gokeys India</strong>, a trusted{" "}
-            <strong>travel company based in Haridwar</strong>, specializing in
-            spiritual journeys and Himalayan experiences. With over a decade of
-            expertise and official authorization from{" "}
-            <strong>Uttarakhand Tourism</strong>, we design seamless group and
-            customized travel programs including{" "}
-            <strong>Char Dham Yatra</strong>.
+            Welcome to <strong>Gokeys India</strong>, a government-registered{" "}
+            <strong>travel agent in Haridwar</strong> specializing in spiritual
+            journeys like <a href="https://gokeys.in/blog/char-dham-yatra-2027">Char Dham Yatra</a>{" "}
+            and curated tours across Uttarakhand — from Mussoorie and Chopta to
+            Rishikesh, Nainital, and Harsil. With over a decade of expertise and
+            official authorization from <strong>Uttarakhand Tourism</strong>, we
+            design seamless <strong>Char Dham Yatra tour packages</strong>, group
+            tours, and customized travel programs for families, groups, and solo
+            travelers.
           </p>
 
           <p>
-            From the serene landscapes of <strong>Auli</strong> and{" "}
-            <strong>Chopta</strong> to the breathtaking{" "}
-            <strong>Valley of Flowers</strong>, <strong>Hemkund Sahib</strong>,
-            and adventure experiences like rafting and camping in{" "}
-            <strong>Rishikesh</strong> — every journey is crafted with care,
-            safety, and local expertise.
+            From the snow-capped slopes of{" "}
+            <a href="/destinations/auli" className="text-brand-600 font-semibold hover:underline">Auli</a>{" "}
+            to the Himalayan meadows of{" "}
+            <a href="/destinations/chopta" className="text-brand-600 font-semibold hover:underline">Chopta</a>,
+            and onward to the breathtaking{" "}
+            <strong>Valley of Flowers</strong> and <strong>Hemkund Sahib</strong> —
+            every journey is crafted with local expertise. Explore our Uttarakhand
+            tour packages to{" "}
+            <a href="/destinations/kedarnath" className="text-brand-600 font-semibold hover:underline">Kedarnath</a>,{" "}
+            <a href="/destinations/yamunotri" className="text-brand-600 font-semibold hover:underline">Yamunotri</a>,{" "}
+            <a href="/destinations/dhanaulti" className="text-brand-600 font-semibold hover:underline">Dhanaulti</a>,{" "}
+            <a href="/destinations/chakrata" className="text-brand-600 font-semibold hover:underline">Chakrata</a>, and{" "}
+            <a href="/destinations/harsil" className="text-brand-600 font-semibold hover:underline">Harsil Valley</a>,
+            or try adventure experiences like river rafting and camping in Rishikesh.
+            Gokeys India is recognized among the{" "}
+            <a href="https://gokeys.in/blog/travel-agents-in-haridwar-char-dham-taxi-uttarakhand-tour-services">top travel agents in Haridwar</a>{" "}
+            for Char Dham Yatra and hill station tours.
           </p>
 
           <p>
-            Our dedicated team ensures smooth{" "}
-            <strong>cab services</strong>, hotel bookings, and guided tours with
-            complete pricing transparency. Explore our{" "}
+            As a full-service <strong>tour operator in Haridwar</strong>, our
+            dedicated team ensures smooth <strong>taxi and cab booking</strong>,
+            hotel reservations, and guided tours with complete pricing
+            transparency. Popular short trips like our{" "}
+            <a href="/tours/haridwar-rishikesh-neelkanth-tour-for-2-days" className="text-brand-600 font-semibold hover:underline">
+              Haridwar Rishikesh Neelkanth 2-Day Tour
+            </a>{" "}
+            and{" "}
+            <a href="/tours/badrinath-mussoorie-6-days-trip" className="text-brand-600 font-semibold hover:underline">
+              Badrinath Mussoorie 6-Day Trip
+            </a>{" "}
+            are ready to book, or explore our{" "}
             <a
               href="/tours"
               className="text-brand-600 font-semibold hover:underline"
