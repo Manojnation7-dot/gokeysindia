@@ -6,6 +6,120 @@ import CommentSection from '@/components/CommentSection';
 import TravelStories from '@/components/TravelStories';
 import InquiryFormCard from '@/components/SimpleEnquiryForm';
 import FAQSection from '@/components/FaqsDetails';
+
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://gokeys.in';
+
+// ---------------------------------------------------------------------------
+// Schema builders — pure functions, no `other`/metadata involvement.
+// If you already have buildBreadcrumbList / buildFAQSchema in a shared lib
+// (as shown in your snippet), import those instead and delete the local
+// copies below — just keep the calling pattern in BlogDetailPage the same.
+// ---------------------------------------------------------------------------
+
+function buildBreadcrumbSchema(post) {
+  const primaryCategory = post.categories?.[0];
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: `${SITE_URL}/` },
+      { '@type': 'ListItem', position: 2, name: 'Blog', item: `${SITE_URL}/blog` },
+      ...(primaryCategory?.name
+        ? [{
+            '@type': 'ListItem',
+            position: 3,
+            name: primaryCategory.name,
+            item: `${SITE_URL}/blog/category/${primaryCategory.name.toLowerCase().replace(/\s+/g, '-')}`,
+          }]
+        : []),
+      {
+        '@type': 'ListItem',
+        position: primaryCategory ? 4 : 3,
+        name: post.title,
+        item: `${SITE_URL}/blog/${post.slug}`,
+      },
+    ],
+  };
+}
+
+function htmlToPlainText(html = '') {
+  return html
+    .replace(/<\/(p|li|div|h[1-6])>/gi, ' ')
+    .replace(/<br\s*\/?>/gi, ' ')
+    .replace(/<[^>]+>/g, '')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&amp;/g, '&')
+    .replace(/&#39;/g, "'")
+    .replace(/&quot;/g, '"')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function buildFAQSchema(post) {
+  if (!post.faqs || post.faqs.length === 0) return null;
+  const postUrl = `${SITE_URL}/blog/${post.slug}`;
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    '@id': `${postUrl}#faq`,
+    mainEntityOfPage: { '@id': `${postUrl}#article` }, // links to BlogPosting @id below
+    mainEntity: post.faqs.map((faq) => ({
+      '@type': 'Question',
+      name: faq.question,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: htmlToPlainText(faq.answer),
+      },
+    })),
+  };
+}
+
+function buildBlogPostingSchema(post) {
+  const postUrl = `${SITE_URL}/blog/${post.slug}`;
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    '@id': `${postUrl}#article`,
+    mainEntityOfPage: { '@type': 'WebPage', '@id': postUrl },
+    headline: post.meta_title || post.title,
+    description: post.meta_description || post.excerpt || undefined,
+    image: post.cover_image_url ? [post.cover_image_url] : undefined,
+    datePublished: post.published_date,
+    dateModified: post.updated_date || post.published_date,
+    author: {
+      '@type': 'Organization',
+      name: post.author || 'Gokeys India',
+      url: SITE_URL,
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'Gokeys India',
+      logo: {
+        '@type': 'ImageObject',
+        url: `${SITE_URL}/images/gokeyslogo.png`,
+      },
+    },
+  };
+}
+
+// Renders one or more JSON-LD objects as real <script> tags.
+// Filters out any null entries (e.g. FAQ schema when there are no FAQs).
+function JsonLd({ items }) {
+  const valid = items.filter(Boolean);
+  return (
+    <>
+      {valid.map((schema, i) => (
+        <script
+          key={i}
+          type="application/ld+json"
+          // eslint-disable-next-line react/no-danger
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+        />
+      ))}
+    </>
+  );
+}
+
 // Breadcrumb Component
 function Breadcrumb({ post }) {
   const primaryCategory = post.categories && post.categories.length > 0 ? post.categories[0] : null;
@@ -56,9 +170,11 @@ export async function generateStaticParams() {
   }));
 }
 
-// Generate Metadata with Schema.org BreadcrumbList
+// generateMetadata now ONLY handles actual <meta> tags — title, description,
+// canonical, OpenGraph. No JSON-LD here anymore. Structured data is built
+// and rendered inside BlogDetailPage as real <script type="application/ld+json">
+// tags, which is the only format Google's structured data parser reads.
 export async function generateMetadata({ params }) {
-  // Await params to resolve dynamic slug
   const { slug } = await params;
   let post = null;
 
@@ -80,71 +196,30 @@ export async function generateMetadata({ params }) {
     };
   }
 
-  const primaryCategory = post.categories?.[0];
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://gokeys.in/";// Replace with production domain
-
-  const breadcrumbList = {
-    '@context': 'https://schema.org',
-    '@type': 'BreadcrumbList',
-    itemListElement: [
-      {
-        '@type': 'ListItem',
-        position: 1,
-        name: 'Home',
-        item: `${baseUrl}/`,
-      },
-      {
-        '@type': 'ListItem',
-        position: 2,
-        name: 'Blog',
-        item: `${baseUrl}/blog`,
-      },
-      ...(primaryCategory && primaryCategory.name
-        ? [
-            {
-              '@type': 'ListItem',
-              position: 3,
-              name: primaryCategory.name,
-              item: `${baseUrl}/blog/category/${primaryCategory.name.toLowerCase().replace(/\s+/g, '-')}`,
-            },
-          ]
-        : []),
-      {
-        '@type': 'ListItem',
-        position: primaryCategory ? 4 : 3,
-        name: post.title,
-        item: `${baseUrl}/blog/${post.slug}`,
-      },
-    ],
-  };
-
   return {
     title: post.meta_title || post.title,
     description: post.meta_description || post.excerpt,
-      alternates: {
-    canonical: `${baseUrl}/blog/${post.slug}`,
-  },
+    alternates: {
+      canonical: `${SITE_URL}/blog/${post.slug}`,
+    },
     openGraph: {
       title: post.meta_title || post.title,
       description: post.meta_description || post.excerpt,
-      url: `${baseUrl}/blog/${post.slug}`,
+      url: `${SITE_URL}/blog/${post.slug}`,
       type: 'article',
       images: post.cover_image_url ? [{ url: post.cover_image_url, width: 800, height: 400, alt: post.title }] : [],
-    },
-    other: {
-      'json-ld': JSON.stringify(breadcrumbList),
     },
   };
 }
 
 export default async function BlogDetailPage({ params }) {
-  const { slug } =  await params; // Await params for dynamic route
+  const { slug } = await params;
   let post = null;
   let errorMessage = null;
-  let relatedStories = []; 
+  let relatedStories = [];
   try {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.gokeys.in';
-  
+
     const res = await fetch(`${apiUrl}/api/blogs/${slug}/`, {
       next: { revalidate: 60 },
     });
@@ -172,8 +247,15 @@ export default async function BlogDetailPage({ params }) {
     );
   }
 
+  // Build all three schemas up front so JsonLd can render them together.
+  const breadcrumbSchema = buildBreadcrumbSchema(post);
+  const faqSchema = buildFAQSchema(post); // null if no faqs — filtered out by JsonLd
+  const blogPostingSchema = buildBlogPostingSchema(post);
+
   return (
     <>
+      <JsonLd items={[breadcrumbSchema, blogPostingSchema, faqSchema]} />
+
       <Header />
       {/* Post Header */}
       <header className="py-8 bg-gray-50">
