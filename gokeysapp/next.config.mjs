@@ -32,6 +32,32 @@ const nextConfig = {
     ],
   },
 
+async headers() {
+  return [
+    {
+      source: '/:path*',
+      headers: [
+        { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
+        { key: 'X-Content-Type-Options', value: 'nosniff' },
+        { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+        {
+          key: 'Content-Security-Policy',
+          value: [
+            "default-src 'self'",
+            "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.google.com https://www.gstatic.com https://www.googletagmanager.com https://www.jscache.com https://www.tripadvisor.com https://googleads.g.doubleclick.net https://www.googleadservices.com https://ad.doubleclick.net",
+            "style-src 'self' 'unsafe-inline'",
+            "img-src 'self' data: https://api.gokeys.in https://images.unsplash.com https://cdn.pixabay.com https://via.placeholder.com https://source.unsplash.com https://static.tacdn.com https://www.google.com https://www.google.co.in https://www.gstatic.com https://googleads.g.doubleclick.net https://www.googleadservices.com https://ad.doubleclick.net https://www.google-analytics.com",
+            "connect-src 'self' https://api.gokeys.in https://www.google-analytics.com https://analytics.google.com https://www.googletagmanager.com https://www.google.com https://www.google.co.in https://googleads.g.doubleclick.net https://ad.doubleclick.net https://www.googleadservices.com https://region1.google-analytics.com",
+            "frame-src 'self' https://www.google.com https://www.googletagmanager.com https://td.doubleclick.net",
+            "frame-ancestors 'self'",
+          ].join('; '),
+        },
+      ],
+    },
+  ];
+},
+
+
   async rewrites() {
   return [
     {
