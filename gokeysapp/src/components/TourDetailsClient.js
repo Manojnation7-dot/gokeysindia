@@ -177,7 +177,9 @@ const tourSchema = buildTourSchema({
   name: tourData.name,
   description: tourData.meta_description || tourData.excerpt,
   imageUrl: tourData.featured_image?.optimized_banner || tourData.featured_image?.image,
-  price: selectedPackage?.discount_price || selectedPackage?.price,
+  pricingTiers: tourData.pricing,
+  rating: tourData.rating,
+  reviewsCount: tourData.reviews_count,
   itineraryItems,
 });
 
@@ -205,7 +207,7 @@ const faqSchema = tourData.faqs?.length > 0
 
   return (
     <>
-        <SmartSEO schema={[tourSchema, breadcrumbSchema, faqSchema]} />
+        <SmartSEO schema={[...tourSchema, breadcrumbSchema, faqSchema]} />
       <Header />
       <div className="text-gray-800 bg-white">
         {/* Hero Banner */}

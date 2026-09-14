@@ -135,7 +135,7 @@ export function buildBlogPostSchema({
 
 // ✅ UPDATE: TOUR PACKAGE
 export function buildTourSchema({ slug, name, description, imageUrl, price, itineraryItems = [] }) {
-  const tourUrl = `${SITE_URL}/tour/${slug}`; // Define URL once
+  const tourUrl = `${SITE_URL}/tours/${slug}`; // Define URL once
   return {
     "@context": "https://schema.org",
     "@type": "TouristTrip",
@@ -272,7 +272,7 @@ export function buildImageObject({ url, width, height }) {
 export function buildFAQSchema(faqs = [], slug) { // 👈 ADD slug parameter
   if (!faqs || faqs.length === 0) return null;
 
-  const tourUrl = `${SITE_URL}/tour/${slug}`;
+  const tourUrl = `${SITE_URL}/tours/${slug}`;
 
   return {
     "@context": "https://schema.org",
