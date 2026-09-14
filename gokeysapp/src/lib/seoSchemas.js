@@ -52,7 +52,7 @@ export function buildLocalBusinessSchema({
   ],
  
   ratingValue = "4.8",
-  reviewCount = "159",
+  reviewCount = "161",
 } = {}) {
   return {
     "@context": "https://schema.org",
@@ -133,40 +133,94 @@ export function buildBlogPostSchema({
   };
 }
 
-// ✅ UPDATE: TOUR PACKAGE
-export function buildTourSchema({ slug, name, description, imageUrl, price, itineraryItems = [] }) {
-  const tourUrl = `${SITE_URL}/tours/${slug}`; // Define URL once
+// ✅ FIXED: TOUR PACKAGE — now takes pricingTiers/rating/reviewsCount
+// and outputs a Product schema with a real AggregateOffer, instead of
+// a single hardcoded "price": "0".
+export function buildTourSchema({
+  slug,
+  name,
+  description,
+  imageUrl,
+  pricingTiers = [],   // pass tourData.pricing (the full array)
+  rating,               // pass tourData.rating
+  reviewsCount,         // pass tourData.reviews_count
+  itineraryItems = [],
+}) {
+  const tourUrl = `${SITE_URL}/tours/${slug}`;
+
+  const offers = (pricingTiers || [])
+    .filter((tier) => tier && (tier.price || tier.discount_price))
+    .map((tier) => ({
+      "@type": "Offer",
+      name: `${capitalize(tier.package_type)} Package`,
+      price: String(tier.discount_price || tier.price),
+      priceCurrency: "INR",
+      availability: "https://schema.org/InStock",
+      priceValidUntil: tier.price_valid_until || defaultValidUntil(),
+      url: tourUrl,
+    }));
+
+  const priceNumbers = offers.map((o) => Number(o.price));
+  const lowPrice = priceNumbers.length ? Math.min(...priceNumbers) : undefined;
+  const highPrice = priceNumbers.length ? Math.max(...priceNumbers) : undefined;
+
   return {
     "@context": "https://schema.org",
-    "@type": "TouristTrip",
-    "@id": `${tourUrl}#tour`, // 👈 ADD THIS: Unique ID for the Tour
-    "name": name,
-    "description": description,
-    "image": imageUrl,
-    "touristType": "Group",
-    "offers": {
-      "@type": "Offer",
-      "name": name, // Best practice to include name in offer
-      "url": tourUrl,
-      "priceCurrency": "INR",
-      "price": price || "0",
-      "availability": "https://schema.org/InStock"
+    "@type": "Product",
+    "@id": `${tourUrl}#tour`,
+    name,
+    description,
+    image: imageUrl ? [imageUrl] : undefined,
+    url: tourUrl,
+    brand: {
+      "@type": "Organization",
+      name: "Gokeys India",
     },
-    "itinerary": {
-      "@type": "ItemList",
-      "name": `Itinerary for ${name}`,
-      "numberOfItems": itineraryItems.length,
-      "itemListElement": itineraryItems.map((item, index) => ({
-        "@type": "ListItem",
-        "position": index + 1,
-        "item": {
-          "@type": "TouristAttraction",
-          "name": item.name,
-          "description": item.description
+    offers: offers.length
+      ? {
+          "@type": "AggregateOffer",
+          priceCurrency: "INR",
+          lowPrice: String(lowPrice),
+          highPrice: String(highPrice),
+          offerCount: String(offers.length),
+          offers,
         }
-      }))
-    }
+      : undefined,
+    ...(rating && reviewsCount
+      ? {
+          aggregateRating: {
+            "@type": "AggregateRating",
+            ratingValue: String(rating),
+            reviewCount: String(reviewsCount),
+          },
+        }
+      : {}),
+    itinerary: {
+      "@type": "ItemList",
+      name: `Itinerary for ${name}`,
+      numberOfItems: itineraryItems.length,
+      itemListElement: itineraryItems.map((item, index) => ({
+        "@type": "ListItem",
+        position: index + 1,
+        item: {
+          "@type": "TouristAttraction",
+          name: item.name,
+          description: item.description,
+        },
+      })),
+    },
   };
+}
+
+function capitalize(str) {
+  if (!str) return "";
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+function defaultValidUntil() {
+  const d = new Date();
+  d.setMonth(d.getMonth() + 6); // rolling 6-month validity window
+  return d.toISOString().split("T")[0];
 }
 
 // ✅ HOTEL
@@ -268,8 +322,8 @@ export function buildImageObject({ url, width, height }) {
   };
 }
 
-// ✅ UPDATE: FAQ SCHEMA
-export function buildFAQSchema(faqs = [], slug) { // 👈 ADD slug parameter
+// ✅ FAQ SCHEMA (already correct — /tours/ URL, linked to #tour)
+export function buildFAQSchema(faqs = [], slug) {
   if (!faqs || faqs.length === 0) return null;
 
   const tourUrl = `${SITE_URL}/tours/${slug}`;
@@ -277,8 +331,8 @@ export function buildFAQSchema(faqs = [], slug) { // 👈 ADD slug parameter
   return {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    "@id": `${tourUrl}#faq`, // 👈 ADD THIS: Unique ID for the FAQ
-    "mainEntityOfPage": { "@id": `${tourUrl}#tour` }, // 👈 LINK: Points back to the Tour ID
+    "@id": `${tourUrl}#faq`,
+    "mainEntityOfPage": { "@id": `${tourUrl}#tour` },
     "mainEntity": faqs.map((faq) => ({
       "@type": "Question",
       "name": faq.question,
