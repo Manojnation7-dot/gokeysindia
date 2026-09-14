@@ -207,7 +207,7 @@ const faqSchema = tourData.faqs?.length > 0
 
   return (
     <>
-        <SmartSEO schema={[...tourSchema, breadcrumbSchema, faqSchema]} />
+        <SmartSEO schema={[tourSchema, breadcrumbSchema, faqSchema]} />
       <Header />
       <div className="text-gray-800 bg-white">
         {/* Hero Banner */}
