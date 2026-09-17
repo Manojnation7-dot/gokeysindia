@@ -13,6 +13,7 @@ import Footer from "@/components/Footer";
 import MostSearchedPackages from "@/components/MostSearchedPages";
 import BestSellingGroupTripsWrapper from "@/components/BestSellingGroupTripsWrapper";
 import SmartSEO from "@/components/SmartSEO";
+import HomeFAQ, { faqs } from "@/components/HomeFAQ";
 import {
   buildLocalBusinessSchema,
   buildImageObject,
@@ -30,7 +31,7 @@ async function getFeaturedDestinations() {
 
 export default async function HomePage() {
   const destinations = await getFeaturedDestinations();
-
+    
   const pageSchemas = [
     // ✅ Local Business schema
     buildLocalBusinessSchema(),
@@ -50,7 +51,11 @@ export default async function HomePage() {
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
-      <SmartSEO schema={pageSchemas} />
+       <SmartSEO
+        schema={
+          pageSchemas
+         }
+      />
 
       <Header />
 
@@ -86,7 +91,7 @@ export default async function HomePage() {
 
           <GoogleMap />
         </section>
-
+        <HomeFAQ />
       <CTASection />
 
       <Footer />

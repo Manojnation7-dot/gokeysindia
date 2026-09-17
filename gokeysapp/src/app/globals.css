@@ -41,18 +41,17 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
-  --color-brand-50: #f0f4ff;
-  --color-brand-100: #e0e9fe;
-  --color-brand-200: #c1d3fe;
-  --color-brand-300: #a2bdfe;
-  --color-brand-400: #83a7fd;
-  --color-brand-500: #6491fc;
-  --color-brand-600: #5074ca;
-  --color-brand-700: #3c5797;
-  --color-brand-800: #283a65;
-  --color-brand-900: #141d32;
-  --color-background: var(--background);
-}
+  --color-brand-50:  #f0f6ff;
+  --color-brand-100: #dceaff;
+  --color-brand-200: #bdd5ff;
+  --color-brand-300: #91b7ff;
+  --color-brand-400: #6395ff;
+  --color-brand-500: #3b73f0;
+  --color-brand-600: #2454c7;
+  --color-brand-700: #1c429f;
+  --color-brand-800: #142f73;
+  --color-brand-900: #0b1d46;
+  }
 
 .prose h2 {
   font-size: 1.875rem !important;
