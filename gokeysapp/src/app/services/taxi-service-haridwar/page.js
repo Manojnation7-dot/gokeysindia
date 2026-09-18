@@ -15,7 +15,7 @@ export async function generateMetadata() {
   const description =
     "Book taxi services in Haridwar for local sightseeing, railway station and airport transfers, Uttarakhand tours, Char Dham Yatra and outstation trips. Contact Gokeys India for taxi and cab services.";
 
-  const url = `${siteUrl}/services/taxi-services-haridwar/`;
+  const url = `${siteUrl}/services/taxi-services-haridwar`;
 
   return {
     title,

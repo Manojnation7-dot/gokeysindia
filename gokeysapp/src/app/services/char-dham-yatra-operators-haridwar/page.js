@@ -15,7 +15,7 @@ export async function generateMetadata() {
   const description =
     "Looking for Char Dham Yatra Tour operators in Haridwar Uttarakhand? Gokeys India helps plan Char Dham Yatra packages from Haridwar covering Yamunotri, Gangotri, Kedarnath and Badrinath with travel, hotel and itinerary assistance.";
 
-  const url = `${siteUrl}/services/char-dham-yatra-operators-haridwar/`;
+  const url = `${siteUrl}/services/char-dham-yatra-operators-haridwar`;
 
   return {
     title,

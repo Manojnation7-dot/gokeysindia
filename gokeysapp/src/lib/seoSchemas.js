@@ -89,17 +89,26 @@ export function buildLocalBusinessSchema({
 }
 
 // ✅ WEBSITE
-export function buildWebsiteSchema({ name, searchUrlPattern }) {
+export function buildWebsiteSchema({ name, alternateName, description, searchUrlPattern }) {
   return {
     "@context": "https://schema.org",
     "@type": "WebSite",
+    "@id": `${SITE_URL}/#website`,
     name,
+    ...(alternateName && { alternateName }),
+    ...(description && { description }),
     url: SITE_URL,
-    potentialAction: {
-      "@type": "SearchAction",
-      target: `${SITE_URL}${searchUrlPattern}`,
-      "query-input": "required name=search_term_string"
-    }
+    inLanguage: "en-IN",
+    ...(searchUrlPattern && {
+      potentialAction: {
+        "@type": "SearchAction",
+        target: {
+          "@type": "EntryPoint",
+          urlTemplate: `${SITE_URL}${searchUrlPattern}`,
+        },
+        "query-input": "required name=search_term_string",
+      },
+    }),
   };
 }
 

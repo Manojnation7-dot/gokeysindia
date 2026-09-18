@@ -18,6 +18,7 @@ import {
   buildLocalBusinessSchema,
   buildImageObject,
   buildBreadcrumbList,
+  buildWebsiteSchema,
 } from "@/lib/seoSchemas";
 import HomeReviews from "@/components/HomeReviews";
 import GoogleMap from "@/components/MapIframe";
@@ -33,6 +34,14 @@ export default async function HomePage() {
   const destinations = await getFeaturedDestinations();
     
   const pageSchemas = [
+      
+    buildWebsiteSchema({
+        name: "Gokeys India",
+        alternateName: "Gokeys Travel In Himalayas",
+        description:
+          "Gokeys Travel In Himalayas (Gokeys India), a top Travel Agent in Haridwar near Har Ki Pauri. Char Dham Yatra, hill station tours, car rentals – 24×7.",
+        searchUrlPattern: "/search?q={search_term_string}", // ← confirm/replace this
+      }),
     // ✅ Local Business schema
     buildLocalBusinessSchema(),
 

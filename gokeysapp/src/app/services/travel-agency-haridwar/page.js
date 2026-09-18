@@ -15,7 +15,7 @@ export async function generateMetadata() {
   const description =
     "Looking for a travel agency in Haridwar? Gokeys India offers Char Dham Yatra, Uttarakhand tour packages, taxi services, hotel bookings and customized travel services from Haridwar.";
 
-  const url = `${siteUrl}/services/travel-agency-haridwar/`;
+  const url = `${siteUrl}/services/travel-agency-haridwar`;
 
   return {
     title,

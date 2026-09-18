@@ -14,7 +14,7 @@ export async function generateMetadata() {
   const description =
     "Book a Haridwar to Rishikesh taxi with Gokeys India. Private cab services for families, couples, groups and travelers visiting Rishikesh from Haridwar.";
 
-  const url = `${siteUrl}/services/haridwar-to-rishikesh-taxi/`;
+  const url = `${siteUrl}/services/haridwar-to-rishikesh-taxi`;
 
   return {
     title,

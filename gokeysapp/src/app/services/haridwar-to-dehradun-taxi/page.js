@@ -14,7 +14,7 @@ export async function generateMetadata() {
   const description =
     "Book a Haridwar to Dehradun taxi or Dehradun Airport cab with Gokeys India. Private taxi services from Haridwar Railway Station, hotels and other locations.";
 
-  const url = `${siteUrl}/services/haridwar-to-dehradun-taxi/`;
+  const url = `${siteUrl}/services/haridwar-to-dehradun-taxi`;
 
   return {
     title,

@@ -14,7 +14,7 @@ export async function generateMetadata() {
   const description =
     "Book hotels in Uttarakhand with Gokeys India. Find accommodation in Haridwar, Rishikesh, Kedarnath, Badrinath, Mussoorie and other Uttarakhand destinations.";
 
-  const url = `${siteUrl}/services/hotel-booking-uttarakhand/`;
+  const url = `${siteUrl}/services/hotel-booking-uttarakhand`;
 
   return {
     title,

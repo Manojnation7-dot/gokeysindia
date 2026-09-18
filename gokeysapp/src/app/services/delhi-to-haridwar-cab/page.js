@@ -14,7 +14,7 @@ export async function generateMetadata() {
   const description =
     "Book a Delhi to Haridwar cab or taxi with Gokeys India. Plan one-way or round-trip travel from Delhi to Haridwar with private cab options and travel assistance.";
 
-  const url = `${siteUrl}/services/delhi-to-haridwar-cab/`;
+  const url = `${siteUrl}/services/delhi-to-haridwar-cab`;
 
   return {
     title,

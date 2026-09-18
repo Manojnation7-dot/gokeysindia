@@ -83,7 +83,7 @@ export default function HaridwarRailwayStationTaxiPage() {
     { name: "Services", url: "/services/" },
     {
       name: "Haridwar Railway Station Taxi",
-      url: "/services/haridwar-railway-station-taxi/",
+      url: "/services/haridwar-railway-station-taxi",
     },
   ]);
 

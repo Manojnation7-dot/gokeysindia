@@ -15,7 +15,7 @@ export async function generateMetadata() {
   const description =
     "Looking for Uttarakhand tour operators? Gokeys India helps plan Uttarakhand tour packages from Haridwar covering Char Dham, Kedarnath, Badrinath, Rishikesh, Mussoorie, Nainital and other destinations.";
 
-  const url = `${siteUrl}/services/uttarakhand-tour-operators/`;
+  const url = `${siteUrl}/services/uttarakhand-tour-operators`;
 
   return {
     title,
