@@ -17,24 +17,15 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://gokeys.in';
 // ---------------------------------------------------------------------------
 
 function buildBreadcrumbSchema(post) {
-  const primaryCategory = post.categories?.[0];
   return {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     itemListElement: [
       { '@type': 'ListItem', position: 1, name: 'Home', item: `${SITE_URL}/` },
       { '@type': 'ListItem', position: 2, name: 'Blog', item: `${SITE_URL}/blog` },
-      ...(primaryCategory?.name
-        ? [{
-            '@type': 'ListItem',
-            position: 3,
-            name: primaryCategory.name,
-            item: `${SITE_URL}/blog/category/${primaryCategory.name.toLowerCase().replace(/\s+/g, '-')}`,
-          }]
-        : []),
       {
         '@type': 'ListItem',
-        position: primaryCategory ? 4 : 3,
+        position: 3,
         name: post.title,
         item: `${SITE_URL}/blog/${post.slug}`,
       },
@@ -122,14 +113,10 @@ function JsonLd({ items }) {
 
 // Breadcrumb Component
 function Breadcrumb({ post }) {
-  const primaryCategory = post.categories && post.categories.length > 0 ? post.categories[0] : null;
 
   const items = [
     { label: 'Home', href: '/' },
     { label: 'Blog', href: '/blog' },
-    ...(primaryCategory && primaryCategory.name
-      ? [{ label: primaryCategory.name, href: `/blog/category/${primaryCategory.name.toLowerCase().replace(/\s+/g, '-')}` }]
-      : []),
     { label: post.title, href: null },
   ];
 

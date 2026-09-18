@@ -1,14 +1,17 @@
-import Head from 'next/head';
+import { buildMetadata } from '@/lib/seoHelpers';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+
+export const metadata = buildMetadata({
+  title: "Cancellation & Refund Policy",
+  description: "View Gokeys India's tour cancellation and refund policy here.",
+  path: "/cancellation-policy",
+  image: "/images/gokeyslogo.png",
+});
 
 export default function CancellationPolicy() {
   return (
     <>
-      <Head>
-        <title>Cancellation & Refund Policy | Gokeys India</title>
-        <meta name="description" content="View Gokeys India's tour cancellation and refund policy here." />
-      </Head>
       <Header/>
       <main className="max-w-4xl mx-auto px-4 py-10">
         <h1 className="text-3xl font-bold mb-6">Cancellation & Refund Policy</h1>

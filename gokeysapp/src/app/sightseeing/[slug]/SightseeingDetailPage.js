@@ -10,7 +10,7 @@ import Head from "next/head";
 import { FaMapMarkerAlt, FaClock, FaTicketAlt, FaStar, FaQuestionCircle, FaPhone, FaEnvelope } from "react-icons/fa";
 import SimilarPlaces from "@/components/SimilarPlaces";
 import SmartSEO from "@/components/SmartSEO";
-import { buildSightseeingPlaceSchema, buildBreadcrumbList } from "@/lib/seoSchemas";
+import { buildSightseeingPlaceSchema, buildBreadcrumbList, hasValidReviewRating, hasValidSightseeingSlug } from "@/lib/seoSchemas";
 import InquiryFormCard from "@/components/SimpleEnquiryForm";
 
 export default function SightseeingDetailPage({place,similarPlaces }) {
@@ -37,7 +37,7 @@ if (!place) {
 const breadcrumbSchema = buildBreadcrumbList([
   { name: "Home", url: "/" },
   { name: "Sightseeing", url: "/sightseeing" },
-  { name: place.name, url: `/sightseeing/${place.slug}` }
+  ...(hasValidSightseeingSlug(place.slug) ? [{ name: place.name, url: `/sightseeing/${place.slug}` }] : [])
 ]);
   return (
     <>
@@ -115,23 +115,18 @@ const breadcrumbSchema = buildBreadcrumbList([
                   </div>
                 )}
                 
-                {/* Rating Card - You can add actual rating if available in your data */}
-                <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex items-center">
+                {hasValidReviewRating(place.rating, place.review_count) && <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex items-center">
                   <div className="bg-amber-100 p-3 rounded-lg mr-4">
                     <FaStar className="text-amber-500 text-xl" />
                   </div>
                   <div>
                     <p className="text-sm text-gray-500">Visitor Rating</p>
                     <div className="flex items-center">
-                      <span className="font-semibold mr-2">4.8</span>
-                      <div className="flex">
-                        {[...Array(5)].map((_, i) => (
-                          <FaStar key={i} className="text-amber-400 text-sm" />
-                        ))}
-                      </div>
+                      <span className="font-semibold mr-2">{place.rating}</span>
+                      <span>({place.review_count} reviews)</span>
                     </div>
                   </div>
-                </div>
+                </div>}
               </div>
 
               {/* Description Section */}

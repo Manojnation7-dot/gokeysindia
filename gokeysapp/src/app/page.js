@@ -23,6 +23,10 @@ import {
 import HomeReviews from "@/components/HomeReviews";
 import GoogleMap from "@/components/MapIframe";
 
+export const metadata = {
+  alternates: { canonical: "https://gokeys.in/" },
+};
+
 async function getFeaturedDestinations() {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/featured-destinations/`, {
     next: { revalidate: 60 },

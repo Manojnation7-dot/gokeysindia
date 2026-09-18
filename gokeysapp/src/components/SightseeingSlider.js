@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { FaStar } from "react-icons/fa";
 import { motion } from "framer-motion";
+import { hasValidReviewRating } from "@/lib/seoSchemas";
 
 export default function SightseeingSlider({ places }) {
   const settings = {
@@ -107,15 +108,15 @@ export default function SightseeingSlider({ places }) {
                   )}
 
                   {/* Rating */}
-                  <div className="flex items-center gap-2 mt-2 text-sm">
+                  {hasValidReviewRating(place.rating, place.review_count) && <div className="flex items-center gap-2 mt-2 text-sm">
                     <FaStar className="text-amber-400 text-sm" />
                     <span className="font-semibold text-gray-800">
-                      {place.rating || "4.5"}
+                      {place.rating}
                     </span>
                     <span className="text-gray-500">
-                      ({place.review_count || 128} reviews)
+                      ({place.review_count} reviews)
                     </span>
-                  </div>
+                  </div>}
 
                   {/* CTA */}
                   <Link

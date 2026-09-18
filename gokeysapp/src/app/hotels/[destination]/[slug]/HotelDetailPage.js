@@ -81,7 +81,7 @@ const destinationSlug = hotelData.destination_slug
   || (hotelData.destination ? hotelData.destination.trim().toLowerCase().replace(/\s+/g, "-") : "unknown");
 
   const hotelSchema = buildHotelSchema({
-    slug: hotelData.slug, destinationSlug, 
+    slug: hotelData.slug, destinationSlug: hotelData.destination_slug,
     name: hotelData.name,
     description: hotelData.description,
     imageUrl: [
@@ -92,15 +92,11 @@ const destinationSlug = hotelData.destination_slug
       streetAddress: hotelData.address,
       city: hotelData.location,
       region: hotelData.region || "",
-      postalCode: hotelData.postalCode || "",
-      country: "IN"
+      postalCode: hotelData.postalCode
     },
-    priceRange: `₹${parseFloat(hotelData.tariff_starting_from).toLocaleString()}`,
-    telephone: hotelData.telephone || "",
+    price: hotelData.tariff_starting_from,
     starRating: hotelData.star_rating || "",
-    amenities: hotelData.facilities?.map(f => f.name) || [],
-    ratingValue: hotelData.ratingValue || "",
-    reviewCount: hotelData.reviewCount || ""
+    amenities: hotelData.facilities?.map(f => f.name) || []
   });
   
 
@@ -108,8 +104,10 @@ const destinationSlug = hotelData.destination_slug
 const breadcrumbSchema = buildBreadcrumbList([
   { name: "Home", url: "/" },
   { name: "Hotels", url: "/hotels" },
-  { name: hotelData.destination || "Unknown Destination", url: `/hotels/${destinationSlug}` },
-  { name: hotelData.name, url: `/hotels/${destinationSlug}/${hotelData.slug}` }
+  ...(hotelData.destination_slug ? [
+    { name: hotelData.destination, url: `/hotels/${hotelData.destination_slug}` },
+    { name: hotelData.name, url: `/hotels/${hotelData.destination_slug}/${hotelData.slug}` }
+  ] : [])
 ]);
 
   if (!hotelData) {

@@ -1,10 +1,18 @@
 import Header from "@/components/Header";
+import { buildMetadata } from "@/lib/seoHelpers";
 import Footer from "@/components/Footer";
 import { buildBreadcrumbList } from "@/lib/seoSchemas";
 import SmartSEO from "@/components/SmartSEO";
 import GoogleMap from "@/components/MapIframe";
 import InquiryFormCard from "@/components/SimpleEnquiryForm";
 import { FaPhoneAlt, FaEnvelope, FaMapMarkerAlt } from "react-icons/fa";
+
+export const metadata = buildMetadata({
+  title: "Contact Gokeys India",
+  description: "Contact Gokeys India in Haridwar for tours, hotel bookings and taxi enquiries.",
+  path: "/contact",
+  image: "/images/gokeyslogo.png",
+});
 
 export default function Contact() {
   const breadcrumbSchema = buildBreadcrumbList([

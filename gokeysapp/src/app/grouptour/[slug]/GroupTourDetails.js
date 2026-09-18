@@ -32,6 +32,7 @@ import Image from 'next/image';
 import SmartSEO from '@/components/SmartSEO'; 
 import {
   buildTourSchema,
+  hasValidReviewRating,
   buildBreadcrumbList,
   buildImageObject,
 } from '@/lib/seoSchemas';
@@ -172,12 +173,13 @@ const [isLoading, setIsLoading] = useState(false);
     schemas.push(
       buildTourSchema({
         slug: tourData.slug,
+        tourPath: "grouptour",
         name: tourData.name,
         description: tourData.meta_description || tourData.content.replace(/<\/?[^>]+(>|$)/g, ''),
         imageUrl: tourData.featured_image?.image || 'https://via.placeholder.com/600x400',
-        price: isPriceOnRequest(selectedPackage)
-          ? 'Price on Request'
-          : getEffectivePrice(selectedPackage) || '0',
+        pricingTiers: tourData.pricing,
+        rating: tourData.rating,
+        reviewsCount: tourData.reviews_count,
         itineraryItems: (tourData.itineraries || []).map((item) => ({
           name: item.title,
           description: item.description.replace(/<\/?[^>]+(>|$)/g, ''),
@@ -189,8 +191,8 @@ const [isLoading, setIsLoading] = useState(false);
   // BreadcrumbList Schema
   const breadcrumbItems = [
     { name: 'Home', url: '/' },
-    { name: 'Group Tours', url: '/group-tours' },
-    { name: tourData?.name || 'Tour Details', url: `/group-tours/${tourData?.slug}` },
+    { name: 'Group Tours', url: '/grouptour' },
+    { name: tourData?.name || 'Tour Details', url: `/grouptour/${tourData?.slug}` },
   ];
   schemas.push(buildBreadcrumbList(breadcrumbItems));
 
@@ -211,7 +213,8 @@ const [isLoading, setIsLoading] = useState(false);
       tourData.faqs.map((faq) => ({
         question: faq.question,
         answer: faq.answer,
-      }))
+      })),
+      `/grouptour/${tourData.slug}`
     )
   );
 }
@@ -304,7 +307,9 @@ const [isLoading, setIsLoading] = useState(false);
               </div>
               <div className="flex items-center gap-2">
                 <StarIcon />
-                <span>4.8 ({tourData.reviews_count || 126} Reviews)</span>
+                <span>{hasValidReviewRating(tourData.rating, tourData.reviews_count)
+                  ? `${tourData.rating} (${tourData.reviews_count} Tour Reviews)`
+                  : "Gokeys India — 4.8 · 164 Google Reviews"}</span>
               </div>
               <div className="flex items-center gap-2">
                 <MapPinIcon />

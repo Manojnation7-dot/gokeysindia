@@ -83,7 +83,6 @@ export async function generateMetadata() {
 export default function UttarakhandTourOperatorsPage() {
   const breadcrumbSchema = buildBreadcrumbList([
     { name: "Home", url: "/" },
-    { name: "Services", url: "/services/" },
     {
       name: "Uttarakhand Tour Operators",
       url: "/services/uttarakhand-tour-operators/",

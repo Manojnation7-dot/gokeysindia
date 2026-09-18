@@ -6,11 +6,13 @@ export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ searchParams }) {
   const params = await searchParams; // Await searchParams
+  const requestedPage = Number(params?.page);
+  const page = Number.isInteger(requestedPage) && requestedPage > 1 ? requestedPage : 1;
   return buildMetadata({
     title: "Explore Top Travel Stories",
     description:
       "Discover Amazing Travel Stories with Gokeys to explore various places, activities, destination and experiences.",
-    path: "/blog",
+    path: page === 1 ? "/blog" : `/blog?page=${page}`,
     image: "/images/gokeyslogo.png",
   });
 }

@@ -77,7 +77,6 @@ export async function generateMetadata() {
 export default function CharDhamOperatorsHaridwarPage() {
   const breadcrumbSchema = buildBreadcrumbList([
     { name: "Home", url: "/" },
-    { name: "Services", url: "/services/" },
     {
       name: "Char Dham Yatra Tour Operators in Haridwar",
       url: "/services/char-dham-yatra-operators-haridwar/",

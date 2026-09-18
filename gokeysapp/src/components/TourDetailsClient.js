@@ -27,6 +27,7 @@ import {
 import SmartSEO from "@/components/SmartSEO";
 import {
   buildTourSchema,
+  hasValidReviewRating,
   buildBreadcrumbList,
   buildFAQSchema,
 } from "@/lib/seoSchemas";
@@ -190,7 +191,7 @@ const breadcrumbSchema = buildBreadcrumbList([
 ]);
 
 const faqSchema = tourData.faqs?.length > 0 
-  ? buildFAQSchema(tourData.faqs, tourData.slug) // 👈 Pass slug here
+  ? buildFAQSchema(tourData.faqs, `/tours/${tourData.slug}`)
   : null;
 
    if (!tourData) {
@@ -290,7 +291,9 @@ const faqSchema = tourData.faqs?.length > 0
               <div className="flex items-center gap-2">
                 <StarIcon />
                 <span>
-                  {tourData.rating || "4.8"} ({tourData.reviews_count || 126} Reviews)
+                  {hasValidReviewRating(tourData.rating, tourData.reviews_count)
+                    ? `${tourData.rating} (${tourData.reviews_count} Tour Reviews)`
+                    : "Gokeys India — 4.8 · 164 Google Reviews"}
                 </span>
               </div>
               <div className="flex items-center gap-2">
@@ -334,7 +337,7 @@ const faqSchema = tourData.faqs?.length > 0
                 <div>
                   <h2 className="text-3xl font-bold mb-6">Tour Overview</h2>
                   <div
-                    className="text-gray-700 mb-6 prose"
+                    className="tour-content text-gray-700 mb-6 prose max-w-none"
                     dangerouslySetInnerHTML={{ __html: tourData.content }}
                   />
                   {/* Package Selection */}

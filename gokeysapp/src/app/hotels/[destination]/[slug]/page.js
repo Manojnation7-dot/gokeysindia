@@ -9,7 +9,7 @@ export async function generateMetadata({ params }) {
   const hotel = await fetchData("hotels", slug);
 
   // Validate the hotel belongs to the destination
-  if (!hotel || hotel.destination?.toLowerCase() !== destination.toLowerCase()) {
+  if (!hotel || (hotel.destination_slug || hotel.destination)?.toLowerCase() !== destination.toLowerCase()) {
     return buildMetadata({
       title: "Hotel Not Found ",
       description: "Sorry, the hotel you’re looking for does not exist.",
@@ -31,7 +31,7 @@ export default async function Page({ params }) {
 
   const hotel = await fetchData("hotels", slug);
 
-  if (!hotel || hotel.destination?.toLowerCase() !== destination.toLowerCase()) {
+  if (!hotel || (hotel.destination_slug || hotel.destination)?.toLowerCase() !== destination.toLowerCase()) {
     return notFound();
   }
 

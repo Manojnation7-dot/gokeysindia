@@ -83,7 +83,7 @@ export default function DestinationDetailPage({ destination, tours, hotels, slug
     { name: destination.name, url: `/destinations/${destination.slug}` }
   ]);
 
-  const faqSchema = destination.faqs?.length > 0 ? buildFAQSchema(destination.faqs) : null;
+  const faqSchema = destination.faqs?.length > 0 ? buildFAQSchema(destination.faqs, `/destinations/${destination.slug}`) : null;
 
   return (
     <>

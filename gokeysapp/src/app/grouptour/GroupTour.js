@@ -8,7 +8,6 @@ import { motion } from "framer-motion";
 import Slider from "react-slick";
 import Image from 'next/image';
 import Link from 'next/link';
-import Head from 'next/head';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import SmartSEO from '@/components/SmartSEO';
@@ -99,7 +98,7 @@ export default function GroupTour({ tours = [] }) {
 schemas.push(
   buildBreadcrumbList([
     { name: 'Home', url: '/' },
-    { name: 'Group Tours', url: '/group-tours' },
+    { name: 'Group Tours', url: '/grouptour' },
   ])
 );
 
@@ -112,14 +111,14 @@ schemas.push(
     getItemSchema: (tour, schema) => ({
       ...schema,
       name: tour.title, // Ensure name is included
-      url: `${process.env.NEXT_PUBLIC_BASE_URL || 'https://gokeys.in'}/grouptour/${tour.slug}`, // Use correct path
+      url: `https://gokeys.in/grouptour/${tour.slug}`, // Use correct path
       description: tour.meta_description || tour.description || 'Explore this amazing group tour with Gokeys India.', // Non-empty description
       image: tour.image,
       offers: isPriceOnRequest(tour.price)
         ? undefined
         : {
             '@type': 'Offer',
-            url: `${process.env.NEXT_PUBLIC_BASE_URL || 'https://gokeys.in'}/grouptour/${tour.slug}`, // Use correct path
+            url: `https://gokeys.in/grouptour/${tour.slug}`, // Use correct path
             priceCurrency: 'INR',
             price: parseFloat(tour.price.discount_price || tour.price.price) || 0,
           },
@@ -133,16 +132,13 @@ schemas.push(
     faqs.map((faq) => ({
       question: faq.question,
       answer: faq.answer,
-    }))
+    })),
+    "/grouptour"
   )
 );
 
   return (
     <>
-      <Head>
-        <title>Group Tours | Gokeys India</title>
-        <meta name="description" content="Explore curated group tours with Gokeys India for unforgettable travel experiences." />
-      </Head>
       <main className="bg-gray-50">
         <Header />
         <SmartSEO schema={schemas} />

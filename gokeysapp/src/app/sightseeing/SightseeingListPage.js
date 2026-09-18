@@ -7,7 +7,7 @@ import { motion } from "framer-motion";
 import Header from "@/components/Header";   
 import Footer from "@/components/Footer";   
 import { MapPin } from "lucide-react";
-import { buildItemListSchema, buildBreadcrumbList } from "@/lib/seoSchemas";
+import { buildItemListSchema, buildBreadcrumbList, hasValidSightseeingSlug } from "@/lib/seoSchemas";
 import SmartSEO from "@/components/SmartSEO"; 
 
 
@@ -24,10 +24,11 @@ export default function SightseeingListPage({places}) {
 
 const sightseeingListSchema = buildItemListSchema({
   name: "All Sightseeing Places",
-  items: places, // your `places` array
+  items: places.filter((place) => hasValidSightseeingSlug(place?.slug)),
   itemType: "TouristAttraction",
   getItemSchema: (place, schema) => ({
     ...schema,
+    url: `https://gokeys.in/sightseeing/${place.slug}`,
     locatedInPlace: {
       "@type": "Place",
       name: place.destination?.name || ""

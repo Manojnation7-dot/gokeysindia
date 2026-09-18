@@ -80,7 +80,6 @@ export async function generateMetadata() {
 export default function TravelAgencyHaridwarPage() {
   const breadcrumbSchema = buildBreadcrumbList([
     { name: "Home", url: "/" },
-    { name: "Services", url: "/services/" },
     {
       name: "Travel Agency in Haridwar",
       url: "/services/travel-agency-haridwar/",

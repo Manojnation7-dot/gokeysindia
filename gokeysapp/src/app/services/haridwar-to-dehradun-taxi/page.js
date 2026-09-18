@@ -79,7 +79,6 @@ export async function generateMetadata() {
 export default function HaridwarToDehradunTaxiPage() {
   const breadcrumbSchema = buildBreadcrumbList([
     { name: "Home", url: "/" },
-    { name: "Services", url: "/services/" },
     {
       name: "Haridwar to Dehradun Taxi",
       url: "/services/haridwar-to-dehradun-taxi/",

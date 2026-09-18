@@ -76,9 +76,6 @@ export const metadata = {
     ],
   },
 
-  alternates: {
-    canonical: process.env.NEXT_PUBLIC_SITE_URL || 'https://gokeys.in',
-  },
 };
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://gokeys.in";

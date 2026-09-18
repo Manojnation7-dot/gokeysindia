@@ -5,7 +5,20 @@
  * with auto SITE_URL prefixing.
  */
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://gokeys.in";
+const SITE_URL = "https://gokeys.in";
+
+export function hasValidReviewRating(rating, count) {
+  return ["number", "string"].includes(typeof rating) &&
+    ["number", "string"].includes(typeof count) && Number.isFinite(Number(rating)) && Number(rating) >= 1 &&
+    Number(rating) <= 5 && Number.isInteger(Number(count)) && Number(count) > 0;
+}
+
+function publishedPrice(value) {
+  if (typeof value !== "number" && typeof value !== "string") return null;
+  if (typeof value === "string" && !value.trim()) return null;
+  const price = Number(value);
+  return Number.isFinite(price) && price > 0 ? price : null;
+}
 
 export function buildOrganizationSchema({ name, logoUrl, sameAs = [], contactPoint }) {
   return {
@@ -52,7 +65,7 @@ export function buildLocalBusinessSchema({
   ],
  
   ratingValue = "4.8",
-  reviewCount = "161",
+  reviewCount = "164",
 } = {}) {
   return {
     "@context": "https://schema.org",
@@ -147,6 +160,7 @@ export function buildBlogPostSchema({
 // a single hardcoded "price": "0".
 export function buildTourSchema({
   slug,
+  tourPath = "tours",
   name,
   description,
   imageUrl,
@@ -155,17 +169,19 @@ export function buildTourSchema({
   reviewsCount,         // pass tourData.reviews_count
   itineraryItems = [],
 }) {
-  const tourUrl = `${SITE_URL}/tours/${slug}`;
+  if (!slug || !["tours", "grouptour"].includes(tourPath)) return null;
+  const tourUrl = `${SITE_URL}/${tourPath}/${slug}`;
 
-  const offers = (pricingTiers || [])
-    .filter((tier) => tier && (tier.price || tier.discount_price))
-    .map((tier) => ({
+  const offers = (Array.isArray(pricingTiers) ? pricingTiers : [])
+    .filter((tier) => tier && ![true, "true"].includes(tier.price_on_request))
+    .map((tier) => ({ tier, price: publishedPrice(tier.discount_price) ?? publishedPrice(tier.price) }))
+    .filter(({ price }) => price !== null)
+    .map(({ tier, price }) => ({
       "@type": "Offer",
       name: `${capitalize(tier.package_type)} Package`,
-      price: String(tier.discount_price || tier.price),
+      price: String(price),
       priceCurrency: "INR",
-      availability: "https://schema.org/InStock",
-      priceValidUntil: tier.price_valid_until || defaultValidUntil(),
+      ...(tier.price_valid_until && { priceValidUntil: tier.price_valid_until }),
       url: tourUrl,
     }));
 
@@ -195,7 +211,7 @@ export function buildTourSchema({
           offers,
         }
       : undefined,
-    ...(rating && reviewsCount
+    ...(hasValidReviewRating(rating, reviewsCount)
       ? {
           aggregateRating: {
             "@type": "AggregateRating",
@@ -226,12 +242,6 @@ function capitalize(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
-function defaultValidUntil() {
-  const d = new Date();
-  d.setMonth(d.getMonth() + 6); // rolling 6-month validity window
-  return d.toISOString().split("T")[0];
-}
-
 // ✅ HOTEL
 export function buildHotelSchema({
    destinationSlug,
@@ -240,52 +250,77 @@ export function buildHotelSchema({
   description,
   imageUrl,
   address = {},
-  priceRange,
-  telephone,
+  price,
   starRating,
   amenities
 }) {
+  if (!destinationSlug || !slug) return null;
+  const hotelUrl = `${SITE_URL}/hotels/${destinationSlug}/${slug}`;
+  const numericPrice = publishedPrice(price);
+  const validAmenities = (Array.isArray(amenities) ? amenities : [])
+    .filter((name) => typeof name === "string" && name.trim() && !/^N\/A$/i.test(name.trim()))
+    .map((name) => name.trim());
+  const images = (Array.isArray(imageUrl) ? imageUrl : [imageUrl])
+    .filter((url) => typeof url === "string" && url.trim())
+    .flatMap((value) => {
+      try {
+        const url = new URL(value.trim(), SITE_URL);
+        return /^https?:$/.test(url.protocol) &&
+          (/^https?:\/\//i.test(value.trim()) || value.startsWith("/")) ? [url.href] : [];
+      } catch {
+        return [];
+      }
+    });
+  const addressFields = Object.fromEntries(Object.entries({
+    streetAddress: address?.streetAddress,
+    addressLocality: address?.city,
+    addressRegion: address?.region,
+    postalCode: address?.postalCode,
+    addressCountry: address?.country,
+  }).filter(([, value]) => typeof value === "string" && value.trim() &&
+    !/^(?:N\/A|0+)$/i.test(value.trim())).map(([key, value]) => [key, value.trim()]));
   return {
     "@context": "https://schema.org",
     "@type": "Hotel",
     name,
     description,
-    image: Array.isArray(imageUrl) ? imageUrl : [imageUrl],
-    url: `${SITE_URL}/hotels/${destinationSlug}/${slug}`, 
-    address: {
-      "@type": "PostalAddress",
-      streetAddress: address.streetAddress || "N/A",
-      addressLocality: address.city || "N/A",
-      addressRegion: address.region || "Uttarakhand",
-      postalCode: address.postalCode || "000000",
-      addressCountry: address.country || "IN"
-    },
-    priceRange: priceRange || "₹1000 - ₹50000",
-    telephone: telephone || "+91-9045916770",
-    ...(starRating && {
+    ...(images.length && { image: images }),
+    url: hotelUrl,
+    ...(Object.keys(addressFields).length && {
+      address: { "@type": "PostalAddress", ...addressFields },
+    }),
+    ...(numericPrice !== null && { priceRange: `INR ${numericPrice}` }),
+    ...(Number(starRating) >= 1 && Number(starRating) <= 5 && {
       starRating: {
         "@type": "Rating",
         ratingValue: String(starRating),
         bestRating: "5"
       }
     }),
-    ...(amenities?.length > 0 && {
-      amenityFeature: amenities.map((a) => ({
+    ...(validAmenities.length > 0 && {
+      amenityFeature: validAmenities.map((a) => ({
         "@type": "LocationFeatureSpecification",
         name: a,
         value: true
       }))
     }),
-    offers: {
-      "@type": "Offer",
-      price: priceRange?.replace(/[^0-9]/g, "") || "1000",
-      priceCurrency: "INR",
-      availability: "https://schema.org/InStock"
-    }
+    ...(numericPrice !== null && {
+      offers: {
+        "@type": "Offer",
+        price: String(numericPrice),
+        priceCurrency: "INR",
+        url: hotelUrl,
+      },
+    }),
   };
 }
 
 // ✅ SIGHTSEEING / ATTRACTION
+export function hasValidSightseeingSlug(slug) {
+  return typeof slug === "string" && /^[\p{L}\p{N}_-]+$/u.test(slug) &&
+    !/^(?:undefined|null)$/i.test(slug);
+}
+
 export function buildSightseeingPlaceSchema({
   slug,
   name,
@@ -293,6 +328,7 @@ export function buildSightseeingPlaceSchema({
   imageUrl,
   destinationName
 }) {
+  if (!hasValidSightseeingSlug(slug)) return null;
   return {
     "@context": "https://schema.org",
     "@type": "TouristAttraction",
@@ -331,17 +367,19 @@ export function buildImageObject({ url, width, height }) {
   };
 }
 
-// ✅ FAQ SCHEMA (already correct — /tours/ URL, linked to #tour)
-export function buildFAQSchema(faqs = [], slug) {
-  if (!faqs || faqs.length === 0) return null;
+// FAQ identity belongs to its page, which need not be a tour detail.
+export function buildFAQSchema(faqs = [], pagePath) {
+  if (!Array.isArray(faqs) || faqs.length === 0 || typeof pagePath !== "string" ||
+      !/^\/(?:tours\/[^/?#]+|grouptour(?:\/[^/?#]+)?|destinations\/[^/?#]+)\/?$/.test(pagePath) ||
+      /\/(?:undefined|null)(?:\/|$)/.test(pagePath)) return null;
 
-  const tourUrl = `${SITE_URL}/tours/${slug}`;
+  const pageUrl = `${SITE_URL}${pagePath.replace(/\/$/, "")}`;
 
   return {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    "@id": `${tourUrl}#faq`,
-    "mainEntityOfPage": { "@id": `${tourUrl}#tour` },
+    "@id": `${pageUrl}#faq`,
+    "mainEntityOfPage": { "@type": "WebPage", "@id": pageUrl },
     "mainEntity": faqs.map((faq) => ({
       "@type": "Question",
       "name": faq.question,

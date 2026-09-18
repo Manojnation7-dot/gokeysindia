@@ -5,7 +5,6 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import Head from 'next/head';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
@@ -94,26 +93,7 @@ export default function SearchPageClient() {
   return (
     <>
       <Header />
-      <Head>
-        <title>Search results for "{query}" | Gokeys India</title>
-        <meta name="description" content={`Search results for "${query}" across tours, destinations, blogs.`} />
-        <link rel="canonical" href={`https://gokeys.in/search?q=${encodeURIComponent(query)}`} />
-        <meta property="og:title" content={`Search results for "${query}" | GoKeys`} />
-        <meta property="og:description" content={`Browse curated tours, blogs and destinations matching "${query}"`} />
-        <meta property="og:url" content={`https://gokeys.in/search?q=${encodeURIComponent(query)}`} />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "SearchResultsPage",
-              name: `Search results for ${query}`,
-              description: `Tours, blogs, and destinations matching ${query}`,
-              url: `https://gokeys.in/search?q=${encodeURIComponent(query)}`,
-            }),
-          }}
-        />
-      </Head>
+
 
       <div className="container mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold mb-4">Results for "{query}"</h1>

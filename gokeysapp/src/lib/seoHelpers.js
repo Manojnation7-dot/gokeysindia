@@ -4,8 +4,10 @@ export function buildMetadata({
   path = "/",
   image = "/images/default-og.jpg",
 }) {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://gokeys.in";
-  const normalizedSiteUrl = siteUrl.replace(/\/+$/, "");
+  const normalizedSiteUrl = "https://gokeys.in";
+  const canonicalUrl = new URL(path, normalizedSiteUrl);
+  canonicalUrl.pathname = canonicalUrl.pathname.replace(/\/+$/, "") || "/";
+  canonicalUrl.hash = "";
   const normalizedImage = image.startsWith("http") ? image : `${normalizedSiteUrl}${image.startsWith("/") ? "" : "/"}${image}`;
 
 
@@ -13,12 +15,12 @@ export function buildMetadata({
     title,
     description,
     alternates: {
-      canonical: `${normalizedSiteUrl}${path.replace(/\/+$/, "")}/`,
+      canonical: canonicalUrl.href,
     },
     openGraph: {
       title,
       description,
-      url: `${normalizedSiteUrl}${path.replace(/\/+$/, "")}/`,
+      url: canonicalUrl.href,
       images: [
         {
           url: normalizedImage,

@@ -79,7 +79,6 @@ export async function generateMetadata() {
 export default function HaridwarToRishikeshTaxiPage() {
   const breadcrumbSchema = buildBreadcrumbList([
     { name: "Home", url: "/" },
-    { name: "Services", url: "/services/" },
     {
       name: "Haridwar to Rishikesh Taxi",
       url: "/services/haridwar-to-rishikesh-taxi/",
@@ -870,7 +869,7 @@ export default function HaridwarToRishikeshTaxiPage() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
 
                 <a
-                  href="/services/taxi-services-haridwar/"
+                  href="/services/taxi-service-haridwar/"
                   className="bg-white border rounded-xl p-6 hover:shadow-md transition"
                 >
                   <h3 className="text-xl font-semibold text-green-700 mb-2">

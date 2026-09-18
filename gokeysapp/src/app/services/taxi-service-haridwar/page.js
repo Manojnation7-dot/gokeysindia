@@ -6,7 +6,7 @@ import Image from "next/image";
 import GoogleMap from "@/components/MapIframe";
 
 const siteUrl =
-  process.env.NEXT_PUBLIC_SITE_URL || "https://www.gokeys.in/";
+  "https://gokeys.in";
 
 export async function generateMetadata() {
   const title =
@@ -15,7 +15,7 @@ export async function generateMetadata() {
   const description =
     "Book taxi services in Haridwar for local sightseeing, railway station and airport transfers, Uttarakhand tours, Char Dham Yatra and outstation trips. Contact Gokeys India for taxi and cab services.";
 
-  const url = `${siteUrl}/services/taxi-services-haridwar`;
+  const url = `${siteUrl}/services/taxi-service-haridwar`;
 
   return {
     title,
@@ -76,10 +76,9 @@ export async function generateMetadata() {
 export default function TaxiServicesHaridwarPage() {
   const breadcrumbSchema = buildBreadcrumbList([
     { name: "Home", url: "/" },
-    { name: "Services", url: "/services/" },
     {
       name: "Taxi Services in Haridwar",
-      url: "/services/taxi-services-haridwar/",
+      url: "/services/taxi-service-haridwar/",
     },
   ]);
 

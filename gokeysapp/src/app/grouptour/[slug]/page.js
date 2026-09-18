@@ -1,6 +1,21 @@
 import { fetchData } from "@/lib/api";
 import GroupTourDetails from "./GroupTourDetails";
 import { notFound } from "next/navigation";
+import { buildMetadata } from "@/lib/seoHelpers";
+
+export async function generateMetadata({ params }) {
+  const { slug } = await params;
+  const data = await fetchData("group-tours", slug);
+  const tour = data?.slug ? data : data?.data || null;
+  if (!tour) return { title: "Group Tour Not Found", robots: { index: false, follow: true } };
+
+  return buildMetadata({
+    title: tour.meta_title || tour.name,
+    description: tour.meta_description || `Explore ${tour.name} with Gokeys India.`,
+    path: `/grouptour/${tour.slug}`,
+    image: tour.featured_image?.image || "/images/gokeyslogo.png",
+  });
+}
 
 export default async function Page({ params }) {
   const { slug } = await params;

@@ -1,18 +1,19 @@
 import SightseeingDetailPage from "./SightseeingDetailPage";
+import { buildMetadata } from "@/lib/seoHelpers";
 
 export async function generateMetadata({ params }) {
   const { slug } = await params;
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
   const res = await fetch(`${apiUrl}/api/sightseeing/${slug}/`, { cache: "no-store" });
+  if (!res.ok) return { title: "Sightseeing Not Found", robots: { index: false, follow: true } };
   const place = await res.json();
 
-  return {
+  return buildMetadata({
     title: `${place.name} - Sightseeing`,
     description: place.meta_description || `Explore ${place.name}.`,
-    openGraph: {
-      images: place.featured_image?.optimized_banner || "/images/placeholder.jpg",
-    },
-  };
+    path: `/sightseeing/${place.slug || slug}`,
+    image: place.featured_image?.optimized_banner || "/images/gokeyslogo.png",
+  });
 }
 
 export default async function Page({ params }) {

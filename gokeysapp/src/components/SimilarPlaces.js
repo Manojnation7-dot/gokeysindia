@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { FaStar } from 'react-icons/fa';
 import Link from 'next/link';
+import { hasValidReviewRating, hasValidSightseeingSlug } from '@/lib/seoSchemas';
 
 export default function SimilarPlaces({ places }) {
   if (!places || !places.length) return null;
@@ -76,13 +77,13 @@ export default function SimilarPlaces({ places }) {
                     ? `${parseFloat(place.distance_from_center).toFixed(1)} km from center`
                     : 'Distance not available'}
                 </p>
-                <div className="flex items-center text-sm">
+                {hasValidReviewRating(place.rating, place.review_count) && <div className="flex items-center text-sm">
                   <FaStar className="text-amber-400 mr-1" />
-                  <span className="font-medium">{place.rating || '4.5'}</span>
+                  <span className="font-medium">{place.rating}</span>
                   <span className="text-gray-500 ml-2">
-                    ({place.review_count || '128'} reviews)
+                    ({place.review_count} reviews)
                   </span>
-                </div>
+                </div>}
               </div>
             </motion.div>
           ))}
@@ -96,7 +97,7 @@ export default function SimilarPlaces({ places }) {
               '@context': 'https://schema.org',
               '@type': 'ItemList',
               name: 'Similar Places',
-              itemListElement: places.map((place, index) => ({
+              itemListElement: places.filter((place) => hasValidSightseeingSlug(place?.slug)).map((place, index) => ({
                 '@type': 'ListItem',
                 position: index + 1,
                 item: {
@@ -105,7 +106,7 @@ export default function SimilarPlaces({ places }) {
                   image: place.featured_image?.optimized_card || place.featured_image?.image,
                   description:
                     place.description || `Explore ${place.name} in ${place.destination_name}`,
-                  url: `/destinations/${place.destination?.slug}/${place.slug}`,
+                  url: `https://gokeys.in/sightseeing/${place.slug}`,
                   address: {
                     '@type': 'PostalAddress',
                     addressLocality: place.destination_name,

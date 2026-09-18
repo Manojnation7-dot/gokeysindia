@@ -8,7 +8,7 @@ export async function generateMetadata() {
   return buildMetadata({
     title: "Group Tours in India",
     description: "Explore affordable group tour packages with Gokeys India. Find the best group trips for adventure, trekking, cultural tours, and more.",
-    path: "/group-tour",
+    path: "/grouptour",
     image: "/images/gokeyslogo.png",
   });
 }
