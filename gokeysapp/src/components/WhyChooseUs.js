@@ -24,7 +24,7 @@ export default function WhyChooseUs() {
             Why Gokeys is a Trusted <span className="text-brand-600">Travel Agent in Haridwar</span>
           </h2>
           <p className="mt-4 text-gray-500 max-w-2xl mx-auto">
-            Trusted by thousands of travelers as a leading travel agency in Haridwar
+            Trusted by thousands of travelers as a leading <a href="https://gokeys.in/services/travel-agency-haridwar" className="text-brand-600 font-semibold hover:underline">travel agency in Haridwar</a>
             for spiritual journeys, Himalayan adventures, and thoughtfully curated
             Uttarakhand tour packages.
           </p>

@@ -120,7 +120,7 @@ export default function Header() {
               Blog
             </a>
             <div className="pt-6 text-base text-gray-300">
-              📞 +91-9876543210
+              📞 +91-9045916770
             </div>
           </div>
         </div>

@@ -68,10 +68,10 @@ const breadcrumbSchema = buildBreadcrumbList([
           </div>
           <div>
             <p className="text-md text-gray-700 mb-3">
-              Welcome to Gokeys India - Travel In Himalayas, a leading travel agency based in the amazing city of Haridwar, Uttarakhand. With a decade of rich experience in the travel industry, Gokeys India has emerged as one of the finest travel agencies not only in Haridwar but throughout Uttarakhand. Our dedication to providing exceptional service and unforgettable experiences has earned us the reputation of being among the best in the region.
+              Welcome to Gokeys India - Travel In Himalayas, a leading <a href="https://gokeys.in/services/travel-agency-haridwar" className="text-brand-600 font-semibold hover:underline">travel agency in Haridwar</a>, based in the amazing city of Haridwar, Uttarakhand. With a decade of rich experience in the travel industry, Gokeys India has emerged as one of the finest travel agencies not only in Haridwar but throughout Uttarakhand. Our dedication to providing exceptional service and unforgettable experiences has earned us the reputation of being among the best in the region.
               At Gokeys India. </p>
             <p className="text-md text-gray-700 mb-3">
-             we specialize in crafting unparalleled tour packages for Uttarakhand, including revered pilgrimages like Char Dham Yatra, Kedarnath Yatra, Badrinath Yatra, Yamunotri Yatra, and Gangotri Yatra, all at the most competitive prices. With a highly skilled and dedicated team available round the clock, we ensure that every guest receives top-notch service at every step of their journey. Whether it's hotel bookings, ticketing for buses, trains, or flights, tour packages across India, cab bookings, corporate event planning (MICE), trekking trips, or tour guide services, Gokeys India is your trusted partner for all your travel needs.</p>
+             we specialize in crafting unparalleled tour packages for Uttarakhand, including revered pilgrimages like <a href="https://gokeys.in/blog/char-dham-yatra-2027" className="text-brand-600 font-semibold hover:underline">Char Dham Yatra</a>, Kedarnath Yatra, Badrinath Yatra, Yamunotri Yatra, and Gangotri Yatra, all at the most competitive prices. With a highly skilled and dedicated team available round the clock, we ensure that every guest receives top-notch service at every step of their journey. Whether it's hotel bookings, ticketing for buses, trains, or flights, tour packages across India, cab bookings, corporate event planning (MICE), trekking trips, or tour guide services, Gokeys India is your trusted partner for all your travel needs.</p>
             <p className="text-md text-gray-700 mb-3">
               Driven by a vision to revolutionize the travel industry, Gokeys India strives to tackle the challenges faced by travelers and provide innovative solutions. Our commitment to excellence and customer satisfaction is unwavering, and we constantly seek to enhance the travel experience for all our clients.
             </p>
@@ -102,7 +102,7 @@ const breadcrumbSchema = buildBreadcrumbList([
           <div>
             <h1 className="text-4xl font-bold text-green-700 mb-4">Our Services</h1>
             <ul className="list-disc list-outside pl-5 space-y-1 text-gray-700">
-              <li>Tour Packages for Char Dham Yatra, Kedarnath Yatra, Badrinath Yatra, Yamunotri Yatra, Gangotri Yatra, and more</li>
+              <li>Tour Packages for <a href="https://gokeys.in/blog/char-dham-yatra-2027" className="text-brand-600 font-semibold hover:underline">Char Dham Yatra</a>, Kedarnath Yatra, Badrinath Yatra, Yamunotri Yatra, Gangotri Yatra, and more</li>
               <li>Hotel Bookings</li>
               <li>Ticketing (Buses, Trains, Flights)</li>
               <li>Tour Packages across India</li>
