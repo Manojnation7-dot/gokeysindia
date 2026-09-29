@@ -8,6 +8,7 @@ import ReviewSection from '@/components/ReviewSection';
 import EnquiryForm from '@/components/EnquiryForm';
 import TourItineraryMain from '@/components/TourItineraryMain';
 import TourPDFContent from '@/components/TourPDFContent';
+import RelatedContent from '@/components/RelatedContent';
 import {
   CalendarIcon,
   UserIcon,
@@ -26,6 +27,7 @@ import {
   getEffectivePrice,
   getSavings,
 } from '@/lib/pricingUtils';
+import { submitTourEnquiry } from '@/lib/tourEnquiry';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 
@@ -83,37 +85,29 @@ export default function GroupTourDetails({ tourData, baseUrl, documentNumber, cu
   const capitalizeFirst = (str) =>
     str ? str.charAt(0).toUpperCase() + str.slice(1) : '';
 
+  // Sidebar form: saved as a tour enquiry (it used to go to /api/enquiries/, which
+  // needs a reCAPTCHA token this form never sent, so every submission was rejected).
   const handleEnquirySubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/enquiries/`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...enquiryFormData,
-          tourName: tourData.name,
-          packageType: capitalizeFirst(selectedPackage?.package_type || ''),
-          packagePrice: isPriceOnRequest(selectedPackage)
-            ? 'Price on Request'
-            : basePrice,
-        }),
-      });
+    e?.preventDefault?.();
+    const result = await submitTourEnquiry({
+      tourName: `${tourData.name} (Group Tour)`,
+      packageType: capitalizeFirst(selectedPackage?.package_type || ''),
+      packagePrice: isPriceOnRequest(selectedPackage) ? 'Price on Request' : basePrice,
+      formData: enquiryFormData,
+    });
 
-      if (res.ok) {
-        console.log('Enquiry submitted');
-        setEnquiryFormData({
-          name: '',
-          email: '',
-          contactNo: '',
-          totalPersons: '',
-          travelDate: '',
-          message: '',
-        });
-      } else {
-        console.error('Failed to submit enquiry');
-      }
-    } catch (err) {
-      console.error('Error:', err);
+    if (result.ok) {
+      alert('Your enquiry has been submitted successfully!');
+      setEnquiryFormData({
+        name: '',
+        email: '',
+        contactNo: '',
+        totalPersons: '',
+        travelDate: '',
+        message: '',
+      });
+    } else {
+      alert(result.message);
     }
   };
 const [isLoading, setIsLoading] = useState(false);
@@ -540,6 +534,9 @@ const [isLoading, setIsLoading] = useState(false);
 
         {/* Popular Group Tours Section */}
           <SimilarTours tours={similarTours} />
+
+        {/* Blog posts that picked this group tour in the admin */}
+        <RelatedContent title="Travel guides for this trip" items={tourData.related_posts} />
 
         {/* FAQ Section */}
         <section className="py-12 max-w-6xl mx-auto px-4">

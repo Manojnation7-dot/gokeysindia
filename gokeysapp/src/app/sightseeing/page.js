@@ -1,5 +1,6 @@
 import SightseeingListPage from "./SightseeingListPage";
 import { buildMetadata } from "@/lib/seoHelpers";
+import { fetchAllResults } from "@/lib/api";
 
 export async function generateMetadata() {
   return buildMetadata({
@@ -12,13 +13,9 @@ export async function generateMetadata() {
 
 export default async function page() {
 
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/sightseeing/`, {
-    next: { revalidate: 60 },
-  });
-  const data = await res.json();
-
-  // If your API is paginated:
-  const sightseeing = (data.results || data).map((place) => ({
+  // All places (the API sends 8 per page by default)
+  const places = await fetchAllResults("sightseeing");
+  const sightseeing = places.map((place) => ({
     ...place,
     description: stripHtmlServer(place.description || ""),
   }));

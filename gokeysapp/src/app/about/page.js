@@ -102,7 +102,7 @@ const breadcrumbSchema = buildBreadcrumbList([
           <div>
             <h1 className="text-4xl font-bold text-green-700 mb-4">Our Services</h1>
             <ul className="list-disc list-outside pl-5 space-y-1 text-gray-700">
-              <li>Tour Packages for <a href="https://gokeys.in/blog/char-dham-yatra-2027" className="text-brand-600 font-semibold hover:underline">Char Dham Yatra</a>, Kedarnath Yatra, Badrinath Yatra, Yamunotri Yatra, Gangotri Yatra, and more</li>
+              <li>Tour Packages for <a href="https://gokeys.in/tours/char-dham-yatra-package-from-haridwar" className="text-brand-600 font-semibold hover:underline">Char Dham Yatra</a>, Kedarnath Yatra, Badrinath Yatra, Yamunotri Yatra, Gangotri Yatra, and more</li>
               <li>Hotel Bookings</li>
               <li>Ticketing (Buses, Trains, Flights)</li>
               <li>Tour Packages across India</li>

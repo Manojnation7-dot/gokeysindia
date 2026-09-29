@@ -1,19 +1,25 @@
-import { fetchData } from "@/lib/api";
+import { fetchData, fetchAllResults } from "@/lib/api";
 import GroupTourDetails from "./GroupTourDetails";
 import { notFound } from "next/navigation";
-import { buildMetadata } from "@/lib/seoHelpers";
+import { buildMetadata, seoFromApi } from "@/lib/seoHelpers";
+import { previewQuery } from "@/lib/preview";
+import PreviewBanner from "@/components/PreviewBanner";
 
 export async function generateMetadata({ params }) {
   const { slug } = await params;
-  const data = await fetchData("group-tours", slug);
+  const preview = await previewQuery();
+  const data = await fetchData("group-tours", `${slug}${preview}`);
   const tour = data?.slug ? data : data?.data || null;
   if (!tour) return { title: "Group Tour Not Found", robots: { index: false, follow: true } };
 
+  const seo = seoFromApi(tour, { preview: Boolean(preview) });
   return buildMetadata({
     title: tour.meta_title || tour.name,
     description: tour.meta_description || `Explore ${tour.name} with Gokeys India.`,
     path: `/grouptour/${tour.slug}`,
-    image: tour.featured_image?.image || "/images/gokeyslogo.png",
+    image: seo.ogImage || tour.featured_image?.image || "/images/gokeyslogo.png",
+    canonical: seo.canonical,
+    noindex: seo.noindex,
   });
 }
 
@@ -21,19 +27,17 @@ export default async function Page({ params }) {
   const { slug } = await params;
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.gokeys.in";
 
-  // ✅ Fetch current tour
-  const data = await fetchData("group-tours", slug);
+  // ✅ Fetch current tour (a draft too, when opened from the admin "Preview draft" link)
+  const preview = await previewQuery();
+  const data = await fetchData("group-tours", `${slug}${preview}`);
   const tourData = data?.slug ? data : data?.data || null;
   if (!tourData) return notFound();
 
   // ✅ Fetch all tours (for similarity)
   let similarTours = [];
-  const resAll = await fetch(`${apiUrl}/api/group-tours/`, {
-    cache: "no-store",
-  });
+  const allTours = await fetchAllResults("group-tours");
 
-  if (resAll.ok) {
-    const allTours = (await resAll.json()).results || [];
+  if (allTours.length) {
 
     // Filter similar by destination
     const currentDestinations = (tourData.destinations || [])
@@ -65,6 +69,8 @@ export default async function Page({ params }) {
   }
 
   return (
+    <>
+    {preview && <PreviewBanner path={`/grouptour/${slug}`} />}
     <GroupTourDetails
       tourData={tourData}
       similarTours={similarTours}   // 👈 PASS HERE
@@ -77,5 +83,6 @@ export default async function Page({ params }) {
       })}
       tourPath="grouptour"
     />
+    </>
   );
 }

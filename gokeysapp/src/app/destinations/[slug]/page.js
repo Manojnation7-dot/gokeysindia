@@ -1,4 +1,6 @@
-import { buildMetadata } from "@/lib/seoHelpers";
+import { buildMetadata, seoFromApi } from "@/lib/seoHelpers";
+import { previewQuery } from "@/lib/preview";
+import PreviewBanner from "@/components/PreviewBanner";
 import { fetchData } from "@/lib/api";
 import DestinationDetailPage from "./DestinationDetailPage";
 import { notFound } from "next/navigation";
@@ -14,20 +16,24 @@ export async function generateMetadata({ params }) {
     const { slug } = await params;
     if (!slug) return {};
 
-    const destination = await fetchData("destinations", slug);
+    const preview = await previewQuery();
+    const destination = await fetchData("destinations", `${slug}${preview}`);
 
     // Fallback if destination doesn't exist
     if (!destination || destination.detail) {
-      return { title: "Destination | GoKeys" };
+      return { title: "Destination | GoKeys", robots: { index: false, follow: true } };
     }
 
+    const seo = seoFromApi(destination, { preview: Boolean(preview) });
     return buildMetadata({
       title: `${destination?.meta_title || destination?.name || "Destination"}`,
       description:
         destination?.meta_description ||
         `Discover ${destination?.name || "this destination"} with GoKeys.`,
       path: `/destinations/${slug}`,
-      image: destination?.featured_image?.image || "/images/gokeyslogo.png",
+      image: seo.ogImage || destination?.featured_image?.image || "/images/gokeyslogo.png",
+      canonical: seo.canonical,
+      noindex: seo.noindex,
     });
   } catch (e) {
     console.error("Metadata Error:", e.message);
@@ -45,10 +51,11 @@ export default async function DestinationPage({ params }) {
   }
 
   const { slug } = await params;
+  const preview = await previewQuery();
 
   try {
-    // 2. Fetch Destination Data with explicit error handling
-    const destRes = await fetch(`${API_BASE}/api/destinations/${slug}/`, {
+    // 2. Fetch Destination Data with explicit error handling (a draft too, in preview)
+    const destRes = await fetch(`${API_BASE}/api/destinations/${slug}/${preview}`, {
       next: { revalidate: 60 },
     });
 
@@ -101,6 +108,8 @@ export default async function DestinationPage({ params }) {
 
     // 8. Render
     return (
+      <>
+      {preview && <PreviewBanner path={`/destinations/${slug}`} />}
       <DestinationDetailPage
         destination={destination}
         tours={safeTours}
@@ -108,6 +117,7 @@ export default async function DestinationPage({ params }) {
         slug={slug}
         nearbyAttractionsList={nearbyAttractionsList}
       />
+      </>
     );
   } catch (error) {
     // This catch-all prevents the 500 error for Googlebot

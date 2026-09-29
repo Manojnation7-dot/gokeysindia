@@ -22,6 +22,7 @@ export default function HotelsHomePage({ hotels }) {
   if (!acc[destinationKey]) {
     acc[destinationKey] = {
       destination: hotel.destination.trim(),
+      slug: hotel.destination_slug || toSlug(hotel.destination),
       front_image_url: hotel.front_image_url || "https://via.placeholder.com/300x200",
       tariff_starting_from: Number(hotel.tariff_starting_from) || Infinity,
       count: 1,
@@ -56,7 +57,7 @@ export default function HotelsHomePage({ hotels }) {
         {destinations.length ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {destinations.map((destination) => (
-              <Link key={destination.destination} href={`/hotels/${toSlug(destination.destination)}`}>
+              <Link key={destination.destination} href={`/hotels/${destination.slug}`}>
                 <div className="bg-white shadow rounded-2xl overflow-hidden hover:shadow-lg transition">
                   <div className="relative h-56">
                     <Image

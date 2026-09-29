@@ -30,7 +30,9 @@ const getImageUrl = (item) => {
     item.featured_image?.image ||
     item.cover_image_url ||
     '';
-  return path ? `${base}${path}` : '/images/placeholder.jpg';
+  if (!path) return '/images/placeholder.jpg';
+  // The API already sends full URLs (https://api.gokeys.in/media/...)
+  return /^https?:\/\//.test(path) ? path : `${base}${path}`;
 };
 
 export default function SearchPageClient() {
@@ -84,7 +86,9 @@ export default function SearchPageClient() {
 
   const highlightMatch = (text, query) => {
     if (!text || !query) return text;
-    const regex = new RegExp(`(${query})`, 'gi');
+    // Escape regex characters so searches like "(" or "c++" don't crash the page
+    const safe = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const regex = new RegExp(`(${safe})`, 'gi');
     return text.replace(regex, '<mark>$1</mark>');
   };
 

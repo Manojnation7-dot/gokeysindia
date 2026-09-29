@@ -10,8 +10,9 @@ import TourPDFContent from "@/components/TourPDFContent";
 import ReviewSection from "@/components/ReviewSection";
 import EnquiryForm from "@/components/EnquiryForm";
 import TourItineraryMain from "@/components/TourItineraryMain";
-import { getCSRFToken } from "@/lib/getCSRFToken";
+import { submitTourEnquiry } from "@/lib/tourEnquiry";
 import ImageGallery from "@/components/ImageGallery";
+import RelatedContent from "@/components/RelatedContent";
 
 import {
   CalendarIcon,
@@ -33,6 +34,19 @@ import {
 } from "@/lib/seoSchemas";
 
 
+// Selling price of a package: the discount price if set, else the price.
+// null when the package is "price on request" or has no price (the API sends 0 for empty).
+function effectivePrice(pkg) {
+  if (!pkg || pkg.price_on_request) return null;
+  if (Number(pkg.discount_price) > 0) return pkg.discount_price;
+  return Number(pkg.price) > 0 ? pkg.price : null;
+}
+
+function hasDiscount(pkg) {
+  return !!pkg && !pkg.price_on_request && Number(pkg.discount_price) > 0 &&
+    Number(pkg.price) > Number(pkg.discount_price);
+}
+
 export default function TourDetailClient({ tourData,baseUrl,tourPath,similarTours }) {
   const [expandedDay, setExpandedDay] = useState(null);
   const [activeTab, setActiveTab] = useState("overview");
@@ -43,9 +57,7 @@ export default function TourDetailClient({ tourData,baseUrl,tourPath,similarTour
     );
     return standard || tourData.pricing[0];
   });
-  const [basePrice, setBasePrice] = useState(
-    selectedPackage ? selectedPackage.discount_price || selectedPackage.price : null
-  );
+  const [basePrice, setBasePrice] = useState(() => effectivePrice(selectedPackage));
   const [isEnquiryOpen, setIsEnquiryOpen] = useState(false);
   const [enquiryFormData, setEnquiryFormData] = useState({
     name: "",
@@ -58,15 +70,17 @@ export default function TourDetailClient({ tourData,baseUrl,tourPath,similarTour
 
   const handlePackageSelect = (pkg) => {
   setSelectedPackage(pkg);
-  setBasePrice(pkg.discount_price || pkg.price);
+  setBasePrice(effectivePrice(pkg));
 };
 
-  const formatPrice = (price) => `₹${Number(price).toLocaleString()}`;
+  // The API sends 0 for an empty price/discount, so 0 means "no price" here
+  const formatPrice = (price) =>
+    price === null || price === undefined || Number(price) <= 0
+      ? "Price on Request"
+      : `₹${Number(price).toLocaleString()}`;
 
   const getSavings = (pkg) =>
-    pkg.discount_price && pkg.price > pkg.discount_price
-      ? formatPrice(pkg.price - pkg.discount_price)
-      : null;
+    hasDiscount(pkg) ? formatPrice(Number(pkg.price) - Number(pkg.discount_price)) : null;
       
 
   const capitalizeFirst = (str) => {
@@ -75,43 +89,21 @@ export default function TourDetailClient({ tourData,baseUrl,tourPath,similarTour
 };
 
   const handleEnquirySubmit = async (e) => {
-  e.preventDefault();
-
-  try {
-    const csrfToken = getCSRFToken();
-
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/tour-enquiries/`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-CSRFToken": csrfToken,
-      },
-      body: JSON.stringify({
-        tour_name: tourData.name,
-        package_type: selectedPackage?.package_type,
-        package_price: basePrice,
-        name: enquiryFormData.name,
-        email: enquiryFormData.email,
-        contact_no: enquiryFormData.contactNo,
-        total_persons: parseInt(enquiryFormData.totalPersons || "0", 10),
-        travel_date: enquiryFormData.travelDate,
-        message: enquiryFormData.message,
-      }),
+    e?.preventDefault?.();
+    const result = await submitTourEnquiry({
+      tourName: tourData.name,
+      packageType: selectedPackage?.package_type,
+      packagePrice: basePrice,
+      formData: enquiryFormData,
     });
 
-    if (res.ok) {
-      console.log("Enquiry submitted successfully!");
+    if (result.ok) {
+      alert("Your enquiry has been submitted successfully!");
       setEnquiryFormData({ name: "", email: "", contactNo: "", totalPersons: "", travelDate: "", message: "" });
     } else {
-      const errorText = await res.text();
-      console.error("Submit failed:", res.status, errorText);
+      alert(result.message);
     }
-
-  } catch (error) {
-    console.error("❌ Network or unexpected error:", error);
-    alert("Something went wrong while submitting your enquiry. Please try again later.");
-  }
-};
+  };
     const capitalizedDestinations = tourData?.destinations?.map(dest =>
       capitalizeFirst(dest)
     ) || [];
@@ -237,9 +229,11 @@ const faqSchema = tourData.faqs?.length > 0
           {/* Pricing Card */}
           <div className="inline-block bg-white rounded-xl p-4 shadow-md">
             <div className="flex items-baseline gap-3">
-              <span className="text-gray-400 line-through text-lg">
-                {formatPrice(selectedPackage?.price)}
-              </span>
+              {hasDiscount(selectedPackage) && (
+                <span className="text-gray-400 line-through text-lg">
+                  {formatPrice(selectedPackage?.price)}
+                </span>
+              )}
               <span className="text-3xl font-bold text-brand-600">
                 {formatPrice(basePrice)}
               </span>
@@ -358,15 +352,16 @@ const faqSchema = tourData.faqs?.length > 0
                             {capitalizeFirst(pkg.package_type)}
                           </div>
                           <div className="text-sm">
-                            <span className="line-through">{formatPrice(pkg.price)}</span>
-                            {pkg.discount_price && (
+                            {hasDiscount(pkg) ? (
                               <>
-                                {" "}
+                                <span className="line-through">{formatPrice(pkg.price)}</span>{" "}
                                 <span className="font-semibold">{formatPrice(pkg.discount_price)}</span>
                                 <div className="text-xs text-green-500">
                                   Save {getSavings(pkg)}
                                 </div>
                               </>
+                            ) : (
+                              <span className="font-semibold">{formatPrice(effectivePrice(pkg))}</span>
                             )}
                           </div>
                         </button>
@@ -435,7 +430,9 @@ const faqSchema = tourData.faqs?.length > 0
                 <div className="mb-4 text-center">
                   <h3 className="text-xl font-semibold">{tourData.name}</h3>
                   <p className="text-xl md:text-base font-medium">
-                    <span className="line-through">{formatPrice(selectedPackage?.price)}</span>{" "}
+                    {hasDiscount(selectedPackage) && (
+                      <><span className="line-through">{formatPrice(selectedPackage?.price)}</span>{" "}</>
+                    )}
                     {formatPrice(basePrice)}
                     <span className="text-xs text-gray-700"> Per Adult</span>
                   </p>
@@ -493,6 +490,9 @@ const faqSchema = tourData.faqs?.length > 0
           <SimilarTours tours={similarTours} />
         )}
 
+        {/* Blog posts that picked this tour in the admin */}
+        <RelatedContent title="Travel guides for this trip" items={tourData.related_posts} />
+
         {/* FAQ Section */}
         <section className="py-12 max-w-6xl mx-auto px-4">
           <h2 className="text-3xl font-bold mb-8">Frequently Asked Questions</h2>
@@ -521,7 +521,9 @@ const faqSchema = tourData.faqs?.length > 0
         <div className="sticky bottom-0 w-full bg-gradient-to-r from-brand-600 to-brand-800 text-white py-4 flex justify-between items-center px-4 md:px-16 z-50 shadow-lg">
           <div>
             <p className="text-sm md:text-base font-medium">
-              <span className="line-through">{formatPrice(selectedPackage?.price)}</span>{" "}
+              {hasDiscount(selectedPackage) && (
+                <><span className="line-through">{formatPrice(selectedPackage?.price)}</span>{" "}</>
+              )}
               {formatPrice(basePrice)} • {tourData.duration_days} Days
               {getSavings(selectedPackage) && (
                 <span className="text-xs text-green-400"> Save {getSavings(selectedPackage)}</span>

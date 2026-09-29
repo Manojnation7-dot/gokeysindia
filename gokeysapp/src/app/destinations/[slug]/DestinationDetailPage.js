@@ -10,6 +10,7 @@ import {
   MinusIcon,
 } from "@/components/Icons";
 import InquiryFormCard from "@/components/SimpleEnquiryForm";
+import RelatedContent from "@/components/RelatedContent";
 import { buildBreadcrumbList, buildFAQSchema } from "@/lib/seoSchemas";
 import SmartSEO from "@/components/SmartSEO";
 
@@ -355,6 +356,9 @@ export default function DestinationDetailPage({ destination, tours, hotels, slug
             )}
           </div>
         </section>
+
+        {/* Blog posts that picked this destination in the admin */}
+        <RelatedContent title={`${destination.name} travel guides`} items={destination.related_posts} />
 
         {/* CTA Section */}
         <section className="py-12 bg-indigo-50">

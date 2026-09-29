@@ -7,14 +7,14 @@ export default async function RecentPosts() {
 
   try {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
-    console.log('Fetching recent posts from:', `${apiUrl}/api/blogs/?limit=3`); // Debug log
-    const res = await fetch(`${apiUrl}/api/blogs/?limit=3`, {
+    const res = await fetch(`${apiUrl}/api/blogs/?page_size=3`, {
       next: { revalidate: 60 },
     });
     if (!res.ok) {
       throw new Error(`HTTP error! status: ${res.status}`);
     }
-    posts = await res.json();
+    const data = await res.json();
+    posts = Array.isArray(data) ? data : data.results || []; // the API is paginated
   } catch (error) {
     console.error('Error fetching recent posts:', error);
     errorMessage = 'Failed to load recent posts.';

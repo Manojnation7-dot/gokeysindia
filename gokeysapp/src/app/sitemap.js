@@ -1,6 +1,9 @@
+// Built on each request from the API (always up to date)
+export const dynamic = "force-dynamic";
+
 export default async function sitemap() {
   const BASE_URL = "https://gokeys.in"; 
-  // 🔁 Change to https://gokeys.in on launch day
+ 
 
   async function fetchUrls(endpoint, prefix, priority, freq) {
     try {
@@ -13,7 +16,10 @@ export default async function sitemap() {
       const data = await res.json();
 
       return data.map((item) => ({
-        url: `${BASE_URL}/${prefix}/${item.slug}`,
+        // Hotels live under their destination: /hotels/<destination>/<hotel>
+        url: item.destination_slug
+          ? `${BASE_URL}/${prefix}/${item.destination_slug}/${item.slug}`
+          : `${BASE_URL}/${prefix}/${item.slug}`,
         lastModified: item.updated_at
           ? new Date(item.updated_at)
           : new Date(),

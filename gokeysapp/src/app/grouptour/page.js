@@ -1,6 +1,6 @@
 import { buildMetadata } from "@/lib/seoHelpers";
 import GroupTour from "./GroupTour";
-import { fetchData } from "@/lib/api";
+import { fetchAllResults } from "@/lib/api";
 
 export const dynamic = "force-dynamic"; // Optional if you always want fresh data
 
@@ -14,8 +14,8 @@ export async function generateMetadata() {
 }
 
 export default async function Page() {
-  const response = await fetchData("group-tours/?is_active=true");
-  const tours = Array.isArray(response) ? response : response?.results || [];
+  // All group tours (the API sends 8 per page by default)
+  const tours = await fetchAllResults("group-tours");
 
   return <GroupTour tours={tours} />;
 }

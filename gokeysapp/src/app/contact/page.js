@@ -40,7 +40,7 @@ const emailAddresses = [
             Let’s Plan Your Next Trip Together
           </h1>
           <p className="text-lg text-slate-300 max-w-3xl mx-auto">
-            Have questions about group tours, spiritual journeys, or custom itineraries?
+            Have questions about group tours, spiritual journeys, or custom itineraries for Uttarakhand or <a href="https://gokeys.in/services/travel-agency-haridwar" className="text-brand-600 font-semibold hover:underline">Haridwar</a>?
             Our travel experts are just a message away.
           </p>
         </div>

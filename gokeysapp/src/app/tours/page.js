@@ -1,6 +1,6 @@
 import TourListPage from "./TourListPage";
 import { buildMetadata } from "@/lib/seoHelpers";
-import { fetchData } from "@/lib/api";
+import { fetchAllResults } from "@/lib/api";
 
 export async function generateMetadata() {
   return buildMetadata({
@@ -13,13 +13,11 @@ export async function generateMetadata() {
 }
 
 export default async function Page() {
-  const toursData = await fetchData("tours");
-  const tripTypesData = await fetchData("trip-types");
-
-  const tours = Array.isArray(toursData) ? toursData : toursData.results || [];
-  const tripTypes = Array.isArray(tripTypesData)
-    ? tripTypesData
-    : tripTypesData.results || [];
+  // All tours and trip types (the API sends 8 per page by default)
+  const [tours, tripTypes] = await Promise.all([
+    fetchAllResults("tours"),
+    fetchAllResults("trip-types"),
+  ]);
 
   return <TourListPage tours={tours} tripTypes={tripTypes} />;
 }

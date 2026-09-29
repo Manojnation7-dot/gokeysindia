@@ -3,6 +3,8 @@ export function buildMetadata({
   description,
   path = "/",
   image = "/images/default-og.jpg",
+  canonical, // admin "Canonical URL" (only when this page is a copy of another page)
+  noindex = false, // admin "Hide from Google", or a draft preview
 }) {
   const normalizedSiteUrl = "https://gokeys.in";
   const canonicalUrl = new URL(path, normalizedSiteUrl);
@@ -15,8 +17,9 @@ export function buildMetadata({
     title,
     description,
     alternates: {
-      canonical: canonicalUrl.href,
+      canonical: canonical || canonicalUrl.href,
     },
+    ...(noindex ? { robots: { index: false, follow: true } } : {}),
     openGraph: {
       title,
       description,
@@ -36,5 +39,14 @@ export function buildMetadata({
       description,
       images: [normalizedImage],
     },
+  };
+}
+
+// SEO panel settings from the API (tours, group tours, destinations, hotels, places, blogs)
+export function seoFromApi(item, { preview = false } = {}) {
+  return {
+    canonical: item?.canonical_url || undefined,
+    noindex: Boolean(item?.noindex) || preview,
+    ogImage: item?.og_image?.optimized_banner || item?.og_image?.image || null,
   };
 }

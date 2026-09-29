@@ -6,7 +6,7 @@ export default async function TravelStoriesWrapper({ limit = 8 }) {
 
   try {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-    const res = await fetch(`${apiUrl}/api/blogs/?limit=${limit}`, {
+    const res = await fetch(`${apiUrl}/api/blogs/?page_size=${limit}`, {
       next: { revalidate: 60 }, // or force-cache for full static
     });
 

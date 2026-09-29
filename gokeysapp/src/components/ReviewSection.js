@@ -71,7 +71,7 @@ useEffect(() => {
       alert('You can upload a maximum of 5 images');
       return;
     }
-    setForm((prev) => ({ ...prev, images: files }));
+    setForm((prev) => ({ ...prev, images: [...prev.images, ...files] })); // keep earlier picks, like the previews
     const previews = files.map((file) => URL.createObjectURL(file));
     setImagePreviews((prev) => [...prev, ...previews]);
   };
@@ -114,8 +114,8 @@ const handleSubmit = async (e) => {
     // ✅ 2. Build FormData as before
     const formData = new FormData();
     formData.append("name", form.name || "Anonymous");
-    formData.append("email", form.email || "");
-    formData.append("travel_month", form.travel_month || "");
+    if (form.email) formData.append("email", form.email); // optional: a blank email was rejected
+    if (form.travel_month) formData.append("travel_month", form.travel_month);
     formData.append("comment", form.comment);
     formData.append("title", form.title);
     formData.append("rating", form.rating);

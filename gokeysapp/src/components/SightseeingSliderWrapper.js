@@ -5,7 +5,7 @@ export default async function SightseeingSliderWrapper({ limit = 8 }) {
 
   try {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-    const res = await fetch(`${apiUrl}/api/sightseeing/?limit=${limit}`, {
+    const res = await fetch(`${apiUrl}/api/sightseeing/?page_size=${limit}`, {
       next: { revalidate: 60 }, // ISR: revalidate every 60s
     });
 

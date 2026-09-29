@@ -4,10 +4,16 @@ export async function POST(req) {
   try {
     const data = await req.json();
 
+    // Pass on the visitor's IP and browser. Without these Django records this
+    // server's IP and Node's user agent for every visit, so unique-visitor counts,
+    // country/city and device stats were all wrong.
+    const forwardedFor = req.headers.get("x-forwarded-for") || req.headers.get("x-real-ip") || "";
     const response = await fetch("https://api.gokeys.in/api/track/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "User-Agent": req.headers.get("user-agent") || "",
+        ...(forwardedFor ? { "X-Forwarded-For": forwardedFor } : {}),
       },
       body: JSON.stringify(data),
     });
@@ -18,8 +24,7 @@ export async function POST(req) {
     try {
       result = JSON.parse(text); // Try parsing as JSON
     } catch {
-      // If not JSON, return raw HTML for debugging
-      result = { error: "Non-JSON response", html: text };
+      result = { status: "error", message: "Non-JSON response" };
     }
 
     return NextResponse.json(result, { status: response.status });

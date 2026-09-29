@@ -1,11 +1,16 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import { notFound } from 'next/navigation';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import CommentSection from '@/components/CommentSection';
 import TravelStories from '@/components/TravelStories';
 import InquiryFormCard from '@/components/SimpleEnquiryForm';
 import FAQSection from '@/components/FaqsDetails';
+import RelatedContent from '@/components/RelatedContent';
+import PreviewBanner from '@/components/PreviewBanner';
+import { previewQuery } from '@/lib/preview';
+import { seoFromApi } from '@/lib/seoHelpers';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://gokeys.in';
 
@@ -46,6 +51,12 @@ function htmlToPlainText(html = '') {
     .trim();
 }
 
+// Meta description as plain text: the SEO description, else the start of the post
+function postDescription(post) {
+  const text = htmlToPlainText(post.meta_description || '') || htmlToPlainText(post.content || '');
+  return text.length > 160 ? `${text.slice(0, 157).trim()}...` : text || undefined;
+}
+
 function buildFAQSchema(post) {
   if (!post.faqs || post.faqs.length === 0) return null;
   const postUrl = `${SITE_URL}/blog/${post.slug}`;
@@ -73,13 +84,13 @@ function buildBlogPostingSchema(post) {
     '@id': `${postUrl}#article`,
     mainEntityOfPage: { '@type': 'WebPage', '@id': postUrl },
     headline: post.meta_title || post.title,
-    description: post.meta_description || post.excerpt || undefined,
+    description: postDescription(post),
     image: post.cover_image_url ? [post.cover_image_url] : undefined,
     datePublished: post.published_date,
-    dateModified: post.updated_date || post.published_date,
+    dateModified: post.updated_at || post.published_date,
     author: {
       '@type': 'Organization',
-      name: post.author || 'Gokeys India',
+      name: 'Gokeys India',
       url: SITE_URL,
     },
     publisher: {
@@ -167,7 +178,7 @@ export async function generateMetadata({ params }) {
 
   try {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
-    const res = await fetch(`${apiUrl}/api/blogs/${slug}/`);
+    const res = await fetch(`${apiUrl}/api/blogs/${slug}/${await previewQuery()}`);
     if (!res.ok) {
       throw new Error(`HTTP error! status: ${res.status}`);
     }
@@ -175,26 +186,30 @@ export async function generateMetadata({ params }) {
   } catch (error) {
     console.error('Error fetching blog post for metadata:', error);
   }
+  const seo = seoFromApi(post, { preview: Boolean(await previewQuery()) });
 
   if (!post) {
     return {
       title: 'Blog Not Found',
       description: 'The blog post you are looking for does not exist.',
+      robots: { index: false, follow: true },
     };
   }
 
+  const shareImage = seo.ogImage || post.cover_image_url;
   return {
     title: post.meta_title || post.title,
-    description: post.meta_description || post.excerpt,
+    description: postDescription(post),
     alternates: {
-      canonical: `${SITE_URL}/blog/${post.slug}`,
+      canonical: seo.canonical || `${SITE_URL}/blog/${post.slug}`,
     },
+    ...(seo.noindex ? { robots: { index: false, follow: true } } : {}),
     openGraph: {
       title: post.meta_title || post.title,
-      description: post.meta_description || post.excerpt,
+      description: postDescription(post),
       url: `${SITE_URL}/blog/${post.slug}`,
       type: 'article',
-      images: post.cover_image_url ? [{ url: post.cover_image_url, width: 800, height: 400, alt: post.title }] : [],
+      images: shareImage ? [{ url: shareImage, width: 1200, height: 630, alt: post.title }] : [],
     },
   };
 }
@@ -204,17 +219,22 @@ export default async function BlogDetailPage({ params }) {
   let post = null;
   let errorMessage = null;
   let relatedStories = [];
+  let missing = false;
+  const preview = await previewQuery();
   try {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.gokeys.in';
 
-    const res = await fetch(`${apiUrl}/api/blogs/${slug}/`, {
+    const res = await fetch(`${apiUrl}/api/blogs/${slug}/${preview}`, {
       next: { revalidate: 60 },
     });
-    if (!res.ok) {
+    if (res.status === 404) {
+      missing = true; // unknown or draft post
+    } else if (!res.ok) {
       throw new Error(`HTTP error! status: ${res.status}`);
+    } else {
+      post = await res.json();
     }
-    post = await res.json();
-    const relatedRes = await fetch(`${apiUrl}/api/blogs/?is_active=true&limit=7`);
+    const relatedRes = await fetch(`${apiUrl}/api/blogs/?page_size=7`);
     if (relatedRes.ok) {
       let data = await relatedRes.json();
       const storiesArray = Array.isArray(data) ? data : data.results || [];
@@ -224,6 +244,9 @@ export default async function BlogDetailPage({ params }) {
     console.error('Error fetching blog post:', error);
     errorMessage = 'Failed to load blog post.';
   }
+
+  // Real 404 status (not a normal page that says 404), so Google drops the URL
+  if (missing) notFound();
 
   if (!post || errorMessage) {
     return (
@@ -242,6 +265,7 @@ export default async function BlogDetailPage({ params }) {
   return (
     <>
       <JsonLd items={[breadcrumbSchema, blogPostingSchema, faqSchema]} />
+      {preview && <PreviewBanner path={`/blog/${slug}`} />}
 
       <Header />
       {/* Post Header */}
@@ -303,6 +327,17 @@ export default async function BlogDetailPage({ params }) {
           <InquiryFormCard placeName={post.title} />
         </div>
       </main>
+      {/* Hand-picked in the admin ("Related content") */}
+      <RelatedContent
+        title="Plan this trip with Gokeys"
+        items={[
+          ...(post.related?.tours || []),
+          ...(post.related?.group_tours || []),
+          ...(post.related?.destinations || []),
+          ...(post.related?.sightseeing || []),
+        ]}
+      />
+      <RelatedContent title="Related articles" items={post.related?.posts} />
       <TravelStories posts={relatedStories} />
       <Footer />
     </>
