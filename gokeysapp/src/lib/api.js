@@ -1,5 +1,12 @@
 const API_BASE = () => process.env.NEXT_PUBLIC_API_URL || "https://api.gokeys.in";
 
+// API responses are cached for 5 minutes and cleared at once when something is saved in the
+// admin (Django calls /api/revalidate). Draft previews (?preview=) are never cached.
+export const REVALIDATE_SECONDS = 300;
+export const API_CACHE_TAG = "api";
+export const CACHED = { next: { revalidate: REVALIDATE_SECONDS, tags: [API_CACHE_TAG] } };
+export const cacheFor = (url) => (String(url).includes("preview=") ? { cache: "no-store" } : CACHED);
+
 // "tours" -> /api/tours/ ; "blogs/?page=2" -> /api/blogs/?page=2 ;
 // "tours/x?preview=t" -> /api/tours/x/?preview=t (Django URLs end with a slash)
 function apiUrl(endpoint, slug = null) {
@@ -10,7 +17,7 @@ function apiUrl(endpoint, slug = null) {
 
 export async function fetchData(endpoint, slug = null, notFoundOnError = true) {
   const url = apiUrl(endpoint, slug);
-  const res = await fetch(url, { cache: "no-store" });
+  const res = await fetch(url, cacheFor(url));
 
   if (!res.ok && notFoundOnError) return null;
   if (!res.ok) throw new Error(`Failed to fetch ${endpoint}`);
@@ -26,7 +33,7 @@ export async function fetchListData(endpoint, query = {}, notFoundOnError = fals
     if (value) url.searchParams.append(key, value);
   });
 
-  const res = await fetch(url, { cache: "no-store" });
+  const res = await fetch(url, cacheFor(url));
 
   if (!res.ok && notFoundOnError) return [];
   if (!res.ok) throw new Error(`Failed to list: ${endpoint}`);
@@ -45,7 +52,7 @@ export async function fetchAllResults(endpoint, query = {}) {
   const items = [];
   let next = url.toString();
   for (let page = 0; next && page < 20; page++) {
-    const res = await fetch(next, { cache: "no-store" });
+    const res = await fetch(next, cacheFor(next));
     if (!res.ok) break;
     const data = await res.json();
     if (Array.isArray(data)) return data; // endpoint without pagination

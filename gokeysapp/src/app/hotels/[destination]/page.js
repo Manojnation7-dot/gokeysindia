@@ -3,7 +3,10 @@ import { buildMetadata } from "@/lib/seoHelpers";
 import { fetchData } from "@/lib/api";
 import { buildBreadcrumbList } from "@/lib/seoSchemas";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 300;
+export async function generateStaticParams() {
+  return [];
+}
 
 export async function generateMetadata({ params }) {
   const resolvedParams = await params;
@@ -12,7 +15,7 @@ export async function generateMetadata({ params }) {
     title: `Hotels in ${destData?.name || resolvedParams.destination}`,
     description: `Find the best hotels in ${destData?.name || resolvedParams.destination}`,
     path: `/hotels/${resolvedParams.destination}`,
-    image: destData?.featured_image?.image || "/default-og.jpg",
+    image: destData?.featured_image?.optimized_banner || destData?.featured_image?.image,
   });
 }
 

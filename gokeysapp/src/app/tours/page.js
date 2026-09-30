@@ -1,6 +1,9 @@
 import TourListPage from "./TourListPage";
 import { buildMetadata } from "@/lib/seoHelpers";
 import { fetchAllResults } from "@/lib/api";
+import { slimTour } from "@/lib/slim";
+
+export const revalidate = 300;
 
 export async function generateMetadata() {
   return buildMetadata({
@@ -19,5 +22,5 @@ export default async function Page() {
     fetchAllResults("trip-types"),
   ]);
 
-  return <TourListPage tours={tours} tripTypes={tripTypes} />;
+  return <TourListPage tours={tours.map(slimTour)} tripTypes={tripTypes} />;
 }

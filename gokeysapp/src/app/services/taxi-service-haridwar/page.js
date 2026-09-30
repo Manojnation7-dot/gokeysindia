@@ -1,3 +1,4 @@
+import { buildMetadata } from "@/lib/seoHelpers";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import SmartSEO from "@/components/SmartSEO";
@@ -15,12 +16,13 @@ export async function generateMetadata() {
   const description =
     "Book taxi services in Haridwar for local sightseeing, railway station and airport transfers, Uttarakhand tours, Char Dham Yatra and outstation trips. Contact Gokeys India for taxi and cab services.";
 
-  const url = `${siteUrl}/services/taxi-service-haridwar`;
 
-  return {
+  return buildMetadata({
     title,
     description,
-
+    path: "/services/taxi-service-haridwar",
+    image: "/images/taxi-service-haridwar.jpeg",
+    imageAlt: "Taxi Services in Haridwar by Gokeys India",
     keywords: [
       "taxi services in Haridwar",
       "taxi service in Haridwar",
@@ -38,39 +40,7 @@ export async function generateMetadata() {
       "Haridwar airport taxi",
       "Char Dham taxi service",
     ],
-
-    alternates: {
-      canonical: url,
-    },
-
-    openGraph: {
-      title,
-      description,
-      url,
-      siteName: "Gokeys India",
-      type: "website",
-      images: [
-        {
-          url: `${siteUrl}/images/taxi-service-haridwar.jpeg`,
-          width: 1200,
-          height: 630,
-          alt: "Taxi Services in Haridwar by Gokeys India",
-        },
-      ],
-    },
-
-    twitter: {
-      card: "summary_large_image",
-      title,
-      description,
-      images: [`${siteUrl}/images/taxi-service-haridwar.jpeg`],
-    },
-
-    robots: {
-      index: true,
-      follow: true,
-    },
-  };
+  });
 }
 
 export default function TaxiServicesHaridwarPage() {

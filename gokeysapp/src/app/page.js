@@ -22,16 +22,23 @@ import {
 } from "@/lib/seoSchemas";
 import HomeReviews from "@/components/HomeReviews";
 import GoogleMap from "@/components/MapIframe";
+import { CACHED } from "@/lib/api";
+import { slimDestination } from "@/lib/slim";
+
+export const revalidate = 300;
 
 export const metadata = {
   alternates: { canonical: "https://gokeys.in/" },
 };
 
 async function getFeaturedDestinations() {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/featured-destinations/`, {
-    next: { revalidate: 60 },
-  });
-  return res.json();
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/featured-destinations/`, CACHED);
+    if (!res.ok) return [];
+    return (await res.json()).map(slimDestination);
+  } catch {
+    return [];
+  }
 }
 
 export default async function HomePage() {

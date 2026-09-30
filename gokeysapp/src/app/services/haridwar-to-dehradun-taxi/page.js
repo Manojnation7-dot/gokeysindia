@@ -1,3 +1,4 @@
+import { buildMetadata } from "@/lib/seoHelpers";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import SmartSEO from "@/components/SmartSEO";
@@ -14,12 +15,13 @@ export async function generateMetadata() {
   const description =
     "Book a Haridwar to Dehradun taxi or Dehradun Airport cab with Gokeys India. Private taxi services from Haridwar Railway Station, hotels and other locations.";
 
-  const url = `${siteUrl}/services/haridwar-to-dehradun-taxi`;
 
-  return {
+  return buildMetadata({
     title,
     description,
-
+    path: "/services/haridwar-to-dehradun-taxi",
+    image: "/images/haridwar-to-dehradun-taxi.jpeg",
+    imageAlt: "Haridwar to Dehradun Taxi and Airport Cab Service",
     keywords: [
       "Haridwar to Dehradun Taxi",
       "Haridwar to Dehradun Cab",
@@ -39,41 +41,7 @@ export async function generateMetadata() {
       "Haridwar Taxi Service",
       "Dehradun Taxi Service",
     ],
-
-    alternates: {
-      canonical: url,
-    },
-
-    openGraph: {
-      title,
-      description,
-      url,
-      siteName: "Gokeys India",
-      type: "website",
-      images: [
-        {
-          url: `${siteUrl}/images/haridwar-to-dehradun-taxi.jpeg`,
-          width: 1200,
-          height: 630,
-          alt: "Haridwar to Dehradun Taxi and Airport Cab Service",
-        },
-      ],
-    },
-
-    twitter: {
-      card: "summary_large_image",
-      title,
-      description,
-      images: [
-        `${siteUrl}/images/haridwar-to-dehradun-taxi.jpeg`,
-      ],
-    },
-
-    robots: {
-      index: true,
-      follow: true,
-    },
-  };
+  });
 }
 
 export default function HaridwarToDehradunTaxiPage() {

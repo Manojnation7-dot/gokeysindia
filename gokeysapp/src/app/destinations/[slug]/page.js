@@ -1,7 +1,7 @@
 import { buildMetadata, seoFromApi } from "@/lib/seoHelpers";
 import { previewQuery } from "@/lib/preview";
 import PreviewBanner from "@/components/PreviewBanner";
-import { fetchData } from "@/lib/api";
+import { fetchData, cacheFor, CACHED } from "@/lib/api";
 import DestinationDetailPage from "./DestinationDetailPage";
 import { notFound } from "next/navigation";
 
@@ -11,6 +11,13 @@ const API_BASE = process.env.NEXT_PUBLIC_API_URL;
 /**
  * GENERATE METADATA
  */
+// Cached for 5 minutes and refreshed when the admin saves (see /api/revalidate);
+// each URL is built on its first visit
+export const revalidate = 300;
+export async function generateStaticParams() {
+  return [];
+}
+
 export async function generateMetadata({ params }) {
   try {
     const { slug } = await params;
@@ -55,9 +62,8 @@ export default async function DestinationPage({ params }) {
 
   try {
     // 2. Fetch Destination Data with explicit error handling (a draft too, in preview)
-    const destRes = await fetch(`${API_BASE}/api/destinations/${slug}/${preview}`, {
-      next: { revalidate: 60 },
-    });
+    const destUrl = `${API_BASE}/api/destinations/${slug}/${preview}`;
+    const destRes = await fetch(destUrl, cacheFor(destUrl));
 
     if (destRes.status === 404) return notFound();
     if (!destRes.ok) throw new Error(`API returned status ${destRes.status}`);
@@ -82,8 +88,8 @@ export default async function DestinationPage({ params }) {
     // 5. Fetch Parallel Data (Tours & Hotels)
     // We use a safe wrapper to prevent one failing API from crashing the whole page
     const [toursRes, hotelsRes] = await Promise.all([
-      fetch(`${API_BASE}/api/tours/?destination=${encodeURIComponent(slug)}`, { next: { revalidate: 60 } }).catch(() => null),
-      fetch(`${API_BASE}/api/hotels/?destination=${encodeURIComponent(slug)}`, { next: { revalidate: 60 } }).catch(() => null),
+      fetch(`${API_BASE}/api/tours/?destination=${encodeURIComponent(slug)}`, CACHED).catch(() => null),
+      fetch(`${API_BASE}/api/hotels/?destination=${encodeURIComponent(slug)}`, CACHED).catch(() => null),
     ]);
 
     // 6. Process Tours Safely

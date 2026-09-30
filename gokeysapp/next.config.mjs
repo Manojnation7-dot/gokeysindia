@@ -3,6 +3,12 @@ const LOCAL_API = process.env.NODE_ENV === 'production' ? '' : ' http://127.0.0.
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Crawlers matching this list get <title>, description and social tags inside <head>.
+  // Next.js streams them into <body> for everyone else, including Googlebot by default.
+  // This is Next.js' own list (next/dist/shared/lib/router/utils/html-bots.js) plus Googlebot.
+  htmlLimitedBots:
+    /Googlebot|[\w-]+-Google|Google-[\w-]+|Chrome-Lighthouse|Slurp|DuckDuckBot|baiduspider|yandex|sogou|bitlybot|tumblr|vkShare|quora link preview|redditbot|ia_archiver|Bingbot|BingPreview|applebot|facebookexternalhit|facebookcatalog|Twitterbot|LinkedInBot|Slackbot|Discordbot|WhatsApp|SkypeUriPreview|Yeti|googleweblight|Pinterest|TelegramBot/i,
+
   images: {
 
       unoptimized: true,

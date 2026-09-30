@@ -1,3 +1,4 @@
+import { buildMetadata } from "@/lib/seoHelpers";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import SmartSEO from "@/components/SmartSEO";
@@ -14,12 +15,13 @@ export async function generateMetadata() {
   const description =
     "Book a Delhi to Haridwar cab or taxi with Gokeys India. Plan one-way or round-trip travel from Delhi to Haridwar with private cab options and travel assistance.";
 
-  const url = `${siteUrl}/services/delhi-to-haridwar-cab`;
 
-  return {
+  return buildMetadata({
     title,
     description,
-
+    path: "/services/delhi-to-haridwar-cab",
+    image: "/images/delhi-to-haridwar-cab.jpeg",
+    imageAlt: "Delhi to Haridwar Cab Service - Gokeys India",
     keywords: [
       "Delhi to Haridwar cab",
       "Delhi to Haridwar taxi",
@@ -39,41 +41,7 @@ export async function generateMetadata() {
       "Delhi to Rishikesh cab",
       "Delhi to Uttarakhand taxi",
     ],
-
-    alternates: {
-      canonical: url,
-    },
-
-    openGraph: {
-      title,
-      description,
-      url,
-      siteName: "Gokeys India",
-      type: "website",
-      images: [
-        {
-          url: `${siteUrl}/images/delhi-to-haridwar-cab.jpeg`,
-          width: 1200,
-          height: 630,
-          alt: "Delhi to Haridwar Cab Service - Gokeys India",
-        },
-      ],
-    },
-
-    twitter: {
-      card: "summary_large_image",
-      title,
-      description,
-      images: [
-        `${siteUrl}/images/delhi-to-haridwar-cab.jpeg`,
-      ],
-    },
-
-    robots: {
-      index: true,
-      follow: true,
-    },
-  };
+  });
 }
 
 export default function DelhiToHaridwarCabPage() {

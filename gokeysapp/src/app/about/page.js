@@ -1,3 +1,4 @@
+import { buildMetadata } from "@/lib/seoHelpers";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { buildBreadcrumbList } from "@/lib/seoSchemas";
@@ -5,11 +6,10 @@ import SmartSEO from "@/components/SmartSEO";
 import GoogleMap from "@/components/MapIframe";
 
 export async function generateMetadata() {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
-
-  return {
+  return buildMetadata({
     title: "About Us",
     description: "Discover the best Char Dham, Uttarakhand, and Himalayan tours with Gokeys. Top Travel Agents in Haridwar Uttarakhand for Travel Package, Hotel Booking and Taxi Booking.",
+    path: "/about",
     keywords: [
       "Travel Agents in Haridwar",
       "Tour Operators in Haridwar",
@@ -29,21 +29,7 @@ export async function generateMetadata() {
       "Haridwar to Dehradun Cab",
       "Nainital tour package from haridwar",
     ],
-
-    alternates: {
-      canonical: `${siteUrl}/about/`,
-    },
-    openGraph: {
-      title: "About Us ",
-      description: "Discover the best Char Dham, Uttarakhand, and Himalayan tours with Gokeys. Top Travel Agents in Haridwar Uttarakhand for Travel Package, Hotel Booking and Taxi Booking.",
-      url: `${siteUrl}/about/`,
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: "About Us ",
-      description: "Discover the best Char Dham, Uttarakhand, and Himalayan tours with Gokeys. Top Travel Agents in Haridwar Uttarakhand for Travel Package, Hotel Booking and Taxi Booking.",
-    },
-  };
+  });
 }
 
 export default function About() {
@@ -77,7 +63,7 @@ const breadcrumbSchema = buildBreadcrumbList([
             </p>
           </div>
         </div>
-        <h1 className="text-4xl font-bold text-green-700">History of Gokeys</h1>
+        <h2 className="text-4xl font-bold text-green-700">History of Gokeys</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-center mt-5">
           
          <div>
@@ -100,7 +86,7 @@ const breadcrumbSchema = buildBreadcrumbList([
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start mt-7">
           {/* Services Section */}
           <div>
-            <h1 className="text-4xl font-bold text-green-700 mb-4">Our Services</h1>
+            <h2 className="text-4xl font-bold text-green-700 mb-4">Our Services</h2>
             <ul className="list-disc list-outside pl-5 space-y-1 text-gray-700">
               <li>Tour Packages for <a href="https://gokeys.in/tours/char-dham-yatra-package-from-haridwar" className="text-brand-600 font-semibold hover:underline">Char Dham Yatra</a>, Kedarnath Yatra, Badrinath Yatra, Yamunotri Yatra, Gangotri Yatra, and more</li>
               <li>Hotel Bookings</li>
@@ -117,7 +103,7 @@ const breadcrumbSchema = buildBreadcrumbList([
 
           {/* Contact Info Section */}
           <div>
-            <h1 className="text-4xl font-bold text-green-700 mb-4">How to Reach Us:</h1>
+            <h2 className="text-4xl font-bold text-green-700 mb-4">How to Reach Us:</h2>
             <div className="space-y-1 text-gray-700">
               <p><strong>Address:</strong>  4th Shop, Zila Panchayat Market, Railway Road,  
             Haridwar, Uttarakhand, India - 249401</p>

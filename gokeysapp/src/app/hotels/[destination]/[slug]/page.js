@@ -13,6 +13,13 @@ function belongsTo(hotel, destination) {
   return !!hotel && hotelDestination === destination.toLowerCase();
 }
 
+// Cached for 5 minutes and refreshed when the admin saves (see /api/revalidate);
+// each URL is built on its first visit
+export const revalidate = 300;
+export async function generateStaticParams() {
+  return [];
+}
+
 export async function generateMetadata({ params }) {
   const { destination, slug } = await params;
   const preview = await previewQuery();
@@ -25,7 +32,7 @@ export async function generateMetadata({ params }) {
       title: "Hotel Not Found ",
       description: "Sorry, the hotel you’re looking for does not exist.",
       path: `/hotels/${destination}/${slug}`,
-      image: "/images/default-og.jpg",
+      noindex: true,
     });
   }
 
@@ -34,7 +41,7 @@ export async function generateMetadata({ params }) {
     title: hotel.meta_title || `${hotel.name} in ${hotel.destination}`,
     description: hotel.meta_description || hotel.description?.substring(0, 150),
     path: `/hotels/${destination}/${slug}`,
-    image: seo.ogImage || hotel.front_image_url || "/images/default-og.jpg",
+    image: seo.ogImage || hotel.front_image_url,
     canonical: seo.canonical,
     noindex: seo.noindex,
   });

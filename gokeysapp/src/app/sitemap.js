@@ -1,5 +1,7 @@
-// Built on each request from the API (always up to date)
-export const dynamic = "force-dynamic";
+import { CACHED } from "@/lib/api";
+
+// Built from the API, cached for 5 minutes and refreshed when the admin saves
+export const revalidate = 300;
 
 export default async function sitemap() {
   const BASE_URL = "https://gokeys.in"; 
@@ -8,9 +10,7 @@ export default async function sitemap() {
   async function fetchUrls(endpoint, prefix, priority, freq) {
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.gokeys.in";
-      const res = await fetch(`${apiUrl}${endpoint}`, {
-        cache: "no-store",
-      });
+      const res = await fetch(`${apiUrl}${endpoint}`, CACHED);
 
       if (!res.ok) return [];
 
@@ -21,9 +21,7 @@ export default async function sitemap() {
         url: item.destination_slug
           ? `${BASE_URL}/${prefix}/${item.destination_slug}/${item.slug}`
           : `${BASE_URL}/${prefix}/${item.slug}`,
-        lastModified: item.updated_at
-          ? new Date(item.updated_at)
-          : new Date(),
+        ...(item.updated_at ? { lastModified: new Date(item.updated_at) } : {}),
         changeFrequency: freq,
         priority: priority,
       }));
@@ -32,6 +30,46 @@ export default async function sitemap() {
       return [];
     }
   }
+
+  // Dynamic URLs from Django
+  const tours = await fetchUrls("/api/sitemap/tours", "tours", 0.9, "weekly");
+  const blogs = await fetchUrls("/api/sitemap/blogs", "blog", 0.7, "monthly");
+  const destinations = await fetchUrls(
+    "/api/sitemap/destinations",
+    "destinations",
+    0.8,
+    "monthly"
+  );
+  const groupTours = await fetchUrls(
+    "/api/sitemap/group-tours",
+    "grouptour",
+    0.8,
+    "weekly"
+  );
+  const hotels = await fetchUrls("/api/sitemap/hotels", "hotels", 0.6, "monthly");
+  const sightseeing = await fetchUrls(
+    "/api/sitemap/sightseeing",
+    "sightseeing",
+    0.6,
+    "monthly"
+  );
+
+  // List pages change when one of their items changes; the other static pages only
+  // when their code changes, so they get no date (a date that is always "now" teaches
+  // Google to ignore the dates of the whole sitemap)
+  const newest = (items) => {
+    const times = items.map((i) => i.lastModified?.getTime()).filter(Boolean);
+    return times.length ? { lastModified: new Date(Math.max(...times)) } : {};
+  };
+  const listDates = {
+    "": newest([...tours, ...blogs, ...groupTours]),
+    "/tours": newest(tours),
+    "/blog": newest(blogs),
+    "/destinations": newest(destinations),
+    "/grouptour": newest(groupTours),
+    "/hotels": newest(hotels),
+    "/sightseeing": newest(sightseeing),
+  };
 
   // Static pages
   const staticPages = [
@@ -59,33 +97,10 @@ export default async function sitemap() {
     "/services/haridwar-to-rishikesh-taxi",
   ].map((path) => ({
     url: `${BASE_URL}${path}`,
-    lastModified: new Date(),
+    ...(listDates[path] || {}),
     changeFrequency: "weekly",
     priority: path === "" ? 1 : 0.8,
   }));
-
-  // Dynamic URLs from Django
-  const tours = await fetchUrls("/api/sitemap/tours", "tours", 0.9, "weekly");
-  const blogs = await fetchUrls("/api/sitemap/blogs", "blog", 0.7, "monthly");
-  const destinations = await fetchUrls(
-    "/api/sitemap/destinations",
-    "destinations",
-    0.8,
-    "monthly"
-  );
-  const groupTours = await fetchUrls(
-    "/api/sitemap/group-tours",
-    "grouptour",
-    0.8,
-    "weekly"
-  );
-  const hotels = await fetchUrls("/api/sitemap/hotels", "hotels", 0.6, "monthly");
-  const sightseeing = await fetchUrls(
-    "/api/sitemap/sightseeing",
-    "sightseeing",
-    0.6,
-    "monthly"
-  );
 
   return [
     ...staticPages,

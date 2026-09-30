@@ -1,3 +1,4 @@
+import { buildMetadata } from "@/lib/seoHelpers";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import SmartSEO from "@/components/SmartSEO";
@@ -14,12 +15,13 @@ export async function generateMetadata() {
   const description =
     "Book a Haridwar to Rishikesh taxi with Gokeys India. Private cab services for families, couples, groups and travelers visiting Rishikesh from Haridwar.";
 
-  const url = `${siteUrl}/services/haridwar-to-rishikesh-taxi`;
 
-  return {
+  return buildMetadata({
     title,
     description,
-
+    path: "/services/haridwar-to-rishikesh-taxi",
+    image: "/images/haridwar-to-rishikesh-taxi.jpeg",
+    imageAlt: "Haridwar to Rishikesh Taxi Service - Gokeys India",
     keywords: [
       "Haridwar to Rishikesh Taxi",
       "Haridwar to Rishikesh Cab",
@@ -39,41 +41,7 @@ export async function generateMetadata() {
       "Travel Agents in Haridwar for Rishikesh Trip",
       "Travel Agency in Haridwar for Rishikesh Tour",
     ],
-
-    alternates: {
-      canonical: url,
-    },
-
-    openGraph: {
-      title,
-      description,
-      url,
-      siteName: "Gokeys India",
-      type: "website",
-      images: [
-        {
-          url: `${siteUrl}/images/haridwar-to-rishikesh-taxi.jpeg`,
-          width: 1200,
-          height: 630,
-          alt: "Haridwar to Rishikesh Taxi Service - Gokeys India",
-        },
-      ],
-    },
-
-    twitter: {
-      card: "summary_large_image",
-      title,
-      description,
-      images: [
-        `${siteUrl}/images/haridwar-to-rishikesh-taxi.jpeg`,
-      ],
-    },
-
-    robots: {
-      index: true,
-      follow: true,
-    },
-  };
+  });
 }
 
 export default function HaridwarToRishikeshTaxiPage() {

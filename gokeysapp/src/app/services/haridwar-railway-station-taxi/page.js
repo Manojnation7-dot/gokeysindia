@@ -1,3 +1,4 @@
+import { buildMetadata } from "@/lib/seoHelpers";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import SmartSEO from "@/components/SmartSEO";
@@ -14,12 +15,13 @@ export async function generateMetadata() {
   const description =
     "Book a taxi from Haridwar Railway Station with Gokeys India. Cab services for hotels, Rishikesh, Char Dham Yatra, Kedarnath, Badrinath and Uttarakhand travel.";
 
-  const url = `${siteUrl}/services/haridwar-railway-station-taxi/`;
 
-  return {
+  return buildMetadata({
     title,
     description,
-
+    path: "/services/haridwar-railway-station-taxi",
+    image: "/images/haridwar-railway-station-taxi.jpeg",
+    imageAlt: "Haridwar Railway Station Taxi Service - Gokeys India",
     keywords: [
       "Haridwar Railway Station Taxi",
       "Haridwar Railway Station Cab",
@@ -40,41 +42,7 @@ export async function generateMetadata() {
       "Uttarakhand tour operators",
       "travel agents in Haridwar",
     ],
-
-    alternates: {
-      canonical: url,
-    },
-
-    openGraph: {
-      title,
-      description,
-      url,
-      siteName: "Gokeys India",
-      type: "website",
-      images: [
-        {
-          url: `${siteUrl}/images/haridwar-railway-station-taxi.jpeg`,
-          width: 1200,
-          height: 630,
-          alt: "Haridwar Railway Station Taxi Service - Gokeys India",
-        },
-      ],
-    },
-
-    twitter: {
-      card: "summary_large_image",
-      title,
-      description,
-      images: [
-        `${siteUrl}/images/haridwar-railway-station-taxi.jpeg`,
-      ],
-    },
-
-    robots: {
-      index: true,
-      follow: true,
-    },
-  };
+  });
 }
 
 export default function HaridwarRailwayStationTaxiPage() {

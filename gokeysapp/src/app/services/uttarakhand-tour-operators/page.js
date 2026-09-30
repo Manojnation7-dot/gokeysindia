@@ -1,3 +1,4 @@
+import { buildMetadata } from "@/lib/seoHelpers";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import SmartSEO from "@/components/SmartSEO";
@@ -15,12 +16,13 @@ export async function generateMetadata() {
   const description =
     "Looking for Uttarakhand tour operators? Gokeys India helps plan Uttarakhand tour packages from Haridwar covering Char Dham, Kedarnath, Badrinath, Rishikesh, Mussoorie, Nainital and other destinations.";
 
-  const url = `${siteUrl}/services/uttarakhand-tour-operators`;
 
-  return {
+  return buildMetadata({
     title,
     description,
-
+    path: "/services/uttarakhand-tour-operators",
+    image: "/images/uttarakhand-tour-operators.jpeg",
+    imageAlt: "Uttarakhand Tour Operators - Gokeys India",
     keywords: [
       "Uttarakhand tour operators",
       "Uttarakhand tour operator",
@@ -43,41 +45,7 @@ export async function generateMetadata() {
       "Uttarakhand family tour packages",
       "Uttarakhand honeymoon packages",
     ],
-
-    alternates: {
-      canonical: url,
-    },
-
-    openGraph: {
-      title,
-      description,
-      url,
-      siteName: "Gokeys India",
-      type: "website",
-      images: [
-        {
-          url: `${siteUrl}/images/uttarakhand-tour-operators.jpeg`,
-          width: 1200,
-          height: 630,
-          alt: "Uttarakhand Tour Operators - Gokeys India",
-        },
-      ],
-    },
-
-    twitter: {
-      card: "summary_large_image",
-      title,
-      description,
-      images: [
-        `${siteUrl}/images/uttarakhand-tour-operators.jpeg`,
-      ],
-    },
-
-    robots: {
-      index: true,
-      follow: true,
-    },
-  };
+  });
 }
 
 export default function UttarakhandTourOperatorsPage() {

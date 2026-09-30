@@ -10,7 +10,11 @@ import FAQSection from '@/components/FaqsDetails';
 import RelatedContent from '@/components/RelatedContent';
 import PreviewBanner from '@/components/PreviewBanner';
 import { previewQuery } from '@/lib/preview';
-import { seoFromApi } from '@/lib/seoHelpers';
+import { buildMetadata, seoFromApi } from '@/lib/seoHelpers';
+import { CACHED, cacheFor } from '@/lib/api';
+import { slimPost } from '@/lib/slim';
+
+export const revalidate = 300;
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://gokeys.in';
 
@@ -153,7 +157,7 @@ export async function generateStaticParams() {
   let blogPosts = [];
   try {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
-    const res = await fetch(`${apiUrl}/api/blogs/`);
+    const res = await fetch(`${apiUrl}/api/blogs/`, CACHED);
     if (!res.ok) {
       throw new Error(`HTTP error! status: ${res.status}`);
     }
@@ -169,7 +173,7 @@ export async function generateStaticParams() {
 }
 
 // generateMetadata now ONLY handles actual <meta> tags — title, description,
-// canonical, OpenGraph. No JSON-LD here anymore. Structured data is built
+// canonical, OpenGraph, Twitter. No JSON-LD here anymore. Structured data is built
 // and rendered inside BlogDetailPage as real <script type="application/ld+json">
 // tags, which is the only format Google's structured data parser reads.
 export async function generateMetadata({ params }) {
@@ -178,7 +182,8 @@ export async function generateMetadata({ params }) {
 
   try {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
-    const res = await fetch(`${apiUrl}/api/blogs/${slug}/${await previewQuery()}`);
+    const url = `${apiUrl}/api/blogs/${slug}/${await previewQuery()}`;
+    const res = await fetch(url, cacheFor(url)); // same request as the page: fetched once
     if (!res.ok) {
       throw new Error(`HTTP error! status: ${res.status}`);
     }
@@ -189,29 +194,28 @@ export async function generateMetadata({ params }) {
   const seo = seoFromApi(post, { preview: Boolean(await previewQuery()) });
 
   if (!post) {
-    return {
+    return buildMetadata({
       title: 'Blog Not Found',
       description: 'The blog post you are looking for does not exist.',
-      robots: { index: false, follow: true },
-    };
+      path: `/blog/${slug}`,
+      noindex: true,
+    });
   }
 
-  const shareImage = seo.ogImage || post.cover_image_url;
-  return {
+  return buildMetadata({
     title: post.meta_title || post.title,
     description: postDescription(post),
-    alternates: {
-      canonical: seo.canonical || `${SITE_URL}/blog/${post.slug}`,
-    },
-    ...(seo.noindex ? { robots: { index: false, follow: true } } : {}),
-    openGraph: {
-      title: post.meta_title || post.title,
-      description: postDescription(post),
-      url: `${SITE_URL}/blog/${post.slug}`,
-      type: 'article',
-      images: shareImage ? [{ url: shareImage, width: 1200, height: 630, alt: post.title }] : [],
-    },
-  };
+    path: `/blog/${post.slug}`,
+    image: seo.ogImage || post.cover_image_url,
+    imageAlt: post.cover_image?.[0]?.alt_text || post.title,
+    canonical: seo.canonical,
+    noindex: seo.noindex,
+    type: 'article',
+    publishedTime: post.published_date,
+    modifiedTime: post.updated_at || post.published_date,
+    section: post.categories?.[0]?.name,
+    tags: (post.tags || []).map((t) => t.name).filter(Boolean),
+  });
 }
 
 export default async function BlogDetailPage({ params }) {
@@ -224,9 +228,8 @@ export default async function BlogDetailPage({ params }) {
   try {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.gokeys.in';
 
-    const res = await fetch(`${apiUrl}/api/blogs/${slug}/${preview}`, {
-      next: { revalidate: 60 },
-    });
+    const url = `${apiUrl}/api/blogs/${slug}/${preview}`;
+    const res = await fetch(url, cacheFor(url));
     if (res.status === 404) {
       missing = true; // unknown or draft post
     } else if (!res.ok) {
@@ -234,11 +237,11 @@ export default async function BlogDetailPage({ params }) {
     } else {
       post = await res.json();
     }
-    const relatedRes = await fetch(`${apiUrl}/api/blogs/?page_size=7`);
+    const relatedRes = await fetch(`${apiUrl}/api/blogs/?page_size=7`, CACHED);
     if (relatedRes.ok) {
       let data = await relatedRes.json();
       const storiesArray = Array.isArray(data) ? data : data.results || [];
-      relatedStories = storiesArray.filter(p => p.slug !== slug).slice(0, 6);
+      relatedStories = storiesArray.filter(p => p.slug !== slug).slice(0, 6).map(slimPost);
     }
   } catch (error) {
     console.error('Error fetching blog post:', error);

@@ -193,7 +193,7 @@ const handleSubmit = async (e) => {
     <div className="max-w-6xl mx-auto px-4 py-10 bg-blue-50 min-h-screen rounded-2xl ">
       {/* Top Heading */}
       <div className="mb-8 text-center">
-        <h1 className="text-3xl font-bold text-brand-800">Traveler Reviews</h1>
+        <h2 className="text-3xl font-bold text-brand-800">Traveler Reviews</h2>
         <p className="text-lg text-gray-600 mt-2">
           Share your amazing travel experiences with our community
         </p>

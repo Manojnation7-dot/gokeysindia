@@ -1,9 +1,16 @@
 import { buildMetadata, seoFromApi } from "@/lib/seoHelpers";
-import { fetchData } from "@/lib/api";
+import { fetchData, CACHED } from "@/lib/api";
 import { previewQuery } from "@/lib/preview";
 import { notFound } from "next/navigation";
 import TourDetailClient from "@/components/TourDetailsClient";
 import PreviewBanner from "@/components/PreviewBanner";
+
+// Cached for 5 minutes and refreshed when the admin saves (see /api/revalidate);
+// each URL is built on its first visit
+export const revalidate = 300;
+export async function generateStaticParams() {
+  return [];
+}
 
 export async function generateMetadata({ params }) {
   const { slug } = await params;
@@ -16,19 +23,19 @@ export async function generateMetadata({ params }) {
       title: "Tour Not Found",
       description: "Sorry, the tour you’re looking for does not exist.",
       path: `/tours/${slug}`,
-      image: "/images/default-og.jpg",
       noindex: true,
     });
   }
 
   const seo = seoFromApi(tour, { preview: Boolean(preview) });
   return buildMetadata({
-    title: tour.meta_title || "Amazing Tour",
+    title: tour.meta_title || tour.name,
     description:
       tour.meta_description ||
       `Explore ${tour.name} with Gokeys Travel — ${tour.duration_days} days of unforgettable adventure!`,
     path: `/tours/${slug}`,
-    image: seo.ogImage || tour.featured_image?.image || "/images/default-og.jpg",
+    image: seo.ogImage || tour.featured_image?.optimized_banner || tour.featured_image?.image,
+    imageAlt: tour.featured_image?.alt_text,
     canonical: seo.canonical,
     noindex: seo.noindex,
   });
@@ -49,7 +56,7 @@ export default async function TourDetailPage({ params }) {
     if (tour.id) {
       const resSimilar = await fetch(
         `${apiUrl}/api/similar-smart/${tour.id}/`,
-        { cache: "no-store" }
+        CACHED
       );
 
       if (resSimilar.ok) {
@@ -61,9 +68,7 @@ export default async function TourDetailPage({ params }) {
 
     // ✅ Fallback if no smart results
     if (!similarTours.length) {
-      const resFallback = await fetch(`${apiUrl}/api/tours/?page_size=4`, {
-        cache: "no-store",
-      });
+      const resFallback = await fetch(`${apiUrl}/api/tours/?page_size=4`, CACHED);
       if (resFallback.ok) {
         const data = await resFallback.json();
         similarTours = (data.results || []).filter((t) => t.id !== tour.id).slice(0, 3);

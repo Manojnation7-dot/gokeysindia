@@ -226,9 +226,10 @@ export default function TourPDFContent({ tourData, baseUrl, tourPath }) {
           pageBreakInside: 'avoid',
         }}
       >
-        <h1 style={{ fontSize: '18pt', fontWeight: 'bold', margin: '0 0 3mm 0', textTransform: 'uppercase', letterSpacing: '0.5mm' }}>
+        {/* not an <h1>: this hidden PDF copy is part of the page, which already has its title as the H1 */}
+        <div style={{ fontSize: '18pt', fontWeight: 'bold', margin: '0 0 3mm 0', textTransform: 'uppercase', letterSpacing: '0.5mm' }}>
           {title}
-        </h1>
+        </div>
         <div style={{ fontSize: '12pt', marginBottom: '3mm', fontWeight: '500' }}>{duration}</div>
         {headerInclusions.length > 0 && (
           <div style={{ display: 'flex', justifyContent: 'center', gap: '5mm', fontSize: '8pt', opacity: '0.9', flexWrap: 'wrap' }}>

@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
+import { CACHED } from '@/lib/api';
 
 export default async function RecentPosts() {
   let posts = [];
@@ -7,9 +8,7 @@ export default async function RecentPosts() {
 
   try {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
-    const res = await fetch(`${apiUrl}/api/blogs/?page_size=3`, {
-      next: { revalidate: 60 },
-    });
+    const res = await fetch(`${apiUrl}/api/blogs/?page_size=3`, CACHED);
     if (!res.ok) {
       throw new Error(`HTTP error! status: ${res.status}`);
     }

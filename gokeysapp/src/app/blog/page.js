@@ -1,8 +1,8 @@
 import { buildMetadata } from "@/lib/seoHelpers";
 import { fetchData } from "@/lib/api";
 import BlogListPage from "./BlogListPage";
+import { slimPost } from "@/lib/slim";
 
-export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ searchParams }) {
   const params = await searchParams; // Await searchParams
@@ -30,7 +30,7 @@ export default async function BlogPage({ searchParams }) {
     const totalPosts = response.count || 0;
     const totalPages = Math.ceil(totalPosts / pageSize);
 
-    return <BlogListPage blogPosts={blogPosts} currentPage={currentPage} totalPages={totalPages} />;
+    return <BlogListPage blogPosts={blogPosts.map(slimPost)} currentPage={currentPage} totalPages={totalPages} />;
   } catch (error) {
     console.error("Error fetching blog posts:", error);
     return <BlogListPage blogPosts={[]} currentPage={1} totalPages={1} />;

@@ -1,3 +1,4 @@
+import { buildMetadata } from "@/lib/seoHelpers";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import SmartSEO from "@/components/SmartSEO";
@@ -15,12 +16,13 @@ export async function generateMetadata() {
   const description =
     "Looking for a travel agency in Haridwar? Gokeys India offers Char Dham Yatra, Uttarakhand tour packages, taxi services, hotel bookings and customized travel services from Haridwar.";
 
-  const url = `${siteUrl}/services/travel-agency-haridwar`;
 
-  return {
+  return buildMetadata({
     title,
     description,
-
+    path: "/services/travel-agency-haridwar",
+    image: "/images/travel-agency-haridwar.jpeg",
+    imageAlt: "Gokeys India Travel Agency in Haridwar",
     keywords: [
       "travel agency in Haridwar",
       "travel agents in Haridwar",
@@ -40,41 +42,8 @@ export async function generateMetadata() {
       "Tour Package Agency in Haridwar",
       "Local Travel Agency in Haridwar",
       "Registered Travel Agency in Haridwar",
-      
     ],
-
-    alternates: {
-      canonical: url,
-    },
-
-    openGraph: {
-      title,
-      description,
-      url,
-      siteName: "Gokeys India",
-      type: "website",
-      images: [
-        {
-          url: `${siteUrl}/images/travel-agency-haridwar.jpeg`,
-          width: 1200,
-          height: 630,
-          alt: "Gokeys India Travel Agency in Haridwar",
-        },
-      ],
-    },
-
-    twitter: {
-      card: "summary_large_image",
-      title,
-      description,
-      images: [`${siteUrl}/images/travel-agency-haridwar.jpeg`],
-    },
-
-    robots: {
-      index: true,
-      follow: true,
-    },
-  };
+  });
 }
 
 export default function TravelAgencyHaridwarPage() {

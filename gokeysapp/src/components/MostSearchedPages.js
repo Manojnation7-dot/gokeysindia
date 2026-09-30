@@ -1,3 +1,5 @@
+import { CACHED } from "@/lib/api";
+
 const shortTitle = (title, maxLength = 38) => {
   if (!title) return "";
   const clean = title.split("|")[0].trim(); // remove "| Gokeys India"
@@ -7,9 +9,7 @@ const shortTitle = (title, maxLength = 38) => {
 
 export default async function MostSearchedPackages() {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.gokeys.in";
-  const res = await fetch(`${apiUrl}/api/most-viewed-packages/`, {
-    next: { revalidate: 300 }, // cache 5 minutes
-  });
+  const res = await fetch(`${apiUrl}/api/most-viewed-packages/`, CACHED);
 
   if (!res.ok) return null;
 

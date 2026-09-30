@@ -5,6 +5,13 @@ import { buildMetadata, seoFromApi } from "@/lib/seoHelpers";
 import { previewQuery } from "@/lib/preview";
 import PreviewBanner from "@/components/PreviewBanner";
 
+// Cached for 5 minutes and refreshed when the admin saves (see /api/revalidate);
+// each URL is built on its first visit
+export const revalidate = 300;
+export async function generateStaticParams() {
+  return [];
+}
+
 export async function generateMetadata({ params }) {
   const { slug } = await params;
   const preview = await previewQuery();
@@ -17,7 +24,8 @@ export async function generateMetadata({ params }) {
     title: tour.meta_title || tour.name,
     description: tour.meta_description || `Explore ${tour.name} with Gokeys India.`,
     path: `/grouptour/${tour.slug}`,
-    image: seo.ogImage || tour.featured_image?.image || "/images/gokeyslogo.png",
+    image: seo.ogImage || tour.featured_image?.optimized_banner || tour.featured_image?.image,
+    imageAlt: tour.featured_image?.alt_text,
     canonical: seo.canonical,
     noindex: seo.noindex,
   });

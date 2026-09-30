@@ -1,8 +1,9 @@
 import { buildMetadata } from "@/lib/seoHelpers";
 import DestinationListPage from "./DestinationListPage";
-import { fetchData } from "@/lib/api";
+import { CACHED } from "@/lib/api";
+import { slimDestination } from "@/lib/slim";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 300;
 
 export async function generateMetadata() {
   return buildMetadata({
@@ -17,13 +18,13 @@ export async function generateMetadata() {
 export default async function DestinationsPage() {
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/api/destinations/`,
-    { next: { revalidate: 60 } }
+    CACHED
   );
 
   const data = await res.json();
 
   // 🔥 Works for BOTH paginated & non-paginated API
-  const destinations = data.results || data || [];
+  const destinations = (data.results || data || []).map(slimDestination);
 
   return <DestinationListPage destinations={destinations} />;
 }

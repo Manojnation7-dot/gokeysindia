@@ -1,6 +1,9 @@
 import SightseeingListPage from "./SightseeingListPage";
 import { buildMetadata } from "@/lib/seoHelpers";
 import { fetchAllResults } from "@/lib/api";
+import { slimPlace } from "@/lib/slim";
+
+export const revalidate = 300;
 
 export async function generateMetadata() {
   return buildMetadata({
@@ -15,14 +18,7 @@ export default async function page() {
 
   // All places (the API sends 8 per page by default)
   const places = await fetchAllResults("sightseeing");
-  const sightseeing = places.map((place) => ({
-    ...place,
-    description: stripHtmlServer(place.description || ""),
-  }));
+  const sightseeing = places.map(slimPlace);
 
   return <SightseeingListPage places={sightseeing} />;
-}
-
-function stripHtmlServer(html) {
-  return html ? html.replace(/<[^>]+>/g, "") : "";
 }

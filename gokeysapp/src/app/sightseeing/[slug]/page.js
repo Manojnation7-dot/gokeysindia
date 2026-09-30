@@ -3,13 +3,21 @@ import { buildMetadata, seoFromApi } from "@/lib/seoHelpers";
 import { previewQuery } from "@/lib/preview";
 import PreviewBanner from "@/components/PreviewBanner";
 import { notFound } from "next/navigation";
-import { asList } from "@/lib/api";
+import { asList, cacheFor, CACHED } from "@/lib/api";
+
+// Cached for 5 minutes and refreshed when the admin saves (see /api/revalidate);
+// each URL is built on its first visit
+export const revalidate = 300;
+export async function generateStaticParams() {
+  return [];
+}
 
 export async function generateMetadata({ params }) {
   const { slug } = await params;
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
   const preview = await previewQuery();
-  const res = await fetch(`${apiUrl}/api/sightseeing/${slug}/${preview}`, { cache: "no-store" });
+  const url = `${apiUrl}/api/sightseeing/${slug}/${preview}`;
+  const res = await fetch(url, cacheFor(url));
   if (!res.ok) return { title: "Sightseeing Not Found", robots: { index: false, follow: true } };
   const place = await res.json();
 
@@ -32,7 +40,8 @@ export default async function Page({ params }) {
 
   // 1️⃣ Fetch the main place (a draft too, when opened from the admin "Preview draft" link)
   const preview = await previewQuery();
-  const resPlace = await fetch(`${apiUrl}/api/sightseeing/${slug}/${preview}`, { cache: "no-store" });
+  const placeUrl = `${apiUrl}/api/sightseeing/${slug}/${preview}`;
+  const resPlace = await fetch(placeUrl, cacheFor(placeUrl));
   if (resPlace.status === 404) notFound(); // unknown or draft place: real 404, not a crash
   if (!resPlace.ok) throw new Error("Failed to load place");
   const place = await resPlace.json();
@@ -43,7 +52,7 @@ export default async function Page({ params }) {
   if (place.destination?.id && place.id) {
     const resSimilar = await fetch(
       `${apiUrl}/api/sightseeing/similar/${place.destination.id}/${place.id}/`,
-      { cache: "no-store" }
+      CACHED
     );
     if (resSimilar.ok) {
       similarPlaces = asList(await resSimilar.json()); // the API is paginated ({ results: [...] })
@@ -58,7 +67,7 @@ export default async function Page({ params }) {
     !Array.isArray(similarPlaces) ||
     similarPlaces.length === 0
   ) {
-    const resFallback = await fetch(`${apiUrl}/api/sightseeing/?page_size=4`, { cache: "no-store" });
+    const resFallback = await fetch(`${apiUrl}/api/sightseeing/?page_size=4`, CACHED);
     if (resFallback.ok) {
       similarPlaces = asList(await resFallback.json()).filter((p) => p.id !== place.id).slice(0, 3);
     }

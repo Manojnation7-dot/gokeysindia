@@ -1,6 +1,9 @@
 import { buildMetadata } from "@/lib/seoHelpers";
 import HotelsHomePage from "./HotelsHomePage";
 import { fetchData } from "@/lib/api";
+import { slimHotel } from "@/lib/slim";
+
+export const revalidate = 300;
 
 export async function generateMetadata() {
   return buildMetadata({
@@ -15,5 +18,5 @@ export async function generateMetadata() {
 export default async function Page() {
   const hotels = await fetchData("hotels/?is_active=true");
 
-  return <HotelsHomePage hotels={hotels || []} />;
+  return <HotelsHomePage hotels={(hotels || []).map(slimHotel)} />;
 }

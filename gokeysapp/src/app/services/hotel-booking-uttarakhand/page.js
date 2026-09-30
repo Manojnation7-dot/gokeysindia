@@ -1,3 +1,4 @@
+import { buildMetadata } from "@/lib/seoHelpers";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import SmartSEO from "@/components/SmartSEO";
@@ -14,12 +15,13 @@ export async function generateMetadata() {
   const description =
     "Book hotels in Uttarakhand with Gokeys India. Find accommodation in Haridwar, Rishikesh, Kedarnath, Badrinath, Mussoorie and other Uttarakhand destinations.";
 
-  const url = `${siteUrl}/services/hotel-booking-uttarakhand`;
 
-  return {
+  return buildMetadata({
     title,
     description,
-
+    path: "/services/hotel-booking-uttarakhand",
+    image: "/images/hotel-booking-uttarakhand.jpeg",
+    imageAlt: "Hotel Booking in Uttarakhand - Gokeys India",
     keywords: [
       "hotel booking Uttarakhand",
       "hotels in Uttarakhand",
@@ -43,41 +45,7 @@ export async function generateMetadata() {
       "Uttarakhand accommodation",
       "Travel Agents in Haridwar",
     ],
-
-    alternates: {
-      canonical: url,
-    },
-
-    openGraph: {
-      title,
-      description,
-      url,
-      siteName: "Gokeys India",
-      type: "website",
-      images: [
-        {
-          url: `${siteUrl}/images/hotel-booking-uttarakhand.jpeg`,
-          width: 1200,
-          height: 630,
-          alt: "Hotel Booking in Uttarakhand - Gokeys India",
-        },
-      ],
-    },
-
-    twitter: {
-      card: "summary_large_image",
-      title,
-      description,
-      images: [
-        `${siteUrl}/images/hotel-booking-uttarakhand.jpeg`,
-      ],
-    },
-
-    robots: {
-      index: true,
-      follow: true,
-    },
-  };
+  });
 }
 
 export default function HotelBookingUttarakhandPage() {
