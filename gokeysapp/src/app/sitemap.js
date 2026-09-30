@@ -7,7 +7,8 @@ export default async function sitemap() {
 
   async function fetchUrls(endpoint, prefix, priority, freq) {
     try {
-      const res = await fetch(`https://api.gokeys.in${endpoint}`, {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.gokeys.in";
+      const res = await fetch(`${apiUrl}${endpoint}`, {
         cache: "no-store",
       });
 

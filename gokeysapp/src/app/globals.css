@@ -223,3 +223,60 @@
   color: #fff;
   text-decoration: none;
 }
+
+/* ------------------------------------------------------------------
+   Images inserted in the admin editor ("Add Media" / upload button).
+   Classes come from CKEditor 5: figure.image + image-style-*.
+   ------------------------------------------------------------------ */
+figure.image {
+  display: table;
+  clear: both;
+  margin: 1.5em auto;
+  max-width: 100%;
+}
+figure.image img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 0 auto;
+  border-radius: 0.5rem;
+}
+figure.image > a { display: block; }
+figure.image figcaption {
+  display: table-caption;
+  caption-side: bottom;
+  padding: 0.5em 0.25em 0;
+  font-size: 0.875rem;
+  line-height: 1.4;
+  color: #6b7280;
+  text-align: center;
+}
+figure.image.image-style-align-left {
+  float: left;
+  clear: none;
+  max-width: 50%;
+  margin: 0.25em 1.5em 1em 0;
+}
+figure.image.image-style-align-right,
+figure.image.image-style-side {
+  float: right;
+  clear: none;
+  max-width: 50%;
+  margin: 0.25em 0 1em 1.5em;
+}
+figure.image.image-style-align-center {
+  margin-left: auto;
+  margin-right: auto;
+}
+.prose figure.image img { margin-top: 0; margin-bottom: 0; }
+/* Text after floated images must not run under the next block */
+.prose::after, .tour-content::after { content: ""; display: table; clear: both; }
+@media (max-width: 640px) {
+  figure.image.image-style-align-left,
+  figure.image.image-style-align-right,
+  figure.image.image-style-side {
+    float: none;
+    max-width: 100%;
+    margin: 1.5em auto;
+  }
+}

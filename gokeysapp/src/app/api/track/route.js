@@ -8,7 +8,8 @@ export async function POST(req) {
     // server's IP and Node's user agent for every visit, so unique-visitor counts,
     // country/city and device stats were all wrong.
     const forwardedFor = req.headers.get("x-forwarded-for") || req.headers.get("x-real-ip") || "";
-    const response = await fetch("https://api.gokeys.in/api/track/", {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.gokeys.in";
+    const response = await fetch(`${apiUrl}/api/track/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

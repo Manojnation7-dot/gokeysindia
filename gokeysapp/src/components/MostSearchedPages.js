@@ -6,7 +6,8 @@ const shortTitle = (title, maxLength = 38) => {
 };
 
 export default async function MostSearchedPackages() {
-  const res = await fetch("https://api.gokeys.in/api/most-viewed-packages/", {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.gokeys.in";
+  const res = await fetch(`${apiUrl}/api/most-viewed-packages/`, {
     next: { revalidate: 300 }, // cache 5 minutes
   });
 
