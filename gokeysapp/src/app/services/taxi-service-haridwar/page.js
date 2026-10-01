@@ -14,7 +14,7 @@ export async function generateMetadata() {
     "Taxi Services in Haridwar | Haridwar Cab & Taxi Booking";
 
   const description =
-    "Book taxi services in Haridwar for local sightseeing, railway station and airport transfers, Uttarakhand tours, Char Dham Yatra and outstation trips. Contact Gokeys India for taxi and cab services.";
+    "Taxi service in Haridwar for local sightseeing, railway station and airport transfers, Char Dham Yatra and outstation trips. Book a cab with Gokeys India.";
 
 
   return buildMetadata({
@@ -85,7 +85,12 @@ export default function TaxiServicesHaridwarPage() {
         name: "India",
       },
     ],
-    sameAs: ["https://www.gokeys.in/"],
+    sameAs: [
+      "https://facebook.com/gokeysindia",
+      "https://instagram.com/gokeysharidwar",
+      "https://twitter.com/gokeys4",
+      "https://www.tripadvisor.in/Attraction_Review-g616028-d15685215-Reviews-Gokeys_India-Haridwar_Haridwar_District_Uttarakhand.html",
+    ],
   };
 
   const serviceSchema = {

@@ -6,7 +6,7 @@ import { buildBreadcrumbList } from "@/lib/seoSchemas";
 import Image from "next/image";
 
 const siteUrl =
-  process.env.NEXT_PUBLIC_SITE_URL || "https://www.gokeys.in";
+  process.env.NEXT_PUBLIC_SITE_URL || "https://gokeys.in";
 
 export async function generateMetadata() {
   const title =
@@ -94,7 +94,10 @@ export default function DelhiToHaridwarCabPage() {
     ],
 
     sameAs: [
-      "https://www.gokeys.in/",
+      "https://facebook.com/gokeysindia",
+      "https://instagram.com/gokeysharidwar",
+      "https://twitter.com/gokeys4",
+      "https://www.tripadvisor.in/Attraction_Review-g616028-d15685215-Reviews-Gokeys_India-Haridwar_Haridwar_District_Uttarakhand.html",
     ],
   };
 

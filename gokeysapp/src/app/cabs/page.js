@@ -4,7 +4,7 @@ import { buildMetadata } from "@/lib/seoHelpers";
 export async function generateMetadata() {
   return buildMetadata({
     title: "Cabs at Gokeys",
-    description: "Book now ranges of cab services from our own fleet with Gokeys Haridwar. We have best cabs and transportation services for All Over India. Call or WhatsApp us for Cab Booking.",
+    description: "Book a cab in Haridwar from Gokeys India's own fleet: Dzire, Ertiga, Innova Crysta, Tempo Traveller and Urbania for Uttarakhand and all-India trips.",
     path: "/cabs",
     image: "/images/gokeyslogo.png",
   });

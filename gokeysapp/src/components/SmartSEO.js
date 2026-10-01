@@ -1,9 +1,12 @@
 export default function SmartSEO({ schema }) {
   if (!schema) return null;
 
-  // Flatten and filter out nulls
+  // Flatten (arrays and {"@graph": [...]} objects) and filter out nulls
   const rawSchemas = Array.isArray(schema) ? schema : [schema];
-  const schemas = rawSchemas.flat().filter(s => s && s["@type"]);
+  const schemas = rawSchemas
+    .flat()
+    .flatMap((s) => (s && Array.isArray(s["@graph"]) ? s["@graph"] : [s]))
+    .filter((s) => s && s["@type"]);
 
   if (schemas.length === 0) return null;
 

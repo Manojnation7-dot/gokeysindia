@@ -6,7 +6,7 @@ import { buildBreadcrumbList } from "@/lib/seoSchemas";
 import Image from "next/image";
 
 const siteUrl =
-  process.env.NEXT_PUBLIC_SITE_URL || "https://www.gokeys.in";
+  process.env.NEXT_PUBLIC_SITE_URL || "https://gokeys.in";
 
 export async function generateMetadata() {
   const title =

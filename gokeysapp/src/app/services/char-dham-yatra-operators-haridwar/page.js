@@ -7,14 +7,14 @@ import Link from "next/link";
 import Image from "next/image";
 
 const siteUrl =
-  process.env.NEXT_PUBLIC_SITE_URL || "https://localhost:3000";
+  process.env.NEXT_PUBLIC_SITE_URL || "https://gokeys.in";
 
 export async function generateMetadata() {
   const title =
     "Char Dham Yatra Tour Operators in Haridwar";
 
   const description =
-    "Looking for Char Dham Yatra Tour operators in Haridwar Uttarakhand? Gokeys India helps plan Char Dham Yatra packages from Haridwar covering Yamunotri, Gangotri, Kedarnath and Badrinath with travel, hotel and itinerary assistance.";
+    "Char Dham Yatra tour operators in Haridwar. Gokeys India plans Yamunotri, Gangotri, Kedarnath and Badrinath packages with travel, hotels and itinerary.";
 
 
   return buildMetadata({
@@ -88,7 +88,10 @@ export default function CharDhamOperatorsHaridwarPage() {
     ],
 
     sameAs: [
-      "https://www.gokeys.in/",
+      "https://facebook.com/gokeysindia",
+      "https://instagram.com/gokeysharidwar",
+      "https://twitter.com/gokeys4",
+      "https://www.tripadvisor.in/Attraction_Review-g616028-d15685215-Reviews-Gokeys_India-Haridwar_Haridwar_District_Uttarakhand.html",
     ],
   };
 
@@ -159,11 +162,24 @@ export default function CharDhamOperatorsHaridwarPage() {
     ],
   };
 
+  const serviceSchema = {
+    "@type": "Service",
+    name: "Char Dham Yatra Tour Operator Services",
+    serviceType: "Char Dham Yatra Packages and Pilgrimage Tour Planning",
+    description: "Char Dham Yatra packages from Haridwar covering Yamunotri, Gangotri, Kedarnath and Badrinath, with travel, hotel and itinerary assistance.",
+    provider: { "@type": "TravelAgency", name: "Gokeys India", url: siteUrl },
+    areaServed: [
+      { "@type": "State", name: "Uttarakhand" },
+      { "@type": "City", name: "Haridwar" },
+    ],
+  };
+
   const combinedSchema = {
     "@context": "https://schema.org",
     "@graph": [
       breadcrumbSchema,
       travelAgencySchema,
+      serviceSchema,
       faqSchema,
     ],
   };

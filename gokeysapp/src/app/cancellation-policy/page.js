@@ -1,17 +1,42 @@
 import { buildMetadata } from '@/lib/seoHelpers';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import SmartSEO from '@/components/SmartSEO';
+import { buildBreadcrumbList } from '@/lib/seoSchemas';
+import { SITE_URL, SITE_NAME } from '@/lib/seoHelpers';
+
+const DESCRIPTION =
+  "Gokeys India cancellation and refund policy: full refund 30+ days before the trip, charges for later cancellations, and refunds within 7 to 10 working days.";
 
 export const metadata = buildMetadata({
   title: "Cancellation & Refund Policy",
-  description: "View Gokeys India's tour cancellation and refund policy here.",
+  description: DESCRIPTION,
   path: "/cancellation-policy",
   image: "/images/gokeyslogo.png",
 });
 
+const schema = [
+  {
+    "@type": "WebPage",
+    "@id": `${SITE_URL}/cancellation-policy#webpage`,
+    url: `${SITE_URL}/cancellation-policy`,
+    name: "Cancellation & Refund Policy",
+    description: DESCRIPTION,
+    inLanguage: "en-IN",
+    dateModified: "2025-07-31", // "Last updated" date shown on the page
+    isPartOf: { "@type": "WebSite", name: SITE_NAME, url: SITE_URL },
+    publisher: { "@type": "TravelAgency", name: SITE_NAME, url: SITE_URL },
+  },
+  buildBreadcrumbList([
+    { name: "Home", url: "/" },
+    { name: "Cancellation & Refund Policy", url: "/cancellation-policy" },
+  ]),
+];
+
 export default function CancellationPolicy() {
   return (
     <>
+      <SmartSEO schema={schema} />
       <Header/>
       <main className="max-w-4xl mx-auto px-4 py-10">
         <h1 className="text-3xl font-bold mb-6">Cancellation & Refund Policy</h1>

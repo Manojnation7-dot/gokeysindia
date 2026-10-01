@@ -8,7 +8,7 @@ export const revalidate = 300;
 export async function generateMetadata() {
   return buildMetadata({
     title: "Top Sightseeing, Activity",
-    description: "Explore the amazing sightseeing, activities and places...",
+    description: "Sightseeing places and activities in Haridwar, Rishikesh and Uttarakhand: temples, waterfalls, ghats and viewpoints, with distances and travel tips.",
     path: "/sightseeing",
     image: "/images/gokeyslogo.png",
   });

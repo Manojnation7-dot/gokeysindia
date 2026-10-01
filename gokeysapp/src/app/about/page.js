@@ -8,7 +8,7 @@ import GoogleMap from "@/components/MapIframe";
 export async function generateMetadata() {
   return buildMetadata({
     title: "About Us",
-    description: "Discover the best Char Dham, Uttarakhand, and Himalayan tours with Gokeys. Top Travel Agents in Haridwar Uttarakhand for Travel Package, Hotel Booking and Taxi Booking.",
+    description: "Gokeys India is a travel agency in Haridwar for Char Dham Yatra, Uttarakhand and Himalayan tour packages, hotel bookings and taxi services since 2019.",
     path: "/about",
     keywords: [
       "Travel Agents in Haridwar",

@@ -7,14 +7,14 @@ import Image from "next/image";
 import GoogleMap from "@/components/MapIframe";
 
 const siteUrl =
-  process.env.NEXT_PUBLIC_SITE_URL || "https://www.gokeys.in";
+  process.env.NEXT_PUBLIC_SITE_URL || "https://gokeys.in";
 
 export async function generateMetadata() {
   const title =
     "Uttarakhand Tour Operators | Uttarakhand Tour Packages";
 
   const description =
-    "Looking for Uttarakhand tour operators? Gokeys India helps plan Uttarakhand tour packages from Haridwar covering Char Dham, Kedarnath, Badrinath, Rishikesh, Mussoorie, Nainital and other destinations.";
+    "Uttarakhand tour operators in Haridwar. Gokeys India plans Char Dham, Kedarnath, Badrinath, Rishikesh, Mussoorie and Nainital tour packages.";
 
 
   return buildMetadata({
@@ -94,7 +94,10 @@ export default function UttarakhandTourOperatorsPage() {
     ],
 
     sameAs: [
-      "https://www.gokeys.in/",
+      "https://facebook.com/gokeysindia",
+      "https://instagram.com/gokeysharidwar",
+      "https://twitter.com/gokeys4",
+      "https://www.tripadvisor.in/Attraction_Review-g616028-d15685215-Reviews-Gokeys_India-Haridwar_Haridwar_District_Uttarakhand.html",
     ],
   };
 

@@ -9,7 +9,7 @@ export async function generateMetadata() {
   return buildMetadata({
     title: "Tour Packages",
     description:
-      "Check Out the latest Tour Package available at Gokeys with Different Destination, Places and activities, Call for Best Rates for tour package throughout the India.",
+      "Tour packages from Haridwar by Gokeys India: Char Dham Yatra, Kedarnath, Badrinath, Auli, Mussoorie and Nainital trips. Call for the best rates.",
     path: "/tours",
     image: "/images/gokeyslogo.png",
   });

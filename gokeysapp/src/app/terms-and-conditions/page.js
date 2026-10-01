@@ -1,17 +1,42 @@
 import { buildMetadata } from '@/lib/seoHelpers';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import SmartSEO from '@/components/SmartSEO';
+import { buildBreadcrumbList } from '@/lib/seoSchemas';
+import { SITE_URL, SITE_NAME } from '@/lib/seoHelpers';
+
+const DESCRIPTION =
+  "Terms for booking tours with Gokeys India: 40% advance to confirm, vehicle use as per itinerary, extra sightseeing charges and minimum days for each Dham Yatra.";
 
 export const metadata = buildMetadata({
   title: "Terms & Conditions",
-  description: "Read the terms and conditions for booking tours with Gokeys India.",
+  description: DESCRIPTION,
   path: "/terms-and-conditions",
   image: "/images/gokeyslogo.png",
 });
 
+const schema = [
+  {
+    "@type": "WebPage",
+    "@id": `${SITE_URL}/terms-and-conditions#webpage`,
+    url: `${SITE_URL}/terms-and-conditions`,
+    name: "Terms & Conditions",
+    description: DESCRIPTION,
+    inLanguage: "en-IN",
+    dateModified: "2025-07-31", // "Last updated" date shown on the page
+    isPartOf: { "@type": "WebSite", name: SITE_NAME, url: SITE_URL },
+    publisher: { "@type": "TravelAgency", name: SITE_NAME, url: SITE_URL },
+  },
+  buildBreadcrumbList([
+    { name: "Home", url: "/" },
+    { name: "Terms & Conditions", url: "/terms-and-conditions" },
+  ]),
+];
+
 export default function TermsAndConditions() {
   return (
     <>
+      <SmartSEO schema={schema} />
       <Header/>
       <main className="max-w-4xl mx-auto px-4 py-10">
         <h1 className="text-3xl font-bold mb-6">Terms & Conditions</h1>
