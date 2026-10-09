@@ -450,6 +450,96 @@ async headers() {
   destination: '/tours/kedarnath-badrinath-yatra-do-dham-tour',
   permanent: true,
 },
+{
+  source: '/auli-tour-packages',
+  destination: '/destinations/auli',
+  permanent: true,
+},
+{
+  source: '/badrinath',
+  destination: '/destinations/badrinath',
+  permanent: true,
+},
+{
+  source: '/blog/auli-vs-chopta',
+  destination: '/blog/auli-vs-chopta-which-should-you-choose',
+  permanent: true,
+},
+{
+  source: '/blog/kedarnath-helicopter-booking-guide',
+  destination: '/blog/kedarnath-helicopter-booking-2027-tickets-helipads',
+  permanent: true,
+},
+{
+  source: '/car-rental-service-in-haridwar',
+  destination: '/services/taxi-service-haridwar',
+  permanent: true,
+},
+{
+  source: '/char-dham-yatra-2027',
+  destination: '/blog/char-dham-yatra-2027',
+  permanent: true,
+},
+{
+  source: '/char-dham-yatra-tour-packages',
+  destination: '/tours/char-dham-yatra-package-from-haridwar',
+  permanent: true,
+},
+{
+  source: '/company-garden-mussoorie',
+  destination: '/sightseeing/company-garden-mussoorie',
+  permanent: true,
+},
+{
+  source: '/destinations/uttarakhand/gangotri',
+  destination: '/destinations/gangotri',
+  permanent: true,
+},
+{
+  source: '/dhari-devi-temple',
+  destination: '/sightseeing/dhari-devi-temple',
+  permanent: true,
+},
+{
+  source: '/harsil-hidden-gems-in-uttarakhand-hills-harsil-travel-guide',
+  destination: '/destinations/harsil',
+  permanent: true,
+},
+{
+  source: '/harsil-tour-package',
+  destination: '/tours/harsil-tour-package',
+  permanent: true,
+},
+{
+  source: '/hotels-in-haridwar',
+  destination: '/hotels/haridwar',
+  permanent: true,
+},
+{
+  source: '/places-to-see-in-rishikesh',
+  destination: '/destinations/rishikesh',
+  permanent: true,
+},
+{
+  source: '/rudraprayag-a-small-town-in-garhwal-uttarakhand',
+  destination: '/destinations/rudraprayag',
+  permanent: true,
+},
+{
+  source: '/tungnath-trek-in-uttarakhand-tips-travel-guide',
+  destination: '/blog/tungnath-chandrashila-trek-guide',
+  permanent: true,
+},
+{
+  source: '/how-to-reach-auli',
+  destination: '/destinations/auli',
+  permanent: true,
+},
+{
+  source: '/places-to-see-in-auli',
+  destination: '/destinations/auli',
+  permanent: true,
+},
 
     {
         source: "/web-stories/:path*",
