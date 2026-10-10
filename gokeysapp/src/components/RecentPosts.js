@@ -60,7 +60,7 @@ export default async function RecentPosts() {
                   <h4 className="text-lg font-semibold text-gray-900 group-hover:text-green-600 transition-colors duration-200 line-clamp-2">
                     {post.title}
                   </h4>
-                  <p className="mt-2 text-sm text-gray-600 line-clamp-3">
+                  <p className="mt-2 text-[15px] text-gray-600 line-clamp-3">
                     {post.excerpt}
                   </p>
                 </div>

@@ -1,14 +1,15 @@
 import Link from "next/link";
 import { FaFacebookF, FaTwitter, FaInstagram } from "react-icons/fa";
 import Image from "next/image";
+import Script from "next/script";
 
 const Footer = () => {
   return (
-    <footer className="bg-slate-900 text-slate-300 pt-20">
-      <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+    <footer className="bg-ink-2 text-slate-300 pt-16">
+      <div className="gk-wrap grid grid-cols-2 md:grid-cols-3 lg:grid-cols-[1.3fr_0.9fr_1fr_1.25fr_1.2fr_0.9fr] gap-x-8 gap-y-10">
 
         {/* Brand & Address */}
-        <div>
+        <div className="col-span-2 lg:col-span-1">
           <Image
             src="/images/gokeyslogo-1.png"
             alt="Gokeys India"
@@ -16,19 +17,40 @@ const Footer = () => {
             height={60}
             className="mb-6"
           />
-          <p className="text-sm leading-relaxed mb-4 text-slate-400">
+          <p className="text-[15px] leading-relaxed mb-4 text-slate-400">
             4th Shop, Zila Panchayat Market, Railway Road,  
             Haridwar, Uttarakhand, India
           </p>
-          <p className="text-sm">📧 gokeysindia@gmail.com</p>
-          <p className="text-sm mt-2">📞 +91-9045916770</p>
-          <p className="text-sm">📞 +91-7830718687</p>
-          <p className="text-sm">📞 +91-7830718680</p>
+          <p className="text-[15px]">📧 gokeysindia@gmail.com</p>
+          <p className="text-[15px] mt-2">📞 +91-9045916770</p>
+          <p className="text-[15px]">📞 +91-7830718687</p>
+          <p className="text-[15px]">📞 +91-7830718680</p>
+        </div>
+
+        {/* Explore */}
+        <div>
+          <h3 className="gk-display text-sm font-bold text-white mb-5">Explore</h3>
+          <ul className="space-y-3 text-sm">
+            {[
+              { href: "/tours", label: "Tours" },
+              { href: "/destinations", label: "Destinations" },
+              { href: "/hotels", label: "Hotels" },
+              { href: "/grouptour", label: "Group tours" },
+              { href: "/sightseeing", label: "Sightseeing" },
+              { href: "/blog", label: "Blog" },
+            ].map((item) => (
+              <li key={item.href}>
+                <Link href={item.href} className="hover:text-white transition">
+                  {item.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
         </div>
 
         {/* Quick Links */}
         <div>
-          <h3 className="text-sm font-semibold uppercase tracking-widest text-white mb-6">
+          <h3 className="gk-display text-sm font-bold text-white mb-5">
             Quick Links
           </h3>
           <ul className="space-y-3 text-sm">
@@ -52,12 +74,36 @@ const Footer = () => {
           </ul>
         </div>
 
+        {/* Services (links every service page from all pages) */}
+        <div>
+          <h3 className="gk-display text-sm font-bold text-white mb-5">Services</h3>
+          <ul className="space-y-3 text-sm">
+            {[
+              { href: "/services/travel-agency-haridwar", label: "Travel Agency in Haridwar" },
+              { href: "/services/uttarakhand-tour-operators", label: "Uttarakhand Tour Operators" },
+              { href: "/services/char-dham-yatra-operators-haridwar", label: "Char Dham Yatra Operators" },
+              { href: "/services/taxi-service-haridwar", label: "Taxi Service in Haridwar" },
+              { href: "/services/haridwar-to-rishikesh-taxi", label: "Haridwar to Rishikesh Taxi" },
+              { href: "/services/haridwar-to-dehradun-taxi", label: "Haridwar to Dehradun Taxi" },
+              { href: "/services/delhi-to-haridwar-cab", label: "Delhi to Haridwar Cab" },
+              { href: "/services/haridwar-railway-station-taxi", label: "Haridwar Railway Station Taxi" },
+              { href: "/services/hotel-booking-uttarakhand", label: "Hotel Booking in Uttarakhand" },
+            ].map((item) => (
+              <li key={item.href}>
+                <Link href={item.href} className="hover:text-white transition">
+                  {item.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+
         {/* Payment & Trust */}
         <div>
-          <h3 className="text-sm font-semibold uppercase tracking-widest text-white mb-6">
+          <h3 className="gk-display text-sm font-bold text-white mb-5">
             Payments & Trust
           </h3>
-          <p className="text-sm text-slate-400 mb-6">
+          <p className="text-[15px] text-slate-400 mb-6">
             We accept secure and verified payment methods.  
             Contact us for UPI, Bank Transfer & Invoice payments.
           </p>
@@ -84,40 +130,41 @@ const Footer = () => {
                 </li>
               </ul>
             </div>
-            <script
-              async
+            {/* Loaded after hydration: the widget rewrites this block, which broke React hydration */}
+            <Script
+              strategy="lazyOnload"
               src="https://www.jscache.com/wejs?wtype=certificateOfExcellence&uniq=316&locationId=15685215&lang=en_IN&year=2025&display_version=2"
-            ></script>
+            />
           </div>
         </div>
 
         {/* Social */}
         <div>
-          <h3 className="text-sm font-semibold uppercase tracking-widest text-white mb-6">
+          <h3 className="gk-display text-sm font-bold text-white mb-5">
             Follow Us
           </h3>
-          <p className="text-sm text-slate-400 mb-4">
+          <p className="text-[15px] text-slate-400 mb-4">
             Travel inspiration, updates & offers.
           </p>
           <div className="flex items-center gap-4">
             <Link
               href="https://facebook.com/gokeysindia"
               target="_blank"
-              className="p-3 rounded-full bg-slate-800 hover:bg-blue-600 transition"
+              className="p-3 rounded-full bg-white/10 hover:bg-teal transition"
             >
               <FaFacebookF />
             </Link>
             <Link
               href="https://twitter.com/gokeys4"
               target="_blank"
-              className="p-3 rounded-full bg-slate-800 hover:bg-sky-500 transition"
+              className="p-3 rounded-full bg-white/10 hover:bg-teal transition"
             >
               <FaTwitter />
             </Link>
             <Link
               href="https://instagram.com/gokeysharidwar"
               target="_blank"
-              className="p-3 rounded-full bg-slate-800 hover:bg-pink-500 transition"
+              className="p-3 rounded-full bg-white/10 hover:bg-teal transition"
             >
               <FaInstagram />
             </Link>
@@ -126,7 +173,7 @@ const Footer = () => {
       </div>
 
       {/* Bottom Bar */}
-      <div className="mt-16 border-t border-slate-800 py-6 text-center text-sm text-slate-500">
+      <div className="gk-wrap mt-14 border-t border-white/10 py-6 text-sm text-slate-400">
         © {new Date().getFullYear()} Gokeys India. All rights reserved.
       </div>
     </footer>

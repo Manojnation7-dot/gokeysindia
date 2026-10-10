@@ -1,13 +1,13 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
 import { FaPhone, FaEnvelope, FaQuestionCircle } from "react-icons/fa";
 import { getCSRFToken } from "@/lib/getCSRFToken";
 export default function InquiryFormCard({ placeName = "this place" }) {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
+    phone: "",
     message: `I'd like to know more about ${placeName}...`,
     page_url:"", 
   });
@@ -26,6 +26,7 @@ export default function InquiryFormCard({ placeName = "this place" }) {
   const [error, setError] = useState("");
 
   const handleChange = (e) => {
+    if (e.target.id === "phone" && !/^[+\d\s-]*$/.test(e.target.value)) return;
     setFormData((prev) => ({
       ...prev,
       [e.target.id]: e.target.value,
@@ -93,21 +94,25 @@ export default function InquiryFormCard({ placeName = "this place" }) {
         },
         credentials: "include",
         body: JSON.stringify({
-          ...formData,
+          name: formData.name,
+          email: formData.email,
+          message: `Contact No: ${formData.phone.trim()}\n\n${formData.message}`,
+          page_url: formData.page_url,
           recaptcha_token: recaptchaToken,
         }),
       });
 
       if (!res.ok) {
-        const data = await res.json();
+        const data = await res.json().catch(() => ({}));
         console.log("API Error:", data);
-        throw new Error(JSON.stringify(data));
+        throw new Error("Submission failed. Please try again or call us.");
       }
 
       setSuccess(true);
       setFormData({
       name: "",
       email: "",
+      phone: "",
       message: `I'd like to know more about ${placeName}...`,
       page_url: window.location.href || "direct",
     });
@@ -119,22 +124,15 @@ export default function InquiryFormCard({ placeName = "this place" }) {
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.4 }}
-      className="bg-white p-6 rounded-xl shadow-md border border-gray-100 top-6"
-    >
-      <div className="flex items-center mb-6">
-        <div className="bg-green-100 p-2 rounded-lg mr-3">
-          <FaQuestionCircle className="text-green-600 text-xl" />
-        </div>
-        <h2 className="text-2xl font-bold text-gray-800">Have a Question?</h2>
+    <div className="gk-card p-6 md:p-7">
+      <div className="flex items-center mb-5">
+        <FaQuestionCircle className="text-teal text-xl mr-2.5" />
+        <h2 className="gk-h3 text-2xl">Have a Question?</h2>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="name" className="gk-label">
             Your Name
           </label>
           <input
@@ -144,11 +142,11 @@ export default function InquiryFormCard({ placeName = "this place" }) {
             onChange={handleChange}
             placeholder="Your Name"
             required
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition"
+            className="gk-field"
           />
         </div>
         <div>
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="email" className="gk-label">
             Your Email
           </label>
           <input
@@ -158,11 +156,28 @@ export default function InquiryFormCard({ placeName = "this place" }) {
             onChange={handleChange}
             placeholder="your@email.com"
             required
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition"
+            className="gk-field"
           />
         </div>
         <div>
-          <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="phone" className="gk-label">
+            Contact Number
+          </label>
+          <input
+            type="tel"
+            id="phone"
+            value={formData.phone}
+            onChange={handleChange}
+            placeholder="Mobile number"
+            autoComplete="tel"
+            minLength={10}
+            maxLength={16}
+            required
+            className="gk-field"
+          />
+        </div>
+        <div>
+          <label htmlFor="message" className="gk-label">
             Your Message
           </label>
           <textarea
@@ -170,42 +185,42 @@ export default function InquiryFormCard({ placeName = "this place" }) {
             value={formData.message}
             onChange={handleChange}
             rows="4"
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition"
+            className="gk-field"
           />
         </div>
 
-        {error && <p className="text-red-600 text-sm">{error}</p>}
-        {success && <p className="text-green-600 text-sm">Query submitted successfully!</p>}
+        {error && <p className="text-red-600 text-[15px]">{error}</p>}
+        {success && <p className="text-green-600 text-[15px]">Query submitted successfully!</p>}
 
         <button
           type="submit"
-          className="w-full bg-gradient-to-r from-green-600 to-green-700 text-white py-3 px-4 rounded-lg font-medium hover:from-green-700 hover:to-green-800 transition-all shadow-md hover:shadow-lg disabled:opacity-50 flex items-center justify-center"
+          className="gk-btn gk-btn-sun w-full py-3! disabled:opacity-50"
           disabled={loading}
         >
           {loading ? "Submitting..." : "Submit Query"}
         </button>
       </form>
 
-      <div className="mt-8 pt-6 border-t border-gray-200">
-        <h3 className="font-medium text-gray-800 mb-3 flex items-center">
-          <FaPhone className="mr-2 text-green-600" /> Need immediate help?
+      <div className="mt-6 pt-5 border-t border-line">
+        <h3 className="font-bold text-ink mb-3 flex items-center">
+          <FaPhone className="mr-2 text-teal" /> Need immediate help?
         </h3>
-        <p className="text-sm text-gray-600 mb-2">
+        <p className="text-[15px] text-slate-ink mb-2">
           Call us at{" "}
-          <a href="tel:+917830718687" className="text-green-700 hover:underline">
+          <a href="tel:+917830718687" className="text-teal font-semibold hover:underline">
             +91 7830718687
           </a>
         </p>
-        <p className="text-sm text-gray-600 flex items-center">
+        <p className="text-[15px] text-slate-ink flex items-center">
           <FaEnvelope className="mr-2" /> Email us at{" "}
           <a
             href="mailto:helpdesk@gokeys.in"
-            className="text-green-700 hover:underline ml-1"
+            className="text-teal font-semibold hover:underline ml-1"
           >
             helpdesk@gokeys.in
           </a>
         </p>
       </div>
-    </motion.div>
+    </div>
   );
 }

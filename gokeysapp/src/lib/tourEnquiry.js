@@ -2,7 +2,7 @@ import { getCSRFToken } from "@/lib/getCSRFToken";
 
 // Sends the inline (sidebar) enquiry form of a tour or group tour page to /api/tour-enquiries/.
 // Returns { ok: true } or { ok: false, message } with a message fit to show the visitor.
-export async function submitTourEnquiry({ tourName, packageType, packagePrice, formData }) {
+export async function submitTourEnquiry({ tourName, packageType, packagePrice, formData, groupTourSlug, departureId }) {
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/tour-enquiries/`, {
       method: "POST",
@@ -20,6 +20,8 @@ export async function submitTourEnquiry({ tourName, packageType, packagePrice, f
         total_persons: parseInt(formData.totalPersons || "1", 10),
         travel_date: formData.travelDate,
         message: formData.message || "",
+        ...(groupTourSlug && { group_tour_slug: groupTourSlug }),
+        ...(departureId && { departure_id: departureId }),
       }),
     });
 
@@ -35,7 +37,7 @@ export async function submitTourEnquiry({ tourName, packageType, packagePrice, f
     const errors = await res.json().catch(() => ({}));
     const firstField = Object.keys(errors)[0];
     const detail = Array.isArray(errors[firstField]) ? errors[firstField][0] : errors[firstField];
-    const labels = { travel_date: "Travel date", contact_no: "Contact number", email: "Email", name: "Name", total_persons: "Total persons" };
+    const labels = { departure_id: "Departure", group_tour_slug: "Tour", travel_date: "Travel date", contact_no: "Contact number", email: "Email", name: "Name", total_persons: "Total persons" };
     return {
       ok: false,
       message: detail ? `${labels[firstField] || firstField}: ${detail}` : "Could not send your enquiry. Please try again.",

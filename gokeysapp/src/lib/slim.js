@@ -7,6 +7,12 @@ const plainText = (html, max) => {
   return max && text.length > max ? `${text.slice(0, max).trim()}...` : text;
 };
 
+// Minutes to read an HTML article (about 200 words a minute, at least 1)
+export const readMinutes = (html) => {
+  const words = plainText(html).split(" ").filter(Boolean).length;
+  return Math.max(1, Math.round(words / 200));
+};
+
 const image = (img) =>
   img
     ? {
@@ -23,6 +29,7 @@ const pricing = (rows) =>
     package_type: p.package_type,
     price: p.price,
     discount_price: p.discount_price,
+    price_on_request: !!p.price_on_request,
   }));
 
 // /tours list, best selling trips (home)
@@ -41,9 +48,27 @@ export const slimTour = (t) => ({
 });
 
 // /grouptour list (shows the start of the content as HTML), best selling group trips (home)
+// Departure dates from today on (API sends a list or a comma-separated string)
+export const upcomingDates = (dates) => {
+  const list = Array.isArray(dates) ? dates : String(dates || "").split(",");
+  const today = new Date().toISOString().slice(0, 10);
+  return list.map((d) => String(d).trim()).filter((d) => /^\d{4}-\d{2}-\d{2}$/.test(d) && d >= today).sort();
+};
+
 export const slimGroupTour = (t) => ({
   ...slimTour(t),
   content: t.content || "",
+  duration: t.duration || null,
+  available_seats: t.available_seats ?? null,
+  starting_from: t.starting_from || "",
+  departure_dates: upcomingDates(t.departure_dates),
+  // New backend only: approved departures with status and seats (see lib/departures.js)
+  ...(Array.isArray(t.departures) && {
+    departures: t.departures.map((d) => ({
+      id: d.id, date: d.date, status: d.status, status_label: d.status_label,
+      seats_left: d.seats_left, bookable: d.bookable, booking_closes_on: d.booking_closes_on, price: d.price,
+    })),
+  }),
 });
 
 // Featured destinations (home), /destinations list
@@ -52,6 +77,7 @@ export const slimDestination = (d) => ({
   name: d.name,
   slug: d.slug,
   state: typeof d.state === "object" && d.state ? d.state.name : d.state,
+  summary: plainText(d.meta_description, 90),
   featured_image: image(d.featured_image),
 });
 
@@ -76,6 +102,7 @@ export const slimPost = (p) => ({
   title: p.title,
   slug: p.slug,
   content: plainText(p.content, 220),
+  read_minutes: readMinutes(p.content),
   published_date: p.published_date,
   categories: p.categories || [],
   cover_image_url: p.cover_image_url || null,

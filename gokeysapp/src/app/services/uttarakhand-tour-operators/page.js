@@ -504,7 +504,7 @@ export default function UttarakhandTourOperatorsPage() {
           </table>
         </div>
         </div>
-        <p className="text-gray-500 text-sm mt-3">
+        <p className="text-gray-500 text-[15px] mt-3">
             * Indicative starting fares with Minimum Persons Requirements. Actual price depends on Total persons, Hotel categories, vehicle type, season and meal plans. Contact us for a confirmed quote.
           </p>
       </section>

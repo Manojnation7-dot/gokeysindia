@@ -2,7 +2,7 @@ import SightseeingSlider from "./SightseeingSlider";
 import { CACHED } from "@/lib/api";
 import { slimPlace } from "@/lib/slim";
 
-export default async function SightseeingSliderWrapper({ limit = 8 }) {
+export default async function SightseeingSliderWrapper({ limit = 4 }) {
   let places = [];
 
   try {

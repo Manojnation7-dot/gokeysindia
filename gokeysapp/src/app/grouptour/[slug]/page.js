@@ -90,6 +90,7 @@ export default async function Page({ params }) {
         year: "numeric",
       })}
       tourPath="grouptour"
+      renderedAt={Date.now()}
     />
     </>
   );

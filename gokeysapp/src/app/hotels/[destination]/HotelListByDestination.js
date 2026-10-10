@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { Breadcrumbs, CtaBand, PLACEHOLDER } from "@/components/ui/kit";
 
 
 export default function HotelListByDestination({ destination, destinationData }) {
@@ -48,7 +49,7 @@ export default function HotelListByDestination({ destination, destinationData })
     return (
       <>
         <Header />
-        <div className="text-center p-10 text-gray-600">Loading hotels...</div>
+        <div className="text-center p-10 text-slate-ink min-h-[50vh]">Loading hotels...</div>
         <Footer />
       </>
     );
@@ -58,24 +59,35 @@ export default function HotelListByDestination({ destination, destinationData })
     return (
       <>
         <Header />
-        <div className="text-center p-10 text-red-500">Error: {error}</div>
+        <div className="text-center p-10 text-red-600 min-h-[50vh]">Error: {error}</div>
         <Footer />
       </>
     );
   }
 
+  const placeName = destinationData?.name || destination;
+
   return (
     <>
       <Header />
-    
-      <section className="grid grid-cols-1 lg:grid-cols-4 gap-6 p-6 max-w-7xl mx-auto">
+      <main className="bg-mist">
+        <section className="bg-ink">
+          <div className="gk-wrap py-10 md:py-12">
+            <Breadcrumbs light items={[{ label: "Home", href: "/" }, { label: "Hotels", href: "/hotels" }, { label: placeName }]} />
+            <h1 className="gk-h1 text-white! capitalize">
+              Hotels in {placeName}
+            </h1>
+          </div>
+        </section>
+
+      <section className="gk-wrap py-10 grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-6 items-start">
         {/* Filters */}
-        <aside className="bg-white p-6 rounded-xl shadow-lg space-y-6 border border-gray-200">
-          <h2 className="text-2xl font-semibold text-gray-800">Filter Hotels</h2>
+        <aside className="gk-card p-5 space-y-5 lg:sticky lg:top-20">
+          <h2 className="gk-h3">Filter Hotels</h2>
 
           {/* Price Range */}
-          <div className="space-y-2">
-            <h4 className="font-medium text-gray-700">Price Range</h4>
+          <div>
+            <h4 className="gk-label">Price Range</h4>
             <div className="flex gap-2">
               <input
                 type="number"
@@ -84,7 +96,8 @@ export default function HotelListByDestination({ destination, destinationData })
                   setFilters({ ...filters, minPrice: Number(e.target.value) || 0 })
                 }
                 placeholder="Min"
-                className="w-full p-2 rounded border border-gray-300"
+                aria-label="Minimum price"
+                className="gk-field"
               />
               <input
                 type="number"
@@ -93,14 +106,15 @@ export default function HotelListByDestination({ destination, destinationData })
                   setFilters({ ...filters, maxPrice: Number(e.target.value) || 50000 })
                 }
                 placeholder="Max"
-                className="w-full p-2 rounded border border-gray-300"
+                aria-label="Maximum price"
+                className="gk-field"
               />
             </div>
           </div>
 
           {/* Star Rating */}
-          <div className="space-y-2">
-            <h4 className="font-medium text-gray-700">Star Rating</h4>
+          <div>
+            <h4 className="gk-label">Star Rating</h4>
             <select
               value={filters.starRating || ""}
               onChange={(e) =>
@@ -109,7 +123,8 @@ export default function HotelListByDestination({ destination, destinationData })
                   starRating: e.target.value ? Number(e.target.value) : null,
                 })
               }
-              className="w-full p-2 rounded border border-gray-300"
+              aria-label="Star rating"
+              className="gk-field"
             >
               <option value="">All Ratings</option>
               <option value="5">★★★★★ - 5 Star</option>
@@ -119,67 +134,68 @@ export default function HotelListByDestination({ destination, destinationData })
               <option value="1">★☆☆☆☆ - 1 Star</option>
             </select>
           </div>
+
+          <button
+            type="button"
+            onClick={() => setFilters({ minPrice: 0, maxPrice: 50000, starRating: null })}
+            className="gk-btn gk-btn-line w-full"
+          >
+            Clear filters
+          </button>
         </aside>
 
         {/* Hotel List */}
-        <main className="col-span-1 lg:col-span-3 space-y-6">
-          <h1 className="text-3xl font-bold capitalize">
-            Hotels in {destinationData?.name || destination}
-          </h1>
+        <div className="space-y-4 min-w-0">
+          <p className="text-xs text-slate-ink">{hotels.length} {hotels.length === 1 ? "hotel" : "hotels"} in {placeName}</p>
           {hotels.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
-              {hotels.map((hotel) => (
-                <Link
-                  key={hotel.id}
-                  href={`/hotels/${destination}/${hotel.slug}`}
-                  className="group bg-white rounded-[2.5rem] overflow-hidden border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-500 flex flex-col"
-                >
-                  {/* Image */}
-                  <div className="relative h-56 overflow-hidden">
-                    <Image
-                      src={hotel.front_image_url || "https://via.placeholder.com/300x200"}
-                      alt={hotel.name}
-                      fill
-                      className="object-cover transition-transform duration-700 group-hover:scale-110"
-                    />
-
-                    {/* Star Rating Badge */}
-                    {hotel.star_rating && (
-                      <div className="absolute top-4 right-4 px-3 py-1 bg-yellow-400/90 text-yellow-900 rounded-full text-[11px] font-extrabold tracking-widest uppercase backdrop-blur">
-                        {hotel.star_rating} ★
-                      </div>
-                    )}
+            hotels.map((hotel) => (
+              <Link
+                key={hotel.id}
+                href={`/hotels/${destination}/${hotel.slug}`}
+                className="gk-card gk-card-hover group grid sm:grid-cols-[220px_1fr_auto]"
+              >
+                <div className="gk-media h-48 sm:h-full sm:min-h-40">
+                  <Image
+                    src={hotel.front_image_url || PLACEHOLDER}
+                    alt={hotel.name}
+                    fill
+                    sizes="(max-width: 640px) 100vw, 220px"
+                    className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                </div>
+                <div className="p-5">
+                  <div className="flex flex-wrap gap-1.5 mb-2">
+                    {hotel.star_rating && <span className="gk-chip gk-chip-sun">{hotel.star_rating} star</span>}
+                    {hotel.location && <span className="gk-chip">📍 {hotel.location}</span>}
                   </div>
-
-                  {/* Content */}
-                  <div className="p-6 flex flex-col flex-grow">
-                    <h3 className="text-lg font-bold text-gray-900 mb-1 group-hover:text-emerald-600 transition-colors">
-                      {hotel.name}
-                    </h3>
-
-                    <p className="text-xs text-gray-400 font-semibold mb-4 flex items-center">
-                      📍 {hotel.location}
-                    </p>
-
-                    <div className="mt-auto">
-                      <span className="text-xs font-bold text-gray-400 uppercase tracking-widest block mb-1">
-                        Starting from
-                      </span>
-                      <span className="text-xl font-extrabold text-emerald-600">
-                        ₹{parseFloat(hotel.tariff_starting_from).toLocaleString()}/night
-                      </span>
-                    </div>
+                  <h3 className="gk-h3">{hotel.name}</h3>
+                </div>
+                <div className="p-5 sm:border-l border-line flex sm:flex-col items-center sm:items-start justify-between sm:justify-center gap-2">
+                  <div>
+                    <span className="text-xs text-slate-ink block">Starting from</span>
+                    <span className="gk-price text-2xl">
+                      ₹{parseFloat(hotel.tariff_starting_from).toLocaleString()}
+                    </span>
+                    <span className="text-xs text-slate-ink">/night</span>
                   </div>
-                </Link>
-              ))}
-            </div>
+                  <span className="gk-btn gk-btn-ink">View hotel</span>
+                </div>
+              </Link>
+            ))
           ) : (
-            <p className="text-gray-500 mt-6">
+            <p className="text-slate-ink mt-6">
               No hotels found for this destination with selected filters.
             </p>
           )}
-        </main>
+        </div>
       </section>
+
+        <section className="gk-wrap pb-16">
+          <CtaBand title="Need a room for Ardh Kumbh Mela 2027?" text="Tell us your dates and group size. We check availability near the ghats and send options.">
+            <Link href="/contact" className="gk-btn gk-btn-ink">Ask about hotels</Link>
+          </CtaBand>
+        </section>
+      </main>
       <Footer />
     </>
   );

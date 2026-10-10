@@ -18,6 +18,7 @@ export function getEffectivePrice(pkg) {
 }
 
 export const getSavings = (pkg) => {
+  if (!pkg) return null; // tour without pricing rows
   const price = Number(pkg.price);
   const discount = Number(pkg.discount_price);
 

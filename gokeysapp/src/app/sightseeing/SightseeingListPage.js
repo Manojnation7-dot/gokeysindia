@@ -1,23 +1,22 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import Image from "next/image";
+import { useState } from "react";
 import Link from "next/link";
-import { motion } from "framer-motion";
-import Header from "@/components/Header";   
-import Footer from "@/components/Footer";   
-import { MapPin } from "lucide-react";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 import { buildItemListSchema, buildBreadcrumbList, hasValidSightseeingSlug } from "@/lib/seoSchemas";
-import SmartSEO from "@/components/SmartSEO"; 
+import SmartSEO from "@/components/SmartSEO";
+import { Breadcrumbs, CtaBand, PlaceCard, cardImage } from "@/components/ui/kit";
 
+const placeArea = (place) => place.destination?.name || place.destination_name || "";
 
 export default function SightseeingListPage({places}) {
- 
+  const [area, setArea] = useState("");
 
    if (!places || places.length === 0) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <p className="text-gray-600">No sightseeing places found.</p>
+        <p className="text-slate-ink">No sightseeing places found.</p>
       </div>
     );
   }
@@ -41,69 +40,70 @@ const breadcrumbSchema = buildBreadcrumbList([
   { name: "Sightseeing", url: "/sightseeing" }
 ]);
 
+  // Filter pills: destinations that have places, most places first
+  const counts = places.reduce((acc, p) => {
+    const a = placeArea(p);
+    if (a) acc[a] = (acc[a] || 0) + 1;
+    return acc;
+  }, {});
+  const areas = Object.keys(counts).sort((a, b) => counts[b] - counts[a]);
+
   return (
     <>
     <Header/>
     <SmartSEO schema={[sightseeingListSchema, breadcrumbSchema]} />
-    <section className="py-12 px-4 bg-white">
-      <div className="max-w-7xl mx-auto">
-        <h1 className="text-4xl font-bold text-blue-900 mb-10 text-center">
-          Explore Sightseeing Places
-        </h1>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    <main className="bg-mist">
+      <section className="bg-ink">
+        <div className="gk-wrap py-12 md:py-14">
+          <Breadcrumbs light items={[{ label: "Home", href: "/" }, { label: "Sightseeing" }]} />
+          <h1 className="gk-h1 text-white!">Explore Sightseeing Places</h1>
+          <p className="mt-3 text-slate-300 max-w-xl">
+            Temples, ghats, waterfalls and viewpoints. Visit a single place or book a full-day circuit with a cab and driver.
+          </p>
+          {areas.length > 1 && (
+            <div className="flex flex-wrap gap-2 mt-6">
+              <button onClick={() => setArea("")} className={`gk-pill ${!area ? "bg-sun! border-sun! text-ink!" : ""}`}>All</button>
+              {areas.map((a) => (
+                <button key={a} onClick={() => setArea(a)} className={`gk-pill ${area === a ? "bg-sun! border-sun! text-ink!" : ""}`}>
+                  {a}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
+
+      <section className="gk-wrap py-12">
+        <h2 className="gk-h2 mb-6">Popular places</h2>
+        {/* Every place stays in the HTML; the filter only hides cards */}
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {places.map((place) => (
-            <motion.div
-              key={place.slug}
-              className="bg-gray-50 rounded-xl shadow hover:shadow-lg transition overflow-hidden"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.4 }}
-            >
-              <div className="relative h-48 w-full">
-                <Image
-                  src={place.featured_image?.optimized_card || "/images/placeholder.jpg"}
-                  alt={place.name}
-                  fill
-                  className="object-cover"
-                />
-              </div>
-              <div className="p-4">
-                <span className="text-sm text-blue-600 font-medium">
-                  {place.category?.name || "General"}
-                </span>
-                <h2 className="text-lg font-semibold text-gray-800 mt-1">
-                  {place.name}
-                </h2>
-                <p className="text-sm text-gray-600 line-clamp-2 mt-1">
-                  {place.description}
-                </p>
-                <p className="text-xs text-gray-500 mt-1 flex items-center gap-1">
-                  <MapPin className="w-4 h-4 text-blue-600" />
-                  {Number(place.distance_from_center).toFixed(0)} km from center
-                </p>
-                <Link
-                  href={`/sightseeing/${place.slug}`}
-                  className="inline-block mt-3 text-sm text-blue-600 hover:underline"
-                >
-                  Read More →
-                </Link>
-              </div>
-            </motion.div>
+            <div key={place.slug} className={area && placeArea(place) !== area ? "hidden" : ""}>
+              <PlaceCard
+                href={`/sightseeing/${place.slug}`}
+                image={cardImage(place.featured_image)}
+                alt={place.featured_image?.alt_text || place.name}
+                chip={place.category?.name || "General"}
+                title={place.name}
+                sub={[
+                  placeArea(place),
+                  place.distance_from_center ? `${Number(place.distance_from_center).toFixed(0)} km from center` : "",
+                ].filter(Boolean).join(" · ")}
+                text={place.description}
+                imgHeight="h-44"
+              />
+            </div>
           ))}
         </div>
-      </div>
-    </section>
+      </section>
+
+      <section className="gk-wrap pb-16">
+        <CtaBand title="Add a cab and driver to any sightseeing day" text="Sedan, SUV or Tempo Traveller, with pickup from your hotel.">
+          <Link href="/cabs" className="gk-btn gk-btn-ink">See cab rates</Link>
+        </CtaBand>
+      </section>
+    </main>
     <Footer/>
     </>
   );
-}
-
-function stripHtml(html) {
-  if (typeof window !== "undefined") {
-    const div = document.createElement("div");
-    div.innerHTML = html;
-    return div.textContent || div.innerText || "";
-  }
-  return html;
 }

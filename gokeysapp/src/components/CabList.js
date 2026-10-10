@@ -1,8 +1,6 @@
-"use client";
-
 import CabCard from "@/components/CabsCard";
 
-const cabs = [
+export const cabs = [
   {
     id: 1,
     name: "Swift Dzire",
@@ -138,13 +136,10 @@ const cabs = [
 
 export default function CabList() {
   return (
-    <div className="max-w-7xl mx-auto px-4 py-10">
-      <h1 className="text-3xl font-bold mb-8 text-center text-gray-800 uppercase">All Cabs in Uttarakhand</h1>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {cabs.map((cab) => (
-          <CabCard key={cab.id} cab={cab} />
-        ))}
-      </div>
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+      {cabs.map((cab) => (
+        <CabCard key={cab.id} cab={cab} />
+      ))}
     </div>
   );
 }

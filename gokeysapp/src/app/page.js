@@ -1,7 +1,8 @@
 
 
 import HeroSection from "@/components/HeroSection";
-import WhyChooseUs from "@/components/WhyChooseUs";
+import WhyChooseUs, { TrustStrip } from "@/components/WhyChooseUs";
+import KumbhBanner from "@/components/KumbhBanner";
 import FeaturedDestinations from "@/components/FeaturedDestinations";
 import BestSellingTripsWrapper from "@/components/BestSellingTripsWrapper";
 import SightseeingSliderWrapper from "@/components/SightseeingSliderWrapper";
@@ -13,7 +14,7 @@ import Footer from "@/components/Footer";
 import MostSearchedPackages from "@/components/MostSearchedPages";
 import BestSellingGroupTripsWrapper from "@/components/BestSellingGroupTripsWrapper";
 import SmartSEO from "@/components/SmartSEO";
-import HomeFAQ, { faqs } from "@/components/HomeFAQ";
+import HomeFAQ from "@/components/HomeFAQ";
 import {
   buildLocalBusinessSchema,
   buildImageObject,
@@ -70,51 +71,70 @@ export default async function HomePage() {
   ];
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-50">
-       <SmartSEO
-        schema={
-          pageSchemas
-         }
-      />
-
+    <>
+      <SmartSEO schema={pageSchemas} />
+    <div className="flex flex-col min-h-screen bg-mist">
       <Header />
 
       <HeroSection />
-
-      <WhyChooseUs />
+      <TrustStrip />
 
       <FeaturedDestinations initialDestinations={destinations} />
 
       <BestSellingTripsWrapper />
+      <KumbhBanner />
       <BestSellingGroupTripsWrapper />
 
       <SightseeingSliderWrapper limit={8} />
 
-      <HomeReviews />
-
       <CabSlider />
+
+      <HomeReviews />
 
       <TravelStoriesWrapper limit={8} />
 
       <MostSearchedPackages />
 
-       <section className="py-20 px-6 bg-gradient-to-b from-white via-indigo-50/40 to-white">
-          <div className="max-w-7xl mx-auto text-center mb-10">
-            <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight text-gray-900">
-              Find Us <span className="text-brand-600">On Map</span>
-            </h2>
-            <p className="mt-4 text-gray-500 text-lg max-w-2xl mx-auto">
-              Visit our Haridwar office or get directions instantly via Google Maps.
-              Our team is always happy to assist you.
-            </p>
-          </div>
+      <WhyChooseUs />
 
-          <GoogleMap />
-        </section>
-        <HomeFAQ />
+      <section className="gk-section">
+        <div className="gk-wrap">
+          <div className="grid lg:grid-cols-[1.4fr_1fr] rounded-2xl overflow-hidden bg-white gk-card">
+            <div className="h-72 lg:h-auto lg:min-h-85 p-3 lg:p-4 lg:pr-0">
+              <GoogleMap className="h-full w-full rounded-xl overflow-hidden" />
+            </div>
+            <div className="p-7 md:p-9">
+              <p className="gk-eyebrow mb-2">Find us</p>
+              <h2 className="gk-h2">Find Us On Map</h2>
+              <p className="mt-3 gk-lead text-[15px]">
+                Visit our Haridwar office or get directions instantly via Google Maps.
+                Our team is always happy to assist you.
+              </p>
+              <p className="mt-4 text-[15px] text-ink leading-relaxed">
+                4th Shop, Zila Panchayat Market, Railway Road,
+                Haridwar, Uttarakhand, India
+              </p>
+              <p className="mt-3 text-[15px] text-ink leading-relaxed">
+                📞 +91-9045916770<br />📞 +91-7830718687<br />📞 +91-7830718680
+              </p>
+              <a
+                href="https://www.google.com/maps/place/Gokeys+(Travel+In+Himalayas)+%7C+Travel+Agency+Haridwar/@29.9441709,78.1485517,17z"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="gk-btn gk-btn-ink mt-6"
+              >
+                Get directions
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <HomeFAQ />
       <CTASection />
 
       <Footer />
     </div>
+    </>
   );
 }

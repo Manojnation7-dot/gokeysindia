@@ -1,8 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
-import { motion } from "framer-motion";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import SimilarTours from "@/components/SimilarTours";
@@ -13,6 +11,7 @@ import TourItineraryMain from "@/components/TourItineraryMain";
 import { submitTourEnquiry } from "@/lib/tourEnquiry";
 import ImageGallery from "@/components/ImageGallery";
 import RelatedContent from "@/components/RelatedContent";
+import { Breadcrumbs, FaqList } from "@/components/ui/kit";
 
 import {
   CalendarIcon,
@@ -198,262 +197,177 @@ const faqSchema = tourData.faqs?.length > 0
     );
   }
 
+  const included = (tourData.inclusions_exclusions || []).filter((item) => item.is_inclusion);
+  const excluded = (tourData.inclusions_exclusions || []).filter((item) => !item.is_inclusion);
+  const whatsappUrl = `https://wa.me/917830718687?text=${encodeURIComponent(`Hello Gokeys India, I want to enquire about ${tourData.name}.`)}`;
+  const durationText = `${tourData.duration_nights ? `${tourData.duration_nights} Nights ` : ""}${tourData.duration_days ? `${tourData.duration_days} Days` : ""}`;
+  const facts = [
+    ["Duration", durationText],
+    ["Starting Location", tourData.starting_location || "TBD"],
+    ["Minimum Pax", tourData.min_pax || "6 Persons"],
+    [
+      "Reviews",
+      hasValidReviewRating(tourData.rating, tourData.reviews_count)
+        ? `${tourData.rating} (${tourData.reviews_count} Tour Reviews)`
+        : "Gokeys India — 4.8 · 164 Google Reviews",
+    ],
+  ];
+
   return (
     <>
-        <SmartSEO schema={[tourSchema, breadcrumbSchema, faqSchema]} />
+      <SmartSEO schema={[tourSchema, breadcrumbSchema, faqSchema]} />
       <Header />
-      <div className="text-gray-800 bg-white">
-        {/* Hero Banner */}
-              
-        <div className="text-gray-800 bg-white">
-  {/* Full-width Image Gallery */}
-  <div className="w-full mt-4">
-    <ImageGallery
-      images={[
-        tourData.featured_image?.optimized_banner || tourData.featured_image?.image,
-        ...(tourData.gallery_images?.map(img => img.optimized || img.image) || [])
-      ]}
-    />
-  </div>
-
-  {/* Title + Pricing + CTAs */}
-  <div className="max-w-6xl mx-auto px-4 py-8">
-    <div className="bg-gradient-to-r from-blue-50 to-brand-50 rounded-2xl p-6 md:p-8 shadow-lg">
-      <div className="grid md:grid-cols-3 gap-6 items-center">
-        {/* Left: Title + Pricing */}
-        <div className="md:col-span-2 text-center md:text-left">
-          <h1 className="text-3xl md:text-4xl font-bold mb-3 text-gray-900">
-            {tourData.name}
-          </h1>
-
-          {/* Pricing Card */}
-          <div className="inline-block bg-white rounded-xl p-4 shadow-md">
-            <div className="flex items-baseline gap-3">
-              {hasDiscount(selectedPackage) && (
-                <span className="text-gray-400 line-through text-lg">
-                  {formatPrice(selectedPackage?.price)}
-                </span>
-              )}
-              <span className="text-3xl font-bold text-brand-600">
-                {formatPrice(basePrice)}
-              </span>
-            </div>
-            {getSavings(selectedPackage) && (
-              <div className="mt-2 inline-block bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-semibold">
-                💰 Save {getSavings(selectedPackage)}
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Right: CTA buttons */}
-        <div className="flex flex-col gap-3 justify-center md:justify-end">
-          <button
-            onClick={() => setIsEnquiryOpen(true)}   
-            className="px-6 py-3 bg-gradient-to-r from-brand-600 to-brand-600 text-white rounded-xl hover:from-brand-700 hover:to-brand-700 shadow-lg transform hover:scale-105 transition-all duration-200 font-semibold"
-          >
-            ✨ Send Query
-          </button>
-          <button
-            onClick={generatePDF}   
-            className="px-6 py-3 bg-white border-2 border-gray-200 text-gray-800 rounded-xl hover:bg-gray-50 shadow-md transform hover:scale-105 transition-all duration-200 font-semibold"
-          >
-            📄 Download Itinerary
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-
-
-
-        {/* Quick Facts Bar */}
-        <div className="bg-brand-600 text-white py-4">
-          <div className="max-w-6xl mx-auto px-4">
-            <div className="flex flex-wrap justify-between items-center gap-4">
-              <div className="flex items-center gap-2">
-                <CalendarIcon />
-                <span>Starting Location: {tourData.starting_location || "TBD"}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <UserIcon />
-                <span>Minimum Pax: {tourData.min_pax || "6 Persons"}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <StarIcon />
-                <span>
-                  {hasValidReviewRating(tourData.rating, tourData.reviews_count)
-                    ? `${tourData.rating} (${tourData.reviews_count} Tour Reviews)`
-                    : "Gokeys India — 4.8 · 164 Google Reviews"}
-                </span>
-              </div>
-              <div className="flex items-center gap-2">
-                <MapPinIcon />
-                {(tourData?.destinations || []).map((dest, idx) => (
-                  <span key={idx}>
-                    {capitalizeFirst(dest.name)}
-                    {idx !== tourData.destinations.length - 1 && ', '}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Main Content */}
-        <div className="max-w-6xl mx-auto px-4 py-12">
-          {/* Navigation Tabs */}
-          <div className="flex border-b border-gray-200 mb-8">
-            {["overview", "itinerary", "inclusions"].map((tab) => (
-              <button
-                key={tab}
-                className={`py-3 px-6 font-medium ${
-                  activeTab === tab
-                    ? "text-brand-600 border-b-2 border-brand-600"
-                    : "text-gray-500 hover:text-gray-700"
-                }`}
-                onClick={() => setActiveTab(tab)}
-              >
-                {tab.charAt(0).toUpperCase() + tab.slice(1)}
-              </button>
+      <main className="bg-mist text-ink">
+        <div className="gk-wrap pt-8">
+          <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "Tours", href: "/tours" }, { label: tourData.name }]} />
+          <h1 className="gk-h1 text-3xl! md:text-[2.6rem]! max-w-3xl">{tourData.name}</h1>
+          <div className="flex flex-wrap gap-1.5 mt-3 mb-5">
+            {tourData.trip_types?.[0]?.name && <span className="gk-chip gk-chip-sun">{tourData.trip_types[0].name}</span>}
+            {tourData.duration_days && <span className="gk-chip">{tourData.duration_days} days</span>}
+            {tourData.starting_location && <span className="gk-chip">Pickup from {tourData.starting_location}</span>}
+            {(tourData?.destinations || []).map((dest, idx) => (
+              <span key={idx} className="gk-chip">{capitalizeFirst(dest.name)}</span>
             ))}
           </div>
 
-          {/* Content and Sidebar */}
-          <div className="grid md:grid-cols-3 gap-8">
-            {/* Main Content Area */}
-            <div className="md:col-span-2">
-              {/* Overview Tab */}
-              {activeTab === "overview" && (
-                <div>
-                  <h2 className="text-3xl font-bold mb-6">Tour Overview</h2>
-                  <div
-                    className="tour-content text-gray-700 mb-6 prose max-w-none"
-                    dangerouslySetInnerHTML={{ __html: tourData.content }}
-                  />
-                  {/* Package Selection */}
-                  <div className="my-8">
-                    <h3 className="text-lg font-semibold mb-4">Choose Your Package</h3>
-                    <div className="flex flex-wrap gap-4">
-                      {tourData.pricing.map((pkg, index) => (
+          {/* Gallery */}
+          <ImageGallery
+            alt={tourData.featured_image?.alt_text || tourData.name}
+            images={[
+              tourData.featured_image?.optimized_banner || tourData.featured_image?.image,
+              ...(tourData.gallery_images?.map(img => img.optimized || img.image) || [])
+            ]}
+          />
+        </div>
+
+        <div className="gk-wrap py-8 grid lg:grid-cols-[1fr_340px] gap-8 items-start">
+          {/* Main column */}
+          <div className="min-w-0 space-y-10">
+            {/* Quick facts */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              {facts.map(([label, value]) => (
+                <div key={label} className="gk-panel px-4 py-3">
+                  <p className="gk-label mb-0.5!">{label}</p>
+                  <p className="text-[15px] font-bold text-ink">{value}</p>
+                </div>
+              ))}
+            </div>
+
+            {/* Overview */}
+            <section>
+              <h2 className="gk-h2 mb-4">Tour Overview</h2>
+              <div
+                className="tour-content text-slate-ink prose max-w-none"
+                dangerouslySetInnerHTML={{ __html: tourData.content }}
+              />
+
+              {/* Package Selection */}
+              {tourData.pricing?.length > 0 && (
+                <div className="mt-8">
+                  <h3 className="gk-h3 mb-3">Choose Your Package</h3>
+                  <div className="flex flex-wrap gap-3">
+                    {tourData.pricing.map((pkg, index) => {
+                      const active = selectedPackage?.package_type === pkg.package_type;
+                      return (
                         <button
                           key={index}
                           onClick={() => handlePackageSelect(pkg)}
-                          className={`px-4 py-2 rounded-lg border text-center ${
-                            selectedPackage?.package_type === pkg.package_type
-                              ? "bg-brand-600 text-white -ml-2"
-                              : "bg-white text-black hover:bg-gray-100"
+                          aria-pressed={active}
+                          className={`px-4 py-2.5 rounded-xl border text-left transition ${
+                            active ? "bg-ink border-ink text-white" : "bg-white border-line text-ink hover:border-ink"
                           }`}
                         >
-                          <div className="text-sm font-medium">
+                          <div className="text-xs font-bold uppercase tracking-wider opacity-80">
                             {capitalizeFirst(pkg.package_type)}
                           </div>
                           <div className="text-sm">
                             {hasDiscount(pkg) ? (
                               <>
-                                <span className="line-through">{formatPrice(pkg.price)}</span>{" "}
-                                <span className="font-semibold">{formatPrice(pkg.discount_price)}</span>
-                                <div className="text-xs text-green-500">
-                                  Save {getSavings(pkg)}
-                                </div>
+                                <span className="line-through opacity-60">{formatPrice(pkg.price)}</span>{" "}
+                                <span className="font-bold">{formatPrice(pkg.discount_price)}</span>
+                                <div className={`text-xs ${active ? "text-sun" : "text-wa"}`}>Save {getSavings(pkg)}</div>
                               </>
                             ) : (
-                              <span className="font-semibold">{formatPrice(effectivePrice(pkg))}</span>
+                              <span className="font-bold">{formatPrice(effectivePrice(pkg))}</span>
                             )}
                           </div>
                         </button>
-                      ))}
-                    </div>
-                  </div>
-                  <div className="mb-8">
-                    <h3 className="text-xl font-semibold mb-4">Tour Highlights</h3>
-                    <div className="grid sm:grid-cols-2 gap-4">
-                      {(tourData.highlights || []).map((highlight, index) => (
-                        <div key={index} className="flex items-start gap-3">
-                          <div className="mt-1 text-brand-600">
-                            <CheckCircleIcon />
-                          </div>
-                          <span className="text-gray-700">{highlight.highlight}</span>
-                        </div>
-                      ))}
-                    </div>
+                      );
+                    })}
                   </div>
                 </div>
               )}
 
-              {/* Itinerary Tab */}
-              {activeTab === "itinerary" && tourData && <TourItineraryMain tourData={tourData} />}
-
-              {/* Inclusions Tab */}
-              {activeTab === "inclusions" && (
-                <div className="grid md:grid-cols-2 gap-8">
-                  <div>
-                    <h3 className="text-2xl font-semibold mb-6">What's Included</h3>
-                    <div className="space-y-4">
-                      {(tourData.inclusions_exclusions || [])
-                        .filter((item) => item.is_inclusion)
-                        .map((item, index) => (
-                          <div key={index} className="flex items-start gap-3">
-                            <div className="mt-1 text-green-500">
-                              <CheckIcon />
-                            </div>
-                            <span className="text-gray-700">{item.description}</span>
-                          </div>
-                        ))}
-                    </div>
-                  </div>
-                  <div>
-                    <h3 className="text-2xl font-semibold mb-6">What's Not Included</h3>
-                    <div className="space-y-4">
-                      {(tourData.inclusions_exclusions || [])
-                        .filter((item) => !item.is_inclusion)
-                        .map((item, index) => (
-                          <div key={index} className="flex items-start gap-3">
-                            <div className="mt-1 text-red-500">
-                              <XIcon />
-                            </div>
-                            <span className="text-gray-700">{item.description}</span>
-                          </div>
-                        ))}
-                    </div>
+              {(tourData.highlights || []).length > 0 && (
+                <div className="mt-8">
+                  <h3 className="gk-h3 mb-3">Tour Highlights</h3>
+                  <div className="grid sm:grid-cols-2 gap-3">
+                    {tourData.highlights.map((highlight, index) => (
+                      <div key={index} className="flex items-start gap-2.5 text-sm">
+                        <span className="mt-0.5 text-teal"><CheckIcon /></span>
+                        <span className="text-slate-ink">{highlight.highlight}</span>
+                      </div>
+                    ))}
                   </div>
                 </div>
               )}
-            </div>
+            </section>
 
-            {/* Sidebar (Visible for All Tabs) */}
-            <div>
-              <div className="bg-grey-50 p-6 rounded-xl shadow-sm border border-gray-200 sticky top-6">
-                <div className="mb-4 text-center">
-                  <h3 className="text-xl font-semibold">{tourData.name}</h3>
-                  <p className="text-xl md:text-base font-medium">
-                    {hasDiscount(selectedPackage) && (
-                      <><span className="line-through">{formatPrice(selectedPackage?.price)}</span>{" "}</>
-                    )}
-                    {formatPrice(basePrice)}
-                    <span className="text-xs text-gray-700"> Per Adult</span>
-                  </p>
-                  <hr />
+            {/* Itinerary */}
+            <TourItineraryMain tourData={tourData} />
+
+            {/* Inclusions */}
+            {(included.length > 0 || excluded.length > 0) && (
+              <section className="grid sm:grid-cols-2 gap-4">
+                <div className="gk-panel p-5">
+                  <h2 className="gk-h3 mb-4">What's Included</h2>
+                  <ul className="space-y-2.5">
+                    {included.map((item, index) => (
+                      <li key={index} className="flex items-start gap-2.5 text-sm text-slate-ink">
+                        <span className="mt-0.5 text-teal"><CheckIcon /></span>
+                        {item.description}
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-                <div className="space-y-4">
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Duration</span>
-                    <span className="font-medium">{`${
-                      tourData.duration_nights ? `${tourData.duration_nights} Nights ` : ""
-                    }${tourData.duration_days ? `${tourData.duration_days} Days` : ""}`}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Minium Pax</span>
-                    <span className="font-medium">{tourData.min_pax || "6"}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Best Season</span>
-                    <span className="font-medium">{tourData.best_season || "Year Round"}</span>
-                  </div>
-              <form onSubmit={handleEnquirySubmit}>
+                <div className="gk-panel p-5">
+                  <h2 className="gk-h3 mb-4">What's Not Included</h2>
+                  <ul className="space-y-2.5">
+                    {excluded.map((item, index) => (
+                      <li key={index} className="flex items-start gap-2.5 text-sm text-slate-ink">
+                        <span className="mt-0.5 text-[#d9603b]"><XIcon /></span>
+                        {item.description}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </section>
+            )}
+
+            {/* FAQ Section */}
+            {(tourData.faqs || []).length > 0 && (
+              <section>
+                <h2 className="gk-h2 mb-5">Frequently Asked Questions</h2>
+                <FaqList items={tourData.faqs.map((faq) => ({ question: faq.question, html: faq.answer }))} />
+              </section>
+            )}
+          </div>
+
+          {/* Sidebar */}
+          <aside className="lg:sticky lg:top-20">
+            <div className="gk-card p-5">
+              <p className="text-xs text-slate-ink">Price</p>
+              <p className="flex flex-wrap items-baseline gap-x-2">
+                {hasDiscount(selectedPackage) && (
+                  <span className="text-sm text-slate-400 line-through">{formatPrice(selectedPackage?.price)}</span>
+                )}
+                <span className="gk-price text-3xl">{formatPrice(basePrice)}</span>
+                <span className="text-xs text-slate-ink">Per Adult</span>
+              </p>
+              {getSavings(selectedPackage) && (
+                <span className="inline-block mt-2 gk-chip bg-[#dff4e7]! text-[#13703b]!">Save {getSavings(selectedPackage)}</span>
+              )}
+              <form onSubmit={handleEnquirySubmit} className="mt-4">
                 <EnquiryForm
                   isInline={true}
                   showSubmitButton={false}
@@ -461,82 +375,53 @@ const faqSchema = tourData.faqs?.length > 0
                   onChange={setEnquiryFormData}
                   onSubmit={handleEnquirySubmit}
                 />
-                <div className="pt-4 mt-4 border-t border-gray-200">
-                  <button
-                    type="submit"
-                    className="w-full bg-brand-600 hover:bg-brand-700 text-white py-3 rounded-lg font-medium transition-all"
-                  >
-                    Enquire Now
-                  </button>
-                  {/* Contact info below the button */}
-                  <p className="mt-3 text-center text-gray-700 text-sm">
-                    Need More Information? Call/WhatsApp our Yatra Expert on <span className="font-semibold">+91-78307-18687</span>
-                  </p>
-                </div>
+                <button type="submit" className="gk-btn gk-btn-sun w-full mt-4">
+                  Enquire Now
+                </button>
               </form>
-                </div>
-              </div>
+              <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="gk-btn gk-btn-wa w-full mt-2.5">
+                Chat on WhatsApp
+              </a>
+              <button onClick={generatePDF} className="gk-btn gk-btn-line w-full mt-2.5">
+                Download Itinerary
+              </button>
+              <p className="mt-3 text-center text-slate-ink text-xs leading-relaxed">
+                Need More Information? Call/WhatsApp our Yatra Expert on <span className="font-semibold">+91-78307-18687</span>
+              </p>
             </div>
-          </div>
+          </aside>
         </div>
-
-        {/* Reviews Section */}
-        <div className="max-w-7xl mx-auto px-4 mb-10">
-          <ReviewSection contentType="tours" objectSlug={tourData.slug} />
-        </div>
-
-        {/* Popular Group Tours Section */}
-       {tourData && (
-          <SimilarTours tours={similarTours} />
-        )}
 
         {/* Blog posts that picked this tour in the admin */}
         <RelatedContent title="Travel guides for this trip" items={tourData.related_posts} />
 
-        {/* FAQ Section */}
-        <section className="py-12 max-w-6xl mx-auto px-4">
-          <h2 className="text-3xl font-bold mb-8">Frequently Asked Questions</h2>
-          <div className="space-y-4">
-            {(tourData.faqs || []).map((faq, index) => (
-              <div key={index} className="border border-gray-200 rounded-lg overflow-hidden">
-                <button
-                  className="w-full flex justify-between items-center p-4 text-left font-medium hover:bg-gray-50 transition-all"
-                  onClick={() => toggleDay(index + 10)}
-                >
-                  <span>{faq.question}</span>
-                  {expandedDay === index + 10 ? <MinusIcon /> : <PlusIcon />}
-                </button>
-                {expandedDay === index + 10 && (
-                  <div
-                    className="p-4 pt-2 text-gray-700"
-                    dangerouslySetInnerHTML={{ __html: faq.answer }}
-                  />
-                )}
-              </div>
-            ))}
-          </div>
-        </section>
+        {/* Reviews Section */}
+        <div className="gk-wrap mb-10">
+          <ReviewSection contentType="tours" objectSlug={tourData.slug} />
+        </div>
 
-        {/* CTA Section */}
-        <div className="sticky bottom-0 w-full bg-gradient-to-r from-brand-600 to-brand-800 text-white py-4 flex justify-between items-center px-4 md:px-16 z-50 shadow-lg">
-          <div>
-            <p className="text-sm md:text-base font-medium">
+        {/* Similar tours */}
+        {tourData && (
+          <SimilarTours tours={similarTours} />
+        )}
+
+        {/* Sticky CTA (mobile) */}
+        <div className="gk-sticky-cta lg:hidden sticky bottom-0 w-full bg-ink text-white py-3 flex justify-between items-center gap-3 px-4 z-40 shadow-lg">
+          <div className="min-w-0">
+            <p className="text-[15px] font-semibold">
               {hasDiscount(selectedPackage) && (
-                <><span className="line-through">{formatPrice(selectedPackage?.price)}</span>{" "}</>
+                <><span className="line-through opacity-60">{formatPrice(selectedPackage?.price)}</span>{" "}</>
               )}
               {formatPrice(basePrice)} • {tourData.duration_days} Days
               {getSavings(selectedPackage) && (
-                <span className="text-xs text-green-400"> Save {getSavings(selectedPackage)}</span>
+                <span className="text-xs text-sun"> Save {getSavings(selectedPackage)}</span>
               )}
             </p>
-            <p className="text-xs md:text-sm opacity-90">
+            <p className="text-xs opacity-80 truncate">
               Send your query Now, Prices are rising so fast
             </p>
           </div>
-          <button
-            onClick={() => setIsEnquiryOpen(true)}
-            className="bg-white text-brand-600 font-semibold px-6 py-3 rounded-lg hover:bg-gray-100 transition shadow-md"
-          >
+          <button onClick={() => setIsEnquiryOpen(true)} className="gk-btn gk-btn-sun shrink-0">
             Send Query
           </button>
         </div>
@@ -547,13 +432,13 @@ const faqSchema = tourData.faqs?.length > 0
           style={{ position: "absolute", left: "-9999px", top: "0" }}
         >
           <div id="pdf-tour-content">
-            <TourPDFContent tourData={tourData} 
+            <TourPDFContent tourData={tourData}
              baseUrl={baseUrl}
              tourPath={tourPath}
              />
           </div>
         </div>
-      </div>
+      </main>
       <EnquiryForm
         isOpen={isEnquiryOpen}
         onClose={() => setIsEnquiryOpen(false)}

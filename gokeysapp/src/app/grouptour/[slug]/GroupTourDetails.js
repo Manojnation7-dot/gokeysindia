@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import SimilarTours from '@/components/SimilarGroupTours';
@@ -28,8 +28,10 @@ import {
   getSavings,
 } from '@/lib/pricingUtils';
 import { submitTourEnquiry } from '@/lib/tourEnquiry';
-import { motion } from 'framer-motion';
-import Image from 'next/image';
+import ImageGallery from '@/components/ImageGallery';
+import { Breadcrumbs, FaqList } from '@/components/ui/kit';
+import { getDepartures, formatDepartureDate } from '@/lib/departures';
+import NextDepartureRequest from '@/components/NextDepartureRequest';
 
 import SmartSEO from '@/components/SmartSEO'; 
 import {
@@ -40,7 +42,7 @@ import {
 } from '@/lib/seoSchemas';
 import { buildFAQSchema } from '@/lib/seoSchemas';
 
-export default function GroupTourDetails({ tourData, baseUrl, documentNumber, currentDate,tourPath,similarTours  }) {
+export default function GroupTourDetails({ tourData, baseUrl, documentNumber, currentDate,tourPath,similarTours, renderedAt }) {
   const [expandedDay, setExpandedDay] = useState(null);
   const [activeTab, setActiveTab] = useState('overview');
 
@@ -70,6 +72,22 @@ export default function GroupTourDetails({ tourData, baseUrl, documentNumber, cu
     selectedPackage ? getEffectivePrice(selectedPackage) : null
   );
 
+  // Package buttons (this handler was missing, so choosing a package threw an error)
+  const handlePackageSelect = (pkg) => {
+    setSelectedPackage(pkg);
+    setBasePrice(getEffectivePrice(pkg));
+  };
+
+  // Approved departures from today on (falls back to the old date list on an older backend)
+  // First render uses the server's render time (identical HTML, no hydration mismatch); right after
+  // loading, the visitor's clock takes over, so a page cached before midnight drops yesterday's date.
+  const [now, setNow] = useState(() => new Date(renderedAt || Date.now()));
+  useEffect(() => setNow(new Date()), []);
+  const departureInfo = getDepartures(tourData, now);
+  const upcoming = departureInfo.list;
+  const formatDate = formatDepartureDate;
+  const [reserved, setReserved] = useState(null); // departure picked with "Reserve"
+
   // ✅ ✅ Add the missing states here:
   const [isEnquiryOpen, setIsEnquiryOpen] = useState(false);
   const [enquiryFormData, setEnquiryFormData] = useState({
@@ -94,6 +112,9 @@ export default function GroupTourDetails({ tourData, baseUrl, documentNumber, cu
       packageType: capitalizeFirst(selectedPackage?.package_type || ''),
       packagePrice: isPriceOnRequest(selectedPackage) ? 'Price on Request' : basePrice,
       formData: enquiryFormData,
+      groupTourSlug: tourData.slug,
+      // The backend re-checks this departure (open, before cutoff, enough seats)
+      departureId: reserved && reserved.date === enquiryFormData.travelDate ? reserved.id : null,
     });
 
     if (result.ok) {
@@ -226,368 +247,312 @@ const [isLoading, setIsLoading] = useState(false);
   }
 
 
+  const included = (tourData.inclusions_exclusions || []).filter((item) => item.is_inclusion);
+  const excluded = (tourData.inclusions_exclusions || []).filter((item) => !item.is_inclusion);
+  const destinationNames = (tourData.destinations || []).filter((dest) => dest && typeof dest === "string");
+  const whatsappUrl = `https://wa.me/917830718687?text=${encodeURIComponent(`Hello Gokeys India, I want to enquire about ${tourData.name} (Group Tour).`)}`;
+  const reserve = (dep) => {
+    setReserved(dep.id ? { id: dep.id, date: dep.date } : null);
+    setEnquiryFormData((prev) => ({ ...prev, travelDate: dep.date }));
+    document.getElementById("group-enquiry")?.scrollIntoView({ behavior: "smooth", block: "center" });
+  };
+  const noDates = departureInfo.state === "none";
+  const facts = [
+    ["Next Departure", departureInfo.state === "error" ? "Please enquire" : upcoming[0] ? formatDate(upcoming[0].date) : "Dates coming soon"],
+    ["Duration", tourData.duration ? `${tourData.duration} Days` : "N/A"],
+    ["Group Size", tourData.max_group_size || "12-20 People"],
+    [
+      "Reviews",
+      hasValidReviewRating(tourData.rating, tourData.reviews_count)
+        ? `${tourData.rating} (${tourData.reviews_count} Tour Reviews)`
+        : "Gokeys India — 4.8 · 164 Google Reviews",
+    ],
+  ];
+  const priceLine = isPriceOnRequest(selectedPackage) ? (
+    <span className="gk-price text-3xl">Price on Request</span>
+  ) : (
+    <>
+      {getSavings(selectedPackage) && (
+        <span className="text-sm text-slate-400 line-through">{formatPrice(selectedPackage?.price)}</span>
+      )}
+      <span className="gk-price text-3xl">{formatPrice(basePrice)}</span>
+      <span className="text-xs text-slate-ink">Per Adult</span>
+    </>
+  );
+
   return (
     <>
       <Header />
-      <SmartSEO schema={schemas} /> {/* Add SmartSEO with schemas */}
-      <div className="text-gray-800 bg-white">
-        {/* Hero Banner */}
-        <section className="relative h-[70vh] w-full overflow-hidden">
-          <Image
-            src={tourData.featured_image?.image || '/images/banner-image.png'}
-            alt={`${tourData.name} Banner`}
-            fill
-            style={{ objectFit: 'cover' }}
-            className="z-0"
-            priority
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-black/30 z-[5]"></div>
-          <div className="absolute inset-0 flex items-end pb-16 md:items-center justify-center z-[6]">
-            <div className="text-center text-white px-4 max-w-4xl">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6 }}
-              >
-                <h1 className="text-4xl md:text-6xl font-bold mb-2">{tourData.name}</h1>
-                <p className="text-lg md:text-2xl mb-6">
-                    {isPriceOnRequest(selectedPackage) ? (
-                      <span className="font-semibold">Price on Request</span>
-                    ) : (
-                      <>
-                        <span className="line-through">{formatPrice(selectedPackage?.price)}</span>{' '}
-                        <span className="font-semibold">{formatPrice(basePrice)}</span>
-                        {getSavings(selectedPackage) && (
-                          <span className="text-sm text-green-400"> Save {getSavings(selectedPackage)}</span>
-                        )}
-                      </>
-                    )}
-                  </p>
-                <div className="flex gap-4 justify-center">
-                  <button
-                    onClick={() => setIsEnquiryOpen(true)}
-                    className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all font-medium shadow-lg hover:shadow-xl"
-                  >
-                    Send Query
-                  </button>
-                  <button
-                    onClick={generatePDF}
-                    disabled={isLoading || !tourData}
-                    className={`px-6 py-3 rounded-lg font-medium transition-all ${
-                      isLoading || !tourData
-                        ? 'bg-gray-400 cursor-not-allowed text-white'
-                        : 'bg-white/20 text-white hover:bg-white/30 border border-white/30'
-                    }`}
-                  >
-                    Download Itinerary
-                  </button>
-                </div>
-              </motion.div>
-            </div>
-          </div>
-        </section>
-
-        {/* Quick Facts Bar */}
-        <div className="bg-blue-600 text-white py-4">
-          <div className="max-w-6xl mx-auto px-4">
-            <div className="flex flex-wrap justify-between items-center gap-4">
-              <div className="flex items-center gap-2">
-                <CalendarIcon />
-                <span>Next Departure: {departureDates[0] || 'TBD'}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <UserIcon />
-                <span>Group Size: {tourData.max_group_size || '12-20 People'}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <StarIcon />
-                <span>{hasValidReviewRating(tourData.rating, tourData.reviews_count)
-                  ? `${tourData.rating} (${tourData.reviews_count} Tour Reviews)`
-                  : "Gokeys India — 4.8 · 164 Google Reviews"}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <MapPinIcon />
-                {tourData.destinations?.length ? (
-                  tourData.destinations
-                    .filter((dest) => dest && typeof dest === "string") // Remove undefined/null
-                    .map((dest, idx) => (
-                      <span key={idx}>
-                        {capitalizeFirst(dest)} {/* Use dest directly */}
-                        {idx !== tourData.destinations.filter((d) => d && typeof d === "string").length - 1 && ', '}
-                      </span>
-                    ))
-                ) : (
-                  <span>Harshil Valley</span>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Main Content */}
-        <div className="max-w-6xl mx-auto px-4 py-12">
-          {/* Navigation Tabs */}
-          <div className="flex border-b border-gray-200 mb-8">
-            {['overview', 'itinerary', 'inclusions'].map((tab) => (
-              <button
-                key={tab}
-                className={`py-3 px-6 font-medium ${
-                  activeTab === tab
-                    ? 'text-blue-600 border-b-2 border-blue-600'
-                    : 'text-gray-500 hover:text-gray-700'
-                }`}
-                onClick={() => setActiveTab(tab)}
-              >
-                {capitalizeFirst(tab)}
-              </button>
+      <SmartSEO schema={schemas} />
+      <main className="bg-mist text-ink">
+        <div className="gk-wrap pt-8">
+          <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "Group tours", href: "/grouptour" }, { label: tourData.name }]} />
+          <h1 className="gk-h1 text-3xl! md:text-[2.6rem]! max-w-3xl">{tourData.name}</h1>
+          <div className="flex flex-wrap gap-1.5 mt-3 mb-5">
+            <span className="gk-chip gk-chip-sun">Group departure</span>
+            {tourData.duration && <span className="gk-chip">{tourData.duration} days</span>}
+            {tourData.starting_from && !/^\d+$/.test(tourData.starting_from) && (
+              <span className="gk-chip">Pickup from {tourData.starting_from}</span>
+            )}
+            {destinationNames.map((dest, idx) => (
+              <span key={idx} className="gk-chip">{capitalizeFirst(dest)}</span>
             ))}
           </div>
 
-          {/* Content and Sidebar */}
-          <div className="grid md:grid-cols-3 gap-8">
-            {/* Main Content Area */}
-            <div className="md:col-span-2">
-              {/* Overview Tab */}
-              {activeTab === 'overview' && (
-                <div>
-                  <h2 className="text-3xl font-bold mb-6">Tour Overview</h2>
-                  <div
-                    className="text-gray-700 mb-6 prose"
-                    dangerouslySetInnerHTML={{ __html: tourData.content }}
-                  />
-                  {/* Package Selection */}
-                 {Array.isArray(tourData.pricing) && tourData.pricing.length > 0 && (
-                  <div className="my-8">
-                    <h3 className="text-lg font-semibold mb-4">Choose Your Package</h3>
-                    <div className="flex flex-wrap gap-4">
-                      {tourData?.pricing?.map((pkg, index) => {
-                        const effectivePrice = getEffectivePrice(pkg);
-                        const isDiscounted =
-                          Number(pkg.discount_price) &&
-                          Number(pkg.discount_price) < Number(pkg.price);
+          <ImageGallery
+            alt={tourData.featured_image?.alt_text || tourData.name}
+            images={[
+              tourData.featured_image?.optimized_banner || tourData.featured_image?.image || '/images/banner-image.png',
+              ...(tourData.gallery_images?.map((img) => img.optimized || img.image) || []),
+            ]}
+          />
+        </div>
 
-                        return (
-                          <button
-                            key={index}
-                            onClick={() => handlePackageSelect(pkg)}
-                            className={`px-4 py-2 rounded-lg border text-center ${
-                              selectedPackage?.package_type === pkg.package_type
-                                ? 'bg-blue-600 text-white -ml-2'
-                                : 'bg-white text-black hover:bg-gray-100'
-                            }`}
-                          >
-                            <div className="text-sm font-medium">
-                              {capitalizeFirst(pkg.package_type)}
-                            </div>
+        <div className="gk-wrap py-8 grid lg:grid-cols-[1fr_340px] gap-8 items-start">
+          <div className="min-w-0 space-y-10">
+            {/* Quick facts */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              {facts.map(([label, value]) => (
+                <div key={label} className="gk-panel px-4 py-3">
+                  <p className="gk-label mb-0.5!">{label}</p>
+                  <p className="text-[15px] font-bold text-ink">{value}</p>
+                </div>
+              ))}
+            </div>
 
-                            <div className="text-sm mt-1">
-                              {isPriceOnRequest(pkg) ? (
-                                <span className="font-semibold">Price on Request</span>
-                              ) : isDiscounted ? (
-                                <>
-                                  <span className="line-through text-white-500">
-                                    {formatPrice(pkg.price)}
-                                  </span>{' '}
-                                  <span className="font-semibold text-white-600">
-                                    {formatPrice(pkg.discount_price)}
-                                  </span>
-                                  {getSavings(pkg) && (
-                                    <div className="text-xs text-yellow-200">
-                                      Save {getSavings(pkg)}
-                                    </div>
-                                  )}
-                                </>
-                              ) : (
-                                <span className="font-semibold">{formatPrice(pkg.price)}</span>
-                              )}
-                            </div>
-                          </button>
-                        );
-                      })}
-                    </div>
+            {/* Overview */}
+            <section>
+              <h2 className="gk-h2 mb-4">Tour Overview</h2>
+              <div
+                className="tour-content text-slate-ink prose max-w-none"
+                dangerouslySetInnerHTML={{ __html: tourData.content }}
+              />
+
+              {/* Package Selection */}
+              {Array.isArray(tourData.pricing) && tourData.pricing.length > 0 && (
+                <div className="mt-8">
+                  <h3 className="gk-h3 mb-3">Choose Your Package</h3>
+                  <div className="flex flex-wrap gap-3">
+                    {tourData.pricing.map((pkg, index) => {
+                      const active = selectedPackage?.package_type === pkg.package_type;
+                      const isDiscounted =
+                        Number(pkg.discount_price) && Number(pkg.discount_price) < Number(pkg.price);
+                      return (
+                        <button
+                          key={index}
+                          onClick={() => handlePackageSelect(pkg)}
+                          aria-pressed={active}
+                          className={`px-4 py-2.5 rounded-xl border text-left transition ${
+                            active ? "bg-ink border-ink text-white" : "bg-white border-line text-ink hover:border-ink"
+                          }`}
+                        >
+                          <div className="text-xs font-bold uppercase tracking-wider opacity-80">
+                            {capitalizeFirst(pkg.package_type)}
+                          </div>
+                          <div className="text-sm mt-0.5">
+                            {isPriceOnRequest(pkg) ? (
+                              <span className="font-bold">Price on Request</span>
+                            ) : isDiscounted ? (
+                              <>
+                                <span className="line-through opacity-60">{formatPrice(pkg.price)}</span>{' '}
+                                <span className="font-bold">{formatPrice(pkg.discount_price)}</span>
+                                {getSavings(pkg) && (
+                                  <div className={`text-xs ${active ? "text-sun" : "text-wa"}`}>Save {getSavings(pkg)}</div>
+                                )}
+                              </>
+                            ) : (
+                              <span className="font-bold">{formatPrice(pkg.price)}</span>
+                            )}
+                          </div>
+                        </button>
+                      );
+                    })}
                   </div>
-                )}
-                 {/* Tour Highlights */}
-              <div className="mb-8">
-                <h3 className="text-xl font-semibold mb-4">Tour Highlights</h3>
-                <div className="grid sm:grid-cols-2 gap-4">
+                </div>
+              )}
+
+              {/* Tour Highlights */}
+              <div className="mt-8">
+                <h3 className="gk-h3 mb-3">Tour Highlights</h3>
+                <div className="grid sm:grid-cols-2 gap-3">
                   {(tourData.highlights || []).map((highlight, index) => (
-                    <div key={index} className="flex items-start gap-3">
-                      <div className="mt-1 text-blue-600">
-                        <CheckCircleIcon />
-                      </div>
-                      <span className="text-gray-700">{highlight.highlight}</span>
+                    <div key={index} className="flex items-start gap-2.5 text-sm">
+                      <span className="mt-0.5 text-teal"><CheckIcon /></span>
+                      <span className="text-slate-ink">{highlight.highlight}</span>
                     </div>
                   ))}
                   {(!tourData.highlights || tourData.highlights.length === 0) && (
-                    <p className="text-gray-600">No highlights available for this tour.</p>
+                    <p className="text-slate-ink text-[15px]">No highlights available for this tour.</p>
                   )}
                 </div>
               </div>
-                </div>
-              )}
+            </section>
 
-              {/* Itinerary Tab */}
-              {activeTab === 'itinerary' && tourData && (
-                <TourItineraryMain tourData={{ ...tourData, itinerary: tourData.itineraries }} />
-              )}
+            {/* Upcoming departures */}
+            {upcoming.length > 0 && (
+              <section>
+                <h2 className="gk-h2 mb-4">Upcoming departures</h2>
+                <div className="gk-card overflow-x-auto">
+                  <table className="w-full text-sm min-w-110">
+                    <thead className="bg-ink text-white text-left">
+                      <tr>
+                        <th className="px-5 py-3 font-semibold">Date</th>
+                        <th className="px-5 py-3 font-semibold">Seats</th>
+                        <th className="px-5 py-3 font-semibold">Price</th>
+                        <th className="px-5 py-3"><span className="sr-only">Reserve</span></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {upcoming.map((dep) => (
+                        <tr key={dep.date} className="border-t border-line">
+                          <td className="px-5 py-3 font-bold whitespace-nowrap">{formatDate(dep.date)}</td>
+                          <td className="px-5 py-3">
+                            {dep.bookable && dep.seatsLeft != null ? (
+                              <span className="gk-chip gk-chip-sun">{dep.seatsLeft} left</span>
+                            ) : (
+                              <span className="gk-chip">{dep.label}</span>
+                            )}
+                          </td>
+                          <td className="px-5 py-3 font-semibold">
+                            {dep.price ? formatPrice(dep.price) : isPriceOnRequest(selectedPackage) ? "Price on Request" : formatPrice(basePrice)}
+                          </td>
+                          <td className="px-5 py-3 text-right">
+                            {dep.bookable ? (
+                              <button onClick={() => reserve(dep)} className="gk-btn gk-btn-ink py-2!">Reserve</button>
+                            ) : (
+                              <span className="text-xs font-semibold text-slate-ink">{dep.label}</span>
+                            )}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </section>
+            )}
 
-              {/* Inclusions Tab */}
-              {activeTab === 'inclusions' && (
-                <div className="grid md:grid-cols-2 gap-8">
-                  <div>
-                    <h3 className="text-2xl font-semibold mb-6">What's Included</h3>
-                    <div className="space-y-4">
-                      {(tourData.inclusions_exclusions || [])
-                        .filter((item) => item.is_inclusion)
-                        .map((item, index) => (
-                          <div key={index} className="flex items-start gap-3">
-                            <div className="mt-1 text-green-500">
-                              <CheckIcon />
-                            </div>
-                            <span className="text-gray-700">{item.description}</span>
-                          </div>
-                        ))}
-                    </div>
-                  </div>
-                  <div>
-                    <h3 className="text-2xl font-semibold mb-6">What's Not Included</h3>
-                    <div className="space-y-4">
-                      {(tourData.inclusions_exclusions || [])
-                        .filter((item) => !item.is_inclusion)
-                        .map((item, index) => (
-                          <div key={index} className="flex items-start gap-3">
-                            <div className="mt-1 text-red-500">
-                              <XIcon />
-                            </div>
-                            <span className="text-gray-700">{item.description}</span>
-                          </div>
-                        ))}
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
+            {/* No bookable date: collect "next departure" requests instead of an empty section */}
+            {(noDates || departureInfo.state === "unavailable") && (
+              <NextDepartureRequest tourSlug={tourData.slug} tourName={tourData.name} />
+            )}
+            {departureInfo.state === "error" && (
+              <p className="gk-panel p-4 text-[15px] text-ink" role="alert">
+                Departure dates could not be loaded right now. Please send an enquiry, call or WhatsApp us
+                for the latest dates.
+              </p>
+            )}
 
-            {/* Sidebar */}
-            <div>
-              <div className="bg-gray-50 p-6 rounded-xl shadow-sm border border-gray-100 sticky top-6">
-                <div className="mb-4 text-center">
-                  <h3 className="text-xl font-semibold">{tourData.name}</h3>
-                  <p className="text-xl md:text-base font-medium">
-                    {isPriceOnRequest(selectedPackage) ? (
-                      <span className="font-semibold">Price on Request</span>
-                    ) : (
-                      <>
-                        <span className="line-through">{formatPrice(selectedPackage?.price)}</span>{' '}
-                        {formatPrice(basePrice)}
-                        <span className="text-xs text-gray-700"> Per Adult</span>
-                      </>
-                    )}
-                  </p>
-                  <hr />
+            {/* Itinerary */}
+            <TourItineraryMain tourData={{ ...tourData, itinerary: tourData.itineraries }} />
+
+            {/* Inclusions */}
+            {(included.length > 0 || excluded.length > 0) && (
+              <section className="grid sm:grid-cols-2 gap-4">
+                <div className="gk-panel p-5">
+                  <h2 className="gk-h3 mb-4">What's Included</h2>
+                  <ul className="space-y-2.5">
+                    {included.map((item, index) => (
+                      <li key={index} className="flex items-start gap-2.5 text-sm text-slate-ink">
+                        <span className="mt-0.5 text-teal"><CheckIcon /></span>
+                        {item.description}
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-                <div className="space-y-4">
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Duration</span>
-                    <span className="font-medium">{tourData.duration} Days</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Group Size</span>
-                    <span className="font-medium">{tourData.max_group_size || 'N/A'}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Best Season</span>
-                    <span className="font-medium">{tourData.best_season || 'Year Round'}</span>
-                  </div>
-                <form onSubmit={handleEnquirySubmit}>
-                  <EnquiryForm
-                    isInline={true}
-                    showSubmitButton={false}
-                    formData={enquiryFormData}
-                    onChange={setEnquiryFormData}
-                    onSubmit={handleEnquirySubmit}
-                  />
-                  <div className="pt-4 mt-4 border-t border-gray-200">
-                    <button
-                      type="submit"
-                      className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-medium transition-all"
-                    >
-                      Enquire Now
-                    </button>
-                    {/* Contact info below the button */}
-                    <p className="mt-3 text-center text-gray-700 text-sm">
-                      Need More Information? Call/WhatsApp our Yatra Coordinator on <span className="font-semibold">+91-7830718687</span>
-                    </p>
-                  </div>
-                </form>
+                <div className="gk-panel p-5">
+                  <h2 className="gk-h3 mb-4">What's Not Included</h2>
+                  <ul className="space-y-2.5">
+                    {excluded.map((item, index) => (
+                      <li key={index} className="flex items-start gap-2.5 text-sm text-slate-ink">
+                        <span className="mt-0.5 text-[#d9603b]"><XIcon /></span>
+                        {item.description}
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-              </div>
-            </div>
+              </section>
+            )}
+
+            {/* FAQ Section */}
+            {(tourData.faqs || []).length > 0 && (
+              <section>
+                <h2 className="gk-h2 mb-5">Frequently Asked Questions</h2>
+                <FaqList items={tourData.faqs.map((faq) => ({ question: faq.question, html: faq.answer }))} />
+              </section>
+            )}
           </div>
 
-          {/* Reviews Section */}
-          <section className="py-12">
-            <ReviewSection contentType="group-tours" objectSlug={tourData.slug} />
-          </section>
+          {/* Sidebar */}
+          <aside className="lg:sticky lg:top-20">
+            <div id="group-enquiry" className="gk-card p-5 scroll-mt-24">
+              <p className="text-xs text-slate-ink">Group price</p>
+              <p className="flex flex-wrap items-baseline gap-x-2">{priceLine}</p>
+              <form onSubmit={handleEnquirySubmit} className="mt-4">
+                <EnquiryForm
+                  isInline={true}
+                  showSubmitButton={false}
+                  formData={enquiryFormData}
+                  onChange={setEnquiryFormData}
+                  onSubmit={handleEnquirySubmit}
+                />
+                <button type="submit" className="gk-btn gk-btn-sun w-full mt-4">
+                  Enquire Now
+                </button>
+              </form>
+              <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="gk-btn gk-btn-wa w-full mt-2.5">
+                Chat on WhatsApp
+              </a>
+              <button
+                onClick={generatePDF}
+                disabled={isLoading || !tourData}
+                className="gk-btn gk-btn-line w-full mt-2.5 disabled:opacity-50"
+              >
+                Download Itinerary
+              </button>
+              <p className="mt-3 text-center text-slate-ink text-xs leading-relaxed">
+                Need More Information? Call/WhatsApp our Yatra Coordinator on <span className="font-semibold">+91-7830718687</span>
+              </p>
+            </div>
+          </aside>
         </div>
-
-        {/* Popular Group Tours Section */}
-          <SimilarTours tours={similarTours} />
 
         {/* Blog posts that picked this group tour in the admin */}
         <RelatedContent title="Travel guides for this trip" items={tourData.related_posts} />
 
-        {/* FAQ Section */}
-        <section className="py-12 max-w-6xl mx-auto px-4">
-          <h2 className="text-3xl font-bold mb-8">Frequently Asked Questions</h2>
-          <div className="space-y-4">
-            {(tourData.faqs || []).map((faq, index) => (
-              <div key={index} className="border border-gray-200 rounded-lg overflow-hidden">
-                <button
-                  className="w-full flex justify-between items-center p-4 text-left font-medium hover:bg-gray-50 transition-all"
-                  onClick={() => toggleDay(index + 10)}
-                >
-                  <span>{faq.question}</span>
-                  {expandedDay === index + 10 ? <MinusIcon /> : <PlusIcon />}
-                </button>
-                {expandedDay === index + 10 && (
-                  <div
-                    className="p-4 pt-2 text-gray-700"
-                    dangerouslySetInnerHTML={{ __html: faq.answer }}
-                  />
-                )}
-              </div>
-            ))}
-          </div>
-        </section>
+        {/* Reviews Section */}
+        <div className="gk-wrap mb-10">
+          <ReviewSection contentType="group-tours" objectSlug={tourData.slug} />
+        </div>
 
-        {/* CTA Section */}
-        <div className="sticky bottom-0 w-full bg-gradient-to-r from-blue-600 to-blue-800 text-white py-4 flex justify-between items-center px-4 md:px-16 z-50 shadow-lg">
-          <div>
-            <p className="text-sm md:text-base font-medium">
-                {isPriceOnRequest(selectedPackage) ? (
-                  <span className="font-semibold">Price on Request</span>
-                ) : (
-                  <>
-                    <span className="line-through">{formatPrice(selectedPackage?.price)}</span>{' '}
-                    {formatPrice(basePrice)} • {tourData.duration} Days
-                    {getSavings(selectedPackage) && (
-                      <span className="text-xs text-green-400"> Save {getSavings(selectedPackage)}</span>
-                    )}
-                  </>
-                )}
-              </p>
-            <p className="text-xs md:text-sm opacity-90">
-              Send your query now, limited seats available
+        {/* Popular Group Tours Section */}
+        <SimilarTours tours={similarTours} />
+
+        {/* Sticky CTA (mobile) */}
+        <div className="gk-sticky-cta lg:hidden sticky bottom-0 w-full bg-ink text-white py-3 flex justify-between items-center gap-3 px-4 z-40 shadow-lg">
+          <div className="min-w-0">
+            <p className="text-[15px] font-semibold">
+              {isPriceOnRequest(selectedPackage) ? (
+                <span>Price on Request</span>
+              ) : (
+                <>
+                  {formatPrice(basePrice)} • {tourData.duration} Days
+                  {getSavings(selectedPackage) && (
+                    <span className="text-xs text-sun"> Save {getSavings(selectedPackage)}</span>
+                  )}
+                </>
+              )}
+            </p>
+            <p className="text-xs opacity-80 truncate">
+              {noDates ? "New departure dates coming soon" : "Send your query now, limited seats available"}
             </p>
           </div>
-          <button
-            onClick={() => setIsEnquiryOpen(true)}
-            className="bg-white text-blue-600 font-semibold px-6 py-3 rounded-lg hover:bg-gray-100 transition shadow-md"
-          >
-            Send Query
-          </button>
+          {noDates ? (
+            <a href="#next-departure" className="gk-btn gk-btn-sun shrink-0">Request dates</a>
+          ) : (
+            <button onClick={() => setIsEnquiryOpen(true)} className="gk-btn gk-btn-sun shrink-0">
+              Send Query
+            </button>
+          )}
         </div>
 
         {/* Hidden PDF Content */}
@@ -596,7 +561,7 @@ const [isLoading, setIsLoading] = useState(false);
           style={{ position: 'absolute', left: '-9999px', top: '0' }}
         >
           <div id="pdf-tour-content">
-            <TourPDFContent 
+            <TourPDFContent
             tourData={tourData}
             baseUrl={baseUrl}
             documentNumber={documentNumber}
@@ -605,7 +570,7 @@ const [isLoading, setIsLoading] = useState(false);
             />
           </div>
         </div>
-      </div>
+      </main>
       <EnquiryForm
         isOpen={isEnquiryOpen}
         onClose={() => setIsEnquiryOpen(false)}

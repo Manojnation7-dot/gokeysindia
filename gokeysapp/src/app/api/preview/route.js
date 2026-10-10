@@ -18,7 +18,7 @@ export async function GET(request) {
   }
 
   // Only ever redirect to a path on this site
-  if (!path || !path.startsWith("/") || path.startsWith("//")) {
+  if (!path || !/^\/(?![\/\\])/.test(path)) {
     return new Response("This preview link is invalid or has expired. Open the draft in the admin and click 'Preview draft' again.", {
       status: 404,
       headers: { "Content-Type": "text/plain; charset=utf-8" },

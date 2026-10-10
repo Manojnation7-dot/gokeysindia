@@ -2,14 +2,14 @@ import Link from "next/link";
 
 export default function NotFound() {
   return (
-    <div className="min-h-[80vh] flex items-center justify-center bg-white px-6">
+    <div className="min-h-[80vh] flex items-center justify-center bg-mist px-6">
       <div className="max-w-2xl text-center">
 
         {/* Big 404 */}
-        <h1 className="text-7xl font-bold text-gray-900 mb-4">404</h1>
+        <h1 className="gk-h1 text-7xl! mb-4">404</h1>
 
         {/* Heading */}
-        <h2 className="text-2xl font-semibold text-gray-800 mb-3">
+        <h2 className="gk-h2 mb-3">
           Oops! This page seems to have gone on a trip ✈️
         </h2>
 
@@ -24,21 +24,21 @@ export default function NotFound() {
 
           <Link
             href="/"
-            className="px-6 py-3 bg-black text-white rounded-lg hover:bg-gray-800 transition"
+            className="gk-btn gk-btn-sun"
           >
             Go to Homepage
           </Link>
 
           <Link
             href="/tours"
-            className="px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-100 transition"
+            className="gk-btn gk-btn-line"
           >
             Explore Tours
           </Link>
 
           <Link
             href="/destinations"
-            className="px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-100 transition"
+            className="gk-btn gk-btn-line"
           >
             View Destinations
           </Link>

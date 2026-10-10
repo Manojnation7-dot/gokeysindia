@@ -38,8 +38,8 @@ export default function CancellationPolicy() {
     <>
       <SmartSEO schema={schema} />
       <Header/>
-      <main className="max-w-4xl mx-auto px-4 py-10">
-        <h1 className="text-3xl font-bold mb-6">Cancellation & Refund Policy</h1>
+      <main className="max-w-4xl mx-auto px-4 py-12 text-slate-ink">
+        <h1 className="gk-h1 text-4xl! mb-6">Cancellation & Refund Policy</h1>
 
         <section className="space-y-6 text-gray-700">
           <h2 className="text-xl font-semibold">1. Cancellation Charges</h2>
@@ -58,13 +58,13 @@ export default function CancellationPolicy() {
           <p>To initiate a cancellation or request a refund, please contact us at:</p>
           <ul className="pl-6">
             <li>📞 Phone: +91-7830718687</li>
-            <li>📧 Email: <a href="mailto:helpdesk@gokeys.in" className="text-blue-600 underline">helpdesk@gokeys.in</a></li>
+            <li>📧 Email: <a href="mailto:helpdesk@gokeys.in" className="text-brand-600 underline">helpdesk@gokeys.in</a></li>
           </ul>
 
           <h2 className="text-xl font-semibold">4. Force Majeure</h2>
           <p>No refunds shall be made in case of cancellation or delay caused by force majeure events such as natural disasters, strikes, political unrest, or government orders.</p>
           
-            <p className="text-sm text-gray-400 mt-4">Last updated: July 31, 2025</p>
+            <p className="text-[15px] text-gray-400 mt-4">Last updated: July 31, 2025</p>
         </section>
       </main>
       <Footer/>

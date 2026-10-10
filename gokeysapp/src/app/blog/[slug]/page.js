@@ -12,7 +12,7 @@ import PreviewBanner from '@/components/PreviewBanner';
 import { previewQuery } from '@/lib/preview';
 import { buildMetadata, seoFromApi } from '@/lib/seoHelpers';
 import { CACHED, cacheFor } from '@/lib/api';
-import { slimPost } from '@/lib/slim';
+import { slimPost, readMinutes } from '@/lib/slim';
 
 export const revalidate = 300;
 
@@ -119,7 +119,7 @@ function JsonLd({ items }) {
           key={i}
           type="application/ld+json"
           // eslint-disable-next-line react/no-danger
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema).replace(/</g, "\\u003c") }}
         />
       ))}
     </>
@@ -136,17 +136,17 @@ function Breadcrumb({ post }) {
   ];
 
   return (
-    <nav className="text-sm text-gray-600 mb-3">
+    <nav aria-label="Breadcrumb" className="gk-crumbs mb-3">
       {items.map((item, index) => (
         <span key={index}>
           {item.href ? (
-            <Link href={item.href} className="hover:text-green-600">
+            <Link href={item.href} className="hover:text-teal">
               {item.label}
             </Link>
           ) : (
-            <span className="text-gray-900">{item.label}</span>
+            <span className="text-ink">{item.label}</span>
           )}
-          {index < items.length - 1 && ' > '}
+          {index < items.length - 1 && ' / '}
         </span>
       ))}
     </nav>
@@ -271,65 +271,77 @@ export default async function BlogDetailPage({ params }) {
       {preview && <PreviewBanner path={`/blog/${slug}`} />}
 
       <Header />
-      {/* Post Header */}
-      <header className="py-8 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-6">
-          <h1 className="text-4xl font-bold text-gray-900 mb-3">{post.title}</h1>
+      <div className="bg-mist">
+        {/* Post Header */}
+        <header className="gk-wrap pt-8 pb-6 max-w-5xl!">
           {/* Breadcrumbs */}
           <Breadcrumb post={post} />
-          {/* Metadata */}
-          <div className="flex items-center text-gray-600 mt-3">
-            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-            </svg>
-            <span>Posted on {new Date(post.published_date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
-            <svg className="w-5 h-5 ml-3 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-            </svg>
-            <span>by {post.author || 'Gokeys India'}</span>
-          </div>
           {/* Categories */}
-          <div className="mt-3">
+          <div className="flex flex-wrap gap-1.5 mb-3">
             {post.categories && post.categories.length > 0 ? (
               post.categories.map((category, index) => (
-                <span key={index} className="inline-block bg-green-600 text-white text-sm font-medium px-2 py-1 rounded mr-2 hover:bg-green-700">
-                  {category.name}
-                </span>
+                <span key={index} className="gk-chip">{category.name}</span>
               ))
             ) : (
-              <span className="text-gray-500 text-sm">No categories</span>
+              <span className="text-slate-ink text-sm">No categories</span>
             )}
           </div>
-        </div>
-      </header>
+          <h1 className="gk-h1 text-3xl! md:text-[2.75rem]!">{post.title}</h1>
+          {/* Metadata */}
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-slate-ink mt-4">
+            <span className="flex items-center">
+              <svg className="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              Posted on {new Date(post.published_date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+            </span>
+            <span className="flex items-center">
+              <svg className="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              </svg>
+              by {post.author || 'Gokeys India'}
+            </span>
+            <span className="flex items-center">
+              <svg className="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              {readMinutes(post.content)} min read
+            </span>
+          </div>
+        </header>
 
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-3 gap-8">
-        {/* Post Content - 2/3 */}
-        <div className="md:col-span-2">
-          {/* Featured Image */}
-          {post.cover_image_url && (
-            <Image
-              src={post.cover_image_url}
-              alt={post.title}
-              width={800}
-              height={400}
-              className="w-full max-h-80 rounded-lg mb-6 object-cover aspect-[2/1]"
-              priority={true}
-              quality={90}
-            />
-          )}
+        {/* Featured Image */}
+        {post.cover_image_url && (
+          <div className="gk-wrap">
+            <div className="gk-media h-56 sm:h-80 md:h-105 rounded-2xl">
+              <Image
+                src={post.cover_image_url}
+                alt={post.cover_image?.[0]?.alt_text || post.title}
+                fill
+                sizes="(max-width: 1216px) 100vw, 1216px"
+                className="object-cover"
+                priority={true}
+                quality={90}
+              />
+            </div>
+          </div>
+        )}
+
+        {/* Main Content */}
+        <main className="gk-wrap py-10 grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-8 items-start">
           {/* Post Content */}
-          <article className="prose prose-lg prose-green max-w-none mb-8 space-y-6" dangerouslySetInnerHTML={{ __html: post.content }} />
-          <FAQSection faqs={post.faqs} />
-          <CommentSection blogSlug={post.slug} />
-        </div>
+          <div className="min-w-0">
+            <article className="prose prose-lg max-w-none mb-8 space-y-6 text-slate-ink prose-headings:text-ink prose-a:text-teal" dangerouslySetInnerHTML={{ __html: post.content }} />
+            <FAQSection faqs={post.faqs} />
+            <CommentSection blogSlug={post.slug} />
+          </div>
 
-        {/* Query Form (Design Only) - 1/3 */}
-        <div className="md:col-span-1">
-          <InquiryFormCard placeName={post.title} />
-        </div>
-      </main>
+          {/* Query Form */}
+          <aside className="lg:sticky lg:top-20">
+            <InquiryFormCard placeName={post.title} />
+          </aside>
+        </main>
+      </div>
       {/* Hand-picked in the admin ("Related content") */}
       <RelatedContent
         title="Plan this trip with Gokeys"

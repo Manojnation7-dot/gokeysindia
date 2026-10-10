@@ -438,7 +438,7 @@ export default function HaridwarToRishikeshTaxiPage() {
               </tbody>
             </table>
           </div>
-          <p className="text-gray-500 text-sm mt-3">
+          <p className="text-gray-500 text-[15px] mt-3">
             * Indicative starting fares. Actual price depends on vehicle type, season and exact drop location. Contact us for a confirmed quote.
           </p>
         </div>

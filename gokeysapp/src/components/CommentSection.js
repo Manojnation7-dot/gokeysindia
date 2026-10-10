@@ -89,7 +89,7 @@ export default function CommentSection({ blogSlug }) {
 };
   return (
     <section className="mt-12">
-      <h2 className="text-2xl font-semibold text-gray-900 mb-6">Comments</h2>
+      <h2 className="gk-h2 mb-5">Comments</h2>
 
       {/* Comment List */}
       {comments.length > 0 ? (
@@ -106,7 +106,7 @@ export default function CommentSection({ blogSlug }) {
                 />
                 <div>
                   <p className="font-medium text-gray-900">{comment.name}</p>
-                  <p className="text-sm text-gray-500">
+                  <p className="text-[15px] text-gray-500">
                     {new Date(comment.created_at).toLocaleDateString('en-US', {
                       month: 'long',
                       day: 'numeric',
@@ -125,12 +125,12 @@ export default function CommentSection({ blogSlug }) {
 
       {/* Comment Form */}
       <div className="bg-gray-50 p-6 rounded-lg shadow-md">
-        <h3 className="text-xl font-semibold text-gray-900 mb-4">Leave a Comment</h3>
+        <h3 className="gk-h3 mb-4">Leave a Comment</h3>
         {successMessage && <p className="text-green-600 mb-4">{successMessage}</p>}
         {errorMessage && <p className="text-red-600 mb-4">{errorMessage}</p>}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="name" className="gk-label">
               Name
             </label>
             <input
@@ -140,11 +140,11 @@ export default function CommentSection({ blogSlug }) {
               value={formData.name}
               onChange={handleChange}
               required
-              className="w-full p-2 border border-gray-300 rounded focus:ring-green-500 focus:border-green-500"
+              className="gk-field"
             />
           </div>
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="email" className="gk-label">
               Email
             </label>
             <input
@@ -154,11 +154,11 @@ export default function CommentSection({ blogSlug }) {
               value={formData.email}
               onChange={handleChange}
               required
-              className="w-full p-2 border border-gray-300 rounded focus:ring-green-500 focus:border-green-500"
+              className="gk-field"
             />
           </div>
           <div>
-            <label htmlFor="message" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="message" className="gk-label">
               Message
             </label>
             <textarea
@@ -168,13 +168,13 @@ export default function CommentSection({ blogSlug }) {
               onChange={handleChange}
               required
               rows="4"
-              className="w-full p-2 border border-gray-300 rounded focus:ring-green-500 focus:border-green-500"
+              className="gk-field"
             />
           </div>
           <button
             type="submit"
             disabled={isSubmitting}
-            className={`w-full bg-green-700 text-white py-2 rounded hover:bg-green-800 ${
+            className={`w-full gk-btn gk-btn-ink ${
               isSubmitting ? 'opacity-50 cursor-not-allowed' : ''
             }`}
           >

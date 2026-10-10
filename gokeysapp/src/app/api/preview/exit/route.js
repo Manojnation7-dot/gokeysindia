@@ -5,7 +5,8 @@ import { PREVIEW_COOKIE } from "@/lib/preview";
 // "Exit preview" link in the preview banner: back to the normal (published) site.
 export async function GET(request) {
   const requested = new URL(request.url).searchParams.get("path") || "/";
-  const path = requested.startsWith("/") && !requested.startsWith("//") ? requested : "/";
+  // Only a path on this site: "/\evil.com" counts as "//evil.com" in browsers, so refuse it too
+  const path = /^\/(?![\/\\])/.test(requested) ? requested : "/";
 
   (await draftMode()).disable();
   (await cookies()).delete(PREVIEW_COOKIE);

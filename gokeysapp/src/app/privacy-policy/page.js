@@ -24,8 +24,8 @@ export default function Privacy() {
       <>
       <Header/>
       <SmartSEO schema={breadcrumbSchema} />
-      <main className="max-w-4xl mx-auto px-4 py-10 text-gray-800">
-        <h1 className="text-3xl font-bold mb-6">Privacy Policy</h1>
+      <main className="max-w-4xl mx-auto px-4 py-12 text-slate-ink">
+        <h1 className="gk-h1 text-4xl! mb-6">Privacy Policy</h1>
 
         <section className="space-y-6">
           <p>
@@ -73,7 +73,7 @@ export default function Privacy() {
           </ul>
           <p>
             To exercise your rights, please contact us at{" "}
-            <a href="mailto:helpdesk@gokeys.in" className="text-blue-600 underline">
+            <a href="mailto:helpdesk@gokeys.in" className="text-brand-600 underline">
               helpdesk@gokeys.in
             </a>
             .
@@ -108,14 +108,14 @@ export default function Privacy() {
           <p>
             For questions or privacy requests, contact us at:
             <br />
-            📧 <a href="mailto:helpdesk@gokeys.in" className="text-blue-600 underline">helpdesk@gokeys.in</a>
+            📧 <a href="mailto:helpdesk@gokeys.in" className="text-brand-600 underline">helpdesk@gokeys.in</a>
             <br />
             📞 +91-7830718687
             <br />
             🌐 www.gokeys.in
           </p>
 
-          <p className="text-sm text-gray-500 mt-6">Last updated: July 31, 2025</p>
+          <p className="text-[15px] text-gray-500 mt-6">Last updated: July 31, 2025</p>
         </section>
       </main>
       < Footer/>  

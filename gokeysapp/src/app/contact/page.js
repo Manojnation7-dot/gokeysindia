@@ -4,6 +4,7 @@ import Footer from "@/components/Footer";
 import { buildBreadcrumbList } from "@/lib/seoSchemas";
 import SmartSEO from "@/components/SmartSEO";
 import GoogleMap from "@/components/MapIframe";
+import { Breadcrumbs } from "@/components/ui/kit";
 import InquiryFormCard from "@/components/SimpleEnquiryForm";
 import { FaPhoneAlt, FaEnvelope, FaMapMarkerAlt } from "react-icons/fa";
 
@@ -30,120 +31,81 @@ const emailAddresses = [
       <Header />
       <SmartSEO schema={breadcrumbSchema} />
 
-      {/* Hero */}
-      <section className="relative py-24 bg-brand-900 text-white">
-        <div className="max-w-5xl mx-auto px-4 text-center">
-          <span className="inline-block mb-4 text-sm tracking-widest uppercase text-blue-300 font-semibold">
-            Get in Touch
-          </span>
-          <h1 className="text-4xl md:text-5xl font-extrabold mb-6">
-            Let’s Plan Your Next Trip Together
-          </h1>
-          <p className="text-lg text-slate-300 max-w-3xl mx-auto">
-            Have questions about group tours, spiritual journeys, or custom itineraries for Uttarakhand or <a href="https://gokeys.in/services/travel-agency-haridwar" className="text-brand-600 font-semibold hover:underline">Haridwar</a>?
+      <main className="bg-mist">
+        {/* Hero */}
+        <section className="gk-wrap pt-10 pb-8">
+          <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "Contact us" }]} />
+          <p className="gk-eyebrow mb-2">Get in Touch</p>
+          <h1 className="gk-h1">Let’s Plan Your Next Trip Together</h1>
+          <p className="mt-4 gk-lead max-w-2xl [&_a]:text-brand-600 [&_a]:font-semibold">
+            Have questions about group tours, spiritual journeys, or custom itineraries for Uttarakhand or <a href="https://gokeys.in/services/travel-agency-haridwar" className="hover:underline">Haridwar</a>?
             Our travel experts are just a message away.
           </p>
-        </div>
-      </section>
+        </section>
 
-      {/* Contact + Enquiry */}
-      <section className="py-24 bg-white">
-        <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
-{/* Left: Contact Info */}
-<div className="space-y-8">
-  <div>
-    <h2 className="text-3xl font-extrabold text-slate-900 mb-4">
-      Contact Information
-    </h2>
-    <p className="text-slate-600 text-lg">
-      Reach out to us directly or submit your enquiry — we usually respond within a few hours.
-    </p>
-  </div>
-
-  {/* Contact cards – stacked */}
-  <div className="space-y-6">
-
-    {/* Phone */}
-    <div className="bg-slate-50 border border-slate-100 rounded-2xl p-6 shadow-sm flex items-start gap-4">
-      <div className="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center shrink-0">
-        <FaPhoneAlt className="text-blue-600 text-lg" />
-      </div>
-      <div>
-        <h3 className="font-bold text-slate-900 mb-1">Call Us</h3>
-        <p className="text-slate-600 text-sm mb-1">
-          Speak directly with our travel experts
-        </p>
-       <p className="text-brand-800 font-semibold tracking-wide">
-           +91 9045916770, +91 7830718680, +91 7830718687
-        </p>
-      </div>
-    </div>
-
-    {/* Email */}
-    <div className="bg-slate-50 border border-slate-100 rounded-2xl p-6 shadow-sm flex items-start gap-4">
-      <div className="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center shrink-0">
-            <FaEnvelope className="text-blue-600 text-lg" />
-          </div>
-          <div>
-            <h3 className="font-bold text-slate-900 mb-1">Email Us</h3>
-            <p className="text-slate-600 text-sm mb-1">
-              For itineraries, pricing & support
-            </p>
-            <div className="space-y-1">
-            {emailAddresses.map((item, index) => (
-              <a
-                key={index}
-                href={`mailto:${item.email}`}
-                className="block text-slate-800 font-semibold hover:text-blue-600 transition"
-              >
-                {item.label}: {item.email}
+        {/* Contact + Enquiry */}
+        <section className="gk-wrap pb-16 grid grid-cols-1 lg:grid-cols-[1fr_1.4fr] gap-6 items-start">
+          <div className="space-y-5">
+            <div className="gk-card p-6">
+              <h2 className="gk-h3">Contact Information</h2>
+              <p className="text-[15px] text-slate-ink mt-1 mb-5">
+                Reach out to us directly or submit your enquiry — we usually respond within a few hours.
+              </p>
+              <div className="space-y-5">
+                <div className="flex items-start gap-3">
+                  <FaPhoneAlt className="text-teal mt-1 shrink-0" />
+                  <div>
+                    <h3 className="gk-label mb-0.5!">Call Us</h3>
+                    <p className="text-xs text-slate-ink">Speak directly with our travel experts</p>
+                    <p className="text-[15px] font-semibold text-ink mt-1">
+                      +91 9045916770, +91 7830718680, +91 7830718687
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <FaEnvelope className="text-teal mt-1 shrink-0" />
+                  <div>
+                    <h3 className="gk-label mb-0.5!">Email Us</h3>
+                    <p className="text-xs text-slate-ink">For itineraries, pricing & support</p>
+                    <div className="space-y-0.5 mt-1">
+                      {emailAddresses.map((item, index) => (
+                        <a key={index} href={`mailto:${item.email}`} className="block text-sm font-semibold text-ink hover:text-teal transition">
+                          {item.label}: {item.email}
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <FaMapMarkerAlt className="text-teal mt-1 shrink-0" />
+                  <div>
+                    <h3 className="gk-label mb-0.5!">Our Location</h3>
+                    <p className="text-[15px] text-ink">
+                      Uttarakhand, India <br />
+                      PAN India Travel Support
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <a href="https://wa.me/917830718687" target="_blank" rel="noopener noreferrer" className="gk-btn gk-btn-wa w-full mt-6">
+                Chat on WhatsApp
               </a>
-            ))}
+            </div>
           </div>
-          </div>
-        </div>
 
-        {/* Location */}
-        <div className="bg-slate-50 border border-slate-100 rounded-2xl p-6 shadow-sm flex items-start gap-4">
-          <div className="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center shrink-0">
-            <FaMapMarkerAlt className="text-blue-600 text-lg" />
-          </div>
-          <div>
-            <h3 className="font-bold text-slate-900 mb-1">Our Location</h3>
-            <p className="text-slate-600 text-sm">
-              Uttarakhand, India <br />
-              PAN India Travel Support
-            </p>
-          </div>
-        </div>
-
-      </div>
-    </div>
           {/* Right: Enquiry Form */}
-          <div>
-            <InquiryFormCard placeName="your trip" />
-          </div>
+          <InquiryFormCard placeName="your trip" />
+        </section>
 
-        </div>
-      </section>
-
-      {/* Map */}
-      <section className="py-24 bg-slate-50">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 mb-4">
-              Find Us on Map
-            </h2>
-            <p className="text-slate-600 text-lg">
-              Visit us or connect online — we’re always here to help.
-            </p>
+        {/* Map */}
+        <section className="bg-white">
+          <div className="gk-wrap gk-section">
+            <h2 className="gk-h2">Find Us on Map</h2>
+            <p className="gk-lead mt-2 mb-6">Visit us or connect online — we’re always here to help.</p>
+            <GoogleMap className="h-96 rounded-2xl overflow-hidden" />
           </div>
-
-          <div className="rounded-3xl overflow-hidden shadow-lg border border-slate-200">
-            <GoogleMap />
-          </div>
-        </div>
-      </section>
+        </section>
+      </main>
 
       <Footer />
     </>

@@ -597,7 +597,7 @@ export default function CharDhamOperatorsHaridwarPage() {
           </table>
         </div>
 
-        <p className="text-gray-500 text-sm mt-4">
+        <p className="text-gray-500 text-[15px] mt-4">
           * Distances and times are approximate and depend on trek pace, weather
           and road conditions. Confirm the latest route details with our team
           before booking.
@@ -720,7 +720,7 @@ export default function CharDhamOperatorsHaridwarPage() {
                   ))}
                 </div>
 
-                <p className="text-gray-500 text-sm mt-6">
+                <p className="text-gray-500 text-[15px] mt-6">
                   * This is a sample itinerary. Actual duration, halts and route order
                   can be customized — contact us to plan according to your dates and
                   group size.
@@ -995,7 +995,7 @@ export default function CharDhamOperatorsHaridwarPage() {
           {/* Author Details */}
           <div className="flex-1">
 
-            <p className="text-sm text-green-700 font-semibold uppercase tracking-wide mb-1">
+            <p className="text-[15px] text-green-700 font-semibold uppercase tracking-wide mb-1">
               Travel Information & Editorial Team
             </p>
 

@@ -1,4 +1,3 @@
-"use client";
 import Link from 'next/link';
 import Image from 'next/image';
 import Header from '@/components/Header';
@@ -6,13 +5,12 @@ import Footer from '@/components/Footer';
 import InquiryFormCard from '@/components/SimpleEnquiryForm';
 import { buildBreadcrumbList } from '@/lib/seoSchemas';
 import SmartSEO from '@/components/SmartSEO';
-import { useSearchParams, usePathname, useRouter } from 'next/navigation';
+import { StoryCard, postDate, postImage } from '@/components/TravelStories';
+import { Breadcrumbs } from '@/components/ui/kit';
+
+const pageHref = (n) => (n <= 1 ? '/blog' : `/blog?page=${n}`);
 
 export default function BlogListPage({ blogPosts, currentPage = 1, totalPages = 1 }) {
-  const searchParams = useSearchParams();
-  const pathname = usePathname();
-  const { push } = useRouter();
-
   const truncateHtmlToText = (html, maxLength = 150) => {
     if (!html) return '';
     const text = html.replace(/<[^>]+>/g, '');
@@ -24,131 +22,109 @@ export default function BlogListPage({ blogPosts, currentPage = 1, totalPages = 
     { name: "Blog", url: "/blog" },
   ]);
 
-  const handlePageChange = (newPage) => {
-    const params = new URLSearchParams(searchParams);
-    params.set('page', newPage);
-    push(`${pathname}?${params.toString()}`);
-  };
+  const posts = Array.isArray(blogPosts) ? blogPosts : [];
+  const [featured, ...rest] = posts;
 
   return (
     <>
       <Header />
       <SmartSEO schema={breadcrumbSchema} />
-      <main className="max-w-7xl mx-auto px-4 md:px-6 py-12">
-        {/* Hero Section */}
-        <div className="mb-12 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 text-green-700">Travel Blog</h1>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+      <main className="bg-mist">
+        <div className="gk-wrap pt-10 pb-16">
+          {/* Hero Section */}
+          <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "Blog" }]} />
+          <p className="gk-eyebrow mb-2">Travel stories and experiences</p>
+          <h1 className="gk-h1">Travel Blog</h1>
+          <p className="gk-lead mt-3 max-w-2xl">
             Discover inspiring travel stories, tips, and destinations from around the world.
           </p>
-        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="md:col-span-2 space-y-8">
-            {Array.isArray(blogPosts) && blogPosts.length > 0 ? (
-              blogPosts.map((post) => (
-                <article
-                  key={post.slug}
-                  className="group border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 bg-white overflow-hidden transform hover:-translate-y-1"
-                >
-                  <Link href={`/blog/${post.slug}`} className="block">
-                    {post.cover_image_url && (
-                      <div className="md:w-1/2 aspect-[3/2] float-left mr-6">
-                        <Image
-                          src={post.cover_image_url}
-                          alt={post.title}
-                          width={400}
-                          height={266}
-                          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                        />
-                      </div>
-                    )}
-                    <div className={`p-6 ${post.cover_image_url ? 'md:ml-1/2' : ''}`}>
-                      <div className="mb-2 flex items-center space-x-2">
-                        <div className="flex flex-wrap gap-2">
-                          {post.categories.map((cat, idx) => (
-                            <span
-                              key={idx}
-                              className="text-xs font-medium px-2 py-1 bg-green-100 text-green-800 rounded-full"
-                            >
-                              {cat.name}
-                            </span>
-                          ))}
-                        </div>
-                        <span className="text-xs text-gray-500">
-                          {new Date(post.published_date).toLocaleDateString('en-US', {
-                            year: 'numeric',
-                            month: 'long',
-                            day: 'numeric',
-                          })}
-                        </span>
-                      </div>
-                      <h2 className="text-2xl font-bold text-gray-800 mb-3 group-hover:text-green-700 transition-colors">
-                        {post.title}
-                      </h2>
-                      <p className="text-gray-600 mb-4 line-clamp-2">
-                        {truncateHtmlToText(post.content)}
-                      </p>
-                      <div className="flex items-center text-green-700 font-medium">
-                        Read More
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="h-5 w-5 ml-1 transition-transform group-hover:translate-x-1"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                      </div>
-                    </div>
-                    <div className="clear-both"></div>
-                  </Link>
-                </article>
-              ))
-            ) : (
-              <div className="text-center py-12">
-                <p className="mt-4 text-gray-600">No blog posts available yet. Check back soon!</p>
-              </div>
-            )}
+          {posts.length > 0 ? (
+            <>
+              {/* Featured (first) post */}
+              <Link href={`/blog/${featured.slug}`} className="gk-card gk-card-hover group grid md:grid-cols-2 mt-8">
+                <div className="gk-media h-60 md:h-full md:min-h-80">
+                  <Image
+                    src={postImage(featured)}
+                    alt={featured.title}
+                    fill
+                    priority
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                    className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                </div>
+                <div className="p-6 md:p-9 flex flex-col justify-center">
+                  <div className="flex flex-wrap items-center gap-2 mb-3">
+                    {featured.categories.map((cat, idx) => (
+                      <span key={idx} className="gk-chip">{cat.name}</span>
+                    ))}
+                    {currentPage === 1 && <span className="text-xs text-slate-ink">Featured</span>}
+                  </div>
+                  <h2 className="gk-h2">{featured.title}</h2>
+                  <p className="gk-lead mt-3 line-clamp-3">{truncateHtmlToText(featured.content, 200)}</p>
+                  {featured.published_date && (
+                    <p className="text-xs text-slate-ink mt-4">
+                      Gokeys team · {postDate(featured.published_date)}
+                      {featured.read_minutes ? ` · ${featured.read_minutes} min read` : ""}
+                    </p>
+                  )}
+                  <span className="mt-5 inline-flex items-center gap-1.5 text-sm font-bold text-ink">
+                    Read More <span aria-hidden="true" className="transition-transform group-hover:translate-x-1">→</span>
+                  </span>
+                </div>
+              </Link>
 
-            {/* Pagination Controls */}
-            {totalPages > 1 && (
-              <div className="flex justify-center mt-12">
-                <nav className="flex items-center gap-2">
-                  <button
-                    onClick={() => handlePageChange(currentPage - 1)}
-                    disabled={currentPage === 1}
-                    className="px-3 py-1 rounded border border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100"
-                  >
-                    Previous
-                  </button>
-                  
-                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
-                    <button
-                      key={pageNum}
-                      onClick={() => handlePageChange(pageNum)}
-                      className={`px-3 py-1 rounded border ${currentPage === pageNum ? 'bg-green-700 text-white border-green-700' : 'border-gray-300 hover:bg-gray-100'}`}
-                    >
-                      {pageNum}
-                    </button>
+              {rest.length > 0 && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mt-6">
+                  {rest.map((post) => (
+                    <StoryCard key={post.slug} post={{ ...post, content: truncateHtmlToText(post.content) }} />
                   ))}
-                  
-                  <button
-                    onClick={() => handlePageChange(currentPage + 1)}
-                    disabled={currentPage === totalPages}
-                    className="px-3 py-1 rounded border border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100"
-                  >
-                    Next
-                  </button>
-                </nav>
+                </div>
+              )}
+            </>
+          ) : (
+            <div className="text-center py-12">
+              <p className="mt-4 text-slate-ink">No blog posts available yet. Check back soon!</p>
+            </div>
+          )}
+
+          {/* Pagination: real links so every page can be crawled */}
+          {totalPages > 1 && (
+            <nav className="flex flex-wrap justify-center items-center gap-2 mt-10" aria-label="Pagination">
+              {currentPage > 1 && (
+                <Link href={pageHref(currentPage - 1)} className="gk-pill">Previous</Link>
+              )}
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
+                <Link
+                  key={pageNum}
+                  href={pageHref(pageNum)}
+                  aria-current={currentPage === pageNum ? 'page' : undefined}
+                  className={`h-9 min-w-9 px-3 inline-flex items-center justify-center rounded-full text-sm font-bold ${
+                    currentPage === pageNum ? 'bg-ink text-white' : 'bg-white border border-line text-ink'
+                  }`}
+                >
+                  {pageNum}
+                </Link>
+              ))}
+              {currentPage < totalPages && (
+                <Link href={pageHref(currentPage + 1)} className="gk-pill">Next</Link>
+              )}
+            </nav>
+          )}
+
+          <div className="mt-14 grid lg:grid-cols-[1fr_1.2fr] gap-8 items-start">
+            <div>
+              <h2 className="gk-h2">Plan the trip behind the story</h2>
+              <p className="gk-lead mt-3">
+                Read something you like? Send us a question and a planner replies with a plan and a price.
+              </p>
+              <div className="flex flex-wrap gap-2 mt-5">
+                <Link href="/tours" className="gk-pill">Tour packages</Link>
+                <Link href="/grouptour" className="gk-pill">Group tours</Link>
+                <Link href="/destinations" className="gk-pill">Destinations</Link>
+                <Link href="/cabs" className="gk-pill">Cabs</Link>
               </div>
-            )}
-          </div>
-          <div className="md:col-span-1">
+            </div>
             <InquiryFormCard placeName="Post Page" />
           </div>
         </div>

@@ -1,56 +1,21 @@
-"use client";
-
-import Image from "next/image";
-import Link from "next/link";
+import { TourCard } from "@/components/ui/kit";
 
 export default function SimilarTours({ tours }) {
   if (!tours || !tours.length) return null;
 
   return (
-    <section className="py-12 bg-gray-50">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 className="text-3xl font-bold mb-4 text-gray-800 text-center">
-          Similar Tour Packages
-        </h2>
-        <p className="text-gray-500 mb-8 text-center">
-          You might also like these group tours
-        </p>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    <section className="bg-white">
+      <div className="gk-wrap gk-section">
+        <h2 className="gk-h2">Similar Tour Packages</h2>
+        <p className="text-slate-ink mt-1 mb-6">You might also like these group tours</p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {tours.map((tour) => (
-            <div
+            <TourCard
               key={tour.id}
-              className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition flex flex-col"
-            >
-              <div className="relative h-48 w-full">
-                <Image
-                  src={tour.featured_image?.image || "/images/placeholder.jpg"}
-                  alt={tour.name}
-                  fill
-                  className="object-cover"
-                />
-              </div>
-
-              <div className="flex flex-col flex-1 p-4">
-                <h3 className="text-lg font-semibold text-gray-800">
-                  {tour.name}
-                </h3>
-                <p className="text-sm text-gray-600">
-                  {tour.duration} Days
-                </p>
-                <p className="mt-2 text-base font-bold text-indigo-600">
-                  ₹{parseFloat(tour.base_price || 0).toLocaleString()}
-                </p>
-
-                <div className="mt-auto">
-                  <Link href={`/grouptour/${tour.slug}`}>
-                    <button className="mt-4 w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 transition">
-                      View Tour
-                    </button>
-                  </Link>
-                </div>
-              </div>
-            </div>
+              tour={tour}
+              href={`/grouptour/${tour.slug}`}
+              chips={["Group departure", tour.duration && `${tour.duration} Days`]}
+            />
           ))}
         </div>
       </div>

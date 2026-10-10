@@ -3,56 +3,54 @@
 import { useState } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import Image from "next/image";
+import { MessageCircle } from "lucide-react";
+import { TourCard, Price, CtaBand, Breadcrumbs } from "@/components/ui/kit";
 import Link from "next/link";
 import { buildItemListSchema, buildBreadcrumbList } from "@/lib/seoSchemas";
 import SmartSEO from "@/components/SmartSEO";
 
+const PAGE_SIZE = 9;
+const pretty = (slug) => (slug || "").replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+const priceOf = (t) => {
+  const pkg = t.pricing?.find((p) => p.package_type === "standard");
+  return Number(pkg?.discount_price || pkg?.price || t.base_price) || 0;
+};
+
 export default function TourListPage({ tours, tripTypes }) {
-  const [selectedFilter, setSelectedFilter] = useState("");
-  const [minPrice, setMinPrice] = useState("");
-  const [maxPrice, setMaxPrice] = useState("");
+  const [selectedType, setSelectedType] = useState("");
   const [selectedDuration, setSelectedDuration] = useState("");
-  const [selectedTypes, setSelectedTypes] = useState([]);
+  const [sortBy, setSortBy] = useState("popular");
+  const [page, setPage] = useState(1);
 
-  const toggleType = (type) => {
-    setSelectedTypes((prev) =>
-      prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type]
-    );
+  const filteredTours = tours
+    .filter((tour) => {
+      const matchesDuration =
+        !selectedDuration ||
+        (selectedDuration === "1-3" && tour.duration_days <= 3) ||
+        (selectedDuration === "4-7" && tour.duration_days >= 4 && tour.duration_days <= 7) ||
+        (selectedDuration === "8+" && tour.duration_days >= 8);
+      const matchesType = !selectedType || tour.trip_types?.some((t) => t.name === selectedType);
+      return matchesDuration && matchesType;
+    })
+    .sort((a, b) => {
+      if (sortBy === "price-asc") return priceOf(a) - priceOf(b);
+      if (sortBy === "price-desc") return priceOf(b) - priceOf(a);
+      if (sortBy === "duration") return a.duration_days - b.duration_days;
+      return 0;
+    });
+
+  const pages = Math.max(1, Math.ceil(filteredTours.length / PAGE_SIZE));
+  const current = Math.min(page, pages);
+  const shownFrom = (current - 1) * PAGE_SIZE;
+  const shownCount = Math.max(0, Math.min(PAGE_SIZE, filteredTours.length - shownFrom));
+  const choose = (setter) => (value) => {
+    setter(value);
+    setPage(1);
   };
-
-   
-
-  const filteredTours = tours.filter((tour) => {
-    const matchesDestination =
-      !selectedFilter ||
-      tour.destinations?.some(
-        (dest) => dest.toLowerCase() === selectedFilter.toLowerCase()
-      );
-
-    const matchesPrice =
-      (!minPrice || parseFloat(tour.base_price) >= parseFloat(minPrice)) &&
-      (!maxPrice || parseFloat(tour.base_price) <= parseFloat(maxPrice));
-
-    const matchesDuration =
-      !selectedDuration ||
-      (selectedDuration === "1-3" && tour.duration_days <= 3) ||
-      (selectedDuration === "4-7" &&
-        tour.duration_days >= 4 &&
-        tour.duration_days <= 7) ||
-      (selectedDuration === "8+" && tour.duration_days >= 8);
-
-    const matchesType =
-      selectedTypes.length === 0 ||
-      (Array.isArray(tour.trip_types) &&
-        selectedTypes.every((type) =>
-          tour.trip_types.some((t) => t.name === type)
-        ));
-
-    return (
-      matchesDestination && matchesPrice && matchesDuration && matchesType
-    );
-  });
+  const goTo = (n) => {
+    setPage(n);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
 const isPriceOnRequest = (price) => {
   if (!price) return true;
@@ -91,139 +89,130 @@ const tourListSchema = buildItemListSchema({
     <>
       <Header />
       <SmartSEO schema={[tourListSchema, breadcrumbSchema]} />
-      <div className="min-h-screen bg-gray-50">
-        <div className="py-6 px-4 sm:px-8 lg:px-16 bg-white shadow">
-          <h1 className="text-3xl font-bold text-gray-800">Explore Tours</h1>
-          <p className="text-gray-500 mt-1">
-            Browse handpicked packages from trusted operators
-          </p>
-        </div>
+      <main className="min-h-screen bg-mist">
+        <section className="bg-ink">
+          <div className="gk-wrap py-12 md:py-14">
+            <Breadcrumbs light items={[{ label: "Home", href: "/" }, { label: "Tours" }]} />
+            <h1 className="gk-h1 text-white!">Explore Tours</h1>
+            <p className="mt-3 text-slate-300 max-w-xl">
+              Browse handpicked packages from trusted operators
+            </p>
+          </div>
+        </section>
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 p-4 sm:p-8">
+        <div className="gk-wrap py-8">
           {/* Filters */}
-          <aside className="bg-white p-4 rounded-xl shadow-md hidden lg:block">
-            <h2 className="text-xl font-semibold mb-4">Filters</h2>
-            {/* Destination Filter */}
-            <label className="block mb-4">
-              <span className="text-gray-700">Destination</span>
-              <select
-                value={selectedFilter}
-                onChange={(e) => setSelectedFilter(e.target.value)}
-                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
-              >
-                <option value="">All</option>
-                {[
-                  { value: "kedarnath", label: "Kedarnath" },
-                  { value: "badrinath", label: "Badrinath" },
-                  { value: "yamunotri", label: "Yamunotri" },
-                  { value: "gangotri", label: "Gangotri" },
-                ].map((dest) => (
-                  <option key={dest.value} value={dest.value}>
-                    {dest.label}
-                  </option>
-                ))}
-              </select>
-            </label>
-            {/* Price Range Filter */}
-            <div className="mb-4">
-              <span className="text-gray-700 block mb-1">Price Range (₹)</span>
-              <div className="flex space-x-2">
-                <input
-                  type="number"
-                  placeholder="Min"
-                  className="w-1/2 border border-gray-300 rounded-md p-1 focus:ring-brand-500 focus:border-brand-500"
-                  value={minPrice}
-                  onChange={(e) => setMinPrice(e.target.value)}
-                />
-                <input
-                  type="number"
-                  placeholder="Max"
-                  className="w-1/2 border border-gray-300 rounded-md p-1 focus:ring-brand-500 focus:border-brand-500"
-                  value={maxPrice}
-                  onChange={(e) => setMaxPrice(e.target.value)}
-                />
-              </div>
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div className="flex flex-wrap gap-2">
+              <button onClick={() => choose(setSelectedType)("")} className={`gk-pill ${!selectedType ? "gk-pill-on" : ""}`}>
+                All tours
+              </button>
+              {tripTypes.map((type) => (
+                <button
+                  key={type.name}
+                  onClick={() => choose(setSelectedType)(type.name)}
+                  className={`gk-pill ${selectedType === type.name ? "gk-pill-on" : ""}`}
+                >
+                  {type.name}
+                </button>
+              ))}
             </div>
-
-            {/* Duration Filter */}
-            <label className="block mb-4">
-              <span className="text-gray-700">Duration</span>
-              <select
-                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-brand-500 focus:border-brand-500"
-                value={selectedDuration}
-                onChange={(e) => setSelectedDuration(e.target.value)}
-              >
-                <option value="">Any</option>
-                <option value="1-3">1–3 Days</option>
-                <option value="4-7">4–7 Days</option>
-                <option value="8+">8+ Days</option>
-              </select>
-            </label>
-
-            {/* Trip Type Filter */}
-            <div className="mb-4">
-              <span className="text-gray-700 block mb-1">Tour Type</span>
-              <div className="space-y-1">
-                {tripTypes.map((type) => (
-                  <label key={type.name} className="flex items-center">
-                    <input
-                      type="checkbox"
-                      checked={selectedTypes.includes(type.name)}
-                      onChange={() => toggleType(type.name)}
-                      className="mr-2"
-                    />
-                    {type.name}
-                  </label>
-                ))}
-              </div>
+            <div className="flex flex-wrap items-center gap-3 text-xs text-slate-ink">
+              <label className="flex items-center gap-2">
+                Duration
+                <select className="gk-field w-auto! py-2!" value={selectedDuration} onChange={(e) => choose(setSelectedDuration)(e.target.value)}>
+                  <option value="">Any</option>
+                  <option value="1-3">1–3 Days</option>
+                  <option value="4-7">4–7 Days</option>
+                  <option value="8+">8+ Days</option>
+                </select>
+              </label>
+              <label className="flex items-center gap-2">
+                Sort by
+                <select className="gk-field w-auto! py-2!" value={sortBy} onChange={(e) => choose(setSortBy)(e.target.value)}>
+                  <option value="popular">Most popular</option>
+                  <option value="price-asc">Price: low to high</option>
+                  <option value="price-desc">Price: high to low</option>
+                  <option value="duration">Duration</option>
+                </select>
+              </label>
             </div>
-          </aside>
+          </div>
 
-           {/* Tour Listings */}
-          <section className="lg:col-span-3 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
-            {filteredTours.map((tour) => (
-              <div
-                key={tour.id}
-                className="bg-white rounded-xl p-4 shadow flex flex-col"
-              >
-                <div className="relative h-48 w-full rounded-xl overflow-hidden">
-                  <Image
-                    src={tour.featured_image?.image || "https://via.placeholder.com/300x200"}
-                    alt={tour.name}
-                    fill
-                    className="object-cover rounded-xl"
-                  />
-                </div>
+          <p className="text-xs text-slate-ink mt-5 mb-4">
+            Showing {shownCount} of {filteredTours.length} tours
+          </p>
 
-                <h3 className="mt-4 text-lg font-semibold line-clamp-2">
-                  {tour.name}
-                </h3>
-                <p className="text-sm text-gray-500">
-                  {tour.duration_days} Days / {tour.duration_nights} Nights
-                </p>
-                <p className="mt-2 font-bold text-brand-600 mb-4">
-                  ₹{parseFloat(tour.base_price).toLocaleString()}
-                </p>
-
-                {/* Button stays at bottom */}
-                <div className="mt-auto">
-                  <Link href={`/tours/${tour.slug}`}>
-                    <button className="w-full bg-brand-600 text-white py-2 rounded-lg hover:bg-brand-700 transition">
-                      View Tour
-                    </button>
-                  </Link>
-                </div>
+          {/* Tour Listings: every tour stays in the HTML; other pages are only hidden */}
+          <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {filteredTours.map((tour, i) => (
+              <div key={tour.id} className={i < shownFrom || i >= shownFrom + PAGE_SIZE ? "hidden" : ""}>
+                <TourCard
+                  tour={tour}
+                  href={`/tours/${tour.slug}`}
+                  imgHeight="h-48"
+                  badge={tour.trip_types?.[0]?.name}
+                  chips={[
+                    `${tour.duration_days} Days / ${tour.duration_nights} Nights`,
+                    pretty(tour.destinations?.[0]),
+                  ]}
+                  footer={
+                    <>
+                      <a href={`/tours/${tour.slug}`} className="gk-btn gk-btn-ink flex-1">View Tour</a>
+                      <a
+                        href={`https://wa.me/917830718687?text=${encodeURIComponent(`Hello Gokeys India, I want to enquire about ${tour.name}.`)}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={`WhatsApp about ${tour.name}`}
+                        className="gk-btn gk-btn-wa px-3.5!"
+                      >
+                        <MessageCircle size={18} />
+                        <span className="sm:hidden lg:inline">WhatsApp</span>
+                      </a>
+                    </>
+                  }
+                >
+                  {tour.meta_description && (
+                    <p className="text-[15px] text-slate-ink line-clamp-2 -mt-1 mb-3">{tour.meta_description}</p>
+                  )}
+                  <Price tour={tour} />
+                </TourCard>
               </div>
             ))}
 
             {filteredTours.length === 0 && (
-              <div className="col-span-full text-center text-gray-500">
+              <div className="col-span-full text-center text-slate-ink py-10">
                 No tours match the selected filters.
               </div>
             )}
           </section>
+
+          {pages > 1 && (
+            <nav className="flex justify-center gap-2 mt-8" aria-label="Pagination">
+              {Array.from({ length: pages }, (_, i) => i + 1).map((n) => (
+                <button
+                  key={n}
+                  onClick={() => goTo(n)}
+                  aria-current={n === current ? "page" : undefined}
+                  className={`h-9 min-w-9 px-3 rounded-full text-sm font-bold ${n === current ? "bg-ink text-white" : "bg-white border border-line text-ink"}`}
+                >
+                  {n}
+                </button>
+              ))}
+              {current < pages && (
+                <button onClick={() => goTo(current + 1)} className="gk-pill">Next</button>
+              )}
+            </nav>
+          )}
+
+          <div className="mt-12">
+            <CtaBand tone="ink" title="Cannot see the trip you want?" text="We build custom itineraries for families, groups and solo travellers. Share your dates and a planner replies with a plan.">
+              <a href="/contact" className="gk-btn gk-btn-sun">Request a custom plan</a>
+              <a href="https://wa.me/917830718687" target="_blank" rel="noopener noreferrer" className="gk-btn gk-btn-wa">WhatsApp us</a>
+            </CtaBand>
+          </div>
         </div>
-      </div>
+      </main>
       <Footer />
     </>
   );

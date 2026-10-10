@@ -1,6 +1,4 @@
-"use client";
-import { useState } from "react";
-import { ChevronDown } from "lucide-react";
+import { FaqList } from "@/components/ui/kit";
 
 const faqs = [
   {
@@ -36,45 +34,17 @@ const faqs = [
 ];
 
 export default function HomeFAQ() {
-  const [openIndex, setOpenIndex] = useState(null);
-
   return (
-    <section className="py-20 px-6 bg-white">
-      <div className="max-w-4xl mx-auto">
-        <div className="text-center mb-12">
-          <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight text-gray-900">
-            Frequently Asked <span className="text-brand-600">Questions</span>
-          </h2>
-          <p className="mt-4 text-gray-500 max-w-2xl mx-auto">
+    <section className="gk-section pt-0!">
+      <div className="gk-wrap grid lg:grid-cols-[1fr_1.5fr] gap-8 lg:gap-12">
+        <div>
+          <p className="gk-eyebrow mb-2">FAQ</p>
+          <h2 className="gk-h2">Frequently Asked Questions</h2>
+          <p className="mt-3 gk-lead">
             Common questions about Char Dham Yatra, taxi services, and tour packages in Haridwar.
           </p>
         </div>
-
-        <div className="space-y-4">
-          {faqs.map((faq, i) => (
-            <div
-              key={i}
-              className="border border-gray-200 rounded-xl overflow-hidden"
-            >
-              <button
-                onClick={() => setOpenIndex(openIndex === i ? null : i)}
-                className="w-full flex items-center justify-between px-6 py-4 text-left font-semibold text-gray-900 hover:bg-gray-50"
-              >
-                {faq.question}
-                <ChevronDown
-                  className={`h-5 w-5 shrink-0 transition-transform ${
-                    openIndex === i ? "rotate-180" : ""
-                  }`}
-                />
-              </button>
-              {openIndex === i && (
-                <div className="px-6 pb-4 text-gray-600 leading-relaxed">
-                  {faq.answer}
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
+        <FaqList items={faqs} />
       </div>
     </section>
   );

@@ -190,10 +190,10 @@ const handleSubmit = async (e) => {
   };
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-10 bg-blue-50 min-h-screen rounded-2xl ">
+    <div className="max-w-6xl mx-auto px-4 py-10 bg-brand-50 min-h-screen rounded-2xl ">
       {/* Top Heading */}
       <div className="mb-8 text-center">
-        <h2 className="text-3xl font-bold text-brand-800">Traveler Reviews</h2>
+        <h2 className="gk-h2">Traveler Reviews</h2>
         <p className="text-lg text-gray-600 mt-2">
           Share your amazing travel experiences with our community
         </p>
@@ -204,7 +204,7 @@ const handleSubmit = async (e) => {
         onSubmit={handleSubmit}
         className="bg-white rounded-xl shadow-lg p-6 mb-10 space-y-5 border border-gray-100"
       >
-        <h2 className="text-2xl font-bold text-brand-700">Write a Review</h2>
+        <h2 className="gk-h3 text-2xl">Write a Review</h2>
         <div className="grid md:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Trip Name</label>
@@ -213,7 +213,7 @@ const handleSubmit = async (e) => {
               name="title"
               value={form.title}
               onChange={handleInput}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
+              className="gk-field"
               placeholder="Destination or Trip Name"
               required
             />
@@ -225,7 +225,7 @@ const handleSubmit = async (e) => {
               name="name"
               value={form.name}
               onChange={handleInput}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
+              className="gk-field"
               placeholder="Enter your name"
             />
           </div>
@@ -236,7 +236,7 @@ const handleSubmit = async (e) => {
               name="email"
               value={form.email}
               onChange={handleInput}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
+              className="gk-field"
               placeholder="Enter your email (optional)"
             />
           </div>
@@ -247,7 +247,7 @@ const handleSubmit = async (e) => {
               name="travel_month"
               value={form.travel_month}
               onChange={handleInput}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
+              className="gk-field"
             />
           </div>
         </div>
@@ -277,7 +277,7 @@ const handleSubmit = async (e) => {
             value={form.comment}
             onChange={handleInput}
             rows="4"
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
+            className="gk-field"
             placeholder="Share your experience..."
             required
           ></textarea>
@@ -333,7 +333,7 @@ const handleSubmit = async (e) => {
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-brand-600 hover:bg-brand-700 text-white font-medium py-3 px-4 rounded-lg transition duration-200"
+          className="gk-btn gk-btn-sun w-full py-3!"
         >
           {loading ? 'Submitting...' : 'Submit Review'}
         </button>
@@ -430,7 +430,7 @@ const handleSubmit = async (e) => {
         <div className="text-center mt-6">
           <button
             onClick={() => fetchReviews(nextPage)}
-            className="bg-brand-600 text-white px-4 py-2 rounded-lg hover:bg-brand-700 transition"
+            className="gk-btn gk-btn-ink"
           >
             Load More Reviews
           </button>
@@ -477,7 +477,7 @@ const handleSubmit = async (e) => {
 
       {/* Submission Confirmation Modal */}
       {submitted && (
-        <div className="fixed inset-0 bg-blue-900 bg-opacity-75 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-brand-900 bg-opacity-75 flex items-center justify-center z-50">
           <div className="bg-white rounded-xl p-8 max-w-md w-full mx-4 text-center">
             <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <svg
@@ -502,7 +502,7 @@ const handleSubmit = async (e) => {
             <button
               type="button"
               onClick={() => setSubmitted(false)}
-              className="bg-brand-600 hover:bg-brand-700 text-white font-medium py-2 px-6 rounded-lg transition duration-200"
+              className="gk-btn gk-btn-ink"
             >
               Close
             </button>

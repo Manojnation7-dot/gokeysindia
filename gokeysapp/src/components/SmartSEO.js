@@ -22,7 +22,7 @@ export default function SmartSEO({ schema }) {
     <script
       id="schema-graph"
       type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(consolidatedSchema) }}
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(consolidatedSchema).replace(/</g, "\\u003c") }}
     />
   );
 }

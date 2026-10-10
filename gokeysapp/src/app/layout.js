@@ -1,4 +1,4 @@
-import { Plus_Jakarta_Sans, Playfair_Display } from "next/font/google";
+import { Figtree, Bricolage_Grotesque } from "next/font/google";
 import "./globals.css";
 import Tracker from "@/components/Tracker";
 import SmartSEO from "@/components/SmartSEO";
@@ -7,18 +7,18 @@ import Script from "next/script";
 import WhatsAppFloat from "@/components/WhatsAppFloat";
 
 
-// Fonts
-const plusJakarta = Plus_Jakarta_Sans({
+// Fonts (new UI): Figtree for text, Bricolage Grotesque for headings
+const figtree = Figtree({
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700", "800"],
+  weight: ["400", "500", "600", "700"],
   variable: "--font-sans",
   display: "swap",
 });
 
-const playfair = Playfair_Display({
+const bricolage = Bricolage_Grotesque({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
-  variable: "--font-serif",
+  weight: ["600", "700", "800"],
+  variable: "--font-display",
   display: "swap",
 });
 
@@ -100,7 +100,7 @@ const siteSchemas = [
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={`${plusJakarta.variable} ${playfair.variable}`}>
+    <html lang="en" className={`${figtree.variable} ${bricolage.variable}`}>
       <head>
         
    

@@ -7,7 +7,7 @@
           <h1 className="text-3xl font-bold text-gray-800 uppercase">
             {tourData.name} {tourData.starting_from}
           </h1>
-          <p className="text-sm text-gray-600 mt-1">
+          <p className="text-[15px] text-gray-600 mt-1">
            
             
           </p>
@@ -51,16 +51,16 @@
           {/* Booking Card */}
           <div className="lg:w-80 bg-white shadow-lg rounded-lg p-4">
             <h3 className="text-lg font-semibold">Deluxe room</h3>
-            <p className="text-sm text-gray-600">Fits 2 Adults</p>
-            <p className="text-sm text-gray-600">• No meals included</p>
-            <p className="text-sm text-green-600">
+            <p className="text-[15px] text-gray-600">Fits 2 Adults</p>
+            <p className="text-[15px] text-gray-600">• No meals included</p>
+            <p className="text-[15px] text-green-600">
               • Free Cancellation till 24 hrs before check in
             </p>
             <div className="mt-4">
               <p className="text-2xl font-bold text-gray-800">
                 ₹{parseFloat(tourData.base_price).toLocaleString() || "N/A"}
               </p>
-              <p className="text-sm text-gray-600">Total Price</p>
+              <p className="text-[15px] text-gray-600">Total Price</p>
             </div>
             <button className="mt-4 w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700">
               BOOK THIS NOW

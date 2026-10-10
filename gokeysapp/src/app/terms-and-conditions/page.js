@@ -38,8 +38,8 @@ export default function TermsAndConditions() {
     <>
       <SmartSEO schema={schema} />
       <Header/>
-      <main className="max-w-4xl mx-auto px-4 py-10">
-        <h1 className="text-3xl font-bold mb-6">Terms & Conditions</h1>
+      <main className="max-w-4xl mx-auto px-4 py-12 text-slate-ink">
+        <h1 className="gk-h1 text-4xl! mb-6">Terms & Conditions</h1>
 
          <section className="space-y-6 text-gray-700">
           <h2 className="text-xl font-semibold">1. Booking Terms</h2>
@@ -70,9 +70,9 @@ export default function TermsAndConditions() {
           <p>All disputes are subject to the jurisdiction of competent courts in India, preferably in the state of Uttarakhand where the operator is registered.</p>
 
           <p className="pt-4">
-            Please also review our <a href="/cancellation-policy" className="text-blue-600 underline">Cancellation & Refund Policy</a>.
+            Please also review our <a href="/cancellation-policy" className="text-brand-600 underline">Cancellation & Refund Policy</a>.
           </p>
-            <p className="text-sm text-gray-400 mt-4">Last updated: July 31, 2025</p>
+            <p className="text-[15px] text-gray-400 mt-4">Last updated: July 31, 2025</p>
         </section>
       </main>
       <Footer />

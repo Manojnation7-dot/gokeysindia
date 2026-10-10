@@ -1,20 +1,21 @@
-"use client";
-
-import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
 import Image from "next/image";
-import { motion } from "framer-motion";
-import Header from "@/components/Header";   
-import Footer from "@/components/Footer";   
-import Head from "next/head";
-import { FaMapMarkerAlt, FaClock, FaTicketAlt, FaStar, FaQuestionCircle, FaPhone, FaEnvelope } from "react-icons/fa";
+import Link from "next/link";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 import SimilarPlaces from "@/components/SimilarPlaces";
 import SmartSEO from "@/components/SmartSEO";
 import { buildSightseeingPlaceSchema, buildBreadcrumbList, hasValidReviewRating, hasValidSightseeingSlug } from "@/lib/seoSchemas";
 import InquiryFormCard from "@/components/SimpleEnquiryForm";
+import { Breadcrumbs, PLACEHOLDER } from "@/components/ui/kit";
+
+const TIPS = [
+  "Best time to visit: Early morning to avoid crowds",
+  "Photography allowed in most areas",
+  "Wear comfortable shoes for walking",
+];
 
 export default function SightseeingDetailPage({place,similarPlaces }) {
-  
+
 if (!place) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -39,216 +40,146 @@ const breadcrumbSchema = buildBreadcrumbList([
   { name: "Sightseeing", url: "/sightseeing" },
   ...(hasValidSightseeingSlug(place.slug) ? [{ name: place.name, url: `/sightseeing/${place.slug}` }] : [])
 ]);
+
+  const areaName = place.destination?.name || place.destination_name || "";
+  const facts = [
+    areaName && ["Location", areaName],
+    place.distance_from_center && ["Distance", `${Math.round(place.distance_from_center)} km from City Center`],
+    // The API sends "00:00:00" / "0.00" when a value was never filled in
+    place.opening_time && !/^0?0:00(:00)?$/.test(place.opening_time) && ["Opening Hours", `${place.opening_time} - ${place.closing_time}`],
+    Number(place.entry_fee) > 0 && ["Entry Fee", `₹${place.entry_fee}`],
+    hasValidReviewRating(place.rating, place.review_count) && ["Visitor Rating", `${place.rating} (${place.review_count} reviews)`],
+  ].filter(Boolean);
+  const whatsappUrl = `https://wa.me/917830718687?text=${encodeURIComponent(`Hello Gokeys India, I want a cab to visit ${place.name}.`)}`;
+
   return (
     <>
       <Header/>
         <SmartSEO schema={[sightseeingSchema, breadcrumbSchema]} />
-      <div className="bg-gray-50 min-h-screen">
-        {/* Hero Section with Parallax Effect */}
-        <div className="relative w-full h-[400px] md:h-[550px] overflow-hidden">
-          <motion.div 
-            initial={{ scale: 1.1 }}
-            animate={{ scale: 1 }}
-            transition={{ duration: 0.8 }}
-            className="absolute inset-0"
-          >
+      <main className="bg-mist min-h-screen">
+        <div className="gk-wrap pt-8">
+          <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "Sightseeing", href: "/sightseeing" }, { label: place.name }]} />
+          <div className="flex flex-wrap gap-1.5 mb-3">
+            {place.category?.name && <span className="gk-chip gk-chip-sun">{place.category.name}</span>}
+            {areaName && <span className="gk-chip">{areaName}</span>}
+          </div>
+          <h1 className="gk-h1">{place.name}</h1>
+
+          <div className="gk-media relative h-64 sm:h-80 md:h-105 rounded-2xl mt-6">
             <Image
-              src={place.featured_image?.optimized_banner || "/images/placeholder.jpg"}
-              alt={place.name}
+              src={place.featured_image?.optimized_banner || PLACEHOLDER}
+              alt={place.featured_image?.alt_text || place.name}
               fill
+              sizes="(max-width: 1216px) 100vw, 1216px"
               className="object-cover"
               priority
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-black/30 flex items-end pb-16 justify-center">
-              <motion.div 
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
-                className="text-center px-4"
-              >
-                <h1 className="text-4xl md:text-5xl lg:text-6xl text-white font-bold mb-4">{place.name}</h1>
-                <div className="flex items-center justify-center space-x-4 text-white">
-                  {place.category?.name && (
-                    <span className="bg-green-600 bg-opacity-80 px-3 py-1 rounded-full text-sm">
-                      {place.category.name}
-                    </span>
-                  )}
-                  {place.distance_from_center && (
-                    <span className="flex items-center">
-                      <FaMapMarkerAlt className="mr-1" /> {Math.round(place.distance_from_center)} km from City Center
-                    </span>
-                  )}
-                </div>
-              </motion.div>
-            </div>
-          </motion.div>
+          </div>
         </div>
 
         {/* Main Content */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="flex flex-col lg:flex-row gap-8">
-            {/* Left Column (2/3 width) */}
-            <div className="lg:w-2/3">
-              {/* Key Information Cards */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-                {place.entry_fee && (
-                  <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex items-center">
-                    <div className="bg-green-100 p-3 rounded-lg mr-4">
-                      <FaTicketAlt className="text-green-600 text-xl" />
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-500">Entry Fee</p>
-                      <p className="font-semibold">₹{place.entry_fee}</p>
-                    </div>
+        <div className="gk-wrap py-10 grid lg:grid-cols-[1fr_340px] gap-8 items-start">
+          <div className="min-w-0 space-y-10">
+            {/* Key Information */}
+            {facts.length > 0 && (
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                {facts.map(([label, value]) => (
+                  <div key={label} className="gk-panel px-4 py-3">
+                    <p className="gk-label mb-0.5!">{label}</p>
+                    <p className="text-[15px] font-bold text-ink">{value}</p>
                   </div>
-                )}
-                
-                {place.opening_time && (
-                  <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex items-center">
-                    <div className="bg-blue-100 p-3 rounded-lg mr-4">
-                      <FaClock className="text-blue-600 text-xl" />
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-500">Opening Hours</p>
-                      <p className="font-semibold">{place.opening_time} - {place.closing_time}</p>
-                    </div>
-                  </div>
-                )}
-                
-                {hasValidReviewRating(place.rating, place.review_count) && <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex items-center">
-                  <div className="bg-amber-100 p-3 rounded-lg mr-4">
-                    <FaStar className="text-amber-500 text-xl" />
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500">Visitor Rating</p>
-                    <div className="flex items-center">
-                      <span className="font-semibold mr-2">{place.rating}</span>
-                      <span>({place.review_count} reviews)</span>
-                    </div>
-                  </div>
-                </div>}
+                ))}
               </div>
+            )}
 
-              {/* Description Section */}
-              <motion.div 
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.5 }}
-                className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 mb-8"
-              >
-                <h2 className="text-2xl font-bold text-gray-800 mb-4">About {place.name}</h2>
-                <div 
-                  className="prose max-w-none text-gray-700"
-                  dangerouslySetInnerHTML={{ __html: place.description }}
-                />
-              </motion.div>
+            {/* Description Section */}
+            <section>
+              <h2 className="gk-h2 mb-4">About {place.name}</h2>
+              <div
+                className="prose max-w-none text-slate-ink"
+                dangerouslySetInnerHTML={{ __html: place.description }}
+              />
+            </section>
 
-              {/* Gallery Section */}
-              {place.gallery_images?.length > 0 && (
-                <motion.div 
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.6 }}
-                  className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 mb-8"
-                >
-                  <h2 className="text-2xl font-bold text-gray-800 mb-6">Gallery</h2>
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                    {place.gallery_images.map((img, i) => (
-                      <motion.div 
-                        key={i} 
-                        whileHover={{ scale: 1.03 }}
-                        className="relative h-48 rounded-lg overflow-hidden"
-                      >
-                        <Image
-                          src={img.optimized_card || img.image}
-                          alt={`Gallery ${i}`}
-                          fill
-                          className="object-cover transition-transform duration-300 hover:scale-105"
-                        />
-                      </motion.div>
-                    ))}
-                  </div>
-                </motion.div>
-              )}
-
-              {/* Map Section - You can integrate actual map if coordinates are available */}
-            <motion.div 
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.7 }}
-                className="bg-white p-6 rounded-xl shadow-sm border border-gray-100"
-                >
-                <h2 className="text-2xl font-bold text-gray-800 mb-4">Location</h2>
-                <div className="w-full h-[400px] rounded-lg overflow-hidden">
-                    <iframe
-                    title={`Map of ${place.name}`}
-                    className="w-full h-full border-0"
-                    loading="lazy"
-                    allowFullScreen
-                    referrerPolicy="no-referrer-when-downgrade"
-                    // 🧭 Zoom level 15 gives a city/street-level view, you can adjust this
-                    src={`https://www.google.com/maps?q=${encodeURIComponent(`${place.name}, ${place.destination.name}`)}&output=embed&z=15`}
-                    />
+            {/* Gallery Section */}
+            {place.gallery_images?.length > 0 && (
+              <section>
+                <h2 className="gk-h2 mb-4">Gallery</h2>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                  {place.gallery_images.map((img, i) => (
+                    <div key={i} className="gk-media h-44 rounded-xl">
+                      <Image
+                        src={img.optimized_card || img.image}
+                        alt={img.alt_text || `${place.name} ${i + 1}`}
+                        fill
+                        sizes="(max-width: 768px) 50vw, 25vw"
+                        className="object-cover transition-transform duration-300 hover:scale-105"
+                      />
+                    </div>
+                  ))}
                 </div>
-                </motion.div>
-                    <p className="text-sm mt-2 text-blue-600">
-                        <a
-                            href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${place.name}, ${place.destination_name}`)}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="hover:underline"
-                        >
-                            Open in Google Maps →
-                        </a>
-                        </p>
-            </div>
+              </section>
+            )}
 
-            {/* Right Column (1/3 width) */}
-            <div className="lg:w-1/3">
-              {/* Inquiry Form Card */}
-                 <InquiryFormCard placeName={place.name} />
-              {/* Travel Tips Card */}
-              <motion.div 
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5 }}
-                className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 mt-6"
-              >
-                <h3 className="text-xl font-bold text-gray-800 mb-4">Travel Tips</h3>
-                <ul className="space-y-3">
-                  <li className="flex items-start">
-                    <span className="bg-green-100 text-green-800 p-1 rounded-full mr-3 mt-1">
-                      <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                      </svg>
-                    </span>
-                    <span className="text-gray-700">Best time to visit: Early morning to avoid crowds</span>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="bg-green-100 text-green-800 p-1 rounded-full mr-3 mt-1">
-                      <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                      </svg>
-                    </span>
-                    <span className="text-gray-700">Photography allowed in most areas</span>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="bg-green-100 text-green-800 p-1 rounded-full mr-3 mt-1">
-                      <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                      </svg>
-                    </span>
-                    <span className="text-gray-700">Wear comfortable shoes for walking</span>
-                  </li>
-                </ul>
-              </motion.div>
-            </div>
+            {/* Map Section */}
+            <section>
+              <h2 className="gk-h2 mb-4">Location</h2>
+              <div className="w-full h-80 md:h-100 rounded-2xl overflow-hidden bg-chip">
+                <iframe
+                  title={`Map of ${place.name}`}
+                  className="w-full h-full border-0"
+                  loading="lazy"
+                  allowFullScreen
+                  referrerPolicy="no-referrer-when-downgrade"
+                  src={`https://www.google.com/maps?q=${encodeURIComponent(`${place.name}, ${areaName}`)}&output=embed&z=15`}
+                />
+              </div>
+              <p className="text-[15px] mt-2">
+                <a
+                  href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${place.name}, ${place.destination_name || areaName}`)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-teal font-semibold hover:underline"
+                >
+                  Open in Google Maps →
+                </a>
+              </p>
+            </section>
           </div>
 
-          {/* Similar Places */}
-          <SimilarPlaces places={similarPlaces} />
+          {/* Right Column */}
+          <aside className="space-y-5 lg:sticky lg:top-20">
+            <div className="gk-card p-5">
+              <h3 className="gk-h3">Visit with a cab and driver</h3>
+              <p className="text-[15px] text-slate-ink mt-1.5">
+                Add {place.name} to a sightseeing day. Pickup from your hotel.
+              </p>
+              <Link href="/cabs" className="gk-btn gk-btn-sun w-full mt-4">Book a cab</Link>
+              <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="gk-btn gk-btn-wa w-full mt-2.5">
+                Chat on WhatsApp
+              </a>
+            </div>
+
+            <InquiryFormCard placeName={place.name} />
+
+            {/* Travel Tips Card */}
+            <div className="gk-card p-5">
+              <h3 className="gk-h3 mb-3">Travel Tips</h3>
+              <ul className="space-y-2.5">
+                {TIPS.map((tip) => (
+                  <li key={tip} className="flex items-start gap-2.5 text-sm text-slate-ink">
+                    <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-sun shrink-0" />
+                    {tip}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </aside>
         </div>
-      </div>
+
+        {/* Similar Places */}
+        <SimilarPlaces places={similarPlaces} />
+      </main>
       <Footer/>
     </>
   );

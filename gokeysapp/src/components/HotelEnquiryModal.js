@@ -21,20 +21,27 @@ export default function HotelEnquiryModal({ isOpen, onClose, hotel }) {
 
     const adminPhone = "919045916770"; // Your number
     
-    // Construct the message with line breaks (%0A) and bold text (*)
-    const message = 
-      `*New Booking Enquiry*%0A%0A` +
-      `*Hotel:* ${hotel.name}%0A` +
-      `*Name:* ${formData.name}%0A` +
-      `*Phone:* ${formData.phone}%0A` +
-      `*Check-In:* ${formData.checkIn}%0A` +
-      `*Check-Out:* ${formData.checkOut}%0A` +
+    // Plain-text message; encodeURIComponent keeps "&", "#" etc. in names from breaking the link
+    const message =
+      `*New Booking Enquiry*
+
+` +
+      `*Hotel:* ${hotel.name}
+` +
+      `*Name:* ${formData.name}
+` +
+      `*Phone:* ${formData.phone}
+` +
+      `*Check-In:* ${formData.checkIn}
+` +
+      `*Check-Out:* ${formData.checkOut}
+` +
       `*Special Requirements:* ${formData.requirements || "None"}`;
 
-    const whatsappUrl = `https://wa.me/${adminPhone}?text=${message}`;
-    
+    const whatsappUrl = `https://wa.me/${adminPhone}?text=${encodeURIComponent(message)}`;
+
     // Opens WhatsApp in a new tab
-    window.open(whatsappUrl, "_blank");
+    window.open(whatsappUrl, "_blank", "noopener,noreferrer");
   };
 
   // Helper to update state
@@ -43,15 +50,15 @@ export default function HotelEnquiryModal({ isOpen, onClose, hotel }) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center px-4">
+    <div className="fixed inset-0 z-60 bg-black/60 flex items-center justify-center px-4" role="dialog" aria-modal="true">
       <div className="bg-white w-full max-w-md rounded-2xl shadow-xl relative">
-        <button onClick={onClose} className="absolute top-4 right-4 text-gray-500 hover:text-black">
+        <button onClick={onClose} aria-label="Close" className="absolute top-4 right-4 text-slate-ink hover:text-ink">
           <X />
         </button>
 
-        <div className="p-6 border-b">
-          <h3 className="text-xl font-bold text-gray-900">{hotel.name}</h3>
-          <p className="text-sm text-gray-500">
+        <div className="p-6 border-b border-line">
+          <h3 className="gk-h3 pr-8">{hotel.name}</h3>
+          <p className="text-[15px] text-gray-500">
             {hotel.destination} • Starting from ₹{Number(hotel.tariff_starting_from).toLocaleString()}
           </p>
         </div>
@@ -62,7 +69,7 @@ export default function HotelEnquiryModal({ isOpen, onClose, hotel }) {
             type="text"
             name="name" // Added name attribute
             placeholder="Full Name"
-            className="w-full border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
+            className="gk-field py-3!"
             required
             onChange={handleChange}
           />
@@ -71,7 +78,7 @@ export default function HotelEnquiryModal({ isOpen, onClose, hotel }) {
             type="tel"
             name="phone"
             placeholder="Mobile Number"
-            className="w-full border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
+            className="gk-field py-3!"
             required
             onChange={handleChange}
           />
@@ -82,7 +89,7 @@ export default function HotelEnquiryModal({ isOpen, onClose, hotel }) {
               <input
                 type="date"
                 name="checkIn"
-                className="w-full border rounded-xl pl-10 pr-3 py-3 text-sm"
+                className="gk-field py-3! pl-10!"
                 required
                 onChange={handleChange}
               />
@@ -93,7 +100,7 @@ export default function HotelEnquiryModal({ isOpen, onClose, hotel }) {
               <input
                 type="date"
                 name="checkOut"
-                className="w-full border rounded-xl pl-10 pr-3 py-3 text-sm"
+                className="gk-field py-3! pl-10!"
                 required
                 onChange={handleChange}
               />
@@ -104,13 +111,13 @@ export default function HotelEnquiryModal({ isOpen, onClose, hotel }) {
             rows="3"
             name="requirements"
             placeholder="Any special requirement?"
-            className="w-full border rounded-xl px-4 py-3 text-sm"
+            className="gk-field py-3!"
             onChange={handleChange}
           />
 
           <button
             type="submit"
-            className="w-full bg-green-600 text-white py-3 rounded-xl font-semibold hover:bg-green-700 transition flex items-center justify-center gap-2"
+            className="gk-btn gk-btn-wa w-full py-3!"
           >
             <Phone className="w-4 h-4" />
             Send Details to WhatsApp

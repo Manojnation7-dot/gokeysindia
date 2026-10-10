@@ -530,7 +530,7 @@ export default function DelhiToHaridwarCabPage() {
 
             {/* Note */}
             <div className="mt-4 px-1">
-              <p className="text-sm text-gray-500 leading-6">
+              <p className="text-[15px] text-gray-500 leading-6">
                 <span className="font-medium text-gray-600">
                   * Indicative starting fares.
                 </span>{" "}

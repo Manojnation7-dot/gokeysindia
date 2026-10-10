@@ -1,37 +1,64 @@
-export default function WhyChooseUs() {
-  const items = [
-    {
-      title: "Registered Travel Agent in Haridwar",
-      desc: "Authorized & recognized by Uttarakhand Tourism",
-    },
-    {
-      title: "10+ Years of Expertise",
-      desc: "Successfully delivered 1000+ spiritual & leisure journeys",
-    },
-    {
-      title: "Transparent Pricing",
-      desc: "No hidden charges on any Char Dham Yatra or tour package — ever",
-    },
-  ];
+import { ShieldCheck, Clock3, BadgeIndianRupee, Headphones } from "lucide-react";
 
+const items = [
+  {
+    title: "Registered Travel Agent in Haridwar",
+    desc: "Authorized & recognized by Uttarakhand Tourism",
+    Icon: ShieldCheck,
+  },
+  {
+    title: "10+ Years of Expertise",
+    desc: "Successfully delivered 1000+ spiritual & leisure journeys",
+    Icon: Clock3,
+  },
+  {
+    title: "Transparent Pricing",
+    desc: "No hidden charges on any Char Dham Yatra or tour package — ever",
+    Icon: BadgeIndianRupee,
+  },
+  {
+    title: "24x7 Support",
+    desc: "For reservations, changes and on-ground assistance",
+    Icon: Headphones,
+  },
+];
+
+// Thin trust bar under the home hero
+export function TrustStrip() {
   return (
-    <section className="py-20 px-6 bg-linear-to-b from-brand-50/40 via-white to-white">
-      <div className="max-w-7xl mx-auto">
-        
-        {/* Heading */}
-        <div className="text-center mb-14">
-          <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight text-gray-900">
-            Why Gokeys is a Trusted <span className="text-brand-600">Travel Agent in Haridwar</span>
+    <section className="bg-white border-b border-line">
+      <div className="gk-wrap py-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {items.map(({ title, desc, Icon }) => (
+          <div key={title} className="flex items-start gap-3">
+            <Icon size={22} className="text-teal shrink-0 mt-0.5" />
+            <div>
+              <p className="text-[15px] font-bold text-ink leading-snug">{title}</p>
+              <p className="text-xs text-slate-ink">{desc}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+export default function WhyChooseUs() {
+  return (
+    <section className="gk-section bg-white">
+      <div className="gk-wrap grid lg:grid-cols-[1fr_1.6fr] gap-8 lg:gap-14">
+        <div>
+          <p className="gk-eyebrow mb-2">About Gokeys</p>
+          <h2 className="gk-h2">
+            Why Gokeys is a Trusted Travel Agent in Haridwar
           </h2>
-          <p className="mt-4 text-gray-500 max-w-2xl mx-auto">
+          <p className="mt-4 gk-lead">
             Trusted by thousands of travelers as a leading <a href="https://gokeys.in/services/travel-agency-haridwar" className="text-brand-600 font-semibold hover:underline">travel agency in Haridwar</a>
             for spiritual journeys, Himalayan adventures, and thoughtfully curated
             Uttarakhand tour packages.
           </p>
         </div>
 
-        {/* Content */}
-        <div className="max-w-4xl mx-auto space-y-6 text-gray-700 text-lg leading-relaxed">
+        <div className="space-y-5 text-slate-ink leading-relaxed [&_a]:text-brand-600 [&_a]:font-semibold [&_a:hover]:underline">
           <p>
             Welcome to <strong>Gokeys India</strong>, a government-registered{" "}
             <strong>travel agent in Haridwar</strong> specializing in spiritual
@@ -93,32 +120,6 @@ export default function WhyChooseUs() {
             to plan your next journey with confidence.
           </p>
         </div>
-
-        {/* Trust Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16">
-          {items.map((item, idx) => (
-            <div
-            key={idx}
-            className={`relative bg-white rounded-2xl p-8 border border-gray-100 shadow-sm hover:shadow-lg transition-all
-              ${
-                idx === 0
-                  ? "before:bg-orange-400"
-                  : idx === 1
-                  ? "before:bg-brand-500"
-                  : "before:bg-emerald-500"
-              }
-              before:absolute before:left-0 before:top-0 before:h-full before:w-1 before:rounded-l-2xl`}
-          >
-            <h4 className="text-xl font-bold text-gray-900 mb-2">
-              {item.title}
-            </h4>
-            <p className="text-gray-600 leading-relaxed">
-              {item.desc}
-            </p>
-          </div>
-          ))}
-        </div>
-
       </div>
     </section>
   );

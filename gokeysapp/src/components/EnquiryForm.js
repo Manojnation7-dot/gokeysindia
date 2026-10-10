@@ -50,7 +50,6 @@ export default function EnquiryForm({
 
     try {
       const siteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
-      console.log("SITE KEY:", siteKey);
 
       if (!siteKey) {
         console.error("reCAPTCHA site key is missing.");
@@ -93,7 +92,6 @@ export default function EnquiryForm({
             grecaptcha
               .execute(siteKey, { action: "submit_enquiry" })
               .then((token) => {
-                console.log("✅ reCAPTCHA token generated:", token);
                 resolve(token);
               })
               .catch((err) => {
@@ -169,12 +167,12 @@ export default function EnquiryForm({
   };
 
   const FormFields = (
-    <div className="space-y-4">
+    <div className="space-y-3.5">
       {error && (
         <div className="text-red-600 text-sm mb-4">{error}</div>
       )}
       <div>
-        <label className="block text-sm font-semibold text-gray-800 mb-1.5" htmlFor="name">
+        <label className="gk-label" htmlFor="name">
           Name
         </label>
         <input
@@ -186,11 +184,11 @@ export default function EnquiryForm({
           placeholder="Enter your full name"
           required
           aria-label="Full name"
-          className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 shadow-sm"
+          className="gk-field"
         />
       </div>
       <div>
-        <label className="block text-sm font-semibold text-gray-800 mb-1.5" htmlFor="email">
+        <label className="gk-label" htmlFor="email">
           Email
         </label>
         <input
@@ -202,11 +200,11 @@ export default function EnquiryForm({
           placeholder="Enter your email address"
           required
           aria-label="Email address"
-          className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 shadow-sm"
+          className="gk-field"
         />
       </div>
       <div>
-        <label className="block text-sm font-semibold text-gray-800 mb-1.5" htmlFor="contactNo">
+        <label className="gk-label" htmlFor="contactNo">
           Contact No.
         </label>
         <input
@@ -218,12 +216,12 @@ export default function EnquiryForm({
           placeholder="Enter your contact number"
           required
           aria-label="Contact number"
-          className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 shadow-sm"
+          className="gk-field"
         />
       </div>
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-semibold text-gray-800 mb-1.5" htmlFor="totalPersons">
+          <label className="gk-label" htmlFor="totalPersons">
             Total Persons
           </label>
           <input
@@ -236,11 +234,11 @@ export default function EnquiryForm({
             min="1"
             required
             aria-label="Total persons"
-            className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 shadow-sm"
+            className="gk-field"
           />
         </div>
         <div>
-          <label className="block text-sm font-semibold text-gray-800 mb-1.5" htmlFor="travelDate">
+          <label className="gk-label" htmlFor="travelDate">
             Travel Date
           </label>
           <input
@@ -251,12 +249,12 @@ export default function EnquiryForm({
             onChange={handleChange}
             required
             aria-label="Travel date"
-            className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 shadow-sm"
+            className="gk-field"
           />
         </div>
       </div>
       <div>
-        <label className="block text-sm font-semibold text-gray-800 mb-1.5" htmlFor="message">
+        <label className="gk-label" htmlFor="message">
           Message
         </label>
         <textarea
@@ -267,14 +265,14 @@ export default function EnquiryForm({
           placeholder="Any specific requirements or questions?"
           rows="4"
           aria-label="Message"
-          className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 shadow-sm"
+          className="gk-field"
         />
       </div>
       {showSubmitButton && (
         <motion.button
           type="submit"
           disabled={isLoading}
-          className={`w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-2.5 rounded-lg font-semibold transition-all duration-300 shadow-md ${isLoading ? "opacity-50 cursor-not-allowed" : "hover:from-blue-700 hover:to-indigo-700"}`}
+          className={`gk-btn gk-btn-sun w-full ${isLoading ? "opacity-50 cursor-not-allowed" : ""}`}
           whileHover={{ scale: isLoading ? 1 : 1.02 }}
           whileTap={{ scale: isLoading ? 1 : 0.98 }}
         >
@@ -285,12 +283,12 @@ export default function EnquiryForm({
   );
 
   const FormContent = (
-    <div className={isInline ? "space-y-4" : "space-y-4 p-6 bg-white rounded-2xl shadow-xl border border-gray-100"}>
+    <div className={isInline ? "space-y-4" : "space-y-4 p-6 bg-white rounded-2xl shadow-xl max-h-[90vh] overflow-y-auto"}>
       {!isInline && (
         <div className="flex justify-between items-center mb-4">
-          <div className="p-3 bg-blue-50 rounded-lg flex-1">
-            <p className="text-base font-semibold text-blue-900">{tourName}</p>
-            <p className="text-sm text-blue-700">
+          <div className="p-3 bg-mist rounded-xl flex-1">
+            <p className="gk-h3">{tourName}</p>
+            <p className="text-[15px] text-teal font-semibold">
               Package: {packageType} • {formatPrice(packagePrice)}
             </p>
           </div>

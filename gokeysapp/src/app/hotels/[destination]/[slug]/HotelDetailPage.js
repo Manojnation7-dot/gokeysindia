@@ -42,6 +42,8 @@ import {
   Plane,
 } from "lucide-react";
 import HotelEnquiryModal from "@/components/HotelEnquiryModal";
+import ImageGallery from "@/components/ImageGallery";
+import { Breadcrumbs, TourCard, Price, PlaceCard, cardImage } from "@/components/ui/kit";
 
 export default function HotelDetailPage({ hotelData, relatedPlaces, relatedTours, similarHotels }) {
   const [showGalleryModal, setShowGalleryModal] = useState(false);
@@ -173,351 +175,233 @@ const facilityIconMap = {
 };
 
 
+  // "13:00:00" -> "01:00 PM"; falls back to the times shown before
+  const formatTime = (t, fallback) => {
+    const m = /^(\d{1,2}):(\d{2})/.exec(t || "");
+    if (!m) return fallback;
+    const h = Number(m[1]);
+    return `${String(h % 12 || 12).padStart(2, "0")}:${m[2]} ${h < 12 ? "AM" : "PM"}`;
+  };
+  const checkIn = formatTime(hotelData.check_in_time, "01:00 PM");
+  const checkOut = formatTime(hotelData.check_out_time, "11:00 AM");
+
   return (
     <>
       <Header />
       <SmartSEO schema={hotelSchema} />
       <SmartSEO schema={breadcrumbSchema} />  
-      <main className="max-w-7xl mx-auto px-4 py-10">
-        {/* Title */}
-        <h1 className="text-3xl font-bold text-gray-800 mb-2 uppercase">{hotelData.name}</h1>
-        <p className="text-sm text-gray-600 mb-6">
-          {hotelData.star_rating ? `${"★".repeat(hotelData.star_rating)} Star Hotel` : ""}
-          {hotelData.location && ` | ${hotelData.location}`}
-        </p>
-
-        {/* Image Gallery + Booking */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-            <div className="lg:col-span-2 space-y-12">
-          {/* Gallery */}
-          <div className="flex-1">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {/* Main Image */}
-              <div className="md:col-span-2 relative rounded-lg overflow-hidden shadow">
-                <div className="aspect-w-16 aspect-h-9 min-h-[300px] md:min-h-[400px]">
-                  <Image
-                    src={hotelData.front_image_url || "https://via.placeholder.com/800x500"}
-                    alt={hotelData.name}
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-                <button
-                  onClick={() => setShowGalleryModal(true)}
-                  className="absolute bottom-4 right-4 bg-black bg-opacity-60 text-white text-sm px-4 py-1 rounded hover:bg-opacity-80"
-                >
-                  Show All Photos
-                </button>
-              </div>
-
-              {/* Smaller Images */}
-              <div className="md:col-span-1 flex flex-col gap-4">
-                {hotelData.gallery_images?.slice(0, 2).map((img, i) => (
-                  <div key={i} className="relative rounded-lg overflow-hidden shadow">
-                    <div className="aspect-w-16 aspect-h-9 min-h-[150px] md:min-h-[190px]">
-                      <Image
-                        src={img.image || "https://via.placeholder.com/400x300"}
-                        alt={`Gallery ${i + 1}`}
-                        fill
-                        className="object-cover"
-                      />
-                    </div>
-                  </div>
-                ))}
+      <main className="bg-mist">
+        <div className="gk-wrap pt-8">
+          <Breadcrumbs
+            items={[
+              { label: "Home", href: "/" },
+              { label: "Hotels", href: "/hotels" },
+              ...(hotelData.destination ? [{ label: hotelData.destination, href: `/hotels/${destinationSlug}` }] : []),
+              { label: hotelData.name },
+            ]}
+          />
+          <div className="flex flex-wrap items-end justify-between gap-4 mb-5">
+            <div>
+              <h1 className="gk-h1 text-3xl! md:text-[2.6rem]! uppercase">{hotelData.name}</h1>
+              <div className="flex flex-wrap gap-1.5 mt-3">
+                {hotelData.star_rating ? (
+                  <span className="gk-chip gk-chip-sun">{`${"★".repeat(hotelData.star_rating)} Star Hotel`}</span>
+                ) : null}
+                {hotelData.location && <span className="gk-chip">{hotelData.location}</span>}
               </div>
             </div>
+            <div className="text-right">
+              <p className="text-xs text-slate-ink">Starting from</p>
+              <p className="gk-price text-3xl">₹{Number(hotelData.tariff_starting_from).toLocaleString()}</p>
+              <p className="text-xs text-slate-ink">per night</p>
+            </div>
           </div>
+
+          {/* Gallery */}
+          <ImageGallery
+            alt={hotelData.name}
+            images={[hotelData.front_image_url, ...(hotelData.gallery_images?.map((img) => img.image) || [])]}
+          />
+        </div>
+
+        <div className="gk-wrap py-10 grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-8 items-start">
+          <div className="min-w-0 space-y-10">
             <section>
-              <h2 className="text-2xl font-bold text-gray-900 mb-3">
-                Overview
-              </h2>
-              <p className="text-gray-700 leading-relaxed">
+              <h2 className="gk-h2 mb-3">Overview</h2>
+              <p className="text-slate-ink leading-relaxed whitespace-pre-line">
                 {hotelData.description || "No description available."}
               </p>
             </section>
+
             {/* Facilities  */}
-                <section>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-5">
-                    Facilities
-                  </h3>
+            {hotelData.facilities?.length > 0 && (
+              <section>
+                <h3 className="gk-h2 mb-4">Facilities</h3>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                  {hotelData.facilities.map((facility, i) => {
+                    const key = facility.name?.toLowerCase().trim();
+                    const Icon = facilityIconMap[key] || Wifi;
 
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                    {hotelData.facilities.map((facility, i) => {
-                      const key = facility.name?.toLowerCase().trim();
-                      const Icon = facilityIconMap[key] || Wifi;
-
-                      return (
-                        <div
-                          key={i}
-                          className="flex items-center gap-3 bg-gray-50 border rounded-xl p-4"
-                        >
-                          <Icon className="w-5 h-5 text-blue-600" />
-                          <span className="text-sm font-medium text-gray-700">
-                            {facility.name}
-                          </span>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </section>
-                      <section>
-                          <h3 className="text-2xl font-bold text-gray-900 mb-3">
-                            Location
-                          </h3>
-                          <p className="text-gray-700 flex gap-2">
-                            <MapPin className="w-4 h-4 mt-1 text-blue-600" />
-                            {hotelData.address}
-                          </p>
-                        </section>
-                    
-            </div>
-            <div className="lg:col-span-1">
-              <div className="sticky top-24 bg-white rounded-2xl shadow-lg border p-6">
-
-                    <div className="mb-4">
-                      <p className="text-sm text-gray-500">Starting from</p>
-                      <p className="text-3xl font-bold text-gray-900">
-                        ₹{Number(hotelData.tariff_starting_from).toLocaleString()}
-                      </p>
-                      <p className="text-xs text-gray-500">per night</p>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-3 mb-4">
-                      <div className="border rounded-lg p-3 text-sm">
-                        <p className="text-gray-500">Check-in</p>
-                        <p className="font-semibold">01:00 PM</p>
+                    return (
+                      <div key={i} className="flex items-center gap-2.5 text-sm text-ink">
+                        <Icon className="w-4 h-4 text-teal shrink-0" />
+                        {facility.name}
                       </div>
-                      <div className="border rounded-lg p-3 text-sm">
-                        <p className="text-gray-500">Check-out</p>
-                        <p className="font-semibold">11:00 AM</p>
-                      </div>
-                    </div>
+                    );
+                  })}
+                </div>
+              </section>
+            )}
 
-                    <button
-                      onClick={() => setShowHotelEnquiry(true)} // Change this
-                      className="w-full bg-blue-600 text-white py-3 rounded-xl font-semibold hover:bg-blue-700 transition"
-                    >
-                      Check Availability
-                    </button>
+            <section>
+              <h3 className="gk-h2 mb-3">Location</h3>
+              <p className="text-slate-ink flex gap-2">
+                <MapPin className="w-4 h-4 mt-1 text-teal shrink-0" />
+                {hotelData.address}
+              </p>
+            </section>
 
-                    <p className="text-xs text-center text-gray-500 mt-3">
-                      Free cancellation • Instant confirmation
-                    </p>
+            <section>
+              <h3 className="gk-h2 mb-4">Hotel policies</h3>
+              <div className="grid sm:grid-cols-[1fr_1fr_2fr] gap-3">
+                <div className="gk-panel p-4">
+                  <p className="text-xs text-slate-ink">Check-in</p>
+                  <p className="font-bold text-ink">{checkIn}</p>
+                </div>
+                <div className="gk-panel p-4">
+                  <p className="text-xs text-slate-ink">Check-out</p>
+                  <p className="font-bold text-ink">{checkOut}</p>
+                </div>
+                <div className="gk-panel p-4">
+                  <p className="text-xs text-slate-ink">Cancellation</p>
+                  <p className="font-bold text-ink">{hotelData.cancellation_policy_text || "Free cancellation • Instant confirmation"}</p>
+                </div>
+              </div>
+            </section>
+          </div>
 
-                  </div>
+          {/* Booking card */}
+          <aside className="lg:sticky lg:top-20">
+            <div className="gk-card p-5">
+              <p className="text-xs text-slate-ink">Starting from</p>
+              <p className="flex items-baseline gap-1.5">
+                <span className="gk-price text-3xl">₹{Number(hotelData.tariff_starting_from).toLocaleString()}</span>
+                <span className="text-xs text-slate-ink">per night</span>
+              </p>
 
+              <div className="grid grid-cols-2 gap-3 my-4">
+                <div className="gk-panel p-3 text-sm">
+                  <p className="text-slate-ink text-xs">Check-in</p>
+                  <p className="font-semibold">{checkIn}</p>
+                </div>
+                <div className="gk-panel p-3 text-sm">
+                  <p className="text-slate-ink text-xs">Check-out</p>
+                  <p className="font-semibold">{checkOut}</p>
+                </div>
+              </div>
+
+              <button onClick={() => setShowHotelEnquiry(true)} className="gk-btn gk-btn-sun w-full">
+                Check Availability
+              </button>
+              <a
+                href={`https://wa.me/917830718687?text=${encodeURIComponent(`Hello Gokeys India, I want to enquire about ${hotelData.name}.`)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="gk-btn gk-btn-wa w-full mt-2.5"
+              >
+                Chat on WhatsApp
+              </a>
+
+              <p className="text-xs text-center text-slate-ink mt-3">
+                {hotelData.cancellation_policy_text || "Free cancellation • Instant confirmation"}
+              </p>
             </div>
-     
+          </aside>
         </div>
 
         {/* ✅ SIMILAR HOTELS */}
         {similarHotels?.length > 0 && (
-          <section className="mt-16">
-            <h2 className="text-2xl font-bold mb-6">
-              More Hotels in {hotelData.destination}
-            </h2>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {similarHotels.map((hotel) => (
+          <section className="bg-white">
+            <div className="gk-wrap gk-section">
+              <h2 className="gk-h2 mb-6">More Hotels in {hotelData.destination}</h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                {similarHotels.map((hotel) => (
                   <Link
                     key={hotel.id}
                     href={`/hotels/${destinationSlug}/${hotel.slug}`}
-                    className="group bg-white rounded-[2.5rem] overflow-hidden border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-500 flex flex-col"
+                    className="gk-card gk-card-hover group flex flex-col"
                   >
-                    {/* Image */}
-                    <div className="relative h-56 overflow-hidden">
+                    <div className="gk-media h-40">
                       <Image
                         src={hotel.front_image_url || "/images/placeholder.jpg"}
                         alt={hotel.name}
                         fill
-                        className="object-cover transition-transform duration-700 group-hover:scale-110"
+                        sizes="(max-width: 640px) 100vw, 25vw"
+                        className="object-cover transition-transform duration-500 group-hover:scale-105"
                       />
-
-                      {/* Star Badge */}
-                      <div className="absolute top-4 right-4 px-3 py-1 bg-yellow-400/90 text-yellow-900 rounded-full text-[11px] font-extrabold tracking-widest uppercase backdrop-blur">
-                        {hotel.star_rating} ★
-                      </div>
                     </div>
-
-                    {/* Content */}
-                    <div className="p-6 flex flex-col flex-grow">
-                      <h3 className="text-lg font-bold text-gray-900 mb-1 group-hover:text-emerald-600 transition-colors">
-                        {hotel.name}
-                      </h3>
-
-                      <p className="text-xs text-gray-400 font-semibold mb-4 flex items-center">
-                        📍 {hotel.location}
-                      </p>
-
+                    <div className="p-4 flex flex-col flex-1">
+                      <span className="gk-chip gk-chip-sun self-start mb-2">{hotel.star_rating} ★</span>
+                      <h3 className="gk-h3">{hotel.name}</h3>
+                      <p className="text-xs text-slate-ink mt-0.5">📍 {hotel.location}</p>
                       {hotel.tariff_starting_from && (
-                        <div className="mt-auto">
-                          <span className="text-xs font-bold text-gray-400 uppercase tracking-widest block mb-1">
-                            Starting from
-                          </span>
-                          <span className="text-xl font-extrabold text-emerald-600">
-                            ₹{Number(hotel.tariff_starting_from).toLocaleString()}
-                          </span>
-                        </div>
+                        <p className="mt-auto pt-3 flex items-baseline gap-1.5">
+                          <span className="text-xs text-slate-ink">Starting from</span>
+                          <span className="gk-price text-lg">₹{Number(hotel.tariff_starting_from).toLocaleString()}</span>
+                        </p>
                       )}
                     </div>
                   </Link>
                 ))}
-                            </div>
-          </section>
-        )}
-
-      {/* ✅ RELATED TOURS */}
-        {relatedTours?.length > 0 && (
-          <section className="mt-16">
-            <h2 className="text-2xl font-bold mb-6">
-              Tour Packages for {hotelData.destination}
-            </h2>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {relatedTours.map((tour) => {
-                const imageUrl =
-                  tour.featured_image?.optimized_card ||
-                  tour.featured_image?.image ||
-                  "/images/placeholder.jpg";
-
-                const standardPackage = tour.pricing?.find(
-                  (pkg) => pkg.package_type === "standard"
-                );
-
-                const price = standardPackage?.price;
-                const discountPrice = standardPackage?.discount_price;
-
-                return (
-                  <div
-                    key={tour.id}
-                    className="group bg-white rounded-[2rem] overflow-hidden border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-500 flex flex-col"
-                  >
-                    {/* Image */}
-                    <div className="relative h-56 overflow-hidden">
-                      <Image
-                        src={imageUrl}
-                        alt={tour.name}
-                        fill
-                        className="object-cover transition-transform duration-700 group-hover:scale-110"
-                      />
-
-                      {tour.duration_days && (
-                        <div className="absolute top-4 left-4 px-3 py-1 bg-white/90 backdrop-blur rounded-full text-xs font-bold text-gray-900">
-                          {tour.duration_days} Days
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Content */}
-                    <div className="p-6 flex flex-col flex-grow">
-                      <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-indigo-600 transition-colors">
-                        {tour.name}
-                      </h3>
-
-                      <div className="mt-auto">
-                        {discountPrice ? (
-                          <div className="text-base font-semibold">
-                            <span className="text-indigo-600">
-                              ₹{Number(discountPrice).toLocaleString()}
-                            </span>
-                            {price && (
-                              <>
-                                <span className="line-through text-gray-400 ml-2 text-sm">
-                                  ₹{Number(price).toLocaleString()}
-                                </span>
-                                <span className="text-xs text-green-600 ml-2 font-bold">
-                                  Save ₹{Number(price - discountPrice).toLocaleString()}
-                                </span>
-                              </>
-                            )}
-                          </div>
-                        ) : price ? (
-                          <p className="text-lg font-extrabold text-indigo-600">
-                            From ₹{Number(price).toLocaleString()}
-                          </p>
-                        ) : null}
-
-                        <div className="flex gap-2 mt-4">
-                          <Link
-                            href={`/tours/${tour.slug}`}
-                            className="flex-1 bg-gray-900 hover:bg-indigo-600 text-white py-2 rounded-xl text-sm font-bold text-center transition"
-                          >
-                            Explore
-                          </Link>
-
-                          <button
-                            onClick={() => handleQuoteClick(tour)}
-                            className="flex-1 border border-indigo-600 text-indigo-600 hover:bg-indigo-50 py-2 rounded-xl text-sm font-bold transition"
-                          >
-                            Quote
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
+              </div>
             </div>
           </section>
         )}
-      {/* ✅ RELATED PLACES */}
-          {relatedPlaces?.length > 0 && (
-            <section className="mt-12">
-              <h2 className="text-2xl font-bold mb-4">
-                Places to Visit Near {hotelData.destination}
-              </h2>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {relatedPlaces.map((place) => (
-                  <Link
-                    href={`/sightseeing/${place.slug}`}
-                    key={place.id}
-                    className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all border border-gray-100 group"
-                  >
-                    {/* Image */}
-                    <div className="relative h-48">
-                      <Image
-                        src={
-                          place.featured_image?.optimized_card ||
-                          place.featured_image?.image ||
-                          "/images/placeholder.jpg"
-                        }
-                        alt={place.name}
-                        fill
-                        className="object-cover group-hover:scale-105 transition-transform"
-                      />
-                    </div>
+        {/* ✅ RELATED TOURS */}
+        {relatedTours?.length > 0 && (
+          <section className="gk-wrap gk-section">
+            <h2 className="gk-h2 mb-6">Tour Packages for {hotelData.destination}</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+              {relatedTours.map((tour) => (
+                <TourCard
+                  key={tour.id}
+                  tour={tour}
+                  href={`/tours/${tour.slug}`}
+                  chips={[tour.duration_days && `${tour.duration_days} Days`]}
+                  footer={
+                    <>
+                      <Link href={`/tours/${tour.slug}`} className="gk-btn gk-btn-ink flex-1">Explore</Link>
+                      <button onClick={() => handleQuoteClick(tour)} className="gk-btn gk-btn-line flex-1">
+                        Quote
+                      </button>
+                    </>
+                  }
+                />
+              ))}
+            </div>
+          </section>
+        )}
 
-                    <div className="p-4">
-                      {/* Name */}
-                      <h3 className="text-lg font-semibold text-gray-800 mb-1 group-hover:underline">
-                        {place.name}
-                      </h3>
-
-                      {/* Destination with icon */}
-                      <p className="text-sm text-gray-500 flex items-center mb-1">
-                        <MapPin className="w-4 h-4 mr-1 text-blue-600" />
-                        {place.destination_name || hotelData.destination}
-                      </p>
-
-                      {/* Distance with icon */}
-                      {place.distance_from_center && (
-                        <p className="text-sm text-gray-500 flex items-center mb-2">
-                          <Ruler className="w-4 h-4 mr-1 text-emerald-500" />
-                          {parseFloat(place.distance_from_center)} km from center
-                        </p>
-                      )}
-
-                      {/* Safe description */}
-                      <p className="text-sm text-gray-600 line-clamp-2">
-                        {place.description?.replace(/<[^>]+>/g, "").slice(0, 100) || "No description available."}
-                      </p>
-                    </div>
-                  </Link>
-                ))} 
-              </div>
-            </section>
-          )}
+        {/* ✅ RELATED PLACES */}
+        {relatedPlaces?.length > 0 && (
+          <section className="gk-wrap pb-16">
+            <h2 className="gk-h2 mb-6">Places to Visit Near {hotelData.destination}</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              {relatedPlaces.map((place) => (
+                <PlaceCard
+                  key={place.id}
+                  href={`/sightseeing/${place.slug}`}
+                  image={cardImage(place.featured_image)}
+                  alt={place.name}
+                  title={place.name}
+                  sub={`${place.destination_name || hotelData.destination}${place.distance_from_center ? ` · ${parseFloat(place.distance_from_center)} km from center` : ""}`}
+                  text={place.description?.replace(/<[^>]+>/g, "").slice(0, 100) || "No description available."}
+                />
+              ))}
+            </div>
+          </section>
+        )}
       </main>
       <Footer />
           {/* ✅ HOTEL WHATSAPP ENQUIRY MODAL */}
@@ -526,49 +410,6 @@ const facilityIconMap = {
             onClose={() => setShowHotelEnquiry(false)} 
             hotel={hotelData} 
           />
-          {/* Modal */}
-      {showGalleryModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4">
-          <div className="relative w-full max-w-4xl">
-            <button
-              onClick={() => setShowGalleryModal(false)}
-              className="absolute top-4 right-4 bg-white text-gray-800 px-4 py-2 rounded hover:bg-gray-200 z-10"
-            >
-              Close
-            </button>
-            {hotelData.gallery_images?.length > 0 ? (
-              <>
-                <img
-                  src={hotelData.gallery_images[currentImageIndex].image || "/placeholder.jpg"}
-                  alt={hotelData.gallery_images[currentImageIndex].title || `Gallery ${currentImageIndex + 1}`}
-                  className="w-full h-auto max-h-[80vh] object-contain rounded-lg"
-                />
-                <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-60 text-white px-3 py-1 rounded">
-                  {currentImageIndex + 1} / {hotelData.gallery_images.length}
-                </div>
-                {hotelData.gallery_images?.length > 1 && (
-                  <div className="absolute inset-0 flex items-center justify-between px-4">
-                    <button
-                      onClick={handlePrevImage}
-                      className="bg-white text-gray-800 px-4 py-2 rounded-full hover:bg-gray-200"
-                    >
-                      ← Prev
-                    </button>
-                    <button
-                      onClick={handleNextImage}
-                      className="bg-white text-gray-800 px-4 py-2 rounded-full hover:bg-gray-200"
-                    >
-                      Next →
-                    </button>
-                  </div>
-                )}
-              </>
-            ) : (
-              <p className="text-white text-center">No images available.</p>
-            )}
-          </div>
-        </div>
-      )}
           {showEnquiry && selectedTour && (
                 <QuoteDialog
                   isOpen={showEnquiry}

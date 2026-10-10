@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 // Generates a random alphanumeric string
 const generateRandomString = (length) => {
@@ -9,14 +9,21 @@ const generateRandomString = (length) => {
 };
 
 export default function TourPDFContent({ tourData, baseUrl, tourPath }) {
-  const currentDate = new Date().toLocaleDateString('en-IN', {
+  // Set after mount: the server (UTC) and the visitor (IST) can be on different dates,
+  // and a date printed during render would then not match (hydration error)
+  const [currentDate, setCurrentDate] = useState('');
+  useEffect(() => setCurrentDate(new Date().toLocaleDateString('en-IN', {
     day: '2-digit',
     month: '2-digit',
     year: 'numeric',
-  }).replace(/\//g, '-');
+  }).replace(/\//g, '-')), []);
 
-  // Generate a document number based on the tour slug and a random string
-  const documentNumber = `GK-${(tourData.slug ?? '').substring(0, 4).toUpperCase()}-${generateRandomString(6)}`;
+  // Document number from the tour slug and a random string. Made after mount so the
+  // server and browser HTML match (a random value during render breaks hydration).
+  const prefix = `GK-${(tourData.slug ?? '').substring(0, 4).toUpperCase()}-`;
+  const [suffix, setSuffix] = useState('');
+  useEffect(() => setSuffix(generateRandomString(6)), []);
+  const documentNumber = `${prefix}${suffix}`;
 
   const companyInfo = {
     name: 'GoKeys India',

@@ -1,8 +1,17 @@
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
 // "npm run dev:local" uses a backend on this PC; allow it only outside production builds
 const LOCAL_API = process.env.NODE_ENV === 'production' ? '' : ' http://127.0.0.1:8000 http://localhost:8000';
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // The repo root (one level up) has its own package-lock.json; without this,
+  // Turbopack picks that folder as the root and fails to resolve 'tailwindcss'.
+  turbopack: {
+    root: path.dirname(fileURLToPath(import.meta.url)),
+  },
+
   // Crawlers matching this list get <title>, description and social tags inside <head>.
   // Next.js streams them into <body> for everyone else, including Googlebot by default.
   // This is Next.js' own list (next/dist/shared/lib/router/utils/html-bots.js) plus Googlebot.

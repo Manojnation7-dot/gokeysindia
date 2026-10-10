@@ -31,16 +31,16 @@ export default function RelatedContent({ title, items, className = "" }) {
   if (!list.length) return null;
 
   return (
-    <section className={`max-w-7xl mx-auto px-4 my-12 ${className}`}>
-      <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6">{title}</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    <section className={`gk-wrap my-12 ${className}`}>
+      <h2 className="gk-h2 mb-6">{title}</h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
         {list.map((item) => (
           <Link
             key={`${item.type}-${item.id}`}
             href={item.url}
-            className="group bg-white rounded-xl overflow-hidden shadow-md hover:shadow-lg transition flex flex-col"
+            className="group gk-card gk-card-hover flex flex-col"
           >
-            <div className="relative h-44 bg-gray-100 overflow-hidden">
+            <div className="gk-media h-44">
               {item.image ? (
                 <Image
                   src={item.image}
@@ -50,13 +50,13 @@ export default function RelatedContent({ title, items, className = "" }) {
                   className="object-cover group-hover:scale-105 transition-transform duration-300"
                 />
               ) : null}
-              <span className="absolute top-3 left-3 bg-white/90 text-xs font-semibold text-gray-800 px-2 py-1 rounded">
+              <span className="absolute top-3 left-3 gk-chip bg-white!">
                 {TYPE_LABELS[item.type] || "Related"}
               </span>
             </div>
             <div className="p-4 flex-1 flex flex-col">
-              <h3 className="font-semibold text-gray-900 group-hover:text-brand-600 line-clamp-2">{item.name}</h3>
-              {subtitle(item) && <p className="text-sm text-gray-600 mt-1">{subtitle(item)}</p>}
+              <h3 className="gk-h3 group-hover:text-teal line-clamp-2">{item.name}</h3>
+              {subtitle(item) && <p className="text-[15px] text-slate-ink mt-1">{subtitle(item)}</p>}
             </div>
           </Link>
         ))}
