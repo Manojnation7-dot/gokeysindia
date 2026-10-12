@@ -1,7 +1,10 @@
 import { CACHED } from "@/lib/api";
 
-// Built from the API, cached for 5 minutes and refreshed when the admin saves
-export const revalidate = 300;
+// Built on every request from the API. The API calls themselves stay cached for 5 minutes
+// (CACHED, tag "api") and are cleared at once when the admin saves, so new content shows here
+// within 5 minutes at most. (With "revalidate = 300" the sitemap was stored as a static file on
+// Vercel and served for hours without refreshing; pages were not affected.)
+export const dynamic = "force-dynamic";
 
 export default async function sitemap() {
   const BASE_URL = "https://gokeys.in"; 
