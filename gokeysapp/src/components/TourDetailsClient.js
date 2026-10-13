@@ -257,7 +257,7 @@ const faqSchema = tourData.faqs?.length > 0
             <section>
               <h2 className="gk-h2 mb-4">Tour Overview</h2>
               <div
-                className="tour-content text-slate-ink prose max-w-none"
+                className="tour-content text-gray-800 prose max-w-none"
                 dangerouslySetInnerHTML={{ __html: tourData.content }}
               />
 
@@ -305,7 +305,7 @@ const faqSchema = tourData.faqs?.length > 0
                     {tourData.highlights.map((highlight, index) => (
                       <div key={index} className="flex items-start gap-2.5 text-sm">
                         <span className="mt-0.5 text-teal"><CheckIcon /></span>
-                        <span className="text-slate-ink">{highlight.highlight}</span>
+                        <span className="text-gray-800">{highlight.highlight}</span>
                       </div>
                     ))}
                   </div>
@@ -323,7 +323,7 @@ const faqSchema = tourData.faqs?.length > 0
                   <h2 className="gk-h3 mb-4">What's Included</h2>
                   <ul className="space-y-2.5">
                     {included.map((item, index) => (
-                      <li key={index} className="flex items-start gap-2.5 text-sm text-slate-ink">
+                      <li key={index} className="flex items-start gap-2.5 text-sm text-gray-800">
                         <span className="mt-0.5 text-teal"><CheckIcon /></span>
                         {item.description}
                       </li>
@@ -334,7 +334,7 @@ const faqSchema = tourData.faqs?.length > 0
                   <h2 className="gk-h3 mb-4">What's Not Included</h2>
                   <ul className="space-y-2.5">
                     {excluded.map((item, index) => (
-                      <li key={index} className="flex items-start gap-2.5 text-sm text-slate-ink">
+                      <li key={index} className="flex items-start gap-2.5 text-sm text-gray-800">
                         <span className="mt-0.5 text-[#d9603b]"><XIcon /></span>
                         {item.description}
                       </li>

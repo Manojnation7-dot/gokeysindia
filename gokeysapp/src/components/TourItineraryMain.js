@@ -19,7 +19,7 @@ export default function TourItineraryMain({ tourData }) {
               <p className="text-[11px] font-bold uppercase tracking-widest text-teal">Day {item.day || index + 1}</p>
               <h3 className="gk-h3">{item.title}</h3>
               <div
-                className="prose prose-sm max-w-none text-slate-ink mt-1.5"
+                className="prose prose-sm max-w-none text-gray-800 mt-1.5"
                 dangerouslySetInnerHTML={{ __html: item.description }}
               />
 

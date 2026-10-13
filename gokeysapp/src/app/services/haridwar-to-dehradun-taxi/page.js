@@ -230,7 +230,7 @@ export default function HaridwarToDehradunTaxiPage() {
                 Haridwar to Dehradun Taxi & Dehradun Airport Cab Service
               </h1>
 
-              <p className="mt-6 text-lg text-gray-700 leading-8">
+              <p className="mt-6 text-lg text-gray-800 leading-8">
                 Looking for a taxi from Haridwar to Dehradun or Dehradun
                 Airport? Gokeys India is leading travel agency in Haridwar for various cab bookings, car rental process to Dehradun City, Dehradun Airport and Dehradun Railway Station with Round-Trip As well.
               </p>
@@ -279,7 +279,7 @@ export default function HaridwarToDehradunTaxiPage() {
               Haridwar to Dehradun Taxi Service
             </h2>
 
-            <p className="text-gray-700 leading-8 mb-4">
+            <p className="text-gray-800 leading-8 mb-4">
               Haridwar and Dehradun are important travel destinations in
               Uttarakhand and are frequently connected as part of a wider
               Uttarakhand journey. A private taxi can be a convenient option
@@ -287,11 +287,11 @@ export default function HaridwarToDehradunTaxiPage() {
               cities.
             </p>
 
-            <p className="text-gray-700 leading-8 mb-4">
+            <p className="text-gray-800 leading-8 mb-4">
               Dehradun is Capital City of Uttarakhand, and also known for its proximity to Mussoorie, Rishikesh and other Uttarakhand destinations. Travelers can also use Dehradun Airport (Jolly Grant Airport) for onward flights. So Gokeys India provides cab services to various places in Dehradun and nearby.
             </p>
 
-            <p className="text-gray-700 leading-8">
+            <p className="text-gray-800 leading-8">
               You can also enquire about transportation to or from Dehradun
               Airport, commonly known as Jolly Grant Airport, when planning
               your flight journey.
@@ -350,7 +350,7 @@ export default function HaridwarToDehradunTaxiPage() {
                 Haridwar to Dehradun Airport Taxi
               </h2>
 
-              <p className="text-gray-700 leading-8 mb-5">
+              <p className="text-gray-800 leading-8 mb-5">
                 If you have a flight from Dehradun Airport, and you want to book cab from Haridwar then you can simply let us know you travel plans and we will arrange a taxi for you.
               </p>
 
@@ -362,7 +362,7 @@ export default function HaridwarToDehradunTaxiPage() {
                     Hotel Pickup
                   </h3>
 
-                  <p className="text-gray-600 leading-7">
+                  <p className="text-gray-800 leading-7">
                     We can directly pick you up from your hotel in Haridwar and drop you at Dehradun Airport.
                   </p>
 
@@ -374,7 +374,7 @@ export default function HaridwarToDehradunTaxiPage() {
                     Railway Station Pickup
                   </h3>
 
-                  <p className="text-gray-600 leading-7">
+                  <p className="text-gray-800 leading-7">
                    We are located near the railway station Haridwar, so we can pick you up from Haridwar Railway Station and drop you at Dehradun Airport and Dehradun City.
                   </p>
 
@@ -386,7 +386,7 @@ export default function HaridwarToDehradunTaxiPage() {
                     Flight Transfers
                   </h3>
 
-                  <p className="text-gray-600 leading-7">
+                  <p className="text-gray-800 leading-7">
                     Share your flight schedule when making an airport taxi
                     enquiry and booking.
                   </p>
@@ -410,12 +410,12 @@ export default function HaridwarToDehradunTaxiPage() {
               Dehradun Airport to Haridwar Taxi
             </h2>
 
-            <p className="text-gray-700 leading-8 mb-4">
+            <p className="text-gray-800 leading-8 mb-4">
               Arriving at Dehradun Airport and travelling to Haridwar? You
               can also Book you taxi or cab with Gokeys India at best prices. 
             </p>
 
-            <p className="text-gray-700 leading-8">
+            <p className="text-gray-800 leading-8">
               We just need your flight arrival details and your preferred destination in Haridwar, and we can arrange a taxi accordingly.
             </p>
 
@@ -442,7 +442,7 @@ export default function HaridwarToDehradunTaxiPage() {
                     Haridwar to Dehradun
                   </h3>
 
-                  <p className="text-gray-600 leading-7">
+                  <p className="text-gray-800 leading-7">
                     All Types of Vehicles are available for Haridwar to Dehradun City, Mussoorie and other nearby destinations. You can share your travel date, pickup location and destination to book your cabs.
                   </p>
 
@@ -454,7 +454,7 @@ export default function HaridwarToDehradunTaxiPage() {
                     Haridwar to Airport
                   </h3>
 
-                  <p className="text-gray-600 leading-7">
+                  <p className="text-gray-800 leading-7">
                     Book a taxi from Haridwar to Dehradun Airport (Jolly Grant Airport) for your flight journey. Share your travel date, pickup location and flight details to book your cabs.
                   </p>
 
@@ -466,7 +466,7 @@ export default function HaridwarToDehradunTaxiPage() {
                     Airport to Haridwar
                   </h3>
 
-                  <p className="text-gray-600 leading-7">
+                  <p className="text-gray-800 leading-7">
                     Book a taxi from Dehradun Airport to hotels or other
                     destinations in Haridwar. Share your travel date, pickup location and destination to book your cabs.
                   </p>
@@ -490,7 +490,7 @@ export default function HaridwarToDehradunTaxiPage() {
               Haridwar Pickup Locations
             </h2>
 
-            <p className="text-gray-700 leading-8 mb-6">
+            <p className="text-gray-800 leading-8 mb-6">
               Tell us your exact pickup location when making a taxi enquiry.
               Common pickup points may include:
             </p>
@@ -530,7 +530,7 @@ export default function HaridwarToDehradunTaxiPage() {
                 One-Way & Round-Trip Taxi Services
               </h2>
 
-              <p className="mt-3 text-gray-600 max-w-2xl mx-auto leading-7">
+              <p className="mt-3 text-gray-800 max-w-2xl mx-auto leading-7">
                 Choose a taxi option that fits your travel plans between
                 Haridwar, Dehradun and Dehradun Airport.
               </p>
@@ -564,7 +564,7 @@ export default function HaridwarToDehradunTaxiPage() {
 
                 </div>
 
-          <p className="text-gray-700 leading-7">
+          <p className="text-gray-800 leading-7">
             If you only need transportation from Haridwar to Dehradun,
             or from Haridwar to Dehradun Airport, you can enquire about
             a one-way taxi booking based on your travel requirements.
@@ -605,7 +605,7 @@ export default function HaridwarToDehradunTaxiPage() {
 
                 </div>
 
-                <p className="text-gray-700 leading-7">
+                <p className="text-gray-800 leading-7">
                   If your itinerary requires returning to Haridwar after
                   visiting Dehradun, you can discuss a round-trip taxi
                   booking based on your travel schedule and requirements.
@@ -643,7 +643,7 @@ export default function HaridwarToDehradunTaxiPage() {
                   Families
                 </h3>
 
-                <p className="text-gray-600 leading-7">
+                <p className="text-gray-800 leading-7">
                   Convenient private transportation for families travelling
                   with luggage carrier.
                 </p>
@@ -656,7 +656,7 @@ export default function HaridwarToDehradunTaxiPage() {
                   Airport Travelers
                 </h3>
 
-                <p className="text-gray-600 leading-7">
+                <p className="text-gray-800 leading-7">
                   Travelers who need transportation between Haridwar and
                   Dehradun Airport.
                 </p>
@@ -669,7 +669,7 @@ export default function HaridwarToDehradunTaxiPage() {
                   Couples
                 </h3>
 
-                <p className="text-gray-600 leading-7">
+                <p className="text-gray-800 leading-7">
                   Private cab travel for couples visiting Dehradun and
                   surrounding destinations.
                 </p>
@@ -682,7 +682,7 @@ export default function HaridwarToDehradunTaxiPage() {
                   Groups
                 </h3>
 
-                <p className="text-gray-600 leading-7">
+                <p className="text-gray-800 leading-7">
                   Discuss suitable transportation based on group size and
                   luggage requirements.
                 </p>
@@ -706,14 +706,14 @@ export default function HaridwarToDehradunTaxiPage() {
                 Continue Your Uttarakhand Journey
               </h2>
 
-              <p className="text-gray-700 leading-8 mb-4">
+              <p className="text-gray-800 leading-8 mb-4">
                 Haridwar and Dehradun can both be used as starting points for
                 wider Uttarakhand journeys. Depending on your itinerary, you
                 may continue towards Rishikesh, Mussoorie, Nainital, Char Dham
                 destinations and other parts of Uttarakhand.
               </p>
 
-              <p className="text-gray-700 leading-8 mb-6">
+              <p className="text-gray-800 leading-8 mb-6">
                 Gokeys India can help you discuss taxi, hotel and tour
                 requirements for a larger Uttarakhand itinerary.
               </p>
@@ -740,11 +740,11 @@ export default function HaridwarToDehradunTaxiPage() {
               Taxi Services for Char Dham Travelers
             </h2>
 
-            <p className="text-gray-700 leading-8 mb-4">
+            <p className="text-gray-800 leading-8 mb-4">
               Char Dham Yatra is one of the most popular pilgrimage journeys in Uttarakhand. If your travel plans include visiting Kedarnath, Badrinath, Gangotri or Yamunotri, you can discuss your complete itinerary with the Gokeys India team.
             </p>
 
-            <p className="text-gray-700 leading-8 mb-5">
+            <p className="text-gray-800 leading-8 mb-5">
               If you want to visit Do Dham like Kedarnath and Badrinath or Gangotri and Yamunotri Dham which takes about 5-6 Days to complete, you can discuss your travel plans with the Gokeys India team.
             </p>
 
@@ -782,7 +782,7 @@ export default function HaridwarToDehradunTaxiPage() {
                     Choose Your Date
                   </h3>
 
-                  <p className="text-gray-600">
+                  <p className="text-gray-800">
                     Tell us when you plan to travel.
                   </p>
 
@@ -798,7 +798,7 @@ export default function HaridwarToDehradunTaxiPage() {
                     Share Pickup
                   </h3>
 
-                  <p className="text-gray-600">
+                  <p className="text-gray-800">
                     Provide your Haridwar pickup location.
                   </p>
 
@@ -814,7 +814,7 @@ export default function HaridwarToDehradunTaxiPage() {
                     Share Destination
                   </h3>
 
-                  <p className="text-gray-600">
+                  <p className="text-gray-800">
                     Tell us whether you need Dehradun city or the airport.
                   </p>
 
@@ -830,7 +830,7 @@ export default function HaridwarToDehradunTaxiPage() {
                     Confirm Your Taxi
                   </h3>
 
-                  <p className="text-gray-600">
+                  <p className="text-gray-800">
                     Discuss the available vehicle and travel arrangement.
                   </p>
 
@@ -861,7 +861,7 @@ export default function HaridwarToDehradunTaxiPage() {
                   Haridwar-Based Travel Team
                 </h3>
 
-                <p className="text-gray-600 leading-7">
+                <p className="text-gray-800 leading-7">
                   Gokeys India is based in Haridwar and working since 10+ years in Travel Industry, so we can provide local travel assistance for your taxi and cab requirements.
                 </p>
 
@@ -873,7 +873,7 @@ export default function HaridwarToDehradunTaxiPage() {
                   City & Airport Transfers
                 </h3>
 
-                <p className="text-gray-600 leading-7">
+                <p className="text-gray-800 leading-7">
                   Available for both city and airport transfers, including Dehradun Airport (Jolly Grant Airport) and other locations in Dehradun.
                 </p>
 
@@ -885,7 +885,7 @@ export default function HaridwarToDehradunTaxiPage() {
                   Travel Planning
                 </h3>
 
-                <p className="text-gray-600 leading-7">
+                <p className="text-gray-800 leading-7">
                   We also offer various tour packages across the Uttarakhand region, including Char Dham Yatra, Do Dham Yatra, and other pilgrimage and sightseeing tours.
                 </p>
 
@@ -897,7 +897,7 @@ export default function HaridwarToDehradunTaxiPage() {
                   Direct Enquiry
                 </h3>
 
-                <p className="text-gray-600 leading-7">
+                <p className="text-gray-800 leading-7">
                   Share your actual travel requirements directly with the
                   Gokeys India team.
                 </p>
@@ -931,7 +931,7 @@ export default function HaridwarToDehradunTaxiPage() {
                     Taxi Services in Haridwar
                   </h3>
 
-                  <p className="text-gray-600">
+                  <p className="text-gray-800">
                     Explore local and outstation taxi services from Haridwar.
                   </p>
                 </a>
@@ -944,7 +944,7 @@ export default function HaridwarToDehradunTaxiPage() {
                     Haridwar to Rishikesh Taxi
                   </h3>
 
-                  <p className="text-gray-600">
+                  <p className="text-gray-800">
                     Taxi and cab services between Haridwar and Rishikesh.
                   </p>
                 </a>
@@ -957,7 +957,7 @@ export default function HaridwarToDehradunTaxiPage() {
                     Travel Agency in Haridwar
                   </h3>
 
-                  <p className="text-gray-600">
+                  <p className="text-gray-800">
                     Plan taxis, tours, hotels and pilgrimage journeys.
                   </p>
                 </a>
@@ -986,7 +986,7 @@ export default function HaridwarToDehradunTaxiPage() {
                   Can I book a taxi from Haridwar to Dehradun?
                 </h3>
 
-                <p className="text-gray-700 leading-7">
+                <p className="text-gray-800 leading-7">
                   Yes. Gokeys India provides taxi and cab booking for travelers travelling from Haridwar to Dehradun, Dehradun Airport Jolly Grant, City and Mussoorie as well. subject to vehicle availability.
                 </p>
               </div>
@@ -996,7 +996,7 @@ export default function HaridwarToDehradunTaxiPage() {
                   Can I book a taxi from Haridwar to Dehradun Airport?
                 </h3>
 
-                <p className="text-gray-700 leading-7">
+                <p className="text-gray-800 leading-7">
                   Yes. Cabs for Dehradun Airport available from Haridwar with Minimum Charges like ₹1,800/-, you can share your travel date, pickup location and flight details and we can book accordingly.
                 </p>
               </div>
@@ -1007,7 +1007,7 @@ export default function HaridwarToDehradunTaxiPage() {
                   Airport?
                 </h3>
 
-                <p className="text-gray-700 leading-7">
+                <p className="text-gray-800 leading-7">
                   Yes. Our office is located near Haridwar Railway Station, so cabs are available at any time to Dehradun Airport, you can book with us.
                 </p>
               </div>
@@ -1017,7 +1017,7 @@ export default function HaridwarToDehradunTaxiPage() {
                   Can I book a Dehradun Airport to Haridwar taxi?
                 </h3>
 
-                <p className="text-gray-700 leading-7">
+                <p className="text-gray-800 leading-7">
                   Yes. Just share your flight arrival details and preferred destination in Haridwar, and we can arrange a taxi accordingly.
                 </p>
               </div>
@@ -1027,7 +1027,7 @@ export default function HaridwarToDehradunTaxiPage() {
                   Can I book a one-way taxi from Haridwar to Dehradun?
                 </h3>
 
-                <p className="text-gray-700 leading-7">
+                <p className="text-gray-800 leading-7">
                   Yes. One-way taxi are available from Haridwar to Dehradun, Dehradun Airport and other destinations. Share your travel date, pickup location and destination to book your cabs.
                 </p>
               </div>
@@ -1037,7 +1037,7 @@ export default function HaridwarToDehradunTaxiPage() {
                   Can I book a round-trip taxi from Haridwar to Dehradun?
                 </h3>
 
-                <p className="text-gray-700 leading-7">
+                <p className="text-gray-800 leading-7">
                   Yes. Round-trip Taxis from Haridwar to Dehradun are available with us (Gokeys India) and you can book via Contacting us at 9045916770 or Just simply WhatsApp us your requirements, we will book and send you details.
                 </p>
               </div>
@@ -1047,7 +1047,7 @@ export default function HaridwarToDehradunTaxiPage() {
                   How can I book a Haridwar to Dehradun taxi?
                 </h3>
 
-                <p className="text-gray-700 leading-7">
+                <p className="text-gray-800 leading-7">
                   For booking a cab with us you can just call or WhatsApp us at +919045916770 and you will get details of your taxi booking, we will send you the cab details and driver contact number for your travel.
                 </p>
               </div>

@@ -113,7 +113,7 @@ export default function DestinationDetailPage({ destination, tours, hotels, slug
           <div className="min-w-0">
             <h2 className="gk-h2 mb-4">About {destination.name}</h2>
             <div
-              className="prose prose-lg text-slate-ink max-w-full overflow-x-auto"
+              className="prose prose-lg text-gray-800 max-w-full overflow-x-auto"
               dangerouslySetInnerHTML={{ __html: destination.description || "No description available." }}
             />
           </div>
@@ -127,7 +127,7 @@ export default function DestinationDetailPage({ destination, tours, hotels, slug
           {/* Best Time to Visit */}
           {typeof destination.best_time_to_visit === "string" && destination.best_time_to_visit.trim() && (
             <InfoCard icon={CalendarDays} title="Best Time to Visit" tone="bg-[#fdebd0]">
-              <ul className="space-y-2 list-disc pl-5 text-slate-ink">
+              <ul className="space-y-2 list-disc pl-5 text-gray-800">
                 {extractParagraphTexts(destination.best_time_to_visit).map((para, index) => (
                   <li key={index}>{para}</li>
                 ))}
@@ -138,7 +138,7 @@ export default function DestinationDetailPage({ destination, tours, hotels, slug
           {/* Popular Activities */}
           {typeof destination.popular_activities === "string" && destination.popular_activities.trim() && (
             <InfoCard icon={Zap} title="Popular Activities" tone="bg-[#e3eef0]">
-              <ul className="space-y-2 list-disc pl-5 text-slate-ink">
+              <ul className="space-y-2 list-disc pl-5 text-gray-800">
                 {extractParagraphTexts(destination.popular_activities).map((activity, index) => (
                   <li key={index}>{activity}</li>
                 ))}
@@ -148,7 +148,7 @@ export default function DestinationDetailPage({ destination, tours, hotels, slug
 
           {/* Nearby Attractions */}
           <InfoCard icon={MapPin} title="Nearby Attractions" tone="bg-[#e6f0dc]">
-            <ul className="space-y-2 list-disc pl-5 text-slate-ink">
+            <ul className="space-y-2 list-disc pl-5 text-gray-800">
               {(nearbyAttractionsList || []).map((attraction, index) => (
                 <li key={index} dangerouslySetInnerHTML={{ __html: attraction }} />
               ))}
@@ -158,7 +158,7 @@ export default function DestinationDetailPage({ destination, tours, hotels, slug
           {/* How to Reach */}
           <InfoCard icon={Bus} title="How to Reach" tone="bg-[#e3e4f2]">
             <div
-              className="text-slate-ink space-y-2 prose max-w-none"
+              className="text-gray-800 space-y-2 prose max-w-none"
               dangerouslySetInnerHTML={{ __html: destination.how_to_reach || "<p>No transport information</p>" }}
             />
           </InfoCard>

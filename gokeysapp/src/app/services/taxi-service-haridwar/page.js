@@ -200,7 +200,7 @@ export default function TaxiServicesHaridwarPage() {
                 Taxi Services in Haridwar for Local & Uttarakhand Travel
               </h1>
 
-              <p className="mt-6 text-lg text-gray-700 leading-8">
+              <p className="mt-6 text-lg text-gray-800 leading-8">
                 Looking for taxi services in Haridwar? Gokeys India provides
                 taxi and cab booking assistance for local travel, sightseeing,
                 railway station transfers, outstation journeys and trips to
@@ -235,15 +235,15 @@ export default function TaxiServicesHaridwarPage() {
               Taxi Service in Haridwar
             </h2>
 
-            <p className="text-gray-700 leading-8 mb-4">
+            <p className="text-gray-800 leading-8 mb-4">
               Haridwar is an important place with religious significance, it also known for gateway to Holy Char Dham Temples in Uttarakhand. Haridwar is also known for Road, Railway and Air transportation, so while you planning a trip to Uttarakhand, it can be your starting point and dropping point.
             </p>
 
-            <p className="text-gray-700 leading-8 mb-4">
+            <p className="text-gray-800 leading-8 mb-4">
               Gokeys India is Haridwar Based Travel and Taxi Service Agency from 2019 providing services travel services like Cab Booking, Car Rental, Hotel Booking, Tour Package Booking to tourists. Gokeys has local office in Haridwar, and the team has served travelers across Uttarakhand's tourist destinations.
             </p>
 
-            <p className="text-gray-700 leading-8">
+            <p className="text-gray-800 leading-8">
               If you are looking for a Taxi cab from Haridwar to any destinations of Uttarakhand, then you can contact Gokeys Team and explore the various cab options according to your need.
             </p>
           </div>
@@ -275,7 +275,7 @@ export default function TaxiServicesHaridwarPage() {
                     Local Taxi Service
                   </h3>
 
-                  <p className="text-gray-600 leading-7">
+                  <p className="text-gray-800 leading-7">
                     Book a taxi for local travel around Haridwar, including
                     transfers between important locations and other travel
                     requirements.
@@ -287,7 +287,7 @@ export default function TaxiServicesHaridwarPage() {
                     Haridwar Railway Station Taxi
                   </h3>
 
-                  <p className="text-gray-600 leading-7">
+                  <p className="text-gray-800 leading-7">
                     Arrange pickup or drop-off services for travelers arriving
                     at or departing from Haridwar Railway Station, subject to
                     availability.
@@ -299,7 +299,7 @@ export default function TaxiServicesHaridwarPage() {
                     Outstation Taxi
                   </h3>
 
-                  <p className="text-gray-600 leading-7">
+                  <p className="text-gray-800 leading-7">
                     Plan an outstation journey from Haridwar to destinations
                     across Uttarakhand and other locations according to your
                     travel requirements.
@@ -311,7 +311,7 @@ export default function TaxiServicesHaridwarPage() {
                     Uttarakhand Taxi Service
                   </h3>
 
-                  <p className="text-gray-600 leading-7">
+                  <p className="text-gray-800 leading-7">
                     Travel from Haridwar to popular destinations and
                     pilgrimage locations across Uttarakhand with planned
                     transportation arrangements.
@@ -323,7 +323,7 @@ export default function TaxiServicesHaridwarPage() {
                     Pilgrimage Taxi
                   </h3>
 
-                  <p className="text-gray-600 leading-7">
+                  <p className="text-gray-800 leading-7">
                     Taxi arrangements can be booked for journeys towards
                     Kedarnath, Badrinath, Gangotri, Yamunotri and other
                     pilgrimage destinations.
@@ -342,7 +342,7 @@ export default function TaxiServicesHaridwarPage() {
                     Sightseeing Taxi
                   </h3>
 
-                  <p className="text-gray-600 leading-7">
+                  <p className="text-gray-800 leading-7">
                     Book a taxi for sightseeing trips around Haridwar and
                     nearby Uttarakhand destinations based on your itinerary.
                   </p>
@@ -413,7 +413,7 @@ export default function TaxiServicesHaridwarPage() {
                 <h3 className="text-lg font-semibold text-green-700">
                   Delhi to Haridwar Cab
                 </h3>
-                <p className="text-gray-600 mt-2">
+                <p className="text-gray-800 mt-2">
                   Book a cab from Delhi to Haridwar with us.
                 </p>
               </a>
@@ -422,7 +422,7 @@ export default function TaxiServicesHaridwarPage() {
                 <h3 className="text-lg font-semibold text-green-700">
                   Haridwar to Rishikesh Taxi
                 </h3>
-                <p className="text-gray-600 mt-2">
+                <p className="text-gray-800 mt-2">
                   We can book a cab for Haridwar to Rishikesh for Dropping Off or full Day Sightseeing.
                 </p>
               </div>
@@ -431,7 +431,7 @@ export default function TaxiServicesHaridwarPage() {
                 <h3 className="text-lg font-semibold text-green-700">
                   Haridwar to Kedarnath
                 </h3>
-                <p className="text-gray-600 mt-2">
+                <p className="text-gray-800 mt-2">
                   Cab to Haridwar from Sonprayag is available with us at competitive prices.
                 </p>
               </div>
@@ -440,7 +440,7 @@ export default function TaxiServicesHaridwarPage() {
                 <h3 className="text-lg font-semibold text-green-700">
                   Haridwar to Badrinath
                 </h3>
-                <p className="text-gray-600 mt-2">
+                <p className="text-gray-800 mt-2">
                   Looking for Haridwar to Badrinath Cab, check with us and get the best prices.
                 </p>
               </div>
@@ -449,7 +449,7 @@ export default function TaxiServicesHaridwarPage() {
                 <h3 className="text-lg font-semibold text-green-700">
                   Haridwar to Dehradun
                 </h3>
-                <p className="text-gray-600 mt-2">
+                <p className="text-gray-800 mt-2">
                   We can arrange a cab to Dehradun City, Dehradun Jolly Grant Airport and for any location in Dehradun.
                 </p>
               </div>
@@ -458,7 +458,7 @@ export default function TaxiServicesHaridwarPage() {
                 <h3 className="text-lg font-semibold text-green-700">
                   Haridwar to Mussoorie
                 </h3>
-                <p className="text-gray-600 mt-2">
+                <p className="text-gray-800 mt-2">
                   Looking for Haridwar to Mussoorie Dropping Cabs, we have one way cab with lowest fare.
                 </p>
               </div>
@@ -474,20 +474,20 @@ export default function TaxiServicesHaridwarPage() {
                 Taxi Service for Uttarakhand Travel
               </h2>
 
-              <p className="text-gray-700 leading-8 mb-4">
+              <p className="text-gray-800 leading-8 mb-4">
                 Uttarakhand travel often involves long mountain routes,
                 changing weather conditions and different road conditions.
                 Planning transportation in advance can make a multi-day
                 itinerary easier to manage.
               </p>
 
-              <p className="text-gray-700 leading-8 mb-4">
+              <p className="text-gray-800 leading-8 mb-4">
                 From Haridwar, travelers commonly continue towards Rishikesh,
                 Devprayag, Srinagar, Rudraprayag, Guptkashi, Joshimath,
                 Badrinath and other destinations depending on their route.
               </p>
 
-              <p className="text-gray-700 leading-8">
+              <p className="text-gray-800 leading-8">
                 For pilgrimage journeys, you should always plan about vehicle and seating capacity because hills route and long Journeys like Char Dham Yatra can be hectic if not chosen wisely.
               </p>
 
@@ -508,19 +508,19 @@ export default function TaxiServicesHaridwarPage() {
               Taxi for Char Dham Yatra From Haridwar
             </h2>
 
-            <p className="text-gray-700 leading-8 mb-4">
+            <p className="text-gray-800 leading-8 mb-4">
               Haridwar is starting point of Char Dham Yatra, it is also known as gateway of God, so after taking holy dip
               in the Ganges River you can start your trip to Char Dham temples. The Yatra takes 9 Nights and 10 Days from Haridwar to Haridwar.
             </p>
 
-            <p className="text-gray-700 leading-8 mb-4">
+            <p className="text-gray-800 leading-8 mb-4">
               A Char Dham trip is different from a normal city taxi journey.
               It involves 10 Days of Journey, mountain roads and
               changing weather conditions. Your vehicle and itinerary should
               therefore be selected according to the route and group size.
             </p>
 
-            <p className="text-gray-700 leading-8">
+            <p className="text-gray-800 leading-8">
               If you are planning Char Dham travel from Haridwar, Gokeys can
               also book a best tour packages that combine transportation,
               accommodation and itinerary planning.
@@ -553,7 +553,7 @@ export default function TaxiServicesHaridwarPage() {
                     Share Your Route
                   </h3>
 
-                  <p className="text-gray-600">
+                  <p className="text-gray-800">
                     Tell us your pickup location, destination and travel date.
                   </p>
                 </div>
@@ -567,7 +567,7 @@ export default function TaxiServicesHaridwarPage() {
                     Share Group Details
                   </h3>
 
-                  <p className="text-gray-600">
+                  <p className="text-gray-800">
                     Let us know the number of passengers and approximate
                     luggage requirements.
                   </p>
@@ -582,7 +582,7 @@ export default function TaxiServicesHaridwarPage() {
                     Discuss Vehicle
                   </h3>
 
-                  <p className="text-gray-600">
+                  <p className="text-gray-800">
                     Discuss the available vehicle and travel arrangements for
                     your route.
                   </p>
@@ -597,7 +597,7 @@ export default function TaxiServicesHaridwarPage() {
                     Confirm Booking
                   </h3>
 
-                  <p className="text-gray-600">
+                  <p className="text-gray-800">
                     Confirm the agreed travel arrangements before your journey.
                   </p>
                 </div>
@@ -615,7 +615,7 @@ export default function TaxiServicesHaridwarPage() {
               Why Choose Gokeys for Taxi Booking in Haridwar?
             </h2>
 
-            <p className="text-gray-600 text-center max-w-3xl mx-auto mb-10 leading-7">
+            <p className="text-gray-800 text-center max-w-3xl mx-auto mb-10 leading-7">
               Gokeys India Since 2019 helping travelers arrange taxis, local transfers and
               Uttarakhand trips from Haridwar with flexible travel options and
               local destination knowledge.
@@ -644,7 +644,7 @@ export default function TaxiServicesHaridwarPage() {
                       Local Haridwar Travel Experience
                     </td>
 
-                    <td className="px-5 py-4 border-t border-gray-100 text-gray-600 leading-7">
+                    <td className="px-5 py-4 border-t border-gray-100 text-gray-800 leading-7">
                       Gokeys India is a Haridwar-based travel agency located near Railway Station Haridwar, helping
                       travelers plan taxi journeys and trips across Uttarakhand.
                     </td>
@@ -655,7 +655,7 @@ export default function TaxiServicesHaridwarPage() {
                       One Travel Contact
                     </td>
 
-                    <td className="px-5 py-4 border-t border-gray-100 text-gray-600 leading-7">
+                    <td className="px-5 py-4 border-t border-gray-100 text-gray-800 leading-7">
                       Along with taxi services, we can help with accommodation
                       arrangements through our network of hotels, homestays and
                       resorts.
@@ -667,7 +667,7 @@ export default function TaxiServicesHaridwarPage() {
                       Flexible Travel Planning
                     </td>
 
-                    <td className="px-5 py-4 border-t border-gray-100 text-gray-600 leading-7">
+                    <td className="px-5 py-4 border-t border-gray-100 text-gray-800 leading-7">
                       Share your route, travel dates, group size and itinerary
                       requirements so your transportation can be planned according
                       to your trip.
@@ -679,7 +679,7 @@ export default function TaxiServicesHaridwarPage() {
                       Uttarakhand Travel Focus
                     </td>
 
-                    <td className="px-5 py-4 border-t border-gray-100 text-gray-600 leading-7">
+                    <td className="px-5 py-4 border-t border-gray-100 text-gray-800 leading-7">
                       Our services focus on Uttarakhand travel, including
                       pilgrimage journeys, sightseeing trips, hill destinations
                       and multi-day tours.
@@ -691,7 +691,7 @@ export default function TaxiServicesHaridwarPage() {
                       One-Way & Round-Trip Options
                     </td>
 
-                    <td className="px-5 py-4 border-t border-gray-100 text-gray-600 leading-7">
+                    <td className="px-5 py-4 border-t border-gray-100 text-gray-800 leading-7">
                       Depending on your travel requirement, you can ask for a
                       one-way drop, return taxi, sightseeing trip or multi-day
                       vehicle arrangement.
@@ -703,7 +703,7 @@ export default function TaxiServicesHaridwarPage() {
                       Taxi for Pilgrimage Routes
                     </td>
 
-                    <td className="px-5 py-4 border-t border-gray-100 text-gray-600 leading-7">
+                    <td className="px-5 py-4 border-t border-gray-100 text-gray-800 leading-7">
                       Taxi arrangements are available for popular Uttarakhand
                       pilgrimage destinations such as Kedarnath, Badrinath,
                       Gangotri and Yamunotri, subject to route and vehicle
@@ -728,7 +728,7 @@ export default function TaxiServicesHaridwarPage() {
               Things to Check Before Booking a Taxi in Haridwar
             </h2>
 
-            <ul className="list-disc pl-6 space-y-3 text-gray-700 leading-7">
+            <ul className="list-disc pl-6 space-y-3 text-gray-800 leading-7">
               <li>
                 Confirm the pickup location and destination clearly.
               </li>
@@ -774,7 +774,7 @@ export default function TaxiServicesHaridwarPage() {
                     Does Gokeys provide taxi services in Haridwar?
                   </h3>
 
-                  <p className="text-gray-700 leading-7">
+                  <p className="text-gray-800 leading-7">
                    Yes, Gokeys India is well known travel agency and taxi service provider in Haridwar since 2019 with a team having 10+ Years of Experience, so you can easily book a cab.
                   </p>
                 </div>
@@ -784,7 +784,7 @@ export default function TaxiServicesHaridwarPage() {
                     Can I book a taxi from Haridwar to Kedarnath?
                   </h3>
 
-                  <p className="text-gray-700 leading-7">
+                  <p className="text-gray-800 leading-7">
                    Yes, we have two types of trip for Kedarnath, one is dropping or one way taxi service and another is 4 Days trip of Kedarnath, it will be round trip with complete Kedarnath, Dhari Devi Temple, Devprayag and Guptkashi Kashi Viswanath temple Darshan.
                   </p>
                 </div>
@@ -794,7 +794,7 @@ export default function TaxiServicesHaridwarPage() {
                     Can I book a taxi from Haridwar to Rishikesh?
                   </h3>
 
-                  <p className="text-gray-700 leading-7">
+                  <p className="text-gray-800 leading-7">
                     Yes, you can book a taxi from Haridwar to Rishikesh with us as per your requirement like One Way drop off cab or Full Day Sightseeing Cab.
                   </p>
                 </div>
@@ -804,7 +804,7 @@ export default function TaxiServicesHaridwarPage() {
                     Can I get a taxi from Haridwar Railway Station?
                   </h3>
 
-                  <p className="text-gray-700 leading-7">
+                  <p className="text-gray-800 leading-7">
                     Yes, as we located near Railway Station Haridwar, you can contact or meet us at our office. We will provide you cab for any Uttarakhand Destinations and also for multiple days trips.
                   </p>
                 </div>
@@ -814,7 +814,7 @@ export default function TaxiServicesHaridwarPage() {
                     Can I book an outstation taxi from Haridwar?
                   </h3>
 
-                  <p className="text-gray-700 leading-7">
+                  <p className="text-gray-800 leading-7">
                     Yes, outstation cabs are available with Gokeys for various cities like Dehradun, Delhi, Chandigarh, Agra, Lucknow, Varanasi, Ayodhya, Nainital and more.
                   </p>
                 </div>
@@ -824,7 +824,7 @@ export default function TaxiServicesHaridwarPage() {
                     How can I book a taxi with Gokeys?
                   </h3>
 
-                  <p className="text-gray-700 leading-7">
+                  <p className="text-gray-800 leading-7">
                     You can contact Gokeys India by phone or WhatsApp at
                     +91 9045916770 and share your pickup location, destination,
                     travel date, number of passengers and vehicle requirements.

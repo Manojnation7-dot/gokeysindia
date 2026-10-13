@@ -228,7 +228,7 @@ const facilityIconMap = {
           <div className="min-w-0 space-y-10">
             <section>
               <h2 className="gk-h2 mb-3">Overview</h2>
-              <p className="text-slate-ink leading-relaxed whitespace-pre-line">
+              <p className="text-gray-800 leading-relaxed whitespace-pre-line">
                 {hotelData.description || "No description available."}
               </p>
             </section>
@@ -255,7 +255,7 @@ const facilityIconMap = {
 
             <section>
               <h3 className="gk-h2 mb-3">Location</h3>
-              <p className="text-slate-ink flex gap-2">
+              <p className="text-gray-800 flex gap-2">
                 <MapPin className="w-4 h-4 mt-1 text-teal shrink-0" />
                 {hotelData.address}
               </p>

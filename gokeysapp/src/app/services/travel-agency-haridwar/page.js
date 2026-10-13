@@ -190,14 +190,14 @@ export default function TravelAgencyHaridwarPage() {
                 Travel Agency in Haridwar for Uttarakhand Tours & Char Dham
               </h1>
 
-              <p className="mt-6 text-lg text-gray-700 leading-8">
+              <p className="mt-6 text-lg text-gray-800 leading-8">
                 Gokeys India is a travel agency in Haridwar offering
                 Char Dham Yatra, Uttarakhand tour packages, taxi and cab
                 services, hotel bookings and customized travel assistance.
                 Plan your Uttarakhand journey with a local travel team based
                 in Haridwar. 
                 </p>
-                <p className="mt-6 text-lg text-gray-700 leading-8">Gokeys India is Top Travel agents from Haridwar with many years of experience in Travel Field. Contact Now and get the best customized trip to Uttarakhand with us.</p>
+                <p className="mt-6 text-lg text-gray-800 leading-8">Gokeys India is Top Travel agents from Haridwar with many years of experience in Travel Field. Contact Now and get the best customized trip to Uttarakhand with us.</p>
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
                 <a
@@ -227,15 +227,15 @@ export default function TravelAgencyHaridwarPage() {
               Travel Agency in Haridwar
             </h2>
 
-            <p className="text-gray-700 leading-8 mb-4">
+            <p className="text-gray-800 leading-8 mb-4">
               Haridwar is known for starting point of Garhwal Region like Char Dham Yatra Tours, Mussoorie, Chopta, Auli Winter Tours, Various Treks like Valley of flowers, Hemkund Sahib, famous winter treks like Kedarkantha, Deoria Tal, Tungnath and Chadrashila, Various Bugyal trek like Dayara Bugyal, Roopkund Trek and more. It also connect to the Kumaon Regions like Nainital, Corbett, Kausani, Almora and more Places.
             </p>
 
-            <p className="text-gray-700 leading-8 mb-4">
+            <p className="text-gray-800 leading-8 mb-4">
               As Haridwar is well connected with roads, railway and by air to different cities of India, so one can easily reach Haridwar and then plan a travel to Uttarakhand various tourist destinations. If you are planning a trip to Uttarakhand and looking for best travel agency in Haridwar then you can opt for Gokeys India as your travel partner.
             </p>
 
-            <p className="text-gray-700 leading-8">
+            <p className="text-gray-800 leading-8">
               Whether you are planning a Char Dham Yatra, a Kedarnath trip,
               a family holiday in Uttarakhand or a taxi journey from Haridwar,
               our team can help you organize the major parts of your trip.
@@ -268,7 +268,7 @@ export default function TravelAgencyHaridwarPage() {
                   <h3 className="text-xl font-semibold text-green-700 mb-3">
                     Char Dham Yatra
                   </h3>
-                  <p className="text-gray-600 leading-7">
+                  <p className="text-gray-800 leading-7">
                    Char Dham Yatra is one of the most visited religious trips in Uttarakhand, It is said that once a lifetime every Hindu should visit these sacred temples. So, we at Gokeys Offers various Char Dham Yatra Trip with customized packages. You can choose any package according to your needs to visit Char Dham with us.
                   </p>
 
@@ -285,7 +285,7 @@ export default function TravelAgencyHaridwarPage() {
                     Uttarakhand Tour Packages
                   </h3>
 
-                  <p className="text-gray-600 leading-7">
+                  <p className="text-gray-800 leading-7">
                     Uttarakhand has many tourist destinations, where you can plan your holidays, we as Haridwar based Travel agency Offers various Uttarakhand tour package like Winter Tours to Mussoorie, Auli and Chopta, Harsil Valley Trips, Char Dham Yatra, Nainital Corbett and Kumaon Trip, Chakrata, Dehradun 3 Days Trip and more alike.
                   </p>
 
@@ -302,7 +302,7 @@ export default function TravelAgencyHaridwarPage() {
                     Taxi & Cab Services
                   </h3>
 
-                  <p className="text-gray-600 leading-7">
+                  <p className="text-gray-800 leading-7">
                     We have own fleet of transportations like Swift Dzire, Ertiga Cab, Innova, Innova Crysta, Kia Carens, Tempo Travellers and also various contracted vehicles for your trip. You can easily book a taxi with Gokeys India for your Uttarakhand Trip.
                   </p>
 
@@ -319,7 +319,7 @@ export default function TravelAgencyHaridwarPage() {
                     Hotel Booking
                   </h3>
 
-                  <p className="text-gray-600 leading-7">
+                  <p className="text-gray-800 leading-7">
                     Hotel booking is included as part of most packages, so travelers don't need to arrange it separately. We as Haridwar based Travel Agency provides various hotel booking in different locations of Uttarakhand like Char Dham Locations Mussoorie, Nainital, Rishikesh, Haridwar etc.
                   </p>
 
@@ -336,7 +336,7 @@ export default function TravelAgencyHaridwarPage() {
                     Pilgrimage Tours
                   </h3>
 
-                  <p className="text-gray-600 leading-7">
+                  <p className="text-gray-800 leading-7">
                     Uttarakhand, as known as Devbhoomi means land of God, so it has various pilgrimage tours like Char Dham Trip to sacred Badrinath, Kedarnath, Gangotri and Yamunotri Temples, Kainchi Dham Nainital, Golu Devta Temple, Shaktipeeth like Dhari Devi Temple, Kunjapuri Temple, Surkanda Mata Temple and more, Panch Prayag five holy confluences and many more temples.
                   </p>
 
@@ -353,7 +353,7 @@ export default function TravelAgencyHaridwarPage() {
                     Customized Tours
                   </h3>
 
-                  <p className="text-gray-600 leading-7">
+                  <p className="text-gray-800 leading-7">
                     Need a different itinerary? Speak with our team about
                     creating a trip based on your dates, destinations,
                     transportation and accommodation requirements. We are happy to create a customized trip itinerary according to your needs.
@@ -378,7 +378,7 @@ export default function TravelAgencyHaridwarPage() {
               Why Choose Gokeys India for Your Uttarakhand Trip?
             </h2>
 
-            <div className="space-y-5 text-gray-700 leading-8">
+            <div className="space-y-5 text-gray-800 leading-8">
               <p>
                 As one of the top travel agencies in Uttarakhand, we are serving our customers since many years. So, choosing a local travel agency can make planning a trip to
                 Uttarakhand easier, particularly when your itinerary involves
@@ -403,7 +403,7 @@ export default function TravelAgencyHaridwarPage() {
                 <h3 className="font-semibold text-lg mb-2">
                   Local Haridwar Base
                 </h3>
-                <p className="text-gray-600">
+                <p className="text-gray-800">
                   Our office is located on Railway Road in Haridwar, making it
                   convenient for travelers beginning their Uttarakhand journey.
                 </p>
@@ -413,7 +413,7 @@ export default function TravelAgencyHaridwarPage() {
                 <h3 className="font-semibold text-lg mb-2">
                   Uttarakhand Experience
                 </h3>
-                <p className="text-gray-600">
+                <p className="text-gray-800">
                   Our travel services focus strongly on Uttarakhand and
                   Himalayan journeys.
                 </p>
@@ -423,7 +423,7 @@ export default function TravelAgencyHaridwarPage() {
                 <h3 className="font-semibold text-lg mb-2">
                   Complete Travel Assistance
                 </h3>
-                <p className="text-gray-600">
+                <p className="text-gray-800">
                   We can assist with tours, hotels, transportation and other
                   travel arrangements.
                 </p>
@@ -433,7 +433,7 @@ export default function TravelAgencyHaridwarPage() {
                 <h3 className="font-semibold text-lg mb-2">
                   Customized Planning
                 </h3>
-                <p className="text-gray-600">
+                <p className="text-gray-800">
                   Travelers can opt for their requirements with our team when
                   an existing package does not fit their plans.
                 </p>
@@ -504,20 +504,20 @@ export default function TravelAgencyHaridwarPage() {
               Char Dham Yatra from Haridwar
             </h2>
 
-            <p className="text-gray-700 leading-8 mb-4">
+            <p className="text-gray-800 leading-8 mb-4">
               Haridwar is a popular starting point for travelers planning
               their Char Dham Yatra. The traditional circuit covers the four
               major pilgrimage destinations of Yamunotri, Gangotri, Kedarnath
               and Badrinath.
             </p>
 
-            <p className="text-gray-700 leading-8 mb-4">
+            <p className="text-gray-800 leading-8 mb-4">
               A Char Dham journey requires careful planning because travel
               involves mountain roads, changing weather, accommodation
               availability and different distances between destinations.
             </p>
 
-            <p className="text-gray-700 leading-8">
+            <p className="text-gray-800 leading-8">
               If you are planning a Char Dham Yatra from Haridwar, our team
               can help with package selection, transportation, accommodation
               and itinerary planning.
@@ -594,7 +594,7 @@ export default function TravelAgencyHaridwarPage() {
                   <h3 className="font-semibold mb-2">
                     Tell Us Your Plan
                   </h3>
-                  <p className="text-gray-600">
+                  <p className="text-gray-800">
                     Share your travel dates, destinations and requirements.
                   </p>
                 </div>
@@ -606,7 +606,7 @@ export default function TravelAgencyHaridwarPage() {
                   <h3 className="font-semibold mb-2">
                     Choose Your Package
                   </h3>
-                  <p className="text-gray-600">
+                  <p className="text-gray-800">
                     Review available tour, transport and accommodation
                     options.
                   </p>
@@ -619,7 +619,7 @@ export default function TravelAgencyHaridwarPage() {
                   <h3 className="font-semibold mb-2">
                     Confirm Arrangements
                   </h3>
-                  <p className="text-gray-600">
+                  <p className="text-gray-800">
                     Finalize the itinerary and required travel services.
                   </p>
                 </div>
@@ -631,7 +631,7 @@ export default function TravelAgencyHaridwarPage() {
                   <h3 className="font-semibold mb-2">
                     Start Your Journey
                   </h3>
-                  <p className="text-gray-600">
+                  <p className="text-gray-800">
                     Begin your Uttarakhand journey from Haridwar.
                   </p>
                 </div>
@@ -652,7 +652,7 @@ export default function TravelAgencyHaridwarPage() {
                 <h3 className="text-xl font-semibold text-gray-900 mb-2">
                   Which travel services does Gokeys provide in Haridwar?
                 </h3>
-                <p className="text-gray-700 leading-7">
+                <p className="text-gray-800 leading-7">
                   Gokeys India provides tour packages, Char Dham Yatra
                   arrangements, Uttarakhand tours, taxi and cab services,
                   hotel bookings and customized travel assistance from
@@ -664,7 +664,7 @@ export default function TravelAgencyHaridwarPage() {
                 <h3 className="text-xl font-semibold text-gray-900 mb-2">
                   Does Gokeys provide Char Dham Yatra packages from Haridwar?
                 </h3>
-                <p className="text-gray-700 leading-7">
+                <p className="text-gray-800 leading-7">
                   Yes. Gokeys India provides Char Dham Yatra travel services
                   from Haridwar, including transportation, accommodation and
                   itinerary assistance depending on the selected package.
@@ -675,7 +675,7 @@ export default function TravelAgencyHaridwarPage() {
                 <h3 className="text-xl font-semibold text-gray-900 mb-2">
                   Can I book a taxi from Haridwar for Uttarakhand travel?
                 </h3>
-                <p className="text-gray-700 leading-7">
+                <p className="text-gray-800 leading-7">
                  Yes, you can book a taxi from Gokeys Travel Agency Haridwar for your Haridwar Sightseeing or any Uttarakhand Trips like Char Dham Yatra, Winter Vacation to Auli, Chopta and Mussoorie, Harsil Valley Sightseeing and more.
                 </p>
               </div>
@@ -684,7 +684,7 @@ export default function TravelAgencyHaridwarPage() {
                 <h3 className="text-xl font-semibold text-gray-900 mb-2">
                   Does Gokeys provide hotel booking in Uttarakhand?
                 </h3>
-                <p className="text-gray-700 leading-7">
+                <p className="text-gray-800 leading-7">
                   Yes, Gokeys Travel has various affiliated hotels in Uttarakhand with best contracted rates, so you can easily book a hotel with Gokeys for all over Uttarakhand.
                 </p>
               </div>
@@ -693,7 +693,7 @@ export default function TravelAgencyHaridwarPage() {
                 <h3 className="text-xl font-semibold text-gray-900 mb-2">
                   How can I contact Gokeys India?
                 </h3>
-                <p className="text-gray-700 leading-7">
+                <p className="text-gray-800 leading-7">
                   You can contact Gokeys India by phone or WhatsApp at
                   +91 9045916770. You can also email helpdesk@gokeys.in for
                   travel assistance.

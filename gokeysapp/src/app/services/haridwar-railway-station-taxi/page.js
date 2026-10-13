@@ -203,7 +203,7 @@ export default function HaridwarRailwayStationTaxiPage() {
                 Haridwar Railway Station Taxi & Cab Service 
               </h1>
 
-              <p className="mt-6 text-lg text-gray-700 leading-8">
+              <p className="mt-6 text-lg text-gray-800 leading-8">
                 Need a taxi from Haridwar Railway Station? Gokeys India
                 Uttarakhand top travel agency, provides cab booking assistance for travelers arriving in
                 Haridwar and continuing to hotels, Rishikesh, Delhi, Char
@@ -254,21 +254,21 @@ export default function HaridwarRailwayStationTaxiPage() {
               Taxi from Haridwar Railway Station
             </h2>
 
-            <p className="text-gray-700 leading-8 mb-4">
+            <p className="text-gray-800 leading-8 mb-4">
               Haridwar Railway Station is an important arrival point for
               travelers visiting Haridwar and Uttarakhand. Many passengers
               arriving by train need transportation to their hotel, pilgrimage
               destination, tourist places or the next stop on their itinerary.
             </p>
 
-            <p className="text-gray-700 leading-8 mb-4">
+            <p className="text-gray-800 leading-8 mb-4">
               Gokeys India provides taxi and cab booking assistance from
               Haridwar Railway Station for individuals, families and groups.
               You can directly contact us with your pickup time, destination, number of
               passengers and luggage requirements. And as well located about 100 Mtrs from Haridwar Railway Station, we can arrange a taxi for you to your hotel, Rishikesh, Delhi or other Uttarakhand destinations.
             </p>
 
-            <p className="text-gray-700 leading-8">
+            <p className="text-gray-800 leading-8">
               Whether you are staying in Haridwar for a few days or beginning
               a longer Uttarakhand journey, a pre-arranged taxi can make the
               transfer from the railway station easier to plan.
@@ -297,7 +297,7 @@ export default function HaridwarRailwayStationTaxiPage() {
                     Railway Station to Hotel
                   </h3>
 
-                  <p className="text-gray-600 leading-7">
+                  <p className="text-gray-800 leading-7">
                     Arrange transportation from Haridwar Railway Station to
                     your hotel or accommodation in Haridwar. We charge a minimum starting fare of ₹500 for hotel drop.
                   </p>
@@ -310,7 +310,7 @@ export default function HaridwarRailwayStationTaxiPage() {
                     Station to Rishikesh
                   </h3>
 
-                  <p className="text-gray-600 leading-7">
+                  <p className="text-gray-800 leading-7">
                     If you are continuing your journey from Haridwar to Rishikesh, a taxi can be arranged for onward travel by Gokeys for best Price.
                   </p>
 
@@ -322,7 +322,7 @@ export default function HaridwarRailwayStationTaxiPage() {
                     Char Dham Travel
                   </h3>
 
-                  <p className="text-gray-600 leading-7">
+                  <p className="text-gray-800 leading-7">
                     Char Dham Yatra is holy pilgrimage journey in Garhwal Uttarakhand. If you are planning Char Dham Yatra, Gokeys India can help discuss taxi and wider transportation requirements starting from Haridwar Railway Station.
                   </p>
 
@@ -341,7 +341,7 @@ export default function HaridwarRailwayStationTaxiPage() {
                     Haridwar to Delhi
                   </h3>
 
-                  <p className="text-gray-600 leading-7">
+                  <p className="text-gray-800 leading-7">
                    If you are looking for Haridwar to Delhi Taxi like Delhi Airport, Railway Station and more places, you can easily book a cab with us.
                   </p>
 
@@ -360,7 +360,7 @@ export default function HaridwarRailwayStationTaxiPage() {
                     Uttarakhand Tours
                   </h3>
 
-                  <p className="text-gray-600 leading-7">
+                  <p className="text-gray-800 leading-7">
                     We offer various Uttarakhand tour packages like Mussoorie Chopta, Auli, Harsil, Char Dham Yatra, Nainital, Kainchi Dham, Corbett Park and more places trips. You can discuss your complete Uttarakhand travel plan with Gokeys India.
                   </p>
 
@@ -379,7 +379,7 @@ export default function HaridwarRailwayStationTaxiPage() {
                     Local Haridwar Taxi
                   </h3>
 
-                  <p className="text-gray-600 leading-7">
+                  <p className="text-gray-800 leading-7">
                     Haridwar has many sightseeing places like Mansa Devi, Chandi Devi, Har Ki Pauri, Kankhal Daksh Temple, Bharat Mata Temple, Shanti Kunj and more places. Book Now one day taxi to Haridwar Sightseeing with us.
                   </p>
 
@@ -455,7 +455,7 @@ export default function HaridwarRailwayStationTaxiPage() {
                   Haridwar Railway Station to Haridwar Hotels
                 </h3>
 
-                <p className="text-gray-600 leading-7">
+                <p className="text-gray-800 leading-7">
                   Convenient transfer arrangements can be discussed for
                   travelers staying at hotels in Haridwar.
                 </p>
@@ -468,7 +468,7 @@ export default function HaridwarRailwayStationTaxiPage() {
                   Haridwar Railway Station to Rishikesh
                 </h3>
 
-                <p className="text-gray-600 leading-7">
+                <p className="text-gray-800 leading-7">
                   A useful option for travelers continuing from Haridwar to
                   Rishikesh after arriving by train.
                 </p>
@@ -481,7 +481,7 @@ export default function HaridwarRailwayStationTaxiPage() {
                   Haridwar Railway Station to Delhi
                 </h3>
 
-                <p className="text-gray-600 leading-7">
+                <p className="text-gray-800 leading-7">
                   Discuss a private cab for onward travel towards Delhi.
                 </p>
 
@@ -493,7 +493,7 @@ export default function HaridwarRailwayStationTaxiPage() {
                   Haridwar Railway Station to Uttarakhand
                 </h3>
 
-                <p className="text-gray-600 leading-7">
+                <p className="text-gray-800 leading-7">
                   Plan onward transportation towards destinations included in
                   your Uttarakhand itinerary.
                 </p>
@@ -517,14 +517,14 @@ export default function HaridwarRailwayStationTaxiPage() {
                 Haridwar Railway Station Taxi for Pilgrimage Travel
               </h2>
 
-              <p className="text-gray-700 leading-8 mb-4">
+              <p className="text-gray-800 leading-8 mb-4">
                 Haridwar is a common starting point for travelers heading
                 towards several pilgrimage destinations in Uttarakhand.
                 Travelers arriving by train can arrange onward transportation
                 according to their planned itinerary.
               </p>
 
-              <p className="text-gray-700 leading-8 mb-5">
+              <p className="text-gray-800 leading-8 mb-5">
                 If you are planning Kedarnath, Badrinath or Char Dham Yatra,
                 share your complete travel plan with the Gokeys team so that
                 transportation requirements can be discussed together.
@@ -552,13 +552,13 @@ export default function HaridwarRailwayStationTaxiPage() {
               Haridwar Railway Station to Hotel Transfer
             </h2>
 
-            <p className="text-gray-700 leading-8 mb-4">
+            <p className="text-gray-800 leading-8 mb-4">
               If you have already booked your hotel in Haridwar, you can
               provide the hotel name and location when making your taxi
               enquiry.
             </p>
 
-            <p className="text-gray-700 leading-8">
+            <p className="text-gray-800 leading-8">
               If you still need accommodation, Gokeys India can also help
               discuss hotel booking requirements for your Uttarakhand trip.
             </p>
@@ -597,7 +597,7 @@ export default function HaridwarRailwayStationTaxiPage() {
                     Share Train Details
                   </h3>
 
-                  <p className="text-gray-600">
+                  <p className="text-gray-800">
                     Provide your arrival or departure date and approximate
                     timing.
                   </p>
@@ -614,7 +614,7 @@ export default function HaridwarRailwayStationTaxiPage() {
                     Tell Us Your Destination
                   </h3>
 
-                  <p className="text-gray-600">
+                  <p className="text-gray-800">
                     Share your hotel, city or onward travel destination.
                   </p>
 
@@ -630,7 +630,7 @@ export default function HaridwarRailwayStationTaxiPage() {
                     Share Passenger Details
                   </h3>
 
-                  <p className="text-gray-600">
+                  <p className="text-gray-800">
                     Tell us the number of passengers and luggage requirements.
                   </p>
 
@@ -646,7 +646,7 @@ export default function HaridwarRailwayStationTaxiPage() {
                     Confirm Your Taxi
                   </h3>
 
-                  <p className="text-gray-600">
+                  <p className="text-gray-800">
                     Review the travel arrangement and confirm your booking.
                   </p>
 
@@ -669,7 +669,7 @@ export default function HaridwarRailwayStationTaxiPage() {
               Tips for Booking a Railway Station Taxi
             </h2>
 
-            <ul className="list-disc pl-6 space-y-3 text-gray-700 leading-7">
+            <ul className="list-disc pl-6 space-y-3 text-gray-800 leading-7">
 
               <li>
                 Share your train arrival time when making the enquiry.
@@ -722,7 +722,7 @@ export default function HaridwarRailwayStationTaxiPage() {
                     Local Travel Experience
                   </h3>
 
-                  <p className="text-gray-600 leading-7">
+                  <p className="text-gray-800 leading-7">
                     Gokeys India is based in Haridwar and serves travelers
                     planning journeys across Uttarakhand.
                   </p>
@@ -735,7 +735,7 @@ export default function HaridwarRailwayStationTaxiPage() {
                     Taxi & Tour Assistance
                   </h3>
 
-                  <p className="text-gray-600 leading-7">
+                  <p className="text-gray-800 leading-7">
                     Your railway station transfer can be discussed together
                     with hotel, taxi and wider tour requirements.
                   </p>
@@ -748,7 +748,7 @@ export default function HaridwarRailwayStationTaxiPage() {
                     Uttarakhand Focus
                   </h3>
 
-                  <p className="text-gray-600 leading-7">
+                  <p className="text-gray-800 leading-7">
                     We specialize in travel arrangements for Uttarakhand
                     pilgrimage and leisure journeys.
                   </p>
@@ -761,7 +761,7 @@ export default function HaridwarRailwayStationTaxiPage() {
                     Direct Enquiry
                   </h3>
 
-                  <p className="text-gray-600 leading-7">
+                  <p className="text-gray-800 leading-7">
                     Contact the team directly with your travel details and
                     discuss the appropriate taxi arrangement.
                   </p>
@@ -795,7 +795,7 @@ export default function HaridwarRailwayStationTaxiPage() {
                   Taxi Services in Haridwar
                 </h3>
 
-                <p className="text-gray-600">
+                <p className="text-gray-800">
                   Explore local and outstation taxi services from Haridwar.
                 </p>
               </a>
@@ -808,7 +808,7 @@ export default function HaridwarRailwayStationTaxiPage() {
                   Travel Agency in Haridwar
                 </h3>
 
-                <p className="text-gray-600">
+                <p className="text-gray-800">
                   Plan tours, pilgrimage journeys and travel services from
                   Haridwar.
                 </p>
@@ -822,7 +822,7 @@ export default function HaridwarRailwayStationTaxiPage() {
                   Uttarakhand Tour Operators
                 </h3>
 
-                <p className="text-gray-600">
+                <p className="text-gray-800">
                   Plan a complete Uttarakhand trip with transportation and
                   accommodation assistance.
                 </p>
@@ -852,7 +852,7 @@ export default function HaridwarRailwayStationTaxiPage() {
                     Can I book a taxi from Haridwar Railway Station?
                   </h3>
 
-                  <p className="text-gray-700 leading-7">
+                  <p className="text-gray-800 leading-7">
                     Yes. Gokeys India provides taxi and cab booking assistance
                     for travelers arriving at or departing from Haridwar
                     Railway Station, subject to availability.
@@ -865,7 +865,7 @@ export default function HaridwarRailwayStationTaxiPage() {
                     hotel?
                   </h3>
 
-                  <p className="text-gray-700 leading-7">
+                  <p className="text-gray-800 leading-7">
                     Yes. Share your hotel or accommodation details when
                     making your enquiry so that a suitable taxi arrangement
                     so we can have your taxi ready before your train arrives.
@@ -878,7 +878,7 @@ export default function HaridwarRailwayStationTaxiPage() {
                     Rishikesh?
                   </h3>
 
-                  <p className="text-gray-700 leading-7">
+                  <p className="text-gray-800 leading-7">
                     Yes, Taxis are available for Rishikesh from Haridwar with Starting prices at ₹1500/-. 
                   </p>
                 </div>
@@ -889,7 +889,7 @@ export default function HaridwarRailwayStationTaxiPage() {
                     Dham Yatra?
                   </h3>
 
-                  <p className="text-gray-700 leading-7">
+                  <p className="text-gray-800 leading-7">
                     Yes. Gokeys Haridwar is one of the leading travel agencies for Char Dham Yatra with years of experience. Travelers planning Char Dham Yatra can discuss taxi and wider transportation requirements starting from Haridwar Railway Station.
                   </p>
                 </div>
@@ -899,7 +899,7 @@ export default function HaridwarRailwayStationTaxiPage() {
                     Can I book a round-trip taxi from Haridwar?
                   </h3>
 
-                  <p className="text-gray-700 leading-7">
+                  <p className="text-gray-800 leading-7">
                     Yes. Round-trip taxi is available based on your itinerary, travel dates, destinations and vehicle requirements.
                   </p>
                 </div>
@@ -909,7 +909,7 @@ export default function HaridwarRailwayStationTaxiPage() {
                     How can I book a Haridwar Railway Station taxi?
                   </h3>
 
-                  <p className="text-gray-700 leading-7">
+                  <p className="text-gray-800 leading-7">
                     Contact Gokeys India by phone or WhatsApp at +91 9045916770
                     and share your arrival or departure details, destination,
                     travel date and number of passengers.

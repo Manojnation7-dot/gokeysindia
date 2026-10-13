@@ -223,7 +223,7 @@ export default function DelhiToHaridwarCabPage() {
                 Delhi to Haridwar Cab & Taxi Service
               </h1>
 
-              <p className="mt-6 text-lg text-gray-700 leading-8">
+              <p className="mt-6 text-lg text-gray-800 leading-8">
                 Looking for a Delhi to Haridwar cab? Gokeys India is top travel agency in Haridwar and provides
                 taxi and cab booking assistance for travelers going from
                 Delhi to Haridwar or round-trip arrangements for pilgrimage, leisure, business and
@@ -272,18 +272,18 @@ export default function DelhiToHaridwarCabPage() {
               Delhi to Haridwar Cab Booking
             </h2>
 
-            <p className="text-gray-700 leading-8 mb-4">
+            <p className="text-gray-800 leading-8 mb-4">
               Haridwar is one of the most popular pilgrimage and travel
               destinations in Uttarakhand. Travelers arriving from Delhi
               often choose a private cab for a direct and convenient journey
               to Haridwar. It is also known for starting point of Holy <a href="/blog/char-dham-yatra-2027">Char Dham Yatra</a> and other Uttarakhand travel.
             </p>
 
-            <p className="text-gray-700 leading-8 mb-4">
+            <p className="text-gray-800 leading-8 mb-4">
               Gokeys India provides various cab and taxi options like one-way, round-trip, Delhi Airport to Haridwar and onward travel from Haridwar to other Uttarakhand destinations. Travelers can also discuss hotel booking requirements in Haridwar and across Uttarakhand.
             </p>
 
-            <p className="text-gray-700 leading-8">
+            <p className="text-gray-800 leading-8">
               You can share your pickup location, travel date, number of
               passengers and luggage requirements with our team so that the
               appropriate travel arrangement can be discussed.
@@ -310,7 +310,7 @@ export default function DelhiToHaridwarCabPage() {
                     One-Way Cab
                   </h3>
 
-                  <p className="text-gray-600 leading-7">
+                  <p className="text-gray-800 leading-7">
                     We provide one way cab arrangements from Delhi to Haridwar based on your travel date, pickup location and vehicle requirements.
                   </p>
 
@@ -322,7 +322,7 @@ export default function DelhiToHaridwarCabPage() {
                     Round-Trip Taxi
                   </h3>
 
-                  <p className="text-gray-600 leading-7">
+                  <p className="text-gray-800 leading-7">
                     Discuss a return cab arrangement if you are traveling from
                     Delhi to Haridwar and returning to Delhi. We also have local Haridwar cabs, so if you are travelling for pilgrimage or leisure, you can discuss onward travel from Haridwar to other Uttarakhand destinations.
                   </p>
@@ -335,7 +335,7 @@ export default function DelhiToHaridwarCabPage() {
                     Delhi Airport to Haridwar
                   </h3>
 
-                  <p className="text-gray-600 leading-7">
+                  <p className="text-gray-800 leading-7">
                     Travelers arriving at Delhi Airport can discuss cab
                     arrangements for onward travel to Haridwar.
                   </p>
@@ -348,7 +348,7 @@ export default function DelhiToHaridwarCabPage() {
                     Family Travel
                   </h3>
 
-                  <p className="text-gray-600 leading-7">
+                  <p className="text-gray-800 leading-7">
                     Private cab arrangements can be discussed for families
                     traveling from Delhi to Haridwar.
                   </p>
@@ -361,7 +361,7 @@ export default function DelhiToHaridwarCabPage() {
                     Pilgrimage Travel
                   </h3>
 
-                  <p className="text-gray-600 leading-7">
+                  <p className="text-gray-800 leading-7">
                     Start your Haridwar pilgrimage journey from Delhi and
                     continue onward towards other Uttarakhand destinations.
                   </p>
@@ -381,7 +381,7 @@ export default function DelhiToHaridwarCabPage() {
                     Uttarakhand Travel
                   </h3>
 
-                  <p className="text-gray-600 leading-7">
+                  <p className="text-gray-800 leading-7">
                     Continue your journey from Haridwar towards destinations
                     across Uttarakhand.
                   </p>
@@ -424,7 +424,7 @@ export default function DelhiToHaridwarCabPage() {
                 </div>
               </div>
 
-              <p className="text-gray-700 leading-8">
+              <p className="text-gray-800 leading-8">
                 Travel time depends on your Delhi pickup point, traffic and the
                 route taken (via NH334 through Meerut-Muzaffarnagar-Roorkee is the
                 most common, also there is new Dehradun Express Way is available about 4 Hours it takes to reach Haridwar). Fares vary by vehicle type, one-way vs round-trip,
@@ -443,7 +443,7 @@ export default function DelhiToHaridwarCabPage() {
                 Delhi to Haridwar Cab Fare
               </h2>
 
-              <p className="mt-3 text-gray-600 max-w-2xl mx-auto leading-7">
+              <p className="mt-3 text-gray-800 max-w-2xl mx-auto leading-7">
                 Choose from comfortable sedan, SUV and Tempo Traveller options for
                 one-way and round-trip travel between Delhi and Haridwar.
               </p>
@@ -552,13 +552,13 @@ export default function DelhiToHaridwarCabPage() {
               Delhi to Haridwar Travel Route
             </h2>
 
-            <p className="text-gray-700 leading-8 mb-4">
+            <p className="text-gray-800 leading-8 mb-4">
               Delhi and Haridwar are connected by road, making a private cab
               a convenient option for travelers who prefer direct
               transportation. The total distance is about 210-220 Kms and the drive takes about 4.5 to 5.5 hours depending on traffic, weather and road conditions. The most common route is via NH334 through Meerut, Muzaffarnagar and Roorkee, but there are other routes available as well.
             </p>
 
-            <p className="text-gray-700 leading-8 mb-6">
+            <p className="text-gray-800 leading-8 mb-6">
               The exact travel time can vary depending on your pickup
               location, traffic, weather, road conditions and the route used
               on the day of travel. Travelers should therefore avoid relying
@@ -618,7 +618,7 @@ export default function DelhiToHaridwarCabPage() {
                     Delhi Airport
                   </h3>
 
-                  <p className="text-gray-600 leading-7">
+                  <p className="text-gray-800 leading-7">
                     Travelers arriving in Delhi can discuss an onward cab to
                     Haridwar based on their arrival and pickup requirements.
                   </p>
@@ -631,7 +631,7 @@ export default function DelhiToHaridwarCabPage() {
                     New Delhi Railway Area
                   </h3>
 
-                  <p className="text-gray-600 leading-7">
+                  <p className="text-gray-800 leading-7">
                     Pickup available from New Delhi Railway Station, Old Delhi Railway Station and Nizamuddin Railway Station.
                   </p>
 
@@ -643,7 +643,7 @@ export default function DelhiToHaridwarCabPage() {
                     Other Delhi Locations
                   </h3>
 
-                  <p className="text-gray-600 leading-7">
+                  <p className="text-gray-800 leading-7">
                     Share your exact pickup location with us and we will check upon the current cab located there, so we can easily arrange any cab for you.
                   </p>
 
@@ -664,14 +664,14 @@ export default function DelhiToHaridwarCabPage() {
               Continue From Haridwar to Uttarakhand
             </h2>
 
-            <p className="text-gray-700 leading-8 mb-4">
+            <p className="text-gray-800 leading-8 mb-4">
               Haridwar can be the beginning of a longer Uttarakhand journey.
               From Haridwar, travelers can continue towards Rishikesh,
               Mussoorie, Kedarnath, Badrinath and other destinations depending
               on their itinerary.
             </p>
 
-            <p className="text-gray-700 leading-8 mb-6">
+            <p className="text-gray-800 leading-8 mb-6">
               If you are planning more than just a Delhi to Haridwar transfer,
               you can discuss an extended Uttarakhand tour with Gokeys India. We offer various Uttarakhand Tour Packages like Mussoorie Chopta, Auli, Harsil, Char Dham Yatra, Nainital, Kainchi Dham, Corbett Park and more places trips.
             </p>
@@ -707,12 +707,12 @@ export default function DelhiToHaridwarCabPage() {
                 Hotel Booking in Haridwar & Uttarakhand
               </h2>
 
-              <p className="text-gray-700 leading-8 mb-4">
+              <p className="text-gray-800 leading-8 mb-4">
                 If Haridwar is your overnight stop before continuing into
                 Uttarakhand, you can book hotels with us, we have large number of Hotel affiliates in Haridwar and across Uttarakhand. We can assist you with hotel booking in Haridwar, Rishikesh, Mussoorie, Dehradun, Nainital, Almora, Kedarnath, Badrinath and other destinations.
               </p>
 
-              <p className="text-gray-700 leading-8">
+              <p className="text-gray-800 leading-8">
                 Travelers can also discuss hotel requirements for other
                 destinations included in their Uttarakhand itinerary.
               </p>
@@ -749,7 +749,7 @@ export default function DelhiToHaridwarCabPage() {
                   Share Pickup
                 </h3>
 
-                <p className="text-gray-600">
+                <p className="text-gray-800">
                   Tell us your Delhi pickup location.
                 </p>
 
@@ -765,7 +765,7 @@ export default function DelhiToHaridwarCabPage() {
                   Select Date
                 </h3>
 
-                <p className="text-gray-600">
+                <p className="text-gray-800">
                   Share your travel date and preferred pickup time.
                 </p>
 
@@ -781,7 +781,7 @@ export default function DelhiToHaridwarCabPage() {
                   Share Group Size
                 </h3>
 
-                <p className="text-gray-600">
+                <p className="text-gray-800">
                   Tell us the number of passengers and luggage requirements.
                 </p>
 
@@ -797,7 +797,7 @@ export default function DelhiToHaridwarCabPage() {
                   Confirm Travel
                 </h3>
 
-                <p className="text-gray-600">
+                <p className="text-gray-800">
                   Review the travel arrangement and confirm your booking.
                 </p>
 
@@ -818,7 +818,7 @@ export default function DelhiToHaridwarCabPage() {
                 Before Booking Your Delhi to Haridwar Taxi
               </h2>
 
-              <ul className="list-disc pl-6 space-y-3 text-gray-700 leading-7">
+              <ul className="list-disc pl-6 space-y-3 text-gray-800 leading-7">
 
                 <li>
                   Confirm the exact Delhi pickup location.
@@ -871,7 +871,7 @@ export default function DelhiToHaridwarCabPage() {
                   Can I book a cab from Delhi to Haridwar?
                 </h3>
 
-                <p className="text-gray-700 leading-7">
+                <p className="text-gray-800 leading-7">
                   Yes. Gokeys India provides cab and taxi booking assistance
                   for travel from Delhi to Haridwar, subject to vehicle
                   availability and the requested travel date.
@@ -883,7 +883,7 @@ export default function DelhiToHaridwarCabPage() {
                   Can I book a one-way Delhi to Haridwar taxi?
                 </h3>
 
-                <p className="text-gray-700 leading-7">
+                <p className="text-gray-800 leading-7">
                   Yes, Delhi to Haridwar one way taxi available with Gokeys India from Old Delhi Railway Station, Nizamuddin Railway Station, Delhi Airport, New Delhi Railway Station, ISBT Bus Stand Kashmiri Gate and more places.
                 </p>
               </div>
@@ -893,7 +893,7 @@ export default function DelhiToHaridwarCabPage() {
                   Can I book a round-trip cab from Delhi to Haridwar?
                 </h3>
 
-                <p className="text-gray-700 leading-7">
+                <p className="text-gray-800 leading-7">
                   Yes. We have own fleet of Sedan, SUV and Tempo Travellers from Delhi to Haridwar and Back. So we can easily book a round trip cab for you.
                 </p>
               </div>
@@ -903,7 +903,7 @@ export default function DelhiToHaridwarCabPage() {
                   Can I book a Delhi Airport to Haridwar cab?
                 </h3>
 
-                <p className="text-gray-700 leading-7">
+                <p className="text-gray-800 leading-7">
                   Yes, you can easily book a Cab according to your flight schedule. We will be at IGI Airport Terminal 2,3 for Domestic and Terminal 1 for International to Pickup you up from there to Haridwar.
                 </p>
               </div>
@@ -914,7 +914,7 @@ export default function DelhiToHaridwarCabPage() {
                   destinations?
                 </h3>
 
-                <p className="text-gray-700 leading-7">
+                <p className="text-gray-800 leading-7">
                   Yes. Travelers can discuss onward taxi or tour arrangements
                   from Haridwar to destinations across Uttarakhand depending
                   on their itinerary.
@@ -926,7 +926,7 @@ export default function DelhiToHaridwarCabPage() {
                   How can I book a Delhi to Haridwar cab?
                 </h3>
 
-                <p className="text-gray-700 leading-7">
+                <p className="text-gray-800 leading-7">
                   Contact Gokeys India by phone or WhatsApp at +91 9045916770, 7830718687, 7830718680
                   and provide your pickup location, destination, travel date,
                   number of passengers and luggage requirements.

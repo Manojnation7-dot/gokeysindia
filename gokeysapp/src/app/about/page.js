@@ -106,7 +106,7 @@ const breadcrumbSchema = buildBreadcrumbList([
         <section className="gk-wrap gk-section grid lg:grid-cols-2 gap-6">
           <div className="gk-card p-6 md:p-8">
             <h2 className="gk-h2 mb-4">Our Services</h2>
-            <ul className="list-disc list-outside pl-5 space-y-2 text-slate-ink marker:text-sun">
+            <ul className="list-disc list-outside pl-5 space-y-2 text-gray-800 marker:text-sun">
               <li>Tour Packages for <a href="https://gokeys.in/tours/char-dham-yatra-package-from-haridwar" className="text-brand-600 font-semibold hover:underline">Char Dham Yatra</a>, Kedarnath Yatra, Badrinath Yatra, Yamunotri Yatra, Gangotri Yatra, and more</li>
               <li>Hotel Bookings</li>
               <li>Ticketing (Buses, Trains, Flights)</li>
@@ -119,7 +119,7 @@ const breadcrumbSchema = buildBreadcrumbList([
           </div>
           <div className="gk-card p-6 md:p-8">
             <h2 className="gk-h2 mb-4">How to Reach Us:</h2>
-            <div className="space-y-2 text-slate-ink">
+            <div className="space-y-2 text-gray-800">
               <p><strong>Address:</strong>  4th Shop, Zila Panchayat Market, Railway Road,  
             Haridwar, Uttarakhand, India - 249401</p>
               <p><strong>Phone:</strong> +91 9045916770, 7830718687, 7830718680</p>

@@ -212,7 +212,7 @@ export default function HaridwarToRishikeshTaxiPage() {
                 Haridwar to Rishikesh Taxi & Cab Service
               </h1>
 
-              <p className="mt-6 text-lg text-gray-700 leading-8">
+              <p className="mt-6 text-lg text-gray-800 leading-8">
                 Looking for a taxi from Haridwar to Rishikesh? Gokeys India the top travel agency in Haridwar offer best taxi charges to Rishikesh with Local Drivers and comfortable vehicles.
               </p>
 
@@ -249,16 +249,16 @@ export default function HaridwarToRishikeshTaxiPage() {
               Taxi from Haridwar to Rishikesh
             </h2>
 
-            <p className="text-gray-700 leading-8 mb-4">
+            <p className="text-gray-800 leading-8 mb-4">
               Haridwar and Rishikesh are two of the most popular destinations
               in Uttarakhand. Where Haridwar is mainly known for religious Purpose but Rishikesh is known for Religious, Yoga and Meditations with various adventure activities. 
             </p>
 
-            <p className="text-gray-700 leading-8 mb-4">
+            <p className="text-gray-800 leading-8 mb-4">
               Gokeys India, a Haridwar-based travel agency, provide cabs, car rental, roundtrips, Sightseeing and local tour package to various places like Rishikesh, Mussoorie, Tehri Lake, Char Dham Yatra and more.
             </p>
 
-            <p className="text-gray-700 leading-8">
+            <p className="text-gray-800 leading-8">
               If you are coming to Haridwar Railway Station, Bus Stand and want to take a pickup from Haridwar to Rishikesh then you can let us know about your itinerary, we will help you to book a best and comfortable cab.
             </p>
 
@@ -297,7 +297,7 @@ export default function HaridwarToRishikeshTaxiPage() {
                     Pickup
                   </h3>
 
-                  <p className="text-gray-600 leading-7">
+                  <p className="text-gray-800 leading-7">
                     Haridwar Railway Station, hotel or another agreed pickup
                     location in Haridwar.
                   </p>
@@ -310,7 +310,7 @@ export default function HaridwarToRishikeshTaxiPage() {
                     Destination
                   </h3>
 
-                  <p className="text-gray-600 leading-7">
+                  <p className="text-gray-800 leading-7">
                     Rishikesh Hotels, Ashrams, Triveni Ghat, Tapovan, Phoolchatti, Byasi, Kodiyala, Ram Jhulla, Laxman Jhulla and more.
                   </p>
 
@@ -322,7 +322,7 @@ export default function HaridwarToRishikeshTaxiPage() {
                     Travel Type
                   </h3>
 
-                  <p className="text-gray-600 leading-7">
+                  <p className="text-gray-800 leading-7">
                     One-way or round-trip taxi arrangements can be booked
                     according to your itinerary.
                   </p>
@@ -354,7 +354,7 @@ export default function HaridwarToRishikeshTaxiPage() {
                   Families
                 </h3>
 
-                <p className="text-gray-600 leading-7">
+                <p className="text-gray-800 leading-7">
                   Suitable for families carrying luggage and traveling
                   together between Haridwar and Rishikesh.
                 </p>
@@ -367,7 +367,7 @@ export default function HaridwarToRishikeshTaxiPage() {
                   Couples
                 </h3>
 
-                <p className="text-gray-600 leading-7">
+                <p className="text-gray-800 leading-7">
                   Private transportation can make it easier to plan your
                   journey around your own schedule.
                 </p>
@@ -380,7 +380,7 @@ export default function HaridwarToRishikeshTaxiPage() {
                   Groups
                 </h3>
 
-                <p className="text-gray-600 leading-7">
+                <p className="text-gray-800 leading-7">
                   Discuss vehicle options according to your group size and
                   luggage requirements.
                 </p>
@@ -393,7 +393,7 @@ export default function HaridwarToRishikeshTaxiPage() {
                   Pilgrims
                 </h3>
 
-                <p className="text-gray-600 leading-7">
+                <p className="text-gray-800 leading-7">
                   Travelers visiting Haridwar and Rishikesh as part of a
                   pilgrimage itinerary can book according to their transportation requirements.
                 </p>
@@ -455,7 +455,7 @@ export default function HaridwarToRishikeshTaxiPage() {
                 Haridwar Pickup Locations for Rishikesh Taxi
               </h2>
 
-              <p className="text-gray-700 leading-8 mb-6">
+              <p className="text-gray-800 leading-8 mb-6">
                 When making a taxi enquiry, share your exact pickup location
                 so that the travel arrangement can be planned correctly.
                 Common pickup points may include:
@@ -506,7 +506,7 @@ export default function HaridwarToRishikeshTaxiPage() {
                     One-Way & Round-Trip Taxi Options
                   </h2>
 
-                  <p className="mt-3 text-gray-600 max-w-2xl mx-auto leading-7">
+                  <p className="mt-3 text-gray-800 max-w-2xl mx-auto leading-7">
                     Choose a convenient taxi option for travelling between
                     Haridwar and Rishikesh based on your travel plans.
                   </p>
@@ -540,7 +540,7 @@ export default function HaridwarToRishikeshTaxiPage() {
 
                     </div>
 
-                    <p className="text-gray-700 leading-7">
+                    <p className="text-gray-800 leading-7">
                       One-way taxi service to Rishikesh can be booked by contacting
                       us by phone or WhatsApp. You can also visit our office in
                       Haridwar to discuss your travel requirements and book a cab.
@@ -581,7 +581,7 @@ export default function HaridwarToRishikeshTaxiPage() {
 
                     </div>
 
-                    <p className="text-gray-700 leading-7">
+                    <p className="text-gray-800 leading-7">
                       If you are planning a round trip or sightseeing tour from
                       Haridwar to Rishikesh, share your travel requirements with us.
                       We can help you choose a suitable cab based on your itinerary.
@@ -613,13 +613,13 @@ export default function HaridwarToRishikeshTaxiPage() {
                 Continue Your Uttarakhand Journey from Rishikesh
               </h2>
 
-              <p className="text-gray-700 leading-8 mb-4">
+              <p className="text-gray-800 leading-8 mb-4">
                 Rishikesh can also be part of a wider Uttarakhand itinerary.
                 Depending on your travel plans, you may continue towards
                 other destinations like Kunjapuri, Char Dham Yatra, Dhanaulti, Mussoorie, Kanatal, Pauri Garhwal, Rudraprayag, Dhari Devi Temple, Devprayag and more locations.
               </p>
 
-              <p className="text-gray-700 leading-8 mb-5">
+              <p className="text-gray-800 leading-8 mb-5">
                 If you are planning a larger Uttarakhand trip like Auli Chopta Snow Tour, Trekking Trips to Gurson Bugyal Valley of Flower or any other place, Religious trip to Char Dham yatra, then Gokeys India
                 can help you discuss tour, taxi and accommodation requirements
                 together.
@@ -647,14 +647,14 @@ export default function HaridwarToRishikeshTaxiPage() {
               Haridwar, Rishikesh & Char Dham Yatra
             </h2>
 
-            <p className="text-gray-700 leading-8 mb-4">
+            <p className="text-gray-800 leading-8 mb-4">
               Some travelers combine Haridwar and Rishikesh with a pilgrimage
               journey through Uttarakhand. If your trip includes Kedarnath,
               Badrinath, Gangotri or Yamunotri, it is useful to plan your
               complete transportation itinerary in advance.
             </p>
 
-            <p className="text-gray-700 leading-8 mb-5">
+            <p className="text-gray-800 leading-8 mb-5">
               Gokeys India can help you to book transportation and tour
               requirements for a wider Char Dham journey.
             </p>
@@ -693,7 +693,7 @@ export default function HaridwarToRishikeshTaxiPage() {
                     Choose Your Date
                   </h3>
 
-                  <p className="text-gray-600">
+                  <p className="text-gray-800">
                     Tell us the date you plan to travel.
                   </p>
 
@@ -709,7 +709,7 @@ export default function HaridwarToRishikeshTaxiPage() {
                     Share Pickup
                   </h3>
 
-                  <p className="text-gray-600">
+                  <p className="text-gray-800">
                     Provide your hotel, railway station or other pickup point.
                   </p>
 
@@ -725,7 +725,7 @@ export default function HaridwarToRishikeshTaxiPage() {
                     Tell Us Your Group Size
                   </h3>
 
-                  <p className="text-gray-600">
+                  <p className="text-gray-800">
                     Share passenger and luggage requirements.
                   </p>
 
@@ -741,7 +741,7 @@ export default function HaridwarToRishikeshTaxiPage() {
                     Confirm Arrangement
                   </h3>
 
-                  <p className="text-gray-600">
+                  <p className="text-gray-800">
                     Discuss the available taxi option and confirm your travel.
                   </p>
 
@@ -772,7 +772,7 @@ export default function HaridwarToRishikeshTaxiPage() {
                   Haridwar-Based Travel Team
                 </h3>
 
-                <p className="text-gray-600 leading-7">
+                <p className="text-gray-800 leading-7">
                   Gokeys India a top Travel Agency is based in Haridwar and focuses on travel
                   services across Uttarakhand.
                 </p>
@@ -785,7 +785,7 @@ export default function HaridwarToRishikeshTaxiPage() {
                   Local & Outstation Travel
                 </h3>
 
-                <p className="text-gray-600 leading-7">
+                <p className="text-gray-800 leading-7">
                   We provide local car rental and outstation like Delhi, Agra, Shimla and more places Cab Services.
                 </p>
 
@@ -797,7 +797,7 @@ export default function HaridwarToRishikeshTaxiPage() {
                   Complete Travel Assistance
                 </h3>
 
-                <p className="text-gray-600 leading-7">
+                <p className="text-gray-800 leading-7">
                   Taxi arrangements can be booked together with hotels,
                   tours and pilgrimage travel.
                 </p>
@@ -810,7 +810,7 @@ export default function HaridwarToRishikeshTaxiPage() {
                   Direct Enquiry
                 </h3>
 
-                <p className="text-gray-600 leading-7">
+                <p className="text-gray-800 leading-7">
                   Contact the team directly and share your actual itinerary
                   instead of choosing a generic travel package.
                 </p>
@@ -844,7 +844,7 @@ export default function HaridwarToRishikeshTaxiPage() {
                     Taxi Services in Haridwar
                   </h3>
 
-                  <p className="text-gray-600">
+                  <p className="text-gray-800">
                     Explore taxi and cab services for local and outstation
                     travel from Haridwar.
                   </p>
@@ -858,7 +858,7 @@ export default function HaridwarToRishikeshTaxiPage() {
                     Haridwar Railway Station Taxi
                   </h3>
 
-                  <p className="text-gray-600">
+                  <p className="text-gray-800">
                     Arrange transportation from Haridwar Railway Station to
                     Rishikesh and other destinations.
                   </p>
@@ -872,7 +872,7 @@ export default function HaridwarToRishikeshTaxiPage() {
                     Travel Agency in Haridwar
                   </h3>
 
-                  <p className="text-gray-600">
+                  <p className="text-gray-800">
                     Plan tours, hotels, taxis and pilgrimage journeys with
                     Gokeys India.
                   </p>
@@ -902,7 +902,7 @@ export default function HaridwarToRishikeshTaxiPage() {
                   Can I book a taxi from Haridwar to Rishikesh?
                 </h3>
 
-                <p className="text-gray-700 leading-7">
+                <p className="text-gray-800 leading-7">
                   Yes. Gokeys India provides taxi and cab booking for travelers travelling from Haridwar to Rishikesh, subject to vehicle availability.
                 </p>
               </div>
@@ -913,7 +913,7 @@ export default function HaridwarToRishikeshTaxiPage() {
                   Rishikesh?
                 </h3>
 
-                <p className="text-gray-700 leading-7">
+                <p className="text-gray-800 leading-7">
                   Yes. Bookings are available for Sedan, SUV and Travellers cab from Haridwar to Rishikesh, so you don't have to worry about any group size.
                 </p>
               </div>
@@ -923,7 +923,7 @@ export default function HaridwarToRishikeshTaxiPage() {
                   Can I book a round-trip taxi from Haridwar to Rishikesh?
                 </h3>
 
-                <p className="text-gray-700 leading-7">
+                <p className="text-gray-800 leading-7">
                   Yes. Round-Trip Rishikesh and Full Day Rishikesh Sightseeing cabs are available with us. You can visit our office located near railway station haridwar and book directly a cab. 
                 </p>
               </div>
@@ -933,7 +933,7 @@ export default function HaridwarToRishikeshTaxiPage() {
                   Is Haridwar to Rishikesh taxi suitable for families?
                 </h3>
 
-                <p className="text-gray-700 leading-7">
+                <p className="text-gray-800 leading-7">
                   Yes, we have Ertiga, Kia Carens, Innova, Innova Crysta cabs and for big groups we have Tempo Travellers, so yes you can take any taxi as per the group size, and it will be about 45 min drive to reach Rishikesh, which is more comfortable with cabs, where you can easily put your luggage on Carrier.
                 </p>
               </div>
@@ -944,7 +944,7 @@ export default function HaridwarToRishikeshTaxiPage() {
                   destinations?
                 </h3>
 
-                <p className="text-gray-700 leading-7">
+                <p className="text-gray-800 leading-7">
                   Yes, Rishikesh is well known for starting point of various places like Char Dham, Dhanaulti Kanatal, Tehri Lake, Whole Garhwal regions and more.
                 </p>
               </div>
@@ -954,7 +954,7 @@ export default function HaridwarToRishikeshTaxiPage() {
                   How can I book a Haridwar to Rishikesh taxi?
                 </h3>
 
-                <p className="text-gray-700 leading-7">
+                <p className="text-gray-800 leading-7">
                   Contact Gokeys India by phone or WhatsApp at +91 9045916770
                   and share your travel date, pickup location, destination,
                   passenger count and luggage requirements.

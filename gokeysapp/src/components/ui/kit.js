@@ -142,7 +142,7 @@ export function FaqList({ items, white = true }) {
             <ChevronDown size={18} className="gk-faq-icon shrink-0 transition-transform" />
           </summary>
           {f.html ? (
-            <div className="px-5 pb-4 -mt-1 text-sm text-slate-ink leading-relaxed prose prose-sm max-w-none" dangerouslySetInnerHTML={{ __html: f.html }} />
+            <div className="px-5 pb-4 -mt-1 text-sm text-gray-800 leading-relaxed prose prose-sm max-w-none" dangerouslySetInnerHTML={{ __html: f.html }} />
           ) : (
             <p className="px-5 pb-4 -mt-1 text-[15px] text-slate-ink leading-relaxed">{f.answer}</p>
           )}

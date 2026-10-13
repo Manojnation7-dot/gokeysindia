@@ -211,7 +211,7 @@ export default function UttarakhandTourOperatorsPage() {
                 Uttarakhand Tour Operators for Complete Travel Planning
               </h1>
 
-              <p className="mt-6 text-lg text-gray-700 leading-8">
+              <p className="mt-6 text-lg text-gray-800 leading-8">
                 Uttarakhand is known for various Tourist Destinations and Religious temples, if you are planning a trip to Uttarakhand and looking for Travel Agency or Tour Operators in Uttarakhand. Then Gokeys India Travel In Himalayas is one of Top travel agencies based in Haridwar for All Uttarakhand Trips and tour Packages.
               </p>
 
@@ -246,15 +246,15 @@ export default function UttarakhandTourOperatorsPage() {
               Uttarakhand Tour Operators
             </h2>
 
-            <p className="text-gray-700 leading-8 mb-4">
+            <p className="text-gray-800 leading-8 mb-4">
               Uttarakhand offers a wide range of travel experiences, from Himalayan mountain journey to Adventure activities in Rishikesh, Religious Journey to Sacred Char Dham Temple and trekking experiences to various places like Kedar Kantha, Tungnath and Chandrashila, Valley of flower and the list goes on.
             </p>
 
-            <p className="text-gray-700 leading-8 mb-4">
+            <p className="text-gray-800 leading-8 mb-4">
              Gokey India, based in Haridwar, which is known for starting point of most tours of Uttarakhand. You can reach by Bus, Cab, Trains and air to Haridwar from different cities of India and explore the Himalayan Destinations like Auli, Chopta and more.
             </p>
 
-            <p className="text-gray-700 leading-8">
+            <p className="text-gray-800 leading-8">
               Gokeys India a Haridwar travel agency provides Tour Package to Uttarakhand various destinations, religious packages to Char Dham Temples, Hotel Bookings for all over Uttarakhand, Taxi and Cab Rental for One or Multiple Days itinerary and also customized tour package according to your needs.
             </p>
 
@@ -290,7 +290,7 @@ export default function UttarakhandTourOperatorsPage() {
                     Char Dham Yatra
                   </h3>
 
-                  <p className="text-gray-600 leading-7">
+                  <p className="text-gray-800 leading-7">
                     Plan a pilgrimage journey covering Yamunotri, Gangotri,
                     Kedarnath and Badrinath from Haridwar.
                   </p>
@@ -308,7 +308,7 @@ export default function UttarakhandTourOperatorsPage() {
                     Kedarnath Tours
                   </h3>
 
-                  <p className="text-gray-600 leading-7">
+                  <p className="text-gray-800 leading-7">
                     One of the 12 Jyotirlingas of Lord Shiva, located in the Garhwal Himalayas with Gokeys India. We have Multiple days trip to Kedarnath with Groups and Private trips.
                   </p>
                 </div>
@@ -318,7 +318,7 @@ export default function UttarakhandTourOperatorsPage() {
                     Badrinath Tours
                   </h3>
 
-                  <p className="text-gray-600 leading-7">
+                  <p className="text-gray-800 leading-7">
                     Badrinath is knows as Moskha Tirath means place of Salvation, so plan a trip to this scared place with us with 3 Days journey from Haridwar.
                   </p>
                 </div>
@@ -328,7 +328,7 @@ export default function UttarakhandTourOperatorsPage() {
                     Hill Station Tours
                   </h3>
 
-                  <p className="text-gray-600 leading-7">
+                  <p className="text-gray-800 leading-7">
                     Uttarakhand is approx. 80% on hills, so hill stations are most popular for trips throughout the year. You can plan a trip to Mussoorie, Nainital, Chopta, Auli, Harsil, Kausani, Binsar with us.
                   </p>
                 </div>
@@ -338,7 +338,7 @@ export default function UttarakhandTourOperatorsPage() {
                     Family Holidays
                   </h3>
 
-                  <p className="text-gray-600 leading-7">
+                  <p className="text-gray-800 leading-7">
                    Looking for a family holidays in Uttarakhand. It is one of the best destination to enjoy your vacations with Nature and mountain ranges.
                   </p>
                 </div>
@@ -348,7 +348,7 @@ export default function UttarakhandTourOperatorsPage() {
                     Customized Tours
                   </h3>
 
-                  <p className="text-gray-600 leading-7">
+                  <p className="text-gray-800 leading-7">
                     Didn't like any pre planned trip itinerary, don't worry we got you, we have all types of customize package according to your needs for Uttarakhand Travel.
                   </p>
                 </div>
@@ -377,7 +377,7 @@ export default function UttarakhandTourOperatorsPage() {
                   Haridwar
                 </h3>
 
-                <p className="text-gray-600 mt-2">
+                <p className="text-gray-800 mt-2">
                   Known for places of Lord Shiva and Lord Vishnu, also known as gateway of holy Char Dham Yatra.
                 </p>
               </a>
@@ -390,7 +390,7 @@ export default function UttarakhandTourOperatorsPage() {
                   Rishikesh
                 </h3>
 
-                <p className="text-gray-600 mt-2">
+                <p className="text-gray-800 mt-2">
                   Known for yoga and meditation, spirituality, adventure like white water river rafting and the Holy River Ganga.
                 </p>
               </a>
@@ -403,7 +403,7 @@ export default function UttarakhandTourOperatorsPage() {
                   Mussoorie
                 </h3>
 
-                <p className="text-gray-600 mt-2">
+                <p className="text-gray-800 mt-2">
                  Known as queen of Hills, Mussoorie is located about 35 Kms from Dehradun capital city of Uttarakhand, with amazing weather throughout the year.
                 </p>
               </a>
@@ -416,7 +416,7 @@ export default function UttarakhandTourOperatorsPage() {
                   Nainital
                 </h3>
 
-                <p className="text-gray-600 mt-2">
+                <p className="text-gray-800 mt-2">
                   The city of lake Nainital await you to visit amazing Naini lake, Mall Road, Bhimtal, Kainchi Dham and more places.
                 </p>
               </a>
@@ -429,7 +429,7 @@ export default function UttarakhandTourOperatorsPage() {
                   Kedarnath
                 </h3>
 
-                <p className="text-gray-600 mt-2">
+                <p className="text-gray-800 mt-2">
                   One of the India's most visited temples and abode of Lord Shiva in Himalayas.
                 </p>
               </a>
@@ -442,7 +442,7 @@ export default function UttarakhandTourOperatorsPage() {
                   Badrinath
                 </h3>
 
-                <p className="text-gray-600 mt-2">
+                <p className="text-gray-800 mt-2">
                   One of the main Char Dham Temples in India, known for Himalayan journey, salvation and amazing India first Village Mana.
                 </p>
               </a>
@@ -519,14 +519,14 @@ export default function UttarakhandTourOperatorsPage() {
                 Uttarakhand Tours Starting From Haridwar
               </h2>
 
-              <p className="text-gray-700 leading-8 mb-4">
+              <p className="text-gray-800 leading-8 mb-4">
                 Haridwar is well connected by road and rail and is frequently
                 used as a starting point for Uttarakhand travel. From here,
                 travelers can continue towards the Garhwal region, hill
                 stations and major pilgrimage destinations.
               </p>
 
-              <p className="text-gray-700 leading-8 mb-4">
+              <p className="text-gray-800 leading-8 mb-4">
                 Depending on your itinerary, a trip can combine several
                 destinations instead of visiting only one location. For
                 example, a journey may combine Haridwar and Rishikesh with
@@ -534,7 +534,7 @@ export default function UttarakhandTourOperatorsPage() {
                 sightseeing.
               </p>
 
-              <p className="text-gray-700 leading-8">
+              <p className="text-gray-800 leading-8">
                 Gokeys of the Uttarakhand's top travel agencies can help travelers discuss the route, transportation
                 and accommodation requirements before finalizing a tour.
               </p>
@@ -582,7 +582,7 @@ export default function UttarakhandTourOperatorsPage() {
                   Choose Destinations
                 </h3>
 
-                <p className="text-gray-600">
+                <p className="text-gray-800">
                   Tell us which places you want to visit in Uttarakhand.
                 </p>
 
@@ -598,7 +598,7 @@ export default function UttarakhandTourOperatorsPage() {
                   Share Travel Details
                 </h3>
 
-                <p className="text-gray-600">
+                <p className="text-gray-800">
                   Share your travel dates, group size and approximate trip
                   duration.
                 </p>
@@ -615,7 +615,7 @@ export default function UttarakhandTourOperatorsPage() {
                   Plan the Itinerary
                 </h3>
 
-                <p className="text-gray-600">
+                <p className="text-gray-800">
                   Discuss transportation, accommodation and the travel route.
                 </p>
 
@@ -631,7 +631,7 @@ export default function UttarakhandTourOperatorsPage() {
                   Confirm Your Trip
                 </h3>
 
-                <p className="text-gray-600">
+                <p className="text-gray-800">
                   Review the proposed arrangements before confirming your
                   travel plans.
                 </p>
@@ -672,7 +672,7 @@ export default function UttarakhandTourOperatorsPage() {
                       Taxi & Transportation
                     </h3>
 
-                    <p className="text-gray-600 leading-7 mb-6">
+                    <p className="text-gray-800 leading-7 mb-6">
                       Transportation is an important part of a Uttarakhand trip since Uttarakhand's hill regions are mainly accessible by road,
                       particularly when traveling between multiple destinations.
                       Vehicle arrangements can be planned according to your route,
@@ -709,7 +709,7 @@ export default function UttarakhandTourOperatorsPage() {
                       Hotel Booking
                     </h3>
 
-                    <p className="text-gray-600 leading-7 mb-6">
+                    <p className="text-gray-800 leading-7 mb-6">
                       Gokeys offers a wide range of hotel booking options across
                       Uttarakhand, from budget hotels and comfortable stays to
                       resorts for travelers looking for a more convenient trip.
@@ -740,20 +740,20 @@ export default function UttarakhandTourOperatorsPage() {
               Char Dham and Pilgrimage Tours in Uttarakhand
             </h2>
 
-            <p className="text-gray-700 leading-8 mb-4">
+            <p className="text-gray-800 leading-8 mb-4">
               Uttarakhand is home to four important Hindu pilgrimage
               destinations. The Char Dham Yatra covering Yamunotri, Gangotri,
               Kedarnath and Badrinath is one of the state's most significant
               pilgrimage journeys.
             </p>
 
-            <p className="text-gray-700 leading-8 mb-4">
+            <p className="text-gray-800 leading-8 mb-4">
               Other important pilgrimage destinations include Haridwar,
               Rishikesh, Panch Prayags, Panch Kedar, Panch Badri Temple, Shakti peeth Temples and various temples across the Garhwal and Kumaon
               regions.
             </p>
 
-            <p className="text-gray-700 leading-8">
+            <p className="text-gray-800 leading-8">
               If your primary reason for visiting Uttarakhand is pilgrimage,
               Gokeys can help you explore suitable travel arrangements based
               on your dates and itinerary.
@@ -779,18 +779,18 @@ export default function UttarakhandTourOperatorsPage() {
                 Plan Your Uttarakhand Trip for 2027
               </h2>
 
-              <p className="text-gray-700 leading-8 mb-4">
+              <p className="text-gray-800 leading-8 mb-4">
                 If you are planning a Uttarakhand trip in 2027, preparing
                 your route and accommodation requirements in advance can make
                 the planning process easier, especially during busy travel
                 periods.
               </p>
 
-              <p className="text-gray-700 leading-8 mb-4">
+              <p className="text-gray-800 leading-8 mb-4">
                As <a href="https://gokeys.in/blog/ardh-kumbh-mela-2027-haridwar-snan-details-tour">Ardh Kumbh Mela 2027 Haridwar</a> is going to happen in 2027 from January to April months, you can let us know your plan for visiting this holy ceremony celebrated in every 6 years and 12 years in Haridwar. We can make arrangement of various Tour Package from Delhi, Lucknow, Chandigarh and other parts of India to Ardh Kumbh Mela Haridwar.
               </p>
 
-              <p className="text-gray-700 leading-8">
+              <p className="text-gray-800 leading-8">
                 Contact Gokeys with your preferred dates and destinations to
                 discuss available travel arrangements.
               </p>
@@ -816,7 +816,7 @@ export default function UttarakhandTourOperatorsPage() {
                   Based in Haridwar
                 </h3>
 
-                <p className="text-gray-600 leading-7">
+                <p className="text-gray-800 leading-7">
                   Gokeys India (Travel Agency in Haridwar Uttarakhand) is based in Haridwar with office located near Railway Station and focuses on travel
                   arrangements for Uttarakhand and destinations across India.
                 </p>
@@ -829,7 +829,7 @@ export default function UttarakhandTourOperatorsPage() {
                   Multiple Travel Options
                 </h3>
 
-                <p className="text-gray-600 leading-7">
+                <p className="text-gray-800 leading-7">
                   Travelers can easily book pilgrimage, sightseeing, family,
                   leisure and customized tour requirements.
                 </p>
@@ -842,7 +842,7 @@ export default function UttarakhandTourOperatorsPage() {
                   Transportation Assistance
                 </h3>
 
-                <p className="text-gray-600 leading-7">
+                <p className="text-gray-800 leading-7">
                   As we have own fleets of different taxi cabs, you can let us know you requirements and we will serve accordingly.
                 </p>
 
@@ -854,7 +854,7 @@ export default function UttarakhandTourOperatorsPage() {
                   Accommodation Assistance
                 </h3>
 
-                <p className="text-gray-600 leading-7">
+                <p className="text-gray-800 leading-7">
                   Hotel accommodation requirements can be booked with Gokeys India for all over Uttarakhand.
                 </p>
 
@@ -875,7 +875,7 @@ export default function UttarakhandTourOperatorsPage() {
                 Things to Consider When Planning a Uttarakhand Tour
               </h2>
 
-              <ul className="list-disc pl-6 space-y-3 text-gray-700 leading-7">
+              <ul className="list-disc pl-6 space-y-3 text-gray-800 leading-7">
 
                 <li>
                   Decide which destinations you want to cover before booking
@@ -927,7 +927,7 @@ export default function UttarakhandTourOperatorsPage() {
                   Does Gokeys provide Uttarakhand tour packages?
                 </h3>
 
-                <p className="text-gray-700 leading-7">
+                <p className="text-gray-800 leading-7">
                   Yes. Gokeys India provides Uttarakhand tour planning and
                   travel packages covering pilgrimage, family, sightseeing
                   and customized trips, depending on the selected itinerary.
@@ -939,7 +939,7 @@ export default function UttarakhandTourOperatorsPage() {
                   Can I book an Uttarakhand tour from Haridwar?
                 </h3>
 
-                <p className="text-gray-700 leading-7">
+                <p className="text-gray-800 leading-7">
                   Yes, as Gokeys India is Haridwar Based Travel Agency and provides various Uttarakhand Tour Packages, also Haridwar is starting point for various Uttarakhand destinations, so you can easily plan a trip from Haridwar.
                 </p>
               </div>
@@ -949,7 +949,7 @@ export default function UttarakhandTourOperatorsPage() {
                   Which places can I visit on a Uttarakhand tour?
                 </h3>
 
-                <p className="text-gray-700 leading-7">
+                <p className="text-gray-800 leading-7">
                   Popular destinations include Haridwar, Rishikesh, Mussoorie,
                   Nainital, Auli, Kedarnath, Badrinath, Gangotri, Yamunotri,
                   Valley of Flowers and other Himalayan destinations.
@@ -961,7 +961,7 @@ export default function UttarakhandTourOperatorsPage() {
                   Does Gokeys offer Char Dham Yatra packages?
                 </h3>
 
-                <p className="text-gray-700 leading-7">
+                <p className="text-gray-800 leading-7">
                   Yes. Gokeys India provides Char Dham Yatra travel
                   Tour Packages covering Yamunotri, Gangotri, Kedarnath and
                   Badrinath according to the selected itinerary.
@@ -973,7 +973,7 @@ export default function UttarakhandTourOperatorsPage() {
                   Can I customize my Uttarakhand tour?
                 </h3>
 
-                <p className="text-gray-700 leading-7">
+                <p className="text-gray-800 leading-7">
                   Customized Uttarakhand travel plans can be discussed based
                   on your travel dates, group size, destinations,
                   accommodation requirements and transportation preferences.
@@ -985,7 +985,7 @@ export default function UttarakhandTourOperatorsPage() {
                   How can I contact Gokeys for an Uttarakhand tour?
                 </h3>
 
-                <p className="text-gray-700 leading-7">
+                <p className="text-gray-800 leading-7">
                   You can contact Gokeys India by phone or WhatsApp at
                   +91 9045916770 and share your preferred destinations, travel
                   dates and group details.

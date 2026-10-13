@@ -96,7 +96,7 @@ const breadcrumbSchema = buildBreadcrumbList([
             <section>
               <h2 className="gk-h2 mb-4">About {place.name}</h2>
               <div
-                className="prose max-w-none text-slate-ink"
+                className="prose max-w-none text-gray-800"
                 dangerouslySetInnerHTML={{ __html: place.description }}
               />
             </section>
@@ -167,7 +167,7 @@ const breadcrumbSchema = buildBreadcrumbList([
               <h3 className="gk-h3 mb-3">Travel Tips</h3>
               <ul className="space-y-2.5">
                 {TIPS.map((tip) => (
-                  <li key={tip} className="flex items-start gap-2.5 text-sm text-slate-ink">
+                  <li key={tip} className="flex items-start gap-2.5 text-sm text-gray-800">
                     <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-sun shrink-0" />
                     {tip}
                   </li>

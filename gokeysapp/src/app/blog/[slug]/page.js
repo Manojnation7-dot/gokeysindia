@@ -331,7 +331,7 @@ export default async function BlogDetailPage({ params }) {
         <main className="gk-wrap py-10 grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-8 items-start">
           {/* Post Content */}
           <div className="min-w-0">
-            <article className="prose prose-lg max-w-none mb-8 space-y-6 text-slate-ink prose-headings:text-ink prose-a:text-teal" dangerouslySetInnerHTML={{ __html: post.content }} />
+            <article className="prose prose-lg max-w-none mb-8 space-y-6 text-gray-800 prose-headings:text-ink prose-a:text-teal" dangerouslySetInnerHTML={{ __html: post.content }} />
             <FAQSection faqs={post.faqs} />
             <CommentSection blogSlug={post.slug} />
           </div>

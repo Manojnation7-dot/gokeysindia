@@ -204,7 +204,7 @@ export default function CharDhamOperatorsHaridwarPage() {
                 Char Dham Yatra Tour Operators in Haridwar
               </h1>
 
-              <p className="mt-6 text-lg text-gray-700 leading-8">
+              <p className="mt-6 text-lg text-gray-800 leading-8">
                 Planning a Char Dham Yatra from Haridwar Uttarakhand? Gokeys India helps
                 travelers plan journeys to Yamunotri, Gangotri, Kedarnath and
                 Badrinath with transportation, accommodation and itinerary
@@ -252,20 +252,20 @@ export default function CharDhamOperatorsHaridwarPage() {
               Char Dham Yatra Operators in Haridwar
             </h2>
 
-            <p className="text-gray-700 leading-8 mb-4">
+            <p className="text-gray-800 leading-8 mb-4">
               The Uttarakhand Char Dham Yatra is one of the most important
               pilgrimage journeys in the Himalayan region. The traditional
               circuit includes Yamunotri, Gangotri, Kedarnath and Badrinath.
             </p>
 
-            <p className="text-gray-700 leading-8 mb-4">
+            <p className="text-gray-800 leading-8 mb-4">
               Haridwar is a popular starting point for travelers beginning
               their Char Dham journey, As it known as Har Dwar (The places of Lord Shiva) and Hari Dwar (the place of Lord Vishnu) From here, you can take holy dip into the Ganges and continue towards
               the Garhwal Himalayan regions of Uttarakhand according to their chosen
               itinerary.
             </p>
 
-            <p className="text-gray-700 leading-8">
+            <p className="text-gray-800 leading-8">
               Gokeys India is based in Haridwar Travel Agency and provides Char Dham travel
               planning and tour arrangements. There are different types of Char Dham Yatra packages available, like Standard, Deluxe and Premium, just share your group size and travel dates and we will do the rest.</p>
 
@@ -310,7 +310,7 @@ export default function CharDhamOperatorsHaridwarPage() {
               Yamunotri
             </h3>
 
-            <p className="text-gray-600 leading-7">
+            <p className="text-gray-800 leading-7">
               Yamunotri is the source region associated with the
               Yamuna River and the first major pilgrimage destination
               in the traditional Char Dham route.
@@ -351,7 +351,7 @@ export default function CharDhamOperatorsHaridwarPage() {
                     Gangotri
                   </h3>
 
-                  <p className="text-gray-600 leading-7">
+                  <p className="text-gray-800 leading-7">
                     Gangotri is an important pilgrimage destination associated
                     with the River Ganga and forms part of the Uttarakhand
                     Char Dham circuit.
@@ -392,7 +392,7 @@ export default function CharDhamOperatorsHaridwarPage() {
                     Kedarnath
                   </h3>
 
-                  <p className="text-gray-600 leading-7">
+                  <p className="text-gray-800 leading-7">
                     Kedarnath is one of the most important Shiva pilgrimage
                     sites in India and a major destination on the Char Dham
                     Yatra in Uttarakhand.
@@ -433,7 +433,7 @@ export default function CharDhamOperatorsHaridwarPage() {
                       Badrinath
                     </h3>
 
-                    <p className="text-gray-600 leading-7">
+                    <p className="text-gray-800 leading-7">
                       Badrinath is an important Vishnu pilgrimage site located
                       in the Himalayan region of Uttarakhand and is part of the
                       traditional Char Dham circuit.
@@ -468,7 +468,7 @@ export default function CharDhamOperatorsHaridwarPage() {
                   Char Dham Tour Packages
                 </h3>
 
-                <p className="text-gray-600 leading-7">
+                <p className="text-gray-800 leading-7">
                   Choose from available Char Dham tour packages or discuss
                   your preferred itinerary with the Gokeys travel team.
                 </p>
@@ -479,7 +479,7 @@ export default function CharDhamOperatorsHaridwarPage() {
                   Transportation
                 </h3>
 
-                <p className="text-gray-600 leading-7">
+                <p className="text-gray-800 leading-7">
                   Transportation arrangements are available with us from Haridwar
                   according to your itinerary, group size and vehicle
                   requirements.
@@ -498,7 +498,7 @@ export default function CharDhamOperatorsHaridwarPage() {
                   Hotel Accommodation
                 </h3>
 
-                <p className="text-gray-600 leading-7">
+                <p className="text-gray-800 leading-7">
                   Accommodation/ Hotel are available in different categories like Budget, Standard, Deluxe and Luxury. You can choose any hotels according to your budget and requirements.
                 </p>
 
@@ -515,7 +515,7 @@ export default function CharDhamOperatorsHaridwarPage() {
                   Customized Itineraries
                 </h3>
 
-                <p className="text-gray-600 leading-7">
+                <p className="text-gray-800 leading-7">
                   If you want a customize Char Dham Yatra Itinerary with like Lakhamondal Temple, Budha Kedar Temple, Mussoorie, Harsil Valley, Tungnath Chopta, Panch Badri, Panch Kedar Cuircit then you can let us know your requirements and we will plan your Char Dham Yatra accordingly.
                 </p>
               </div>
@@ -525,7 +525,7 @@ export default function CharDhamOperatorsHaridwarPage() {
                   Group Travel
                 </h3>
 
-                <p className="text-gray-600 leading-7">
+                <p className="text-gray-800 leading-7">
                   Many travelers want to do the Char Dham Yatra as a group, so we can arrange your Char Dham Yatra in Group with other peoples. You can also travel with your family and friends in group. And we also have fix departure dates for Char Dham Yatra in Group. You can check our <a href="/grouptour/char-dham-yatra-group-tour" className="text-green-700 underline">Char Dham Yatra Group Tour Packages</a> for more details.
                 </p>
               </div>
@@ -535,7 +535,7 @@ export default function CharDhamOperatorsHaridwarPage() {
                   Travel Assistance
                 </h3>
 
-                <p className="text-gray-600 leading-7">
+                <p className="text-gray-800 leading-7">
                   We are 24X7 Available to give assistance to Char Dham Yatra travelers. You can contact us anytime for any assistance during your Char Dham Yatra.
                 </p>
               </div>
@@ -552,7 +552,7 @@ export default function CharDhamOperatorsHaridwarPage() {
       Char Dham Yatra Distance & Duration from Haridwar
     </h2>
 
-    <p className="text-gray-700 leading-8 mb-6">
+    <p className="text-gray-800 leading-8 mb-6">
       Approximate road distances and travel times between key stops on the
       Char Dham route from Haridwar. Actual travel time can vary due to
       weather, road conditions and traffic during peak season.
@@ -585,10 +585,10 @@ export default function CharDhamOperatorsHaridwarPage() {
                   <td className="px-5 py-3 border-t border-gray-100 text-gray-800 font-medium">
                     {route}
                   </td>
-                  <td className="px-5 py-3 border-t border-gray-100 text-gray-600">
+                  <td className="px-5 py-3 border-t border-gray-100 text-gray-800">
                     {distance}
                   </td>
-                  <td className="px-5 py-3 border-t border-gray-100 text-gray-600">
+                  <td className="px-5 py-3 border-t border-gray-100 text-gray-800">
                     {time}
                   </td>
                 </tr>
@@ -616,13 +616,13 @@ export default function CharDhamOperatorsHaridwarPage() {
                 Char Dham Yatra Route From Haridwar
               </h2>
 
-              <p className="text-gray-700 leading-8 mb-5">
+              <p className="text-gray-800 leading-8 mb-5">
                 The exact route and order of the Char Dham Yatra can vary
                 depending on the package, road conditions, accommodation and
                 travel arrangements.
               </p>
 
-              <p className="text-gray-700 leading-8 mb-5">
+              <p className="text-gray-800 leading-8 mb-5">
                 A typical journey from Haridwar travels through different
                 parts of the Garhwal Himalayas before reaching the four major
                 pilgrimage destinations.
@@ -664,7 +664,7 @@ export default function CharDhamOperatorsHaridwarPage() {
 
               </div>
 
-              <p className="text-gray-700 leading-8 mt-5">
+              <p className="text-gray-800 leading-8 mt-5">
                 Travelers should confirm the final itinerary before booking,
                 as routes and travel conditions can change during the
                 pilgrimage season due to heavy traffic and weather.
@@ -683,7 +683,7 @@ export default function CharDhamOperatorsHaridwarPage() {
                   Char Dham Yatra Itinerary from Haridwar (9N/10D)
                 </h2>
 
-                <p className="text-gray-700 leading-8 mb-8">
+                <p className="text-gray-800 leading-8 mb-8">
                   Below is a day-wise itinerary for a complete Char Dham Yatra
                   starting and ending in Haridwar. You can check this out and make you travel plans accordingly. The itinerary can be customized based on your travel dates, group size and preferences.
                 </p>
@@ -714,7 +714,7 @@ export default function CharDhamOperatorsHaridwarPage() {
                         <h3 className="text-lg font-semibold text-gray-900 mb-1">
                           {item.title}
                         </h3>
-                        <p className="text-gray-600 leading-6">{item.desc}</p>
+                        <p className="text-gray-800 leading-6">{item.desc}</p>
                       </div>
                     </div>
                   ))}
@@ -746,7 +746,7 @@ export default function CharDhamOperatorsHaridwarPage() {
               Char Dham Yatra 2027
             </h2>
 
-            <p className="text-gray-700 leading-8 mb-4">
+            <p className="text-gray-800 leading-8 mb-4">
               If you are planning your Char Dham Yatra for 2027, it is useful
               to start preparing your travel arrangements early.Gokeys Offering best Travel Package for Char Dham Yatra 2027 with Standard, Deluxe and Luxury Categories.The
               pilgrimage season has limited operating periods and demand for
@@ -754,14 +754,14 @@ export default function CharDhamOperatorsHaridwarPage() {
               travel dates.
             </p>
 
-            <p className="text-gray-700 leading-8 mb-4">
+            <p className="text-gray-800 leading-8 mb-4">
               Travelers planning a 2027 Char Dham Yatra should check the
               officially announced temple opening dates, government travel
               advisories, registration requirements and other rules before
               finalizing their journey.
             </p>
 
-            <p className="text-gray-700 leading-8">
+            <p className="text-gray-800 leading-8">
               Gokeys India can assist with planning the travel arrangements
               for your selected dates and group size for Upcoming Char Dham Yatra 2027.
             </p>
@@ -793,7 +793,7 @@ export default function CharDhamOperatorsHaridwarPage() {
                     Based in Haridwar
                   </h3>
 
-                  <p className="text-gray-600 leading-7">
+                  <p className="text-gray-800 leading-7">
                     Gokeys India is based in Haridwar with many years of experience, a major gateway for
                     travelers beginning their Uttarakhand pilgrimage journey.
                   </p>
@@ -804,7 +804,7 @@ export default function CharDhamOperatorsHaridwarPage() {
                     Uttarakhand Travel Focus
                   </h3>
 
-                  <p className="text-gray-600 leading-7">
+                  <p className="text-gray-800 leading-7">
                     Our travel services have a strong focus on Uttarakhand
                     pilgrimage and Himalayan travel. We have own fleet of vehicles and experienced drivers for Char Dham Yatra travel.
                   </p>
@@ -815,7 +815,7 @@ export default function CharDhamOperatorsHaridwarPage() {
                     Complete Travel Planning
                   </h3>
 
-                  <p className="text-gray-600 leading-7">
+                  <p className="text-gray-800 leading-7">
                     Transportation, accommodation and itinerary requirements
                     can be discussed together instead of arranging every part
                     separately.
@@ -827,7 +827,7 @@ export default function CharDhamOperatorsHaridwarPage() {
                     Customized Options
                   </h3>
 
-                  <p className="text-gray-600 leading-7">
+                  <p className="text-gray-800 leading-7">
                     Travelers can discuss their preferred dates, group size
                     and itinerary requirements with the team.
                   </p>
@@ -848,7 +848,7 @@ export default function CharDhamOperatorsHaridwarPage() {
               Things to Check Before Booking Char Dham Yatra
             </h2>
 
-            <ul className="list-disc pl-6 space-y-3 text-gray-700 leading-7">
+            <ul className="list-disc pl-6 space-y-3 text-gray-800 leading-7">
 
               <li>
                 Confirm the official opening dates and pilgrimage season.
@@ -902,7 +902,7 @@ export default function CharDhamOperatorsHaridwarPage() {
                     Does Gokeys operate Char Dham Yatra from Haridwar?
                   </h3>
 
-                  <p className="text-gray-700 leading-7">
+                  <p className="text-gray-800 leading-7">
                     Gokeys India provides Char Dham Yatra travel and tour
                     arrangements from Haridwar, including assistance with
                     transportation, accommodation and itinerary planning
@@ -915,7 +915,7 @@ export default function CharDhamOperatorsHaridwarPage() {
                     Which temples are included in Char Dham Yatra?
                   </h3>
 
-                  <p className="text-gray-700 leading-7">
+                  <p className="text-gray-800 leading-7">
                     The Uttarakhand Char Dham Yatra traditionally covers
                     Yamunotri, Gangotri, Kedarnath and Badrinath.
                   </p>
@@ -926,7 +926,7 @@ export default function CharDhamOperatorsHaridwarPage() {
                     Can I start Char Dham Yatra from Haridwar?
                   </h3>
 
-                  <p className="text-gray-700 leading-7">
+                  <p className="text-gray-800 leading-7">
                     Yes. Haridwar is a common starting point for travelers
                     planning the Uttarakhand Char Dham Yatra.
                   </p>
@@ -937,7 +937,7 @@ export default function CharDhamOperatorsHaridwarPage() {
                     Does Gokeys provide Char Dham Yatra packages?
                   </h3>
 
-                  <p className="text-gray-700 leading-7">
+                  <p className="text-gray-800 leading-7">
                     Yes. Gokeys India offers Char Dham Yatra travel packages
                     and customized travel arrangements. Package inclusions
                     depend on the selected itinerary.
@@ -949,7 +949,7 @@ export default function CharDhamOperatorsHaridwarPage() {
                     Can I book a private Char Dham Yatra?
                   </h3>
 
-                  <p className="text-gray-700 leading-7">
+                  <p className="text-gray-800 leading-7">
                     Private and customized Char Dham travel arrangements can
                     be discussed depending on group size, travel dates,
                     vehicle availability and itinerary requirements.
@@ -961,7 +961,7 @@ export default function CharDhamOperatorsHaridwarPage() {
                     How can I enquire about Char Dham Yatra?
                   </h3>
 
-                  <p className="text-gray-700 leading-7">
+                  <p className="text-gray-800 leading-7">
                     Contact Gokeys India by phone or WhatsApp at
                     +91 9045916770 and share your travel dates, group size and
                     preferred itinerary.
@@ -1003,14 +1003,14 @@ export default function CharDhamOperatorsHaridwarPage() {
               Gokeys India Travel Team
             </h2>
 
-            <p className="text-gray-600 leading-7 mt-3">
+            <p className="text-gray-800 leading-7 mt-3">
               This page has been created by the Gokeys India travel team,
               based in Haridwar, Uttarakhand. Our team provides travel
               planning and assistance for Char Dham Yatra, Kedarnath Yatra,
               Uttarakhand tours, hotels and transportation services.
             </p>
 
-            <p className="text-gray-600 leading-7 mt-3">
+            <p className="text-gray-800 leading-7 mt-3">
               We use our local travel experience and information from
               relevant official sources to prepare practical travel
               information for pilgrims and visitors planning their journey
