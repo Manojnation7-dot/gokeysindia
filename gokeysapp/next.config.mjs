@@ -549,6 +549,41 @@ async headers() {
   destination: '/destinations/auli',
   permanent: true,
 },
+{
+  source: '/blog/nelang-valley-guide',
+  destination: '/blog/nelong-valley-permit-travel-guide',
+  permanent: true,
+},
+{
+  source: '/gaumukh-trekking-guide-and-details-gaumukh-tapovan-trek',
+  destination: '/blog/online-permit-for-gaumukh-trekking-details-gangotri-national-park',
+  permanent: true,
+},
+{
+  source: '/uttarkashi-district',
+  destination: '/destinations/uttarkashi',
+  permanent: true,
+},
+{
+  source: '/top-10-places-to-visit-in-gangotri',
+  destination: '/destinations/gangotri',
+  permanent: true,
+},
+{
+  source: '/rishikesh-adventure-tours-and-activities',
+  destination: '/destinations/rishikesh',
+  permanent: true,
+},
+{
+  source: '/trip/auli-chopta-nainital-tour-package',
+  destination: '/tours/auli-nainital-kausani-almora-8-days-tour',
+  permanent: true,
+},
+{
+  source: '/trip/rishikesh-adventure-tour',
+  destination: '/blog/camping-in-shivpuri-rishikesh',
+  permanent: true,
+},
 
     {
         source: "/web-stories/:path*",
