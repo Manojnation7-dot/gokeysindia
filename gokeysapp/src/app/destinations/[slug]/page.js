@@ -75,24 +75,14 @@ export default async function DestinationPage({ params }) {
       return notFound();
     }
 
-    // 4. Process Nearby Attractions (Safe Regex)
-    let nearbyAttractionsList = [];
-    const rawAttractions = destination.nearby_attractions;
-    if (typeof rawAttractions === "string" && rawAttractions.trim() !== "") {
-      nearbyAttractionsList = rawAttractions
-        .match(/<p[^>]*>(.*?)<\/p>/gi)
-        ?.map((p) => p.replace(/<[^>]*>/g, "").trim())
-        .filter(Boolean) || [];
-    }
-
-    // 5. Fetch Parallel Data (Tours & Hotels)
+    // 4. Fetch Parallel Data (Tours & Hotels)
     // We use a safe wrapper to prevent one failing API from crashing the whole page
     const [toursRes, hotelsRes] = await Promise.all([
       fetch(`${API_BASE}/api/tours/?destination=${encodeURIComponent(slug)}`, CACHED).catch(() => null),
       fetch(`${API_BASE}/api/hotels/?destination=${encodeURIComponent(slug)}`, CACHED).catch(() => null),
     ]);
 
-    // 6. Process Tours Safely
+    // 5. Process Tours Safely
     let safeTours = [];
     if (toursRes?.ok) {
       const toursRaw = await toursRes.json();
@@ -105,14 +95,14 @@ export default async function DestinationPage({ params }) {
       }));
     }
 
-    // 7. Process Hotels Safely
+    // 6. Process Hotels Safely
     let hotels = [];
     if (hotelsRes?.ok) {
       const hotelsRaw = await hotelsRes.json();
       hotels = Array.isArray(hotelsRaw?.results) ? hotelsRaw.results : Array.isArray(hotelsRaw) ? hotelsRaw : [];
     }
 
-    // 8. Render
+    // 7. Render
     return (
       <>
       {preview && <PreviewBanner path={`/destinations/${slug}`} />}
@@ -121,7 +111,6 @@ export default async function DestinationPage({ params }) {
         tours={safeTours}
         hotels={hotels}
         slug={slug}
-        nearbyAttractionsList={nearbyAttractionsList}
       />
       </>
     );

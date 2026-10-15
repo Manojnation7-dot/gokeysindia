@@ -5,48 +5,59 @@ import Footer from "@/components/Footer";
 import InquiryFormCard from "@/components/SimpleEnquiryForm";
 import RelatedContent from "@/components/RelatedContent";
 import { buildBreadcrumbList, buildFAQSchema } from "@/lib/seoSchemas";
+import { readMinutes } from "@/lib/slim";
 import SmartSEO from "@/components/SmartSEO";
 import { Breadcrumbs, CtaBand, FaqList, TourCard, PLACEHOLDER } from "@/components/ui/kit";
-import { CalendarDays, Zap, MapPin, Bus } from "lucide-react";
 
 // Common HTML entities left after stripping tags (output is rendered as text, not HTML)
 const decode = (t) =>
   t.replace(/&nbsp;/g, " ").replace(/&quot;/g, '"').replace(/&#0?39;/g, "'").replace(/&amp;/g, "&");
 
+const plain = (html) => decode(String(html || "").replace(/<[^>]+>/g, " ")).replace(/\s+/g, " ").trim();
+
+// Older separate admin sections, shown after the description with the same headings as before.
+// New destinations write these as Heading 2 sections inside the description instead.
+const SECTIONS = [
+  ["best_time_to_visit", "Best Time to Visit"],
+  ["popular_activities", "Popular Activities"],
+  ["nearby_attractions", "Nearby Attractions"],
+  ["how_to_reach", "How to Reach"],
+];
+
+const slugify = (text) =>
+  text.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 60) || "section";
+
 /**
- * REPLACEMENT FOR DOMParser (Server-Safe)
+ * The article as one HTML string with an id on every <h2> (for the "On this page" links).
+ * Headings that already have an id keep it.
  */
-function extractParagraphTexts(htmlString) {
-  if (!htmlString || typeof htmlString !== 'string') return [];
-
-  // Match everything inside <p>...</p> tags
-  const pRegex = /<p[^>]*>(.*?)<\/p>/gi;
-  const matches = htmlString.match(pRegex);
-
-  if (!matches) {
-    // If no <p> tags, remove all other tags and return as one item
-    const cleanText = htmlString.replace(/<\/?[^>]+(>|$)/g, "").trim();
-    return cleanText ? [decode(cleanText)] : [];
+function buildArticle(destination) {
+  const parts = [destination.description || "<p>No description available.</p>"];
+  for (const [field, label] of SECTIONS) {
+    const html = destination[field];
+    if (typeof html === "string" && plain(html)) parts.push(`<h2>${label}</h2>${html}`);
   }
 
-  return matches.map(m =>
-    decode(m.replace(/<\/?[^>]+(>|$)/g, "").trim()) // Strip tags from match
-  ).filter(Boolean);
+  const toc = [];
+  const used = new Set(["about", "tours-section", "hotels-section", "faq"]);
+  const html = parts.join("\n").replace(/<h2([^>]*)>([\s\S]*?)<\/h2>/gi, (match, attrs, inner) => {
+    const label = plain(inner);
+    if (!label) return match;
+    const existing = attrs.match(/\sid=["']([^"']+)["']/i);
+    let id = existing ? existing[1] : slugify(label);
+    if (!existing) {
+      let n = 2;
+      const base = id;
+      while (used.has(id)) id = `${base}-${n++}`;
+    }
+    used.add(id);
+    toc.push({ id, label });
+    return existing ? match : `<h2${attrs} id="${id}">${inner}</h2>`;
+  });
+  return { html, toc };
 }
 
-function InfoCard({ icon: Icon, title, tone, children }) {
-  return (
-    <div className={`rounded-2xl p-6 ${tone}`}>
-      <div className="flex items-center gap-3 mb-4">
-        <Icon size={22} className="text-teal" />
-        <h2 className="gk-h3">{title}</h2>
-      </div>
-      {children}
-    </div>
-  );
-}
-
-export default function DestinationDetailPage({ destination, tours, hotels, slug, nearbyAttractionsList }) {
+export default function DestinationDetailPage({ destination, tours, hotels, slug }) {
   if (!destination) {
     return <div className="text-center py-16">Destination not found</div>;
   }
@@ -57,8 +68,19 @@ export default function DestinationDetailPage({ destination, tours, hotels, slug
     { name: destination.name, url: `/destinations/${destination.slug}` }
   ]);
 
-  const faqSchema = destination.faqs?.length > 0 ? buildFAQSchema(destination.faqs, `/destinations/${destination.slug}`) : null;
-  const tips = decode(destination.travel_tips || "").split(/\r?\n/).filter(Boolean);
+  const faqs = destination.faqs || [];
+  const faqSchema = faqs.length > 0 ? buildFAQSchema(faqs, `/destinations/${destination.slug}`) : null;
+  const tips = decode(destination.travel_tips || "").split(/\r?\n/).map((t) => t.trim()).filter(Boolean);
+  const { html, toc } = buildArticle(destination);
+  const updated = destination.updated_at
+    ? new Date(destination.updated_at).toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric", timeZone: "Asia/Kolkata" })
+    : null;
+
+  const contents = [
+    { id: "about", label: `About ${destination.name}` },
+    ...toc,
+    ...(faqs.length > 0 ? [{ id: "faq", label: "Frequently Asked Questions" }] : []),
+  ];
 
   return (
     <>
@@ -70,7 +92,7 @@ export default function DestinationDetailPage({ destination, tours, hotels, slug
             ]}
       />
       <main className="bg-mist">
-        {/* Hero Section */}
+        {/* Hero */}
         <section className="relative overflow-hidden bg-ink">
           <Image
             src={destination.banner_image?.optimized_banner || destination.featured_image?.image || PLACEHOLDER}
@@ -82,86 +104,70 @@ export default function DestinationDetailPage({ destination, tours, hotels, slug
           />
           <div className="absolute inset-0 bg-linear-to-t from-ink via-ink/60 to-ink/10" />
 
-          <div className="relative gk-wrap pt-24 pb-12 md:pt-36 md:pb-14">
+          <div className="relative gk-wrap pt-24 pb-10 md:pt-36 md:pb-12">
             <Breadcrumbs light items={[{ label: "Home", href: "/" }, { label: "Destinations", href: "/destinations" }, { label: destination.name }]} />
             <h1 className="gk-h1 text-white!">
               Explore <span className="text-sun">{destination.name}</span>
             </h1>
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-white/85 mt-4">
+              {destination.state && <span>{destination.state}</span>}
+              <span>{readMinutes(html)} min read</span>
+              {updated && <span>Updated {updated}</span>}
+            </div>
             <div className="flex flex-wrap gap-3 mt-6">
               <a href="#tours-section" className="gk-btn gk-btn-sun">Explore Tours</a>
               <Link href="/grouptour" className="gk-btn gk-btn-white">Join a group trip</Link>
             </div>
+          </div>
+        </section>
 
-            {tips.length > 0 && (
-              <div className="mt-8 bg-white rounded-2xl p-5 max-w-3xl shadow-xl">
-                <h3 className="gk-label mb-3!">Traveler Insights</h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2">
-                  {tips.map((tip, idx) => (
-                    <div key={idx} className="text-sm text-ink flex items-start">
-                      <span className="mr-2 text-sun font-bold">•</span>
-                      {tip}
-                    </div>
+        {/* Guide + side column */}
+        <section className="gk-wrap py-10 grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-8 items-start">
+          <div className="min-w-0">
+            {contents.length > 2 && (
+              <nav aria-label="On this page" className="gk-panel p-5 mb-8">
+                <p className="gk-label mb-3!">On this page</p>
+                <ol className="grid sm:grid-cols-2 gap-x-6 gap-y-1.5 text-[15px]">
+                  {contents.map((item) => (
+                    <li key={item.id}>
+                      <a href={`#${item.id}`} className="text-teal font-semibold hover:underline">{item.label}</a>
+                    </li>
                   ))}
-                </div>
-              </div>
+                </ol>
+              </nav>
+            )}
+
+            <h2 id="about" className="gk-h2 mb-4 scroll-mt-20">About {destination.name}</h2>
+            <article
+              className="prose prose-lg max-w-none text-gray-800 overflow-x-auto [&_h2]:scroll-mt-20"
+              dangerouslySetInnerHTML={{ __html: html }}
+            />
+
+            {faqs.length > 0 && (
+              <section id="faq" className="mt-12 scroll-mt-20">
+                <p className="gk-eyebrow mb-2">FAQ</p>
+                <h2 className="gk-h2 mb-5">Frequently Asked Questions</h2>
+                <FaqList items={faqs.map((faq) => ({ question: faq.question, html: faq.answer }))} />
+              </section>
             )}
           </div>
-        </section>
 
-        {/* Destination Info */}
-        <section className="gk-wrap gk-section grid grid-cols-1 lg:grid-cols-[1.6fr_1fr] gap-8 items-start">
-          <div className="min-w-0">
-            <h2 className="gk-h2 mb-4">About {destination.name}</h2>
-            <div
-              className="prose prose-lg text-gray-800 max-w-full overflow-x-auto"
-              dangerouslySetInnerHTML={{ __html: destination.description || "No description available." }}
-            />
-          </div>
-          <div className="lg:sticky lg:top-20">
+          <aside className="space-y-5 lg:sticky lg:top-20">
+            {tips.length > 0 && (
+              <div className="gk-panel p-5">
+                <h3 className="gk-label mb-3!">Traveler Insights</h3>
+                <ul className="space-y-2">
+                  {tips.map((tip, idx) => (
+                    <li key={idx} className="text-sm text-gray-800 flex items-start">
+                      <span className="mr-2 text-sun font-bold">•</span>
+                      {tip}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
             <InquiryFormCard placeName={destination.name} />
-          </div>
-        </section>
-
-        {/* Info Cards */}
-        <section className="gk-wrap pb-14 grid grid-cols-1 md:grid-cols-2 gap-5">
-          {/* Best Time to Visit */}
-          {typeof destination.best_time_to_visit === "string" && destination.best_time_to_visit.trim() && (
-            <InfoCard icon={CalendarDays} title="Best Time to Visit" tone="bg-[#fdebd0]">
-              <ul className="space-y-2 list-disc pl-5 text-gray-800">
-                {extractParagraphTexts(destination.best_time_to_visit).map((para, index) => (
-                  <li key={index}>{para}</li>
-                ))}
-              </ul>
-            </InfoCard>
-          )}
-
-          {/* Popular Activities */}
-          {typeof destination.popular_activities === "string" && destination.popular_activities.trim() && (
-            <InfoCard icon={Zap} title="Popular Activities" tone="bg-[#e3eef0]">
-              <ul className="space-y-2 list-disc pl-5 text-gray-800">
-                {extractParagraphTexts(destination.popular_activities).map((activity, index) => (
-                  <li key={index}>{activity}</li>
-                ))}
-              </ul>
-            </InfoCard>
-          )}
-
-          {/* Nearby Attractions */}
-          <InfoCard icon={MapPin} title="Nearby Attractions" tone="bg-[#e6f0dc]">
-            <ul className="space-y-2 list-disc pl-5 text-gray-800">
-              {(nearbyAttractionsList || []).map((attraction, index) => (
-                <li key={index} dangerouslySetInnerHTML={{ __html: attraction }} />
-              ))}
-            </ul>
-          </InfoCard>
-
-          {/* How to Reach */}
-          <InfoCard icon={Bus} title="How to Reach" tone="bg-[#e3e4f2]">
-            <div
-              className="text-gray-800 space-y-2 prose max-w-none"
-              dangerouslySetInnerHTML={{ __html: destination.how_to_reach || "<p>No transport information</p>" }}
-            />
-          </InfoCard>
+          </aside>
         </section>
 
         {/* Tours Section */}
@@ -229,17 +235,6 @@ export default function DestinationDetailPage({ destination, tours, hotels, slug
             <p className="text-slate-ink">No hotels available for this destination.</p>
           )}
         </section>
-
-        {/* FAQ Section */}
-        {(destination.faqs || []).length > 0 && (
-          <section className="gk-wrap pb-14 grid lg:grid-cols-[1fr_1.5fr] gap-8">
-            <div>
-              <p className="gk-eyebrow mb-2">FAQ</p>
-              <h2 className="gk-h2">Frequently Asked Questions</h2>
-            </div>
-            <FaqList items={destination.faqs.map((faq) => ({ question: faq.question, html: faq.answer }))} />
-          </section>
-        )}
 
         {/* Blog posts that picked this destination in the admin */}
         <RelatedContent title={`${destination.name} travel guides`} items={destination.related_posts} />
