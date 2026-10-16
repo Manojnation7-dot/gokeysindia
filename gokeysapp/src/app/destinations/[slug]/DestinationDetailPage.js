@@ -72,6 +72,10 @@ export default function DestinationDetailPage({ destination, tours, hotels, slug
   const faqSchema = faqs.length > 0 ? buildFAQSchema(faqs, `/destinations/${destination.slug}`) : null;
   const tips = decode(destination.travel_tips || "").split(/\r?\n/).map((t) => t.trim()).filter(Boolean);
   const { html, toc } = buildArticle(destination);
+  // H1: the admin "Title" (e.g. "Kausani Travel Guide: Places to Visit..."), or "Explore <Name>" when empty.
+  // The place name inside it is shown in the highlight colour.
+  const heading = (destination.title || "").trim() || `Explore ${destination.name}`;
+  const nameAt = destination.name ? heading.toLowerCase().indexOf(destination.name.toLowerCase()) : -1;
   const updated = destination.updated_at
     ? new Date(destination.updated_at).toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric", timeZone: "Asia/Kolkata" })
     : null;
@@ -106,8 +110,14 @@ export default function DestinationDetailPage({ destination, tours, hotels, slug
 
           <div className="relative gk-wrap pt-24 pb-10 md:pt-36 md:pb-12">
             <Breadcrumbs light items={[{ label: "Home", href: "/" }, { label: "Destinations", href: "/destinations" }, { label: destination.name }]} />
-            <h1 className="gk-h1 text-white!">
-              Explore <span className="text-sun">{destination.name}</span>
+            <h1 className={`gk-h1 text-white! ${heading.length > 40 ? "text-3xl! md:text-[2.75rem]!" : ""}`}>
+              {nameAt >= 0 ? (
+                <>
+                  {heading.slice(0, nameAt)}
+                  <span className="text-sun">{heading.slice(nameAt, nameAt + destination.name.length)}</span>
+                  {heading.slice(nameAt + destination.name.length)}
+                </>
+              ) : heading}
             </h1>
             <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-white/85 mt-4">
               {destination.state && <span>{destination.state}</span>}
