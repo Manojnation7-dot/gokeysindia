@@ -1,5 +1,10 @@
 import { getCSRFToken } from "@/lib/getCSRFToken";
 
+// The page the enquiry form was sent from (no query string or #fragment), for the team's CRM.
+// Optional for the backend: older backends ignore it.
+export const currentPageUrl = () =>
+  typeof window === "undefined" ? "" : `${window.location.origin}${window.location.pathname}`;
+
 // Sends the inline (sidebar) enquiry form of a tour or group tour page to /api/tour-enquiries/.
 // Returns { ok: true } or { ok: false, message } with a message fit to show the visitor.
 export async function submitTourEnquiry({ tourName, packageType, packagePrice, formData, groupTourSlug, departureId }) {
@@ -22,6 +27,7 @@ export async function submitTourEnquiry({ tourName, packageType, packagePrice, f
         message: formData.message || "",
         ...(groupTourSlug && { group_tour_slug: groupTourSlug }),
         ...(departureId && { departure_id: departureId }),
+        page_url: currentPageUrl(),
       }),
     });
 

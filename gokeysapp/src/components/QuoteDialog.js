@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { XIcon } from "@/components/Icons";
 import { isPriceOnRequest, formatPrice, getSavings } from "@/lib/pricingUtils";
 import { getCSRFToken } from "@/lib/getCSRFToken";
+import { currentPageUrl } from "@/lib/tourEnquiry";
 
 export default function QuoteDialog({
   isOpen,
@@ -119,6 +120,7 @@ export default function QuoteDialog({
           travel_date: formData.travelDate,
           message: formData.message,
           recaptcha_token: recaptchaToken, // ✅ attach reCAPTCHA token
+          page_url: currentPageUrl(),
         }),
       });
 

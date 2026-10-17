@@ -4,6 +4,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { XIcon } from "@/components/Icons";
 import { getCSRFToken } from "@/lib/getCSRFToken";
+import { currentPageUrl } from "@/lib/tourEnquiry";
 
 export default function EnquiryForm({
   isOpen,
@@ -123,6 +124,7 @@ export default function EnquiryForm({
           travel_date: formData.travelDate,
           message: formData.message || "",
           recaptcha_token: recaptchaToken,
+          page_url: currentPageUrl(),
         }),
       });
 

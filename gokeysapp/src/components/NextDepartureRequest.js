@@ -4,6 +4,7 @@ import { useState } from "react";
 import { CalendarClock, CheckCircle2 } from "lucide-react";
 import { getCSRFToken } from "@/lib/getCSRFToken";
 import { todayIST } from "@/lib/departures";
+import { currentPageUrl } from "@/lib/tourEnquiry";
 
 const LABELS = {
   preferred_month: "Preferred month",
@@ -67,6 +68,7 @@ export default function NextDepartureRequest({ tourSlug, tourName, compact = fal
           private_tour: form.privateTour,
           message: `[Next departure request: ${monthLabel}${form.privateTour ? ", private tour OK" : ""}] ${form.message}`.trim(),
           recaptcha_token: token,
+          page_url: currentPageUrl(),
         }),
       });
       if (res.ok) {
