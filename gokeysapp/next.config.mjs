@@ -584,6 +584,51 @@ async headers() {
   destination: '/blog/camping-in-shivpuri-rishikesh',
   permanent: true,
 },
+{
+  source: '/joshimath-a-hill-station-places-to-visit-in-joshimath',
+  destination: '/destinations/joshimath',
+  permanent: true,
+},
+{
+  source: '/patal-bhuvneshwar-travel-guide-patal-bhuvneshwar-cave-tourism',
+  destination: '/sightseeing/patal-bhuvaneshwar',
+  permanent: true,
+},
+{
+  source: '/chamoli-garhwal',
+  destination: '/destinations/chamoli',
+  permanent: true,
+},
+{
+  source: '/ukhimath-hill-station-in-rudraprayag-garhwal',
+  destination: '/destinations/ukhimath',
+  permanent: true,
+},
+{
+  source: '/trijuginarayan-temple',
+  destination: '/sightseeing/triyuginarayan-temple',
+  permanent: true,
+},
+{
+  source: '/mana-village-the-first-indian-village',
+  destination: '/sightseeing/mana-village',
+  permanent: true,
+},
+{
+  source: '/karanprayag',
+  destination: '/destinations/karnaprayag',
+  permanent: true,
+},
+{
+  source: '/exploring-dehradun',
+  destination: '/destinations/dehradun',
+  permanent: true,
+},
+{
+  source: '/top-things-to-do-in-dehradun-dehradun-sightseeing',
+  destination: '/blog/dehradun-sightseeing-itinerary',
+  permanent: true,
+},
 
     {
         source: "/web-stories/:path*",
