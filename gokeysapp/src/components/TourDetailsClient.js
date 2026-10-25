@@ -4,7 +4,7 @@ import { useState } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import SimilarTours from "@/components/SimilarTours";
-import TourPDFContent from "@/components/TourPDFContent";
+import { downloadItinerary } from "@/lib/downloadItinerary";
 import ReviewSection from "@/components/ReviewSection";
 import EnquiryForm from "@/components/EnquiryForm";
 import TourItineraryMain from "@/components/TourItineraryMain";
@@ -109,47 +109,16 @@ export default function TourDetailClient({ tourData,baseUrl,tourPath,similarTour
 
 
 
+  // The itinerary PDF is built only on click (src/lib/downloadItinerary.js); it is no longer hidden in the page.
+  const [downloading, setDownloading] = useState(false);
   const generatePDF = async () => {
-    if (!tourData) {
-      alert("Tour data is not available. Please try again later.");
-      return;
-    }
-
-    const element = document.getElementById("pdf-tour-content");
-    if (!element) {
-      alert("Failed to generate PDF: Content not found.");
-      return;
-    }
-
-    const container = document.getElementById("pdf-tour-content-container");
-    container.style.position = "absolute";
-    container.style.left = "-9999px";
-    container.style.top = "0";
-    container.style.width = "210mm";
-    container.style.height = "auto";
-    container.style.overflow = "visible";
-
+    setDownloading(true);
     try {
-      await new Promise((resolve) => setTimeout(resolve, 100));
-      const html2pdf = (await import("html2pdf.js")).default;
-      const opt = {
-        margin: 0.3,
-        filename: `${tourData.slug || "tour"}-details.pdf`,
-        image: { type: "jpeg", quality: 0.98 },
-        html2canvas: { scale: 2, useCORS: true },
-        jsPDF: { unit: "in", format: "a4", orientation: "portrait" },
-      };
-
-      await html2pdf().set(opt).from(element).save();
+      await downloadItinerary(tourData, { tourPath });
     } catch (err) {
-      alert("Failed to generate PDF: " + err.message);
+      alert("Could not prepare the itinerary: " + (err?.message || err));
     } finally {
-      container.style.position = "absolute";
-      container.style.left = "-9999px";
-      container.style.top = "0";
-      container.style.width = "";
-      container.style.height = "";
-      container.style.overflow = "";
+      setDownloading(false);
     }
   };
 
@@ -382,8 +351,8 @@ const faqSchema = tourData.faqs?.length > 0
               <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="gk-btn gk-btn-wa w-full mt-2.5">
                 Chat on WhatsApp
               </a>
-              <button onClick={generatePDF} className="gk-btn gk-btn-line w-full mt-2.5">
-                Download Itinerary
+              <button onClick={generatePDF} disabled={downloading} className="gk-btn gk-btn-line w-full mt-2.5">
+                {downloading ? "Preparing PDF…" : "Download Itinerary"}
               </button>
               <p className="mt-3 text-center text-slate-ink text-xs leading-relaxed">
                 Need More Information? Call/WhatsApp our Yatra Expert on <span className="font-semibold">+91-78307-18687</span>
@@ -424,19 +393,6 @@ const faqSchema = tourData.faqs?.length > 0
           <button onClick={() => setIsEnquiryOpen(true)} className="gk-btn gk-btn-sun shrink-0">
             Send Query
           </button>
-        </div>
-
-        {/* Hidden PDF Content */}
-        <div
-          id="pdf-tour-content-container"
-          style={{ position: "absolute", left: "-9999px", top: "0" }}
-        >
-          <div id="pdf-tour-content">
-            <TourPDFContent tourData={tourData}
-             baseUrl={baseUrl}
-             tourPath={tourPath}
-             />
-          </div>
         </div>
       </main>
       <EnquiryForm

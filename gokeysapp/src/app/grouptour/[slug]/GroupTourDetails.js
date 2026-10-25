@@ -7,7 +7,7 @@ import SimilarTours from '@/components/SimilarGroupTours';
 import ReviewSection from '@/components/ReviewSection';
 import EnquiryForm from '@/components/EnquiryForm';
 import TourItineraryMain from '@/components/TourItineraryMain';
-import TourPDFContent from '@/components/TourPDFContent';
+import { downloadItinerary } from '@/lib/downloadItinerary';
 import RelatedContent from '@/components/RelatedContent';
 import {
   CalendarIcon,
@@ -132,47 +132,15 @@ export default function GroupTourDetails({ tourData, baseUrl, documentNumber, cu
     }
   };
 const [isLoading, setIsLoading] = useState(false);
+  // The itinerary PDF is built only on click (src/lib/downloadItinerary.js); it is no longer hidden in the page.
   const generatePDF = async () => {
-    if (!tourData) {
-      alert('Tour data is not available. Please try again later.');
-      return;
-    }
-
-    const element = document.getElementById('pdf-tour-content');
-    if (!element) {
-      alert('Failed to generate PDF: Content not found.');
-      return;
-    }
-
-    const container = document.getElementById('pdf-tour-content-container');
-    container.style.position = 'absolute';
-    container.style.left = '-9999px';
-    container.style.top = '0';
-    container.style.width = '210mm';
-    container.style.height = 'auto';
-    container.style.overflow = 'visible';
-
+    setIsLoading(true);
     try {
-      await new Promise((resolve) => setTimeout(resolve, 100));
-      const html2pdf = (await import('html2pdf.js')).default;
-      const opt = {
-        margin: 0.3,
-        filename: `${tourData.slug || 'group-tour'}-details.pdf`,
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2, useCORS: true },
-        jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' },
-      };
-
-      await html2pdf().set(opt).from(element).save();
+      await downloadItinerary(tourData, { tourPath });
     } catch (err) {
-      alert('Failed to generate PDF: ' + err.message);
+      alert('Could not prepare the itinerary: ' + (err?.message || err));
     } finally {
-      container.style.position = 'absolute';
-      container.style.left = '-9999px';
-      container.style.top = '0';
-      container.style.width = '';
-      container.style.height = '';
-      container.style.overflow = '';
+      setIsLoading(false);
     }
   };
 
@@ -507,7 +475,7 @@ const [isLoading, setIsLoading] = useState(false);
                 disabled={isLoading || !tourData}
                 className="gk-btn gk-btn-line w-full mt-2.5 disabled:opacity-50"
               >
-                Download Itinerary
+                {isLoading ? 'Preparing PDF…' : 'Download Itinerary'}
               </button>
               <p className="mt-3 text-center text-slate-ink text-xs leading-relaxed">
                 Need More Information? Call/WhatsApp our Yatra Coordinator on <span className="font-semibold">+91-7830718687</span>
@@ -553,22 +521,6 @@ const [isLoading, setIsLoading] = useState(false);
               Send Query
             </button>
           )}
-        </div>
-
-        {/* Hidden PDF Content */}
-        <div
-          id="pdf-tour-content-container"
-          style={{ position: 'absolute', left: '-9999px', top: '0' }}
-        >
-          <div id="pdf-tour-content">
-            <TourPDFContent
-            tourData={tourData}
-            baseUrl={baseUrl}
-            documentNumber={documentNumber}
-            currentDate={currentDate}
-            tourPath={tourPath}
-            />
-          </div>
         </div>
       </main>
       <EnquiryForm
