@@ -629,6 +629,20 @@ async headers() {
   destination: '/blog/dehradun-sightseeing-itinerary',
   permanent: true,
 },
+    // Legacy URLs found in Search Console
+    { source: '/char-dham-yatra-2024-fix-departure-group-package', destination: '/grouptour/char-dham-yatra-group-tour', permanent: true },
+    { source: '/kedarnath-yatra-2026', destination: '/blog/kedarnath-yatra', permanent: true },
+
+    // Char Dham consolidation: one page per keyword
+    { source: '/blog/char-dham-yatra-2025-tour-package-from-haridwar', destination: '/tours/char-dham-yatra-package-from-haridwar', permanent: true },
+    { source: '/blog/char-dham-yatra-2025-tour-details-packages', destination: '/tours/char-dham-yatra-package-from-haridwar', permanent: true },
+    { source: '/blog/char-dham-yatra-2023', destination: '/blog/char-dham-yatra-2027', permanent: true },
+    { source: '/blog/char-dham-yatra-opening-date-2026', destination: '/blog/char-dham-yatra-2027', permanent: true },
+    { source: '/blog/char-dham-yatra-2026-complete-guide-haridwar', destination: '/blog/char-dham-yatra-2027', permanent: true },
+    { source: '/blog/char-dham-yatra-2026-registration-starts', destination: '/blog/char-dham-yatra-2027-registration', permanent: true },
+    { source: '/blog/char-dham-yatra-registration-e-pass-online', destination: '/blog/char-dham-yatra-2027-registration', permanent: true },
+    { source: '/blog/kedarnath-yatra-2026-complete-travel-guide', destination: '/blog/kedarnath-yatra', permanent: true },
+    { source: '/blog/char-dham-yatra-2027-route-details-map', destination: '/blog/route-map-of-char-dham-yatra', permanent: true },
 
     {
         source: "/web-stories/:path*",
