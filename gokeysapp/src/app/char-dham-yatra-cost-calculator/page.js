@@ -129,8 +129,6 @@ export default async function CostCalculatorPage() {
   const rows = Object.fromEntries(data.per_person.map((r) => [r.people, r]));
   const range = (a, b) => `${inr(a)}–${inr(b).replace("₹", "")}`;
   const ex = data.worked_example;
-  const h = data.hotels;
-  const k = data.kedarnath;
   const holidays = holidayText(data.holidays);
   const yatra = Object.fromEntries(data.yatras.map((y) => [y.slug, y]));
   const cityName = { haridwar: "Haridwar / Rishikesh", "dehradun-airport": "Dehradun airport", delhi: "Delhi" };
@@ -281,33 +279,6 @@ export default async function CostCalculatorPage() {
             1–14 September is 5% below the Sept–Oct rate.
             {holidays && ` Vehicle rates go up to May–June levels on the Gandhi Jayanti and Dussehra long weekends (${holidays}).`}
           </Note>
-
-          <h3 className="gk-h3 pt-2">Char Dham hotel cost and Kedarnath stay</h3>
-          <Table
-            caption="Char Dham hotel cost per night"
-            firstColWide
-            head={["Hotels per night (breakfast + dinner)", "May–June and Sept–Oct", "July–Aug and Nov"]}
-            rows={[
-              ["Standard, double room", inr(h.peak_standard?.double), lowStandard(h)],
-              ["Standard, triple room", inr(h.peak_standard?.triple), lowStandard(h)],
-              ["Standard, four-bed room", inr(h.peak_standard?.four_bed), lowStandard(h)],
-              ["Deluxe, double room", inr(h.peak_deluxe?.double), roomRate(h.low_deluxe?.double)],
-              ["Deluxe, triple room", inr(h.peak_deluxe?.triple), roomRate(h.low_deluxe?.triple)],
-              ["Luxury", `from about ${inr(h.peak_luxury?.double)}, confirmed on request`, "on request"],
-            ]}
-          />
-          <Table
-            caption="Kedarnath stay price"
-            firstColWide
-            head={["Kedarnath stay (room only, no meals)", "Price"]}
-            rows={[
-              ["Standard: GMVN camp", `${inr(k.standard?.per_bed)} per bed`],
-              [`Deluxe: guest house, ${k.deluxe?.beds_per_room}-bed rooms`,
-                `${inr(k.deluxe?.per_bed)} per bed (a couple takes the whole room: ${inr(k.deluxe?.per_bed * k.deluxe?.beds_per_room)})`],
-              [`Luxury: ${k.luxury?.beds_per_room}-bed rooms`, `${inr(k.luxury?.per_bed)} per bed`],
-            ]}
-          />
-          <Note>Hotel prices on the Char Dham route stay the same on holidays and long weekends.</Note>
         </Section>
 
         {/* 3.6 Start city */}
@@ -462,6 +433,24 @@ export default async function CostCalculatorPage() {
             ))}
           </ul>
         </Section>
+
+        {/* Terms: the calculator gives estimates, not final prices */}
+        <Section id="terms" tone="mist" title="Terms and conditions for these prices">
+          <ol className="list-decimal space-y-2.5 pl-5 text-sm leading-relaxed text-slate-ink marker:font-bold marker:text-ink">
+            <li>All prices on this page and in the calculator are <strong className="text-ink">estimates, not a final quote</strong> or a booking confirmation.</li>
+            <li>The final price is confirmed by the Gokeys team on WhatsApp or phone after checking hotel and vehicle availability for your exact dates.</li>
+            <li>Prices can change with availability, festival and holiday demand, fuel prices, and government taxes, fees or permit charges, until your booking is confirmed with an advance payment.</li>
+            <li>Hotel names are shared with the final quote. If a hotel is not available, a hotel of the same category is arranged.</li>
+            <li>GST of {gst}% is charged extra on the package price.</li>
+            <li>Pony, palki, puja, darshan tickets, lunch, sightseeing paid to the driver and personal expenses are not included.</li>
+            <li>Extra costs from landslides, road closures, weather or other delays outside our control (extra nights, vehicle days, meals) are paid by the guest.</li>
+            <li>Yatra dates depend on the temple opening and closing dates announced each year; the season dates shown are expected dates.</li>
+            <li>
+              Bookings are subject to our <Link href="/terms-and-conditions" className="font-bold text-teal underline underline-offset-2 hover:text-ink">terms and conditions</Link>{" "}
+              and <Link href="/cancellation-policy" className="font-bold text-teal underline underline-offset-2 hover:text-ink">cancellation policy</Link>.
+            </li>
+          </ol>
+        </Section>
       </main>
       <Footer />
     </>
@@ -469,14 +458,6 @@ export default async function CostCalculatorPage() {
 }
 
 // ---------------------------------------------------------------- formatting helpers
-function lowStandard(h) {
-  return h.low_standard?.per_person ? `${inr(h.low_standard.per_person)} per person` : "on request";
-}
-
-function roomRate(v) {
-  return v ? inr(v) : "on request";
-}
-
 function longDate(isoDate) {
   const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
   const [y, m, d] = isoDate.split("-").map(Number);
