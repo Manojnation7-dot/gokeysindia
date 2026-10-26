@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { FaWhatsapp } from "react-icons/fa";
 import { ChevronDown } from "lucide-react";
 import {
-  CALC_API, fromParams, inr, inrShort, iso, niceDate, saveEstimate, toParams, track, whatsAppText,
+  CALC_API, fromParams, inr, iso, niceDate, saveEstimate, toParams, track, whatsAppText,
 } from "@/lib/calculatorApi";
 
 // Char Dham cost calculator: four steps on the left, live estimate on the right (sticky on desktop),
@@ -249,7 +249,9 @@ export default function CostCalculator({ config, initialInput, initialQuote }) {
                 ))}
               </div>
             </div>
-            <Check checked={input.two_per_room} onChange={(v) => update("two_per_room", v)}>Only 2 people per room</Check>
+            <Check checked={input.two_per_room} onChange={(v) => update("two_per_room", v)}>
+              Only 2 people per room <span className="text-slate-ink">(otherwise triple / four-bed sharing, which costs less)</span>
+            </Check>
           </Step>
 
           <Step n={4} title="Extras">
@@ -301,7 +303,7 @@ export default function CostCalculator({ config, initialInput, initialQuote }) {
                   ))}
                   <div className="flex justify-between gap-3 py-2.5 font-bold text-ink">
                     <dt>Group total</dt>
-                    <dd className="whitespace-nowrap tabular-nums">{inrShort(quote.total.min)} – {inrShort(quote.total.max)}</dd>
+                    <dd className="whitespace-nowrap tabular-nums">{inr(quote.total.min)} – {inr(quote.total.max)}</dd>
                   </div>
                 </dl>
 

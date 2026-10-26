@@ -3,7 +3,7 @@ import { join } from "node:path";
 import { ImageResponse } from "next/og";
 import { getPageData, inr } from "@/lib/calculatorApi";
 
-// Share card: "Char Dham Yatra Cost 2027 · from ₹21,500 per person" (live lowest Standard figure) with the logo.
+// Share card: "Char Dham Yatra Cost 2027 · from ₹17,000 per person" (live lowest Standard figure, any month or group) with the logo.
 export const revalidate = 3600;
 export const alt = "Char Dham Yatra Cost Calculator";
 export const size = { width: 1200, height: 630 };
@@ -15,7 +15,7 @@ export default async function Image() {
     readFile(join(process.cwd(), "public/images/gokeyslogo.png")).catch(() => null),
   ]);
   const year = data?.year || 2027;
-  const from = data?.figures?.standard_min;
+  const from = data?.figures?.lowest_overall;
   const logoSrc = logo ? `data:image/png;base64,${logo.toString("base64")}` : null;
 
   return new ImageResponse(

@@ -137,7 +137,7 @@ export default async function CostCalculatorPage() {
   const faqs = [
     {
       question: "How much does Char Dham Yatra cost per person?",
-      answer: `From Haridwar, a ${days}-day Char Dham Yatra with Standard hotels costs about ${inr(f.standard_min)}–${inr(f.standard_max)} per person plus ${gst}% GST, depending on group size and month. Use the calculator for your exact dates.`,
+      answer: `From Haridwar, a ${days}-day Char Dham Yatra with Standard hotels costs about ${inr(f.standard_min)}–${inr(f.standard_max)} per person plus ${gst}% GST for 2–6 people travelling in May–June or September–October, depending on group size and month. July–August and larger groups cost less, from about ${inr(f.lowest_overall)}. Use the calculator for your exact dates.`,
     },
     {
       question: "What is the Char Dham Yatra cost for 2 persons?",
@@ -170,7 +170,7 @@ export default async function CostCalculatorPage() {
     },
     {
       question: "Is Char Dham Yatra cheaper from Haridwar or Delhi?",
-      answer: `From Haridwar or Rishikesh. Starting from Delhi adds a cab to Haridwar and back, about ${range(f.delhi_extra_min, f.delhi_extra_max)} for a small group.`,
+      answer: `From Haridwar or Rishikesh. Starting from Delhi adds a cab to Haridwar and back, about ${range(f.delhi_extra_min, f.delhi_extra_max)} in total for a small group, shared between the travellers.`,
     },
   ];
 
@@ -216,10 +216,11 @@ export default async function CostCalculatorPage() {
             <h2 className="gk-h3">How much does Char Dham Yatra cost in {year}?</h2>
             <p className="mt-3 text-[15px] leading-relaxed text-ink">
               A {days}-day Char Dham Yatra from Haridwar costs about{" "}
-              <strong>{inr(f.standard_min)} to {inr(f.standard_max)} per person</strong> with Standard hotels, plus {gst}% GST.
-              Groups of 6 travelling in September–October pay the least (about {inr(f.six_sept_oct_each)} each); a couple
-              travelling in May–June pays the most (about {inr(f.couple_peak_each)} each). Deluxe hotels add roughly{" "}
-              {range(f.deluxe_extra_min, f.deluxe_extra_max)} per person.
+              <strong>{inr(f.standard_min)} to {inr(f.standard_max)} per person</strong> for 2–6 people travelling in May–June
+              or September–October, with Standard hotels, plus {gst}% GST. In those months a group of 6 in September–October
+              pays the least (about {inr(f.six_sept_oct_each)} each) and a couple in May–June pays the most (about{" "}
+              {inr(f.couple_peak_each)} each). July–August and larger groups cost less, from about {inr(f.lowest_overall)} per
+              person. Deluxe hotels add roughly {range(f.deluxe_extra_min, f.deluxe_extra_max)} per person.
             </p>
           </div>
         </section>
@@ -285,7 +286,7 @@ export default async function CostCalculatorPage() {
         <Section
           id="cost-by-start-city"
           title="Char Dham Yatra cost from Haridwar, Rishikesh, Dehradun and Delhi"
-          intro={`The yatra starts and ends in Haridwar. From Rishikesh the price is the same. From Dehradun airport add ₹500 for the pickup. From Delhi, a separate cab takes you to Haridwar and back, so the price rises by ${range(f.delhi_extra_min, f.delhi_extra_max)} for a small group.`}
+          intro={`The yatra starts and ends in Haridwar. From Rishikesh the price is the same. From Dehradun airport add ₹500 for the pickup. From Delhi, a separate cab takes you to Haridwar and back, which adds about ${range(f.delhi_extra_min, f.delhi_extra_max)} in total for a small group, shared between the travellers (the table shows the price per person).`}
         >
           <Table
             caption="Char Dham Yatra cost per person by starting city, Standard hotels, May–June"
@@ -353,7 +354,7 @@ export default async function CostCalculatorPage() {
               [`Hotels, ${ex.nights} nights (one four-bed room + child) incl. Kedarnath camp`, inr(ex.hotels)],
               [<strong key="t">Total before GST</strong>, <strong key="v" className="text-ink">{inr(ex.total)}</strong>],
               [`GST (${gst}%)`, inr(ex.gst)],
-              ["Per adult (child pays half)", `about ${inr(ex.per_adult)}`],
+              ["Per adult (child pays half), before GST", `about ${inr(ex.per_adult)}`],
               ["Paid on the way", "lunch, pony or palki if needed, puja"],
             ]}
           />
@@ -375,7 +376,7 @@ export default async function CostCalculatorPage() {
         {/* 3.11 How it works */}
         <Section id="how-it-works" tone="mist" title="How this calculator works">
           <p className="gk-lead">
-            Gokeys India is a registered travel agency in Haridwar that has run Char Dham yatras for over 10 years. The
+            Gokeys India is an Uttarakhand Tourism registered travel agency in Haridwar that has run Char Dham yatras for over 10 years. The
             calculator uses the same rates our team quotes from: vehicle rates for each season, hotel rates on the route, and
             the Kedarnath camp and guest-house rates. Each day of your trip is priced by its date, so a trip that starts in late
             June or runs into a long weekend is priced correctly. The range you see allows about 10% for hotel availability and
@@ -405,7 +406,8 @@ export default async function CostCalculatorPage() {
               <h3 className="font-bold text-ink">चार धाम यात्रा में कितना खर्चा आता है?</h3>
               <p className="mt-1">
                 हरिद्वार से {days} दिन की चार धाम यात्रा का खर्च स्टैंडर्ड होटल के साथ लगभग {inr(f.standard_min)} से {inr(f.standard_max)} प्रति
-                व्यक्ति आता है ({gst}% GST अलग)। 4–6 लोगों के ग्रुप में और सितंबर–अक्टूबर में खर्च सबसे कम होता है।
+                व्यक्ति आता है ({gst}% GST अलग), 2–6 लोगों के लिए मई–जून या सितंबर–अक्टूबर में। इन महीनों में 4–6 लोगों के ग्रुप में
+                और सितंबर–अक्टूबर में खर्च सबसे कम होता है। जुलाई–अगस्त में और बड़े ग्रुप में खर्च लगभग {inr(f.lowest_overall)} से शुरू होता है।
               </p>
             </div>
             <div>
