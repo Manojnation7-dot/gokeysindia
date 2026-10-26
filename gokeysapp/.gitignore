@@ -60,3 +60,6 @@ next-env.d.ts
 # Misc
 # ================================
 *.pem
+
+# written by `next dev` (Next.js 16.4+)
+AGENTS.md
