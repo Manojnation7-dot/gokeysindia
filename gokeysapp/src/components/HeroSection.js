@@ -6,6 +6,7 @@ const QUICK_LINKS = [
   { label: "Kedarnath", href: "/destinations/kedarnath" },
   { label: "Auli Chopta", href: "/tours/auli-chopta-tour-package" },
   { label: "Harsil Valley", href: "/destinations/harsil" },
+  { label: "Plan your budget", href: "/char-dham-yatra-cost-calculator" },
 ];
 
 export default function HeroSection() {

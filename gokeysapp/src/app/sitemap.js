@@ -89,6 +89,7 @@ export default async function sitemap() {
     "/terms-and-conditions",
     "/privacy-policy",
     "/cancellation-policy",
+    "/char-dham-yatra-cost-calculator",
     "/services/taxi-service-haridwar",
     "/services/uttarakhand-tour-operators",
     "/services/travel-agency-haridwar",

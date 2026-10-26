@@ -38,6 +38,7 @@ const Footer = () => {
               { href: "/grouptour", label: "Group tours" },
               { href: "/sightseeing", label: "Sightseeing" },
               { href: "/blog", label: "Blog" },
+              { href: "/char-dham-yatra-cost-calculator", label: "Char Dham Cost Calculator" },
             ].map((item) => (
               <li key={item.href}>
                 <Link href={item.href} className="hover:text-white transition">

@@ -361,6 +361,13 @@ figure.image.image-style-align-center {
   body:has(.gk-sticky-cta) .whatsapp-float { bottom: 84px; }
 }
 
+/* Cost calculator: its estimate card and phone price bar have their own WhatsApp buttons, so the floating one is
+   hidden; on phones the page ends above the price bar so it never covers the footer */
+body:has(.gk-calc-page) .whatsapp-float { display: none; }
+@media (max-width: 1023px) {
+  body:has(.gk-calc-bar) { padding-bottom: calc(88px + env(safe-area-inset-bottom)); }
+}
+
 /* Tables inside articles (CKEditor wraps them in figure.table): scroll inside their own box on phones
    instead of widening the whole page */
 figure.table {

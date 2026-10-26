@@ -370,7 +370,7 @@ export function buildImageObject({ url, width, height }) {
 // FAQ identity belongs to its page, which need not be a tour detail.
 export function buildFAQSchema(faqs = [], pagePath) {
   if (!Array.isArray(faqs) || faqs.length === 0 || typeof pagePath !== "string" ||
-      !/^\/(?:tours\/[^/?#]+|grouptour(?:\/[^/?#]+)?|destinations\/[^/?#]+)\/?$/.test(pagePath) ||
+      !/^\/(?:tours\/[^/?#]+|grouptour(?:\/[^/?#]+)?|destinations\/[^/?#]+|char-dham-yatra-cost-calculator)\/?$/.test(pagePath) ||
       /\/(?:undefined|null)(?:\/|$)/.test(pagePath)) return null;
 
   const pageUrl = `${SITE_URL}${pagePath.replace(/\/$/, "")}`;
