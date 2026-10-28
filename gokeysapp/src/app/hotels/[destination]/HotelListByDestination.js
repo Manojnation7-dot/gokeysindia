@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import Header from "@/components/Header";
@@ -8,15 +8,15 @@ import Footer from "@/components/Footer";
 import { Breadcrumbs, CtaBand, PLACEHOLDER } from "@/components/ui/kit";
 
 
-export default function HotelListByDestination({ destination, destinationData }) {
-  const [hotels, setHotels] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+const DEFAULT_FILTERS = { minPrice: 0, maxPrice: 50000, starRating: null };
+
+// initialHotels: the list rendered on the server with the default filters (null if that failed: loaded here instead)
+export default function HotelListByDestination({ destination, destinationData, initialHotels = null }) {
+  const [hotels, setHotels] = useState(initialHotels ?? []);
+  const [isLoading, setIsLoading] = useState(initialHotels == null);
+  const serverList = useRef(initialHotels != null); // skip the first fetch: the server already sent this list
   const [error, setError] = useState(null);
-  const [filters, setFilters] = useState({
-    minPrice: 0,
-    maxPrice: 50000,
-    starRating: null,
-  });
+  const [filters, setFilters] = useState(DEFAULT_FILTERS);
 
   useEffect(() => {
     async function fetchHotels() {
@@ -32,7 +32,8 @@ export default function HotelListByDestination({ destination, destinationData })
         const res = await fetch(url, { cache: "no-store" });
         if (!res.ok) throw new Error("Failed to fetch hotels");
         const data = await res.json();
-      setHotels(Array.isArray(data) ? data : data.results || []);
+        setHotels(Array.isArray(data) ? data : data.results || []);
+        setError(null);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -40,6 +41,10 @@ export default function HotelListByDestination({ destination, destinationData })
       }
     }
 
+    if (serverList.current) {
+      serverList.current = false;
+      return;
+    }
     if (destination) {
       fetchHotels();
     }
@@ -50,16 +55,6 @@ export default function HotelListByDestination({ destination, destinationData })
       <>
         <Header />
         <div className="text-center p-10 text-slate-ink min-h-[50vh]">Loading hotels...</div>
-        <Footer />
-      </>
-    );
-  }
-
-  if (error) {
-    return (
-      <>
-        <Header />
-        <div className="text-center p-10 text-red-600 min-h-[50vh]">Error: {error}</div>
         <Footer />
       </>
     );
@@ -137,7 +132,7 @@ export default function HotelListByDestination({ destination, destinationData })
 
           <button
             type="button"
-            onClick={() => setFilters({ minPrice: 0, maxPrice: 50000, starRating: null })}
+            onClick={() => setFilters(DEFAULT_FILTERS)}
             className="gk-btn gk-btn-line w-full"
           >
             Clear filters
@@ -146,6 +141,8 @@ export default function HotelListByDestination({ destination, destinationData })
 
         {/* Hotel List */}
         <div className="space-y-4 min-w-0">
+          {/* A failed filter update keeps the list shown so far */}
+          {error && <p role="alert" className="rounded-xl bg-sun-soft px-4 py-3 text-sm text-ink">Could not update the list. Please check your connection and try again.</p>}
           <p className="text-xs text-slate-ink">{hotels.length} {hotels.length === 1 ? "hotel" : "hotels"} in {placeName}</p>
           {hotels.length > 0 ? (
             hotels.map((hotel) => (
@@ -174,7 +171,7 @@ export default function HotelListByDestination({ destination, destinationData })
                   <div>
                     <span className="text-xs text-slate-ink block">Starting from</span>
                     <span className="gk-price text-2xl">
-                      ₹{parseFloat(hotel.tariff_starting_from).toLocaleString()}
+                      ₹{parseFloat(hotel.tariff_starting_from).toLocaleString("en-IN")}
                     </span>
                     <span className="text-xs text-slate-ink">/night</span>
                   </div>
