@@ -1,10 +1,32 @@
 import { CACHED } from "@/lib/api";
+import { getPageData } from "@/lib/calculatorApi";
 
-// Built on every request from the API. The API calls themselves stay cached for 5 minutes
-// (CACHED, tag "api") and are cleared at once when the admin saves, so new content shows here
-// within 5 minutes at most. (With "revalidate = 300" the sitemap was stored as a static file on
-// Vercel and served for hours without refreshing; pages were not affected.)
+// Built on every request from the API. The API calls themselves stay cached (CACHED, tag "api") and are refreshed at
+// once when the admin saves (Django calls /api/revalidate with /sitemap.xml). (With "revalidate = 300" the sitemap was
+// stored as a static file on Vercel and served for hours without refreshing; pages were not affected.)
 export const dynamic = "force-dynamic";
+
+// Last change to each page whose text is written in the code (not in the admin): the date of its last commit.
+// Update the date when you change one of these pages, so Google re-reads it.
+const STATIC_PAGE_DATES = {
+  "/about": "2026-10-13",
+  "/contact": "2026-10-10",
+  "/cabs": "2026-10-28",
+  "/terms-and-conditions": "2026-10-10",
+  "/privacy-policy": "2026-10-10",
+  "/cancellation-policy": "2026-10-10",
+  "/char-dham-yatra-cost-calculator": "2026-10-26", // or the last rate change, if later (below)
+  "/services/taxi-service-haridwar": "2026-10-13",
+  "/services/uttarakhand-tour-operators": "2026-10-13",
+  "/services/travel-agency-haridwar": "2026-10-13",
+  "/services/char-dham-yatra-operators-haridwar": "2026-10-13",
+  "/services/hotel-booking-uttarakhand": "2026-10-13",
+  "/services/delhi-to-haridwar-cab": "2026-10-13",
+  "/services/haridwar-railway-station-taxi": "2026-10-13",
+  "/services/haridwar-to-dehradun-taxi": "2026-10-13",
+  "/services/haridwar-to-rishikesh-taxi": "2026-10-13",
+};
+const dateOf = (iso) => ({ lastModified: new Date(`${iso}T12:00:00+05:30`) }); // midday in India: the same date in UTC
 
 export default async function sitemap() {
   const BASE_URL = "https://gokeys.in"; 
@@ -57,9 +79,8 @@ export default async function sitemap() {
     "monthly"
   );
 
-  // List pages change when one of their items changes; the other static pages only
-  // when their code changes, so they get no date (a date that is always "now" teaches
-  // Google to ignore the dates of the whole sitemap)
+  // List pages change when one of their items changes; the other static pages only when their code changes, so they
+  // get the fixed date above (never "now": a date that is always "now" teaches Google to ignore the whole sitemap's dates)
   const newest = (items) => {
     const times = items.map((i) => i.lastModified?.getTime()).filter(Boolean);
     return times.length ? { lastModified: new Date(Math.max(...times)) } : {};
@@ -72,7 +93,12 @@ export default async function sitemap() {
     "/grouptour": newest(groupTours),
     "/hotels": newest(hotels),
     "/sightseeing": newest(sightseeing),
+    ...Object.fromEntries(Object.entries(STATIC_PAGE_DATES).map(([path, iso]) => [path, dateOf(iso)])),
   };
+  // The calculator page shows live prices: it changes when a rate changes in the admin too.
+  const calc = listDates["/char-dham-yatra-cost-calculator"];
+  const ratesUpdated = (await getPageData())?.rates_updated;
+  if (ratesUpdated && new Date(ratesUpdated) > calc.lastModified) calc.lastModified = new Date(ratesUpdated);
 
   // Static pages
   const staticPages = [

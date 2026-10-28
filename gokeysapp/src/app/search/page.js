@@ -19,6 +19,7 @@ function searchMetadata(params) {
       : 'Search tours, destinations and travel blogs from Gokeys India.',
     path: `/search${suffix ? `?${suffix}` : ''}`,
     image: '/images/gokeyslogo.png',
+    noindex: true, // <meta name="robots" content="noindex, follow">: results pages are not for Google's index
   });
 }
 
