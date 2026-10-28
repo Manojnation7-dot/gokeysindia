@@ -14,6 +14,8 @@ import { previewQuery } from '@/lib/preview';
 import { buildMetadata, seoFromApi } from '@/lib/seoHelpers';
 import { CACHED, cacheFor } from '@/lib/api';
 import { slimPost, readMinutes } from '@/lib/slim';
+import { getBlogPage } from '@/lib/blog';
+import { StoryCard } from '@/components/TravelStories';
 
 export const revalidate = 86400; // 24 h safety net; admin saves refresh the page at once (api/revalidate)
 
@@ -26,20 +28,26 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://gokeys.in';
 // copies below — just keep the calling pattern in BlogDetailPage the same.
 // ---------------------------------------------------------------------------
 
+// Home > Blog > Category > Post (no category level for a post without a main category)
+function crumbs(post) {
+  return [
+    { label: 'Home', href: '/' },
+    { label: 'Blog', href: '/blog' },
+    ...(post.category ? [{ label: post.category.name, href: `/blog/category/${post.category.slug}` }] : []),
+    { label: post.title, href: `/blog/${post.slug}` },
+  ];
+}
+
 function buildBreadcrumbSchema(post) {
   return {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
-    itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Home', item: `${SITE_URL}/` },
-      { '@type': 'ListItem', position: 2, name: 'Blog', item: `${SITE_URL}/blog` },
-      {
-        '@type': 'ListItem',
-        position: 3,
-        name: post.title,
-        item: `${SITE_URL}/blog/${post.slug}`,
-      },
-    ],
+    itemListElement: crumbs(post).map((c, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: c.label,
+      item: `${SITE_URL}${c.href}`,
+    })),
   };
 }
 
@@ -129,12 +137,7 @@ function JsonLd({ items }) {
 
 // Breadcrumb Component
 function Breadcrumb({ post }) {
-
-  const items = [
-    { label: 'Home', href: '/' },
-    { label: 'Blog', href: '/blog' },
-    { label: post.title, href: null },
-  ];
+  const items = crumbs(post).map((c, i, all) => (i === all.length - 1 ? { ...c, href: null } : c));
 
   return (
     <nav aria-label="Breadcrumb" className="gk-crumbs mb-3">
@@ -200,7 +203,7 @@ export async function generateMetadata({ params }) {
     type: 'article',
     publishedTime: post.published_date,
     modifiedTime: post.updated_at || post.published_date,
-    section: post.categories?.[0]?.name,
+    section: post.category?.name || post.categories?.[0]?.name,
     tags: (post.tags || []).map((t) => t.name).filter(Boolean),
   });
 }
@@ -210,6 +213,7 @@ export default async function BlogDetailPage({ params }) {
   let post = null;
   let errorMessage = null;
   let relatedStories = [];
+  let moreInCategory = [];
   let missing = false;
   const preview = await previewQuery();
   try {
@@ -229,6 +233,12 @@ export default async function BlogDetailPage({ params }) {
       let data = await relatedRes.json();
       const storiesArray = Array.isArray(data) ? data : data.results || [];
       relatedStories = storiesArray.filter(p => p.slug !== slug).slice(0, 6).map(slimPost);
+    }
+    if (post?.category) {
+      const sameCategory = await getBlogPage(1, post.category.slug);
+      moreInCategory = (sameCategory?.posts || []).filter((p) => p.slug !== post.slug).slice(0, 4);
+      const shown = new Set(moreInCategory.map((p) => p.slug));
+      relatedStories = relatedStories.filter((p) => !shown.has(p.slug));
     }
   } catch (error) {
     console.error('Error fetching blog post:', error);
@@ -263,9 +273,11 @@ export default async function BlogDetailPage({ params }) {
         <header className="gk-wrap pt-8 pb-6 max-w-5xl!">
           {/* Breadcrumbs */}
           <Breadcrumb post={post} />
-          {/* Categories */}
+          {/* Main category (a link to its archive), else the older categories */}
           <div className="flex flex-wrap gap-1.5 mb-3">
-            {post.categories && post.categories.length > 0 ? (
+            {post.category ? (
+              <a href={`/blog/category/${post.category.slug}`} className="gk-chip hover:text-teal">{post.category.name}</a>
+            ) : post.categories && post.categories.length > 0 ? (
               post.categories.map((category, index) => (
                 <span key={index} className="gk-chip">{category.name}</span>
               ))
@@ -340,6 +352,21 @@ export default async function BlogDetailPage({ params }) {
         ]}
       />
       <RelatedContent title="Related articles" items={post.related?.posts} />
+      {moreInCategory.length > 0 && (
+        <section className="gk-section">
+          <div className="gk-wrap">
+            <div className="flex flex-wrap items-end justify-between gap-3 mb-6">
+              <h2 className="gk-h2">More in {post.category.name}</h2>
+              <a href={`/blog/category/${post.category.slug}`} className="text-sm font-bold text-ink hover:text-teal">
+                All {post.category.name} articles →
+              </a>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+              {moreInCategory.map((p) => <StoryCard key={p.slug} post={p} />)}
+            </div>
+          </div>
+        </section>
+      )}
       <TravelStories posts={relatedStories} />
       <Footer />
     </>

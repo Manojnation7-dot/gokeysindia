@@ -104,6 +104,7 @@ export const slimPost = (p) => ({
   content: plainText(p.content, 220),
   read_minutes: readMinutes(p.content),
   published_date: p.published_date,
+  category: p.category || null,
   categories: p.categories || [],
   cover_image_url: p.cover_image_url || null,
   cover_image: (p.cover_image || []).slice(0, 1).map(image),

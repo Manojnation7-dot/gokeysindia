@@ -9,7 +9,7 @@ export const postImage = (post) =>
   post.cover_image?.[0]?.optimized_card || post.cover_image?.[0]?.image || post.cover_image_url || "/images/placeholder.jpg";
 
 export function StoryCard({ post }) {
-  const cat = categoryName(post.categories?.[0]);
+  const cat = categoryName(post.category || post.categories?.[0]);
   return (
     <Link href={`/blog/${post.slug}`} className="gk-card gk-card-hover group flex flex-col h-full">
       <div className="gk-media h-44">

@@ -3,43 +3,85 @@ import Image from 'next/image';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import InquiryFormCard from '@/components/SimpleEnquiryForm';
-import { buildBreadcrumbList } from '@/lib/seoSchemas';
 import SmartSEO from '@/components/SmartSEO';
 import { StoryCard, postDate, postImage } from '@/components/TravelStories';
 import { Breadcrumbs } from '@/components/ui/kit';
+import { pageHref } from '@/lib/blog';
 
-const pageHref = (n) => (n <= 1 ? '/blog' : `/blog?page=${n}`);
+// Category chips: plain links, the current one highlighted
+function CategoryChips({ categories, active }) {
+  if (!categories?.length) return null;
+  const chip = 'h-9 px-4 shrink-0 whitespace-nowrap inline-flex items-center rounded-full text-sm font-bold border transition-colors';
+  const on = 'bg-ink text-white border-ink';
+  const off = 'bg-white text-ink border-line hover:border-ink';
+  return (
+    // phones: one row that scrolls sideways; wider screens: wrapped rows
+    <nav aria-label="Blog categories"
+         className="flex gap-2 mt-6 overflow-x-auto -mx-4 px-4 pb-1 sm:mx-0 sm:px-0 sm:pb-0 sm:flex-wrap sm:overflow-visible">
+      <a href="/blog" className={`${chip} ${active ? off : on}`} aria-current={active ? undefined : 'page'}>All</a>
+      {categories.map((c) => (
+        <a key={c.slug} href={`/blog/category/${c.slug}`} aria-current={active === c.slug ? 'page' : undefined}
+           className={`${chip} ${active === c.slug ? on : off}`}>
+          {c.name}
+        </a>
+      ))}
+    </nav>
+  );
+}
 
-export default function BlogListPage({ blogPosts, currentPage = 1, totalPages = 1 }) {
-  const truncateHtmlToText = (html, maxLength = 150) => {
-    if (!html) return '';
-    const text = html.replace(/<[^>]+>/g, '');
-    return text.length <= maxLength ? text : text.slice(0, maxLength - 3) + '...';
-  };
+// Plain <a href> links to every page, so each one can be crawled
+function Pagination({ basePath, currentPage, totalPages }) {
+  if (totalPages <= 1) return null;
+  return (
+    <nav className="flex flex-wrap justify-center items-center gap-2 mt-10" aria-label="Pagination">
+      {currentPage > 1 && <a href={pageHref(basePath, currentPage - 1)} rel="prev" className="gk-pill">Previous</a>}
+      {Array.from({ length: totalPages }, (_, i) => i + 1).map((n) => (
+        <a
+          key={n}
+          href={pageHref(basePath, n)}
+          aria-current={currentPage === n ? 'page' : undefined}
+          className={`h-9 min-w-9 px-3 inline-flex items-center justify-center rounded-full text-sm font-bold ${
+            currentPage === n ? 'bg-ink text-white' : 'bg-white border border-line text-ink'
+          }`}
+        >
+          {n}
+        </a>
+      ))}
+      {currentPage < totalPages && <a href={pageHref(basePath, currentPage + 1)} rel="next" className="gk-pill">Next</a>}
+    </nav>
+  );
+}
 
-  const breadcrumbSchema = buildBreadcrumbList([
-    { name: "Home", url: "/" },
-    { name: "Blog", url: "/blog" },
-  ]);
-
-  const posts = Array.isArray(blogPosts) ? blogPosts : [];
+// A blog archive page: /blog or /blog/category/<slug>
+export default function BlogListPage({
+  posts = [],
+  currentPage = 1,
+  totalPages = 1,
+  basePath = '/blog',
+  heading = 'Travel Blog',
+  eyebrow = 'Travel stories and experiences',
+  intro = 'Discover inspiring travel stories, tips, and destinations from around the world.',
+  breadcrumbs = [{ label: 'Home', href: '/' }, { label: 'Blog' }],
+  schema,
+  categories = [],
+  activeCategory = null,
+}) {
   const [featured, ...rest] = posts;
+  const featuredCategory = featured?.category?.name || featured?.categories?.[0]?.name;
 
   return (
     <>
       <Header />
-      <SmartSEO schema={breadcrumbSchema} />
+      <SmartSEO schema={schema} />
       <main className="bg-mist">
         <div className="gk-wrap pt-10 pb-16">
-          {/* Hero Section */}
-          <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "Blog" }]} />
-          <p className="gk-eyebrow mb-2">Travel stories and experiences</p>
-          <h1 className="gk-h1">Travel Blog</h1>
-          <p className="gk-lead mt-3 max-w-2xl">
-            Discover inspiring travel stories, tips, and destinations from around the world.
-          </p>
+          <Breadcrumbs items={breadcrumbs} />
+          <p className="gk-eyebrow mb-2">{eyebrow}</p>
+          <h1 className="gk-h1">{heading}</h1>
+          {intro && <p className="gk-lead mt-3 max-w-3xl">{intro}</p>}
+          <CategoryChips categories={categories} active={activeCategory} />
 
-          {posts.length > 0 ? (
+          {featured ? (
             <>
               {/* Featured (first) post */}
               <Link href={`/blog/${featured.slug}`} className="gk-card gk-card-hover group grid md:grid-cols-2 mt-8">
@@ -55,13 +97,11 @@ export default function BlogListPage({ blogPosts, currentPage = 1, totalPages = 
                 </div>
                 <div className="p-6 md:p-9 flex flex-col justify-center">
                   <div className="flex flex-wrap items-center gap-2 mb-3">
-                    {featured.categories.map((cat, idx) => (
-                      <span key={idx} className="gk-chip">{cat.name}</span>
-                    ))}
+                    {featuredCategory && <span className="gk-chip">{featuredCategory}</span>}
                     {currentPage === 1 && <span className="text-xs text-slate-ink">Featured</span>}
                   </div>
                   <h2 className="gk-h2">{featured.title}</h2>
-                  <p className="gk-lead mt-3 line-clamp-3">{truncateHtmlToText(featured.content, 200)}</p>
+                  <p className="gk-lead mt-3 line-clamp-3">{featured.content}</p>
                   {featured.published_date && (
                     <p className="text-xs text-slate-ink mt-4">
                       Gokeys team · {postDate(featured.published_date)}
@@ -76,9 +116,7 @@ export default function BlogListPage({ blogPosts, currentPage = 1, totalPages = 
 
               {rest.length > 0 && (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mt-6">
-                  {rest.map((post) => (
-                    <StoryCard key={post.slug} post={{ ...post, content: truncateHtmlToText(post.content) }} />
-                  ))}
+                  {rest.map((post) => <StoryCard key={post.slug} post={post} />)}
                 </div>
               )}
             </>
@@ -88,29 +126,7 @@ export default function BlogListPage({ blogPosts, currentPage = 1, totalPages = 
             </div>
           )}
 
-          {/* Pagination: real links so every page can be crawled */}
-          {totalPages > 1 && (
-            <nav className="flex flex-wrap justify-center items-center gap-2 mt-10" aria-label="Pagination">
-              {currentPage > 1 && (
-                <Link href={pageHref(currentPage - 1)} className="gk-pill">Previous</Link>
-              )}
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
-                <Link
-                  key={pageNum}
-                  href={pageHref(pageNum)}
-                  aria-current={currentPage === pageNum ? 'page' : undefined}
-                  className={`h-9 min-w-9 px-3 inline-flex items-center justify-center rounded-full text-sm font-bold ${
-                    currentPage === pageNum ? 'bg-ink text-white' : 'bg-white border border-line text-ink'
-                  }`}
-                >
-                  {pageNum}
-                </Link>
-              ))}
-              {currentPage < totalPages && (
-                <Link href={pageHref(currentPage + 1)} className="gk-pill">Next</Link>
-              )}
-            </nav>
-          )}
+          <Pagination basePath={basePath} currentPage={currentPage} totalPages={totalPages} />
 
           <div className="mt-14 grid lg:grid-cols-[1fr_1.2fr] gap-8 items-start">
             <div>

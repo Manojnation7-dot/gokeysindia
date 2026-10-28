@@ -59,6 +59,7 @@ export default async function sitemap() {
   // Dynamic URLs from Django
   const tours = await fetchUrls("/api/sitemap/tours", "tours", 0.9, "weekly");
   const blogs = await fetchUrls("/api/sitemap/blogs", "blog", 0.7, "monthly");
+  const blogCategories = await fetchUrls("/api/sitemap/blog-categories", "blog/category", 0.6, "weekly");
   const destinations = await fetchUrls(
     "/api/sitemap/destinations",
     "destinations",
@@ -150,6 +151,7 @@ export default async function sitemap() {
     ...staticPages,
     ...hotelCityPages,
     ...tours,
+    ...blogCategories,
     ...blogs,
     ...destinations,
     ...groupTours,
