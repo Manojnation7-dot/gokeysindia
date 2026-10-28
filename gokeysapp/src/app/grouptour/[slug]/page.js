@@ -1,4 +1,5 @@
 import { fetchData, fetchAllResults } from "@/lib/api";
+import { cardTour } from "@/lib/slim";
 import { slugParams } from "@/lib/staticParams";
 import GroupTourDetails from "./GroupTourDetails";
 import { notFound } from "next/navigation";
@@ -83,7 +84,7 @@ export default async function Page({ params }) {
     {preview && <PreviewBanner path={`/grouptour/${slug}`} />}
     <GroupTourDetails
       tourData={tourData}
-      similarTours={similarTours}   // 👈 PASS HERE
+      similarTours={similarTours.map(cardTour)} // card fields only: whole group tours would be copied into the page
       baseUrl={apiUrl}
       documentNumber={`GK-${Date.now().toString().slice(-4)}`}
       currentDate={new Date().toLocaleDateString("en-GB", {

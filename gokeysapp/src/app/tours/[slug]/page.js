@@ -1,4 +1,5 @@
 import { buildMetadata, seoFromApi } from "@/lib/seoHelpers";
+import { cardTour } from "@/lib/slim";
 import { slugParams } from "@/lib/staticParams";
 import { fetchData, CACHED } from "@/lib/api";
 import { previewQuery } from "@/lib/preview";
@@ -84,7 +85,7 @@ export default async function TourDetailPage({ params }) {
       <TourDetailClient
         baseUrl={apiUrl}
         tourData={tour}
-        similarTours={similarTours}
+        similarTours={similarTours.map(cardTour)} // card fields only (whole tours would be copied into the page)
         tourPath="tours"
       />
     </>

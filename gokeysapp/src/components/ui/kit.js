@@ -2,7 +2,6 @@
 // so they add nothing to the page's JavaScript bundle.
 import Image from "next/image";
 import Link from "next/link";
-import { ChevronDown } from "lucide-react";
 
 export const PLACEHOLDER = "/images/placeholder.jpg";
 export const cardImage = (img) => img?.optimized_card || img?.image || PLACEHOLDER;
@@ -139,7 +138,8 @@ export function FaqList({ items, white = true }) {
         <details key={i} className={`gk-faq rounded-xl ${white ? "bg-white" : "bg-mist"} border border-line`} open={i === 0}>
           <summary className="flex items-center justify-between gap-4 px-5 py-4 text-sm font-bold text-ink">
             {f.question}
-            <ChevronDown size={18} className="gk-faq-icon shrink-0 transition-transform" />
+            {/* The chevron is drawn by CSS (globals.css .gk-faq-chevron): an inline icon in every FAQ added ~380 bytes each */}
+            <span className="gk-faq-chevron gk-faq-icon shrink-0 transition-transform" aria-hidden="true" />
           </summary>
           {f.html ? (
             <div className="px-5 pb-4 -mt-1 text-sm text-gray-800 leading-relaxed prose prose-sm max-w-none" dangerouslySetInnerHTML={{ __html: f.html }} />

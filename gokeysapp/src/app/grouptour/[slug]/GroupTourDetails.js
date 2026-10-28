@@ -4,7 +4,9 @@ import { useEffect, useState } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import SimilarTours from '@/components/SimilarGroupTours';
-import ReviewSection from '@/components/ReviewSection';
+import dynamic from 'next/dynamic';
+// Loaded after the page: reviews sit at the bottom (and load in the browser anyway); dialogs open only on a click
+const ReviewSection = dynamic(() => import('@/components/ReviewSection'), { ssr: false });
 import EnquiryForm from '@/components/EnquiryForm';
 import TourItineraryMain from '@/components/TourItineraryMain';
 import { downloadItinerary } from '@/lib/downloadItinerary';

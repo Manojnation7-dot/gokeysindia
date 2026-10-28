@@ -119,3 +119,29 @@ export const slimHotel = (h) => ({
   tariff_starting_from: h.tariff_starting_from,
   front_image_url: h.front_image_url,
 });
+
+// Small cards on detail pages (similar tours / group tours, a hotel's tours): only what TourCard, its chips and the
+// quote dialog read. The API sends whole records (content, itineraries...), which would all be copied into the page.
+export const cardTour = (t) => ({
+  id: t.id,
+  name: t.name,
+  slug: t.slug,
+  duration_days: t.duration_days ?? null,
+  duration_nights: t.duration_nights ?? null,
+  duration: t.duration ?? null,
+  starting_location: t.starting_location || "",
+  base_price: t.base_price ?? null,
+  featured_image: image(t.featured_image),
+  pricing: pricing(t.pricing),
+});
+
+// "More hotels in ..." cards on a hotel page
+export const cardHotel = (h) => ({
+  id: h.id,
+  name: h.name,
+  slug: h.slug,
+  star_rating: h.star_rating ?? null,
+  location: h.location || "",
+  tariff_starting_from: h.tariff_starting_from ?? null,
+  front_image_url: h.front_image_url || null,
+});

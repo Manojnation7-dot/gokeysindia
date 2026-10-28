@@ -1,4 +1,5 @@
 import { buildMetadata, seoFromApi } from "@/lib/seoHelpers";
+import { cardHotel, cardTour, slimPlace } from "@/lib/slim";
 import { hotelParams } from "@/lib/staticParams";
 import { previewQuery } from "@/lib/preview";
 import PreviewBanner from "@/components/PreviewBanner";
@@ -59,13 +60,15 @@ export default async function Page({ params }) {
     return notFound();
   }
 
-    const similarHotels = (await fetchListData("hotels", { destination }))
-  ?.filter(hotelItem => hotelItem.slug !== slug);
-   const relatedToursResponse = await fetchListData("tours", { destination });
+  // Card fields only: the list endpoints send whole records (a sightseeing place carries its destination's full
+  // article), and everything passed to the client component is copied into the page HTML.
+  const similarHotels = ((await fetchListData("hotels", { destination })) || [])
+    .filter((hotelItem) => hotelItem.slug !== slug).map(cardHotel);
+  const relatedToursResponse = await fetchListData("tours", { destination });
   const relatedPlacesResponse = await fetchListData("sightseeing", { destination });
 
-  const relatedTours = relatedToursResponse?.results?.slice(0, 4) || [];
-  const relatedPlaces = relatedPlacesResponse?.results?.slice(0, 4) || [];
+  const relatedTours = (relatedToursResponse?.results || []).slice(0, 4).map(cardTour);
+  const relatedPlaces = (relatedPlacesResponse?.results || []).slice(0, 4).map(slimPlace);
 
   return (
     <>

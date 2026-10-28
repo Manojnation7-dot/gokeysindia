@@ -6,7 +6,10 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Link from "next/link";
 import { Ruler } from "lucide-react";
-import QuoteDialog from "@/components/QuoteDialog";
+import dynamic from "next/dynamic";
+// Loaded after the page: reviews sit at the bottom (and load in the browser anyway); dialogs open only on a click
+const QuoteDialog = dynamic(() => import("@/components/QuoteDialog"), { ssr: false });
+const HotelEnquiryModal = dynamic(() => import("@/components/HotelEnquiryModal"), { ssr: false });
 import { buildBreadcrumbList, buildHotelSchema } from "@/lib/seoSchemas";
 import SmartSEO from "@/components/SmartSEO";
 import {
@@ -41,7 +44,6 @@ import {
   ArrowUpDown,
   Plane,
 } from "lucide-react";
-import HotelEnquiryModal from "@/components/HotelEnquiryModal";
 import ImageGallery from "@/components/ImageGallery";
 import { Breadcrumbs, TourCard, Price, PlaceCard, cardImage } from "@/components/ui/kit";
 
@@ -347,7 +349,7 @@ const facilityIconMap = {
                       {hotel.tariff_starting_from && (
                         <p className="mt-auto pt-3 flex items-baseline gap-1.5">
                           <span className="text-xs text-slate-ink">Starting from</span>
-                          <span className="gk-price text-lg">₹{Number(hotel.tariff_starting_from).toLocaleString()}</span>
+                          <span className="gk-price text-lg">₹{Number(hotel.tariff_starting_from).toLocaleString("en-IN")}</span>
                         </p>
                       )}
                     </div>

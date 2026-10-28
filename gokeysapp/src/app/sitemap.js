@@ -132,8 +132,23 @@ export default async function sitemap() {
     priority: path === "" ? 1 : 0.8,
   }));
 
+  // Hotel city pages (/hotels/<city>): the cities that have hotels, dated by their newest hotel
+  const hotelCities = new Map();
+  for (const hotel of hotels) {
+    const city = hotel.url.slice(`${BASE_URL}/hotels/`.length).split("/")[0];
+    const time = hotel.lastModified?.getTime() || 0;
+    if (city && time >= (hotelCities.get(city) || 0)) hotelCities.set(city, time);
+  }
+  const hotelCityPages = [...hotelCities].map(([city, time]) => ({
+    url: `${BASE_URL}/hotels/${city}`,
+    ...(time ? { lastModified: new Date(time) } : {}),
+    changeFrequency: "monthly",
+    priority: 0.6,
+  }));
+
   return [
     ...staticPages,
+    ...hotelCityPages,
     ...tours,
     ...blogs,
     ...destinations,
