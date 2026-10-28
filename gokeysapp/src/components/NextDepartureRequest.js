@@ -5,6 +5,7 @@ import { CalendarClock, CheckCircle2 } from "lucide-react";
 import { getCSRFToken } from "@/lib/getCSRFToken";
 import { todayIST } from "@/lib/departures";
 import { currentPageUrl } from "@/lib/tourEnquiry";
+import { RECAPTCHA_RETRY_MESSAGE, getRecaptchaToken, startRecaptcha } from "@/lib/recaptcha";
 
 const LABELS = {
   preferred_month: "Preferred month",
@@ -16,14 +17,14 @@ const LABELS = {
   travel_date: "Travel date",
 };
 
+// A fresh token for each request; the backend requires it for this form (action "next_departure")
 async function recaptchaToken() {
-  const siteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
-  if (!siteKey) throw new Error("Security check is not configured. Please call or WhatsApp us.");
-  for (let i = 0; i < 10 && !window.grecaptcha; i++) await new Promise((r) => setTimeout(r, 400));
-  if (!window.grecaptcha) throw new Error("Security check could not load. Please try again.");
-  return new Promise((resolve, reject) =>
-    window.grecaptcha.ready(() => window.grecaptcha.execute(siteKey, { action: "next_departure" }).then(resolve, reject))
-  );
+  try {
+    return await getRecaptchaToken("next_departure");
+  } catch (err) {
+    console.error("reCAPTCHA error:", err);
+    throw new Error(RECAPTCHA_RETRY_MESSAGE);
+  }
 }
 
 // Shown on a group tour page when it has no upcoming confirmed departures.
@@ -116,7 +117,7 @@ export default function NextDepartureRequest({ tourSlug, tourName, compact = fal
           </div>
         </div>
       ) : (
-        <form onSubmit={submit} className={`mt-6 grid gap-4 ${compact ? "" : "sm:grid-cols-2"}`} noValidate={false}>
+        <form onSubmit={submit} onFocus={startRecaptcha} className={`mt-6 grid gap-4 ${compact ? "" : "sm:grid-cols-2"}`} noValidate={false}>
           <label className="block">
             <span className="gk-label">Preferred travel month *</span>
             <input type="month" required min={thisMonth} value={form.month} onChange={set("month")} className="gk-field" />

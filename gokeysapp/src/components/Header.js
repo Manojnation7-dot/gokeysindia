@@ -27,7 +27,7 @@ export default function Header() {
           {/* Logo + Title */}
           <a href="/" className="flex items-center gap-2.5 shrink-0" aria-label="Gokeys India home">
             <Image
-              src="/images/gokeyslogo.png"
+              src="/images/gokeyslogo-120.webp" // the 512 px gokeyslogo.png at 3x its 40 px display size
               alt="Gokeys Logo"
               width={40}
               height={40}

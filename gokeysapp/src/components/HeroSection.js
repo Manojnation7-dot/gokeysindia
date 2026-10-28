@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 
 const QUICK_LINKS = [
@@ -12,14 +11,21 @@ const QUICK_LINKS = [
 export default function HeroSection() {
   return (
     <section className="relative overflow-hidden bg-ink">
-      <Image
-        src="/images/hero-bg.png"
-        alt="Himalayan Adventure"
-        fill
-        priority
-        sizes="100vw"
-        className="object-cover opacity-60"
-      />
+      {/* The LCP image. Images are served unoptimized (next.config), so the sizes are made by hand: 1200 px WebP on
+          phones, 1600 px on wider screens. Plain <picture>: the browser fetches only the matching file, at high priority. */}
+      <picture>
+        <source media="(max-width: 767px)" srcSet="/images/hero-bg-1200.webp" type="image/webp" />
+        <img
+          src="/images/hero-bg-1600.webp"
+          alt="Himalayan Adventure"
+          width={1600}
+          height={900}
+          fetchPriority="high"
+          loading="eager"
+          decoding="async"
+          className="absolute inset-0 h-full w-full object-cover opacity-60 text-transparent"
+        />
+      </picture>
       <div className="absolute inset-0 bg-linear-to-r from-ink via-ink/80 to-ink/20" />
 
       <div className="relative gk-wrap py-16 md:py-24">

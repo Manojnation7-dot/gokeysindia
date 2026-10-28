@@ -125,6 +125,7 @@ const Footer = () => {
                     <img
                       src="https://static.tacdn.com/img2/travelers_choice/widgets/tchotel_2025_LL.png"
                       alt="TripAdvisor"
+                      loading="lazy"
                       className="w-40"
                     />
                   </a>

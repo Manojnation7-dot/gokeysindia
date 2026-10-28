@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
+import { RECAPTCHA_RETRY_MESSAGE, getRecaptchaToken, startRecaptcha } from '@/lib/recaptcha';
 
 export default function CommentSection({ blogSlug }) {
 
@@ -47,16 +48,13 @@ export default function CommentSection({ blogSlug }) {
     setErrorMessage('');
 
     try {
-        if (!window.grecaptcha) throw new Error('reCAPTCHA not loaded');
-
-        const token = await new Promise((resolve, reject) => {
-            window.grecaptcha.ready(() => {
-                window.grecaptcha
-                    .execute(process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY, { action: 'submit_comment' })
-                    .then(resolve)
-                    .catch(reject);
-            });
-        });
+        let token;
+        try {
+            token = await getRecaptchaToken('submit_comment'); // fresh token for every submission
+        } catch (err) {
+            console.error('reCAPTCHA error:', err);
+            throw new Error(RECAPTCHA_RETRY_MESSAGE); // nothing is sent without a token
+        }
 
         const payload = { ...formData, recaptcha_token: token };
         const res = await fetch(`${apiUrl}/api/blogs/${blogSlug}/comments/`, {
@@ -128,7 +126,7 @@ export default function CommentSection({ blogSlug }) {
         <h3 className="gk-h3 mb-4">Leave a Comment</h3>
         {successMessage && <p className="text-green-600 mb-4">{successMessage}</p>}
         {errorMessage && <p className="text-red-600 mb-4">{errorMessage}</p>}
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} onFocus={startRecaptcha} className="space-y-4">
           <div>
             <label htmlFor="name" className="gk-label">
               Name

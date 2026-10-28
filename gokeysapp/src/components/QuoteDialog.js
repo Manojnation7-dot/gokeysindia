@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { XIcon } from "@/components/Icons";
 import { isPriceOnRequest, formatPrice, getSavings } from "@/lib/pricingUtils";
 import { getCSRFToken } from "@/lib/getCSRFToken";
 import { currentPageUrl } from "@/lib/tourEnquiry";
+import { RECAPTCHA_RETRY_MESSAGE, getRecaptchaToken, startRecaptcha } from "@/lib/recaptcha";
 
 export default function QuoteDialog({
   isOpen,
@@ -32,6 +33,11 @@ export default function QuoteDialog({
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
+  // Start loading reCAPTCHA when the popup opens, so it is ready by the time the quote is sent
+  useEffect(() => {
+    if (isOpen && !isInline) startRecaptcha();
+  }, [isOpen, isInline]);
+
   const formData = isInline ? externalFormData : internalFormData;
   const setFormData = isInline ? externalOnChange : setInternalFormData;
 
@@ -50,53 +56,12 @@ export default function QuoteDialog({
       : packagePrice?.discount_price || packagePrice?.price || null;
 
     try {
-      const siteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
-      if (!siteKey) {
-        console.error("reCAPTCHA site key missing.");
-        setError("reCAPTCHA configuration error. Please try again later.");
-        return;
-      }
-
-      // Wait for grecaptcha to load (retry mechanism)
-      const waitForGrecaptcha = () =>
-        new Promise((resolve, reject) => {
-          let attempts = 0;
-          const maxAttempts = 10;
-          const check = () => {
-            if (window.grecaptcha) {
-              resolve(window.grecaptcha);
-            } else if (attempts < maxAttempts) {
-              attempts++;
-              setTimeout(check, 500);
-            } else {
-              reject(new Error("reCAPTCHA failed to load"));
-            }
-          };
-          check();
-        });
-
-      let grecaptcha;
-      try {
-        grecaptcha = await waitForGrecaptcha();
-      } catch (err) {
-        setError("Failed to load reCAPTCHA. Please check your connection.");
-        return;
-      }
-
-      // Generate token
       let recaptchaToken;
       try {
-        recaptchaToken = await new Promise((resolve, reject) => {
-          grecaptcha.ready(() => {
-            grecaptcha
-              .execute(siteKey, { action: "submit_quote" })
-              .then((token) => resolve(token))
-              .catch((err) => reject(err));
-          });
-        });
+        recaptchaToken = await getRecaptchaToken("submit_quote"); // fresh token for every submission
       } catch (err) {
-        console.error("Token generation failed:", err);
-        setError("reCAPTCHA verification failed. Please try again.");
+        console.error("reCAPTCHA error:", err);
+        setError(RECAPTCHA_RETRY_MESSAGE); // nothing is sent without a token
         return;
       }
 
@@ -302,7 +267,7 @@ export default function QuoteDialog({
           </div>
         </>
       )}
-      {isInline ? FormFields : <form onSubmit={handleSubmit}>{FormFields}</form>}
+      {isInline ? FormFields : <form onSubmit={handleSubmit} onFocus={startRecaptcha}>{FormFields}</form>}
     </div>
   );
 

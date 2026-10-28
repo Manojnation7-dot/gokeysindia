@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { Star, Heart } from 'lucide-react';
 import { getCSRFToken } from "@/lib/getCSRFToken";
+import { RECAPTCHA_RETRY_MESSAGE, getRecaptchaToken, startRecaptcha } from "@/lib/recaptcha";
 
 const ReviewSection = ({ contentType, objectSlug }) => {
   const [reviews, setReviews] = useState([]);
@@ -102,14 +103,14 @@ const handleSubmit = async (e) => {
 
   try {
     // ✅ 1. Request token from Google
-    const token = await new Promise((resolve, reject) => {
-      if (!window.grecaptcha) return reject(new Error("reCAPTCHA not loaded"));
-      window.grecaptcha.ready(() => {
-        window.grecaptcha.execute(process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY, { action: "submit_review" })
-          .then(resolve)
-          .catch(reject);
-      });
-    });
+    let token;
+    try {
+      token = await getRecaptchaToken("submit_review"); // fresh token for every submission
+    } catch (err) {
+      console.error("reCAPTCHA error:", err);
+      alert(RECAPTCHA_RETRY_MESSAGE); // nothing is sent without a token
+      return;
+    }
 
     // ✅ 2. Build FormData as before
     const formData = new FormData();
@@ -202,6 +203,7 @@ const handleSubmit = async (e) => {
       {/* Review Form */}
       <form
         onSubmit={handleSubmit}
+        onFocus={startRecaptcha}
         className="bg-white rounded-xl shadow-lg p-6 mb-10 space-y-5 border border-gray-100"
       >
         <h2 className="gk-h3 text-2xl">Write a Review</h2>

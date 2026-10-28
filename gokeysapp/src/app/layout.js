@@ -125,11 +125,7 @@ export default function RootLayout({ children }) {
 
       </head>
       <body className="font-sans antialiased">
-         <Script
-          src={`https://www.google.com/recaptcha/api.js?render=${process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}`}
-          strategy="beforeInteractive"
-        />
-    
+        {/* reCAPTCHA is loaded by the forms when a visitor starts filling one in (src/lib/recaptcha.js) */}
         <Tracker />
         {children}
         <WhatsAppFloat />

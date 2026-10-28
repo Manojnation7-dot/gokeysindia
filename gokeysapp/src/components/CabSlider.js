@@ -16,7 +16,6 @@ export default function CabSlider() {
             src="/images/innova-crysta.png"
             alt="Innova Crysta cab from Haridwar"
             fill
-            priority
             className="object-contain scale-[1.4]"
             sizes="(max-width: 768px) 100vw, 50vw"
           />

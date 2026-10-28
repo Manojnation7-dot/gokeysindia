@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { FaPhone, FaEnvelope, FaQuestionCircle } from "react-icons/fa";
 import { getCSRFToken } from "@/lib/getCSRFToken";
+import { RECAPTCHA_RETRY_MESSAGE, getRecaptchaToken, startRecaptcha } from "@/lib/recaptcha";
 export default function InquiryFormCard({ placeName = "this place" }) {
   const [formData, setFormData] = useState({
     name: "",
@@ -40,47 +41,12 @@ export default function InquiryFormCard({ placeName = "this place" }) {
     setSuccess(false);
 
     try {
-      const siteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
-      if (!siteKey) {
-        setError("reCAPTCHA configuration error.");
-        setLoading(false);
-        return;
-      }
-
-      // wait for grecaptcha
-      const waitForGrecaptcha = () =>
-        new Promise((resolve, reject) => {
-          let attempts = 0;
-          const maxAttempts = 10;
-          const check = () => {
-            if (window.grecaptcha) resolve(window.grecaptcha);
-            else if (attempts++ < maxAttempts) setTimeout(check, 500);
-            else reject(new Error("reCAPTCHA failed to load"));
-          };
-          check();
-        });
-
-      let grecaptcha;
-      try {
-        grecaptcha = await waitForGrecaptcha();
-      } catch {
-        setError("Failed to load reCAPTCHA.");
-        setLoading(false);
-        return;
-      }
-
       let recaptchaToken;
       try {
-        recaptchaToken = await new Promise((resolve, reject) => {
-          grecaptcha.ready(() => {
-            grecaptcha
-              .execute(siteKey, { action: "general_enquiry" })
-              .then(resolve)
-              .catch(reject);
-          });
-        });
-      } catch {
-        setError("reCAPTCHA verification failed.");
+        recaptchaToken = await getRecaptchaToken("general_enquiry"); // fresh token for every submission
+      } catch (err) {
+        console.error("reCAPTCHA error:", err);
+        setError(RECAPTCHA_RETRY_MESSAGE); // nothing is sent without a token
         setLoading(false);
         return;
       }
@@ -130,7 +96,7 @@ export default function InquiryFormCard({ placeName = "this place" }) {
         <h2 className="gk-h3 text-2xl">Have a Question?</h2>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} onFocus={startRecaptcha} className="space-y-4">
         <div>
           <label htmlFor="name" className="gk-label">
             Your Name

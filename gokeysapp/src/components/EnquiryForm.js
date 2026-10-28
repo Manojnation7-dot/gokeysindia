@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { XIcon } from "@/components/Icons";
 import { getCSRFToken } from "@/lib/getCSRFToken";
 import { currentPageUrl } from "@/lib/tourEnquiry";
+import { RECAPTCHA_RETRY_MESSAGE, getRecaptchaToken, startRecaptcha } from "@/lib/recaptcha";
 
 export default function EnquiryForm({
   isOpen,
@@ -30,6 +31,11 @@ export default function EnquiryForm({
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
+  // The popup sends with reCAPTCHA: start loading it when the popup opens (the inline form is sent by its page)
+  useEffect(() => {
+    if (isOpen && !isInline) startRecaptcha();
+  }, [isOpen, isInline]);
+
   const formData = isInline ? externalFormData : internalFormData;
   const setFormData = isInline ? externalOnChange : setInternalFormData;
 
@@ -50,60 +56,12 @@ export default function EnquiryForm({
     setError(null);
 
     try {
-      const siteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
-
-      if (!siteKey) {
-        console.error("reCAPTCHA site key is missing.");
-        setError("reCAPTCHA configuration error. Please try again later.");
-        return;
-      }
-
-      const waitForGrecaptcha = () => {
-        return new Promise((resolve, reject) => {
-          const maxAttempts = 10;
-          let attempts = 0;
-          const checkGrecaptcha = () => {
-            if (window.grecaptcha) {
-              console.log("✅ grecaptcha loaded after", attempts, "attempts");
-              resolve(window.grecaptcha);
-            } else if (attempts < maxAttempts) {
-              attempts++;
-              setTimeout(checkGrecaptcha, 500);
-            } else {
-              reject(new Error("reCAPTCHA script failed to load after retries."));
-            }
-          };
-          checkGrecaptcha();
-        });
-      };
-
-      let grecaptcha;
-      try {
-        grecaptcha = await waitForGrecaptcha();
-      } catch (err) {
-        console.error("reCAPTCHA load error:", err.message);
-        setError("Failed to load reCAPTCHA. Please check your internet connection and try again.");
-        return;
-      }
-
       let recaptchaToken;
       try {
-        recaptchaToken = await new Promise((resolve, reject) => {
-          grecaptcha.ready(() => {
-            grecaptcha
-              .execute(siteKey, { action: "submit_enquiry" })
-              .then((token) => {
-                resolve(token);
-              })
-              .catch((err) => {
-                console.error("reCAPTCHA execution error:", err);
-                reject(err);
-              });
-          });
-        });
+        recaptchaToken = await getRecaptchaToken("submit_enquiry"); // fresh token for every submission
       } catch (err) {
-        console.error("reCAPTCHA token generation failed:", err);
-        setError("reCAPTCHA verification failed. Please try again.");
+        console.error("reCAPTCHA error:", err);
+        setError(RECAPTCHA_RETRY_MESSAGE); // nothing is sent without a token
         return;
       }
 
@@ -305,7 +263,7 @@ export default function EnquiryForm({
           </motion.button>
         </div>
       )}
-      {isInline ? FormFields : <form onSubmit={handleSubmit}>{FormFields}</form>}
+      {isInline ? FormFields : <form onSubmit={handleSubmit} onFocus={startRecaptcha}>{FormFields}</form>}
     </div>
   );
 
