@@ -1,4 +1,6 @@
-// Cab fleet shown on the home page (and in its OfferCatalog schema)
+// The cab fleet: the /cabs page shows every cab, the home page those without `home: false` (and its OfferCatalog
+// schema). `seats` is a whole number, or a range as a string ("6-7"): written without quotes, 6-7 would be the
+// number -1. seatLabel() checks it; an invalid value is left off the card instead of shown.
 export const cabs = [
   {
     id: 1,
@@ -112,4 +114,46 @@ export const cabs = [
     whatsapp:
       "https://wa.me/919045916770?text=Hi%20I%27m%20interested%20in%20Tempo%20Traveller%20cab",
   },
+  {
+    id: 9,
+    name: "Tempo Traveller",
+    type: "Mini Bus",
+    image: "/images/tempo-17-26-seater.png",
+    seats: 17,
+    ac: false,
+    pricePerDay: 9500,
+    minKmPerDay: 250,
+    location: "Haridwar",
+    phone: "+919045916770",
+    whatsapp:
+      "https://wa.me/919045916770?text=Hi%20I%27m%20interested%20in%20the%2017%20seater%20Tempo%20Traveller",
+    home: false,
+  },
+  {
+    id: 10,
+    name: "Urbania",
+    type: "Mini Bus",
+    image: "/images/urbania.png",
+    seats: 12,
+    ac: false,
+    pricePerDay: 12000,
+    minKmPerDay: 250,
+    location: "Haridwar",
+    phone: "+919045916770",
+    whatsapp:
+      "https://wa.me/919045916770?text=Hi%20I%27m%20interested%20in%20Urbania%20cab",
+    home: false,
+  },
 ];
+
+export const homeCabs = cabs.filter((cab) => cab.home !== false);
+
+/** "4", "6–7", or null when the seat count is not a positive whole number or a valid range. */
+export function seatLabel(seats) {
+  if (typeof seats === "number") return Number.isInteger(seats) && seats > 0 ? String(seats) : null;
+  const text = typeof seats === "string" ? seats.trim() : "";
+  if (/^\d+$/.test(text)) return Number(text) > 0 ? String(Number(text)) : null;
+  const range = text.match(/^(\d+)\s*[-–]\s*(\d+)$/);
+  if (range && Number(range[1]) > 0 && Number(range[1]) < Number(range[2])) return `${Number(range[1])}–${Number(range[2])}`;
+  return null;
+}

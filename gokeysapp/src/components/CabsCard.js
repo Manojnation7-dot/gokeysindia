@@ -1,7 +1,9 @@
 import Image from "next/image";
 import { Phone, MessageCircle } from "lucide-react";
+import { seatLabel } from "@/lib/cabs";
 
 export default function CabCard({ cab }) {
+  const seats = seatLabel(cab.seats); // an invalid count is left off, never shown as e.g. "-1 Seater"
   return (
     <div className="gk-card gk-card-hover flex flex-col h-full overflow-hidden">
 
@@ -27,7 +29,7 @@ export default function CabCard({ cab }) {
         {/* Specifications */}
         <div className="flex flex-wrap gap-1.5 mt-2.5">
           <span className="gk-chip">{cab.type}</span>
-          <span className="gk-chip">{cab.seats} Seater</span>
+          {seats && <span className="gk-chip">{seats} Seater</span>}
           <span className="gk-chip">
             {cab.ac ? "AC" : "Non-AC"}
           </span>

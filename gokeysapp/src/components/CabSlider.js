@@ -3,7 +3,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { cabs } from "@/lib/cabs";
+import { homeCabs, seatLabel } from "@/lib/cabs";
 
 export default function CabSlider() {
   return (
@@ -75,13 +75,13 @@ export default function CabSlider() {
             "@context": "https://schema.org",
             "@type": "OfferCatalog",
             name: "Cab Services in Haridwar",
-            itemListElement: cabs.map((cab, index) => ({
+            itemListElement: homeCabs.map((cab, index) => ({
               "@type": "ListItem",
               position: index + 1,
               item: {
                 "@type": "Service",
                 name: cab.name,
-                description: `${cab.type} with ${cab.seats} seats, ${
+                description: `${cab.type}${seatLabel(cab.seats) ? ` with ${seatLabel(cab.seats)} seats` : ""}, ${
                   cab.ac ? "AC" : "Non-AC"
                 }, available in ${cab.location}`,
                 image: "https://gokeys.in" + cab.image,
