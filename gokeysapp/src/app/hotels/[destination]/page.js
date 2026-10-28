@@ -1,11 +1,13 @@
 import HotelListByDestination from "./HotelListByDestination";
+import { hotelDestinationParams } from "@/lib/staticParams";
 import { buildMetadata } from "@/lib/seoHelpers";
 import { fetchData } from "@/lib/api";
 import { buildBreadcrumbList } from "@/lib/seoSchemas";
 
-export const revalidate = 300;
+export const revalidate = 86400; // 24 h safety net; admin saves refresh the page at once (api/revalidate)
+// Every live page is built at deploy time; new ones are built on their first visit (dynamicParams).
 export async function generateStaticParams() {
-  return [];
+  return hotelDestinationParams();
 }
 
 export async function generateMetadata({ params }) {

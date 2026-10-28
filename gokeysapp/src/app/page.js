@@ -26,7 +26,7 @@ import GoogleMap from "@/components/MapIframe";
 import { CACHED } from "@/lib/api";
 import { slimDestination } from "@/lib/slim";
 
-export const revalidate = 300;
+export const revalidate = 86400; // 24 h safety net; admin saves refresh the page at once (api/revalidate)
 
 export const metadata = {
   alternates: { canonical: "https://gokeys.in/" },

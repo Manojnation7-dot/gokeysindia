@@ -1,4 +1,5 @@
 import { buildMetadata, seoFromApi } from "@/lib/seoHelpers";
+import { slugParams } from "@/lib/staticParams";
 import { previewQuery } from "@/lib/preview";
 import PreviewBanner from "@/components/PreviewBanner";
 import { fetchData, cacheFor, CACHED } from "@/lib/api";
@@ -13,9 +14,10 @@ const API_BASE = process.env.NEXT_PUBLIC_API_URL;
  */
 // Cached for 5 minutes and refreshed when the admin saves (see /api/revalidate);
 // each URL is built on its first visit
-export const revalidate = 300;
+export const revalidate = 86400; // 24 h safety net; admin saves refresh the page at once (api/revalidate)
+// Every live page is built at deploy time; new ones are built on their first visit (dynamicParams).
 export async function generateStaticParams() {
-  return [];
+  return slugParams("destinations");
 }
 
 export async function generateMetadata({ params }) {
@@ -87,11 +89,11 @@ export default async function DestinationPage({ params }) {
     if (toursRes?.ok) {
       const toursRaw = await toursRes.json();
       const results = Array.isArray(toursRaw?.results) ? toursRaw.results : [];
+      // The list sends a plain-text summary (older API: the whole content, cut here)
       safeTours = results.slice(0, 3).map((tour) => ({
         ...tour,
-        content: typeof tour.content === "string" 
-          ? tour.content.replace(/<\/?[^>]+(>|$)/g, "").slice(0, 160) + "..."
-          : "No description available.",
+        content: tour.summary
+          || (typeof tour.content === "string" ? tour.content.replace(/<\/?[^>]+(>|$)/g, "").slice(0, 160) + "..." : "No description available."),
       }));
     }
 

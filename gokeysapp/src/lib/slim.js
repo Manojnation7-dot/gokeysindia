@@ -40,7 +40,7 @@ export const slimTour = (t) => ({
   duration_days: t.duration_days,
   duration_nights: t.duration_nights,
   base_price: t.base_price,
-  meta_description: t.meta_description || plainText(t.content, 200),
+  meta_description: t.meta_description || t.summary || plainText(t.content, 200),
   featured_image: image(t.featured_image),
   trip_types: tripTypes(t.trip_types),
   destinations: (t.destinations || []).map((d) => (typeof d === "string" ? d : d.slug)),

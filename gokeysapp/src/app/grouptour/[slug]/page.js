@@ -1,4 +1,5 @@
 import { fetchData, fetchAllResults } from "@/lib/api";
+import { slugParams } from "@/lib/staticParams";
 import GroupTourDetails from "./GroupTourDetails";
 import { notFound } from "next/navigation";
 import { buildMetadata, seoFromApi } from "@/lib/seoHelpers";
@@ -7,9 +8,10 @@ import PreviewBanner from "@/components/PreviewBanner";
 
 // Cached for 5 minutes and refreshed when the admin saves (see /api/revalidate);
 // each URL is built on its first visit
-export const revalidate = 300;
+export const revalidate = 86400; // 24 h safety net; admin saves refresh the page at once (api/revalidate)
+// Every live page is built at deploy time; new ones are built on their first visit (dynamicParams).
 export async function generateStaticParams() {
-  return [];
+  return slugParams("group-tours");
 }
 
 export async function generateMetadata({ params }) {

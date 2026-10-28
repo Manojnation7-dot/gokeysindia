@@ -1,8 +1,9 @@
 const API_BASE = () => process.env.NEXT_PUBLIC_API_URL || "https://api.gokeys.in";
 
-// API responses are cached for 5 minutes and cleared at once when something is saved in the
-// admin (Django calls /api/revalidate). Draft previews (?preview=) are never cached.
-export const REVALIDATE_SECONDS = 300;
+// API responses are cached for 24 hours (a safety net) and refreshed at once when something is saved in the admin:
+// Django calls /api/revalidate with the pages that changed, then opens them so the next visitor gets a cached copy.
+// Draft previews (?preview=) are never cached.
+export const REVALIDATE_SECONDS = 86400;
 export const API_CACHE_TAG = "api";
 export const CACHED = { next: { revalidate: REVALIDATE_SECONDS, tags: [API_CACHE_TAG] } };
 export const cacheFor = (url) => (String(url).includes("preview=") ? { cache: "no-store" } : CACHED);

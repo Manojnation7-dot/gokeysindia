@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import { slugParams } from "@/lib/staticParams";
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import Header from '@/components/Header';
@@ -14,7 +15,7 @@ import { buildMetadata, seoFromApi } from '@/lib/seoHelpers';
 import { CACHED, cacheFor } from '@/lib/api';
 import { slimPost, readMinutes } from '@/lib/slim';
 
-export const revalidate = 300;
+export const revalidate = 86400; // 24 h safety net; admin saves refresh the page at once (api/revalidate)
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://gokeys.in';
 
@@ -153,23 +154,9 @@ function Breadcrumb({ post }) {
   );
 }
 
+// Every live post is built at deploy time; new ones are built on their first visit (dynamicParams).
 export async function generateStaticParams() {
-  let blogPosts = [];
-  try {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
-    const res = await fetch(`${apiUrl}/api/blogs/`, CACHED);
-    if (!res.ok) {
-      throw new Error(`HTTP error! status: ${res.status}`);
-    }
-    const data = await res.json();
-    blogPosts = Array.isArray(data) ? data : data.results || [];
-  } catch (error) {
-    console.error('Error fetching blog post slugs:', error);
-  }
-
-  return blogPosts.map((post) => ({
-    slug: post.slug,
-  }));
+  return slugParams("blogs");
 }
 
 // generateMetadata now ONLY handles actual <meta> tags — title, description,

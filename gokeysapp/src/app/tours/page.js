@@ -3,7 +3,7 @@ import { buildMetadata } from "@/lib/seoHelpers";
 import { fetchAllResults } from "@/lib/api";
 import { slimTour } from "@/lib/slim";
 
-export const revalidate = 300;
+export const revalidate = 86400; // 24 h safety net; admin saves refresh the page at once (api/revalidate)
 
 export async function generateMetadata() {
   return buildMetadata({
