@@ -3,7 +3,8 @@ import { useState } from "react";
 import Image from "next/image";
 
 // Big photo + two stacked thumbnails; every photo opens in the lightbox.
-export default function ImageGallery({ images, alt = "Tour photo" }) {
+export default function ImageGallery({ images, alt: altProp }) {
+  const alt = altProp || "Tour photo";
   const [selected, setSelected] = useState(null);
   const list = (images || []).filter(Boolean);
 

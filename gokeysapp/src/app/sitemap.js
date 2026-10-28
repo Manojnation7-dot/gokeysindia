@@ -18,7 +18,7 @@ const STATIC_PAGE_DATES = {
   "/char-dham-yatra-cost-calculator": "2026-10-26", // or the last rate change, if later (below)
   "/services/taxi-service-haridwar": "2026-10-13",
   "/services/uttarakhand-tour-operators": "2026-10-13",
-  "/services/travel-agency-haridwar": "2026-10-13",
+  "/services/travel-agency-haridwar": "2026-10-28",
   "/services/char-dham-yatra-operators-haridwar": "2026-10-13",
   "/services/hotel-booking-uttarakhand": "2026-10-13",
   "/services/delhi-to-haridwar-cab": "2026-10-13",

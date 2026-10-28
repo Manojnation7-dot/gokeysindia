@@ -10,8 +10,7 @@ const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL || "https://gokeys.in";
 
 export async function generateMetadata() {
-  const title =
-    "Travel Agency in Haridwar | Gokeys India – Uttarakhand Tours & Char Dham";
+  const title = "Travel Agency in Haridwar | Gokeys India";
 
   const description =
     "Travel agency in Haridwar for Char Dham Yatra, Uttarakhand tour packages, taxi services and hotel bookings. Customised trips by Gokeys India.";

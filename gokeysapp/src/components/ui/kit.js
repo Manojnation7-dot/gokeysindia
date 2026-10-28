@@ -100,7 +100,7 @@ export function PlaceCard({ href, image, alt, title, text, chip, sub, imgHeight 
       <div className={`gk-media ${imgHeight}`}>
         <Image
           src={image || PLACEHOLDER}
-          alt={alt || title}
+          alt={alt || title || ""}
           fill
           className="object-cover transition-transform duration-500 group-hover:scale-105"
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
