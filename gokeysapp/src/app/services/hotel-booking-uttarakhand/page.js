@@ -302,7 +302,7 @@ export default function HotelBookingUttarakhandPage() {
                   </p>
 
                   <a
-                    href="/services/travel-agency-haridwar/"
+                    href="/services/travel-agency-haridwar"
                     className="inline-block mt-4 text-green-700 font-semibold"
                   >
                     Haridwar Travel Services →
@@ -690,7 +690,7 @@ export default function HotelBookingUttarakhandPage() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
 
                 <a
-                  href="/services/travel-agency-haridwar/"
+                  href="/services/travel-agency-haridwar"
                   className="bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition"
                 >
                   <h3 className="text-xl font-semibold text-green-700 mb-2">

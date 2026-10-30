@@ -50,7 +50,7 @@ export default function TravelAgencyHaridwarPage() {
     { name: "Home", url: "/" },
     {
       name: "Travel Agency in Haridwar",
-      url: "/services/travel-agency-haridwar/",
+      url: "/services/travel-agency-haridwar",
     },
   ]);
 
@@ -272,7 +272,7 @@ export default function TravelAgencyHaridwarPage() {
                   </p>
 
                   <a
-                    href="/tours/char-dham-yatra-2025-tour-package-from-haridwar/"
+                    href="/tours/char-dham-yatra-package-from-haridwar"
                     className="inline-block mt-4 text-green-700 font-semibold"
                   >
                     View Char Dham Tours →
@@ -523,7 +523,7 @@ export default function TravelAgencyHaridwarPage() {
             </p>
 
             <a
-              href="/tours/char-dham-yatra-2025-tour-package-from-haridwar/"
+              href="/tours/char-dham-yatra-package-from-haridwar"
               className="inline-block mt-6 bg-green-700 text-white px-6 py-3 rounded-lg font-semibold"
             >
               View Char Dham Yatra Packages

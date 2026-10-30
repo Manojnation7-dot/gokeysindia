@@ -30,7 +30,7 @@ export default function HeroSection() {
 
       <div className="relative gk-wrap py-16 md:py-24">
         <p className="gk-eyebrow gk-eyebrow-sun mb-4">Haridwar, Uttarakhand</p>
-        <h1 className="gk-h1 text-white! max-w-xl">Explore India with Gokeys</h1>
+        <h1 className="gk-h1 text-white! max-w-xl">Travel Agency in Haridwar for Char Dham &amp; Uttarakhand Trips</h1>
         <p className="mt-5 max-w-lg text-slate-200 leading-relaxed">
           India&apos;s trusted travel agency based in Haridwar — curated group journeys from sacred Char Dham and
           Kedarnath to Adi Kailash, 12 Jyotirlinga pilgrimages, and unforgettable Himalayan treks.

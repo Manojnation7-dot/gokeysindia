@@ -801,7 +801,7 @@ export default function HaridwarRailwayStationTaxiPage() {
               </a>
 
               <a
-                href="/services/travel-agency-haridwar/"
+                href="/services/travel-agency-haridwar"
                 className="border rounded-xl p-6 hover:shadow-md transition"
               >
                 <h3 className="text-xl font-semibold text-green-700 mb-2">

@@ -153,7 +153,7 @@ async headers() {
 },
 {
   source: '/char-dham-yatra-registration-e-pass-online',
-  destination: '/blog/char-dham-yatra-registration-e-pass-online',
+  destination: '/blog/char-dham-yatra-2027-registration', // final target (the blog URL redirects there too)
   permanent: true,
 },
 {
@@ -193,7 +193,7 @@ async headers() {
 },
 {
   source: '/char-dham-yatra-2025-tour-package-from-haridwar',
-  destination: '/blog/char-dham-yatra-2026-complete-guide-haridwar',
+  destination: '/blog/char-dham-yatra-2027', // final target (the 2026 guide redirects there too)
   permanent: true,
 },
 {
@@ -203,7 +203,7 @@ async headers() {
 },
 {
   source: '/char-dham-yatra-2023',
-  destination: '/blog/char-dham-yatra-2023',
+  destination: '/blog/char-dham-yatra-2027', // final target (the blog URL redirects there too)
   permanent: true,
 },
 {
@@ -273,7 +273,7 @@ async headers() {
 },
 {
   source: '/char-dham-yatra-2025-tour-details-packages',
-  destination: '/blog/char-dham-yatra-2025-tour-details-packages',
+  destination: '/tours/char-dham-yatra-package-from-haridwar', // final target (the blog URL redirects there too)
   permanent: true,
 },
 {
@@ -408,7 +408,7 @@ async headers() {
 },
 {
   source: '/trip/char-dham-yatra-2025-tour-package-from-haridwar',
-  destination: '/tours/char-dham-yatra-2025-tour-package-from-haridwar',
+  destination: '/tours/char-dham-yatra-package-from-haridwar', // final target (the 2025 tour redirects there too)
   permanent: true,
 },
 {
@@ -643,6 +643,13 @@ async headers() {
     { source: '/blog/char-dham-yatra-registration-e-pass-online', destination: '/blog/char-dham-yatra-2027-registration', permanent: true },
     { source: '/blog/kedarnath-yatra-2026-complete-travel-guide', destination: '/blog/kedarnath-yatra', permanent: true },
     { source: '/blog/char-dham-yatra-2027-route-details-map', destination: '/blog/route-map-of-char-dham-yatra', permanent: true },
+    // Old Char Dham tour pages merged into the main package (set both tours to draft once this is live)
+    { source: '/tours/char-dham-yatra-2025-tour-package-from-haridwar', destination: '/tours/char-dham-yatra-package-from-haridwar', permanent: true },
+    { source: '/tours/char-dham-tour-from-haridwar-9-days', destination: '/tours/char-dham-yatra-package-from-haridwar', permanent: true },
+
+    // Kumbh 2027: shorter or older slugs of the Kumbh posts
+    { source: '/blog/haridwar-kumbh-snan-dates', destination: '/blog/haridwar-kumbh-2027-snan-dates', permanent: true },
+    { source: '/blog/ardh-kumbh-mela-2027-snan-details-tour', destination: '/blog/ardh-kumbh-mela-2027-haridwar-snan-details-tour', permanent: true },
 
     {
         source: "/web-stories/:path*",

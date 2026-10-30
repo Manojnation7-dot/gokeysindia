@@ -51,7 +51,7 @@ export default function NotFound() {
 
           <div className="flex flex-wrap gap-3 justify-center">
 
-            <Link href="/tours/char-dham-yatra-2025-tour-package-from-haridwar" className="hover:underline">
+            <Link href="/tours/char-dham-yatra-package-from-haridwar" className="hover:underline">
               Char Dham Yatra
             </Link>
 
