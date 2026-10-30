@@ -152,23 +152,29 @@ const Footer = () => {
             <Link
               href="https://facebook.com/gokeysindia"
               target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Gokeys India on Facebook"
               className="p-3 rounded-full bg-white/10 hover:bg-teal transition"
             >
-              <FaFacebookF />
+              <FaFacebookF aria-hidden="true" />
             </Link>
             <Link
               href="https://twitter.com/gokeys4"
               target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Gokeys India on X (Twitter)"
               className="p-3 rounded-full bg-white/10 hover:bg-teal transition"
             >
-              <FaTwitter />
+              <FaTwitter aria-hidden="true" />
             </Link>
             <Link
               href="https://instagram.com/gokeysharidwar"
               target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Gokeys India on Instagram"
               className="p-3 rounded-full bg-white/10 hover:bg-teal transition"
             >
-              <FaInstagram />
+              <FaInstagram aria-hidden="true" />
             </Link>
           </div>
         </div>

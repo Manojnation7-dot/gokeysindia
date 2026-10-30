@@ -243,8 +243,9 @@ const handleSubmit = async (e) => {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Travel Month</label>
+            <label htmlFor="review-travel-month" className="block text-sm font-medium text-gray-700 mb-1">Travel Month</label>
             <input
+              id="review-travel-month"
               type="month"
               name="travel_month"
               value={form.travel_month}
@@ -261,9 +262,12 @@ const handleSubmit = async (e) => {
                 key={i}
                 type="button"
                 onClick={() => handleRating(i)}
+                aria-label={`Rate ${i} out of 5`}
+                aria-pressed={i <= form.rating}
                 className="focus:outline-none"
               >
                 <Star
+                  aria-hidden="true"
                   size={20}
                   fill={i <= form.rating ? '#facc15' : 'none'}
                   stroke={i <= form.rating ? '#facc15' : '#d1d5db'}
