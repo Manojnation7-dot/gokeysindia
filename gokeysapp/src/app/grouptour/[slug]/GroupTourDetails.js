@@ -32,7 +32,9 @@ import {
 import { submitTourEnquiry } from '@/lib/tourEnquiry';
 import ImageGallery from '@/components/ImageGallery';
 import { Breadcrumbs, FaqList } from '@/components/ui/kit';
-import { getDepartures, formatDepartureDate } from '@/lib/departures';
+import {
+  getDepartures, formatDepartureDate, departureChip, formatPickupTime, SHARING_LABELS,
+} from '@/lib/departures';
 import NextDepartureRequest from '@/components/NextDepartureRequest';
 
 import SmartSEO from '@/components/SmartSEO'; 
@@ -362,42 +364,100 @@ const [isLoading, setIsLoading] = useState(false);
             {upcoming.length > 0 && (
               <section>
                 <h2 className="gk-h2 mb-4">Upcoming departures</h2>
-                <div className="gk-card overflow-x-auto">
-                  <table className="w-full text-sm min-w-110">
-                    <thead className="bg-ink text-white text-left">
-                      <tr>
-                        <th className="px-5 py-3 font-semibold">Date</th>
-                        <th className="px-5 py-3 font-semibold">Seats</th>
-                        <th className="px-5 py-3 font-semibold">Price</th>
-                        <th className="px-5 py-3"><span className="sr-only">Reserve</span></th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {upcoming.map((dep) => (
-                        <tr key={dep.date} className="border-t border-line">
-                          <td className="px-5 py-3 font-bold whitespace-nowrap">{formatDate(dep.date)}</td>
-                          <td className="px-5 py-3">
-                            {dep.bookable && dep.seatsLeft != null ? (
-                              <span className="gk-chip gk-chip-sun">{dep.seatsLeft} left</span>
-                            ) : (
-                              <span className="gk-chip">{dep.label}</span>
-                            )}
-                          </td>
-                          <td className="px-5 py-3 font-semibold">
-                            {dep.price ? formatPrice(dep.price) : isPriceOnRequest(selectedPackage) ? "Price on Request" : formatPrice(basePrice)}
-                          </td>
-                          <td className="px-5 py-3 text-right">
+                <ul className="space-y-3">
+                  {upcoming.map((dep) => {
+                    const chip = departureChip(dep);
+                    const sharing = ["quad", "triple", "double"].filter((s) => dep.prices[s]?.adult);
+                    const child = dep.prices[sharing[0]] || {};
+                    const oldPrice = dep.price ? formatPrice(dep.price)
+                      : isPriceOnRequest(selectedPackage) ? "Price on Request" : formatPrice(basePrice);
+                    return (
+                      <li key={dep.date} className="gk-card p-4 sm:p-5">
+                        <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+                          <p className="font-bold text-ink text-base whitespace-nowrap">{formatDate(dep.date)}</p>
+                          {chip?.kind === "guaranteed" && (
+                            <span className="gk-chip bg-green-50! text-green-800!">{chip.text}</span>
+                          )}
+                          {chip?.kind === "filling" && <span className="gk-chip gk-chip-sun">{chip.text}</span>}
+                          {chip?.kind === "needed" && <span className="gk-chip">{chip.text}</span>}
+                          {dep.bookable && dep.seatsLeft != null ? (
+                            <span className="gk-chip gk-chip-sun">{dep.seatsLeft} seats left</span>
+                          ) : (
+                            <span className="gk-chip">{dep.label}</span>
+                          )}
+                          <div className="ml-auto">
                             {dep.bookable ? (
                               <button onClick={() => reserve(dep)} className="gk-btn gk-btn-ink py-2!">Reserve</button>
                             ) : (
                               <span className="text-xs font-semibold text-slate-ink">{dep.label}</span>
                             )}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+                          </div>
+                        </div>
+
+                        {sharing.length > 0 ? (
+                          <div className="mt-3 text-sm text-ink">
+                            <dl className="grid grid-cols-3 gap-2">
+                              {sharing.map((s) => (
+                                <div key={s} className="rounded-lg bg-slate-50 px-3 py-2">
+                                  <dt className="text-xs text-slate-ink">{SHARING_LABELS[s]}</dt>
+                                  <dd className="font-semibold">{formatPrice(dep.prices[s].adult)}</dd>
+                                </div>
+                              ))}
+                            </dl>
+                            <p className="mt-2 text-xs text-slate-ink">
+                              Per adult (12+) · {child.child_with_bed && <>Child 5–11 with bed {formatPrice(child.child_with_bed)} · </>}
+                              {child.child_no_bed && <>Child 5–11 without bed {formatPrice(child.child_no_bed)} · </>}
+                              Under 5 free · Single room on request · GST 5% extra
+                            </p>
+                          </div>
+                        ) : (
+                          <p className="mt-2 text-sm font-semibold text-ink">{oldPrice}</p>
+                        )}
+
+                        {dep.pickups.length > 0 && (
+                          <div className="mt-3 text-sm">
+                            <p className="text-xs font-semibold text-slate-ink">Pickup points</p>
+                            <ul className="mt-1 space-y-0.5 text-ink">
+                              {dep.pickups.map((p) => (
+                                <li key={p.id ?? p.name}>
+                                  {p.mapUrl ? (
+                                    <a href={p.mapUrl} target="_blank" rel="noopener noreferrer" className="underline">{p.name}</a>
+                                  ) : p.name}
+                                  {p.time && <> · {formatPickupTime(p.time)}</>}
+                                  {Number(p.extra) > 0 ? <> · +{formatPrice(p.extra)} per person</> : <> · included</>}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+
+                        {dep.minPax && dep.decisionDate && !dep.guaranteed && (
+                          <p className="mt-2 text-xs text-slate-ink">
+                            Runs with at least {dep.minPax} travellers; we confirm by {formatDate(dep.decisionDate)}.
+                          </p>
+                        )}
+                      </li>
+                    );
+                  })}
+                </ul>
+
+                {upcoming.some((d) => d.minPax) && (
+                  <div className="gk-panel p-4 sm:p-5 mt-4 text-[15px] text-ink">
+                    <h3 className="gk-h3 text-lg! mb-2">How this departure works</h3>
+                    <ul className="list-disc pl-5 space-y-1">
+                      <li>
+                        Each date runs with a minimum group size (shown on the date). A date marked
+                        &ldquo;Guaranteed departure&rdquo; will run.
+                      </li>
+                      <li>We confirm every date by its decision date, shown on the date.</li>
+                      <li>
+                        If a date does not reach the minimum group size, you choose: a 100% refund within 7 working
+                        days, a move to another date at no fee (any fare difference is paid or refunded), or running
+                        it as a private trip by paying the difference.
+                      </li>
+                    </ul>
+                  </div>
+                )}
               </section>
             )}
 
