@@ -131,7 +131,6 @@ const handleSubmit = async (e) => {
     const res = await fetch(url, {
       method: "POST",
       headers: { "X-CSRFToken": csrfToken },
-      credentials: "include",
       body: formData,
     });
 

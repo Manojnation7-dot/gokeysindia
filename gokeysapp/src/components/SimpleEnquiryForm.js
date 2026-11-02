@@ -58,7 +58,6 @@ export default function InquiryFormCard({ placeName = "this place" }) {
           "Content-Type": "application/json",
           "X-CSRFToken": csrfToken,
         },
-        credentials: "include",
         body: JSON.stringify({
           name: formData.name,
           email: formData.email,

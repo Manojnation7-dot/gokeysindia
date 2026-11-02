@@ -44,6 +44,7 @@ export default function TermsAndConditions() {
          <section className="space-y-6 text-gray-700">
           <h2 className="text-xl font-semibold">1. Booking Terms</h2>
           <p>To confirm your tour booking, a payment of <strong>40% of the total amount</strong> is required in advance. Once payment is received, we will send a booking confirmation. The remaining balance must be paid on the day of arrival, prior to the start of the trip.</p>
+          <p>For fixed-departure group tours, the advance is <strong>25% of the total amount</strong> (or you may pay the full amount at booking).</p>
 
           <h2 className="text-xl font-semibold">2. Vehicle Usage</h2>
           <ul className="list-disc pl-6">

@@ -73,7 +73,6 @@ export default function QuoteDialog({
           "Content-Type": "application/json",
           "X-CSRFToken": csrfToken,
         },
-        credentials: "include",
         body: JSON.stringify({
           tour_name: tourName,
           package_type: packageType,
