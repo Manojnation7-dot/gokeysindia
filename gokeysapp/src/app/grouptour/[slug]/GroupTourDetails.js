@@ -1,6 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
+import GroupDepartureTerms from '@/components/GroupDepartureTerms';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import SimilarTours from '@/components/SimilarGroupTours';
@@ -385,7 +387,10 @@ const [isLoading, setIsLoading] = useState(false);
                           ) : (
                             <span className="gk-chip">{dep.label}</span>
                           )}
-                          <div className="ml-auto">
+                          <div className="ml-auto flex flex-wrap gap-2">
+                            {dep.bookOnline && (
+                              <Link href={`/book/${dep.id}`} prefetch={false} className="gk-btn gk-btn-sun py-2!">Book now</Link>
+                            )}
                             {dep.bookable ? (
                               <button onClick={() => reserve(dep)} className="gk-btn gk-btn-ink py-2!">Reserve</button>
                             ) : (
@@ -444,18 +449,9 @@ const [isLoading, setIsLoading] = useState(false);
                 {upcoming.some((d) => d.minPax) && (
                   <div className="gk-panel p-4 sm:p-5 mt-4 text-[15px] text-ink">
                     <h3 className="gk-h3 text-lg! mb-2">How this departure works</h3>
-                    <ul className="list-disc pl-5 space-y-1">
-                      <li>
-                        Each date runs with a minimum group size (shown on the date). A date marked
-                        &ldquo;Guaranteed departure&rdquo; will run.
-                      </li>
-                      <li>We confirm every date by its decision date, shown on the date.</li>
-                      <li>
-                        If a date does not reach the minimum group size, you choose: a 100% refund within 7 working
-                        days, a move to another date at no fee (any fare difference is paid or refunded), or running
-                        it as a private trip by paying the difference.
-                      </li>
-                    </ul>
+                    <GroupDepartureTerms only={["minimumGroup"]} listClass="list-disc pl-5 space-y-1" />
+                    <p className="mt-2">A date marked &ldquo;Guaranteed departure&rdquo; will run. Full rules:{" "}
+                      <Link href="/terms-and-conditions" className="underline">Terms</Link>.</p>
                   </div>
                 )}
               </section>

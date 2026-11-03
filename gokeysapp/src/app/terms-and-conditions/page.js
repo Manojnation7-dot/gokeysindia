@@ -4,6 +4,8 @@ import Footer from '@/components/Footer';
 import SmartSEO from '@/components/SmartSEO';
 import { buildBreadcrumbList } from '@/lib/seoSchemas';
 import { SITE_URL, SITE_NAME } from '@/lib/seoHelpers';
+import { POLICY_UPDATED, formatPolicyDate } from '@/lib/policyDates';
+import GroupDepartureTerms from '@/components/GroupDepartureTerms';
 
 const DESCRIPTION =
   "Terms for booking tours with Gokeys India: 40% advance to confirm, vehicle use as per itinerary, extra sightseeing charges and minimum days for each Dham Yatra.";
@@ -23,7 +25,7 @@ const schema = [
     name: "Terms & Conditions",
     description: DESCRIPTION,
     inLanguage: "en-IN",
-    dateModified: "2025-07-31", // "Last updated" date shown on the page
+    dateModified: POLICY_UPDATED, // the same date as "Last updated" on the page (src/lib/policyDates.js)
     isPartOf: { "@type": "WebSite", name: SITE_NAME, url: SITE_URL },
     publisher: { "@type": "TravelAgency", name: SITE_NAME, url: SITE_URL },
   },
@@ -44,9 +46,12 @@ export default function TermsAndConditions() {
          <section className="space-y-6 text-gray-700">
           <h2 className="text-xl font-semibold">1. Booking Terms</h2>
           <p>To confirm your tour booking, a payment of <strong>40% of the total amount</strong> is required in advance. Once payment is received, we will send a booking confirmation. The remaining balance must be paid on the day of arrival, prior to the start of the trip.</p>
-          <p>For fixed-departure group tours, the advance is <strong>25% of the total amount</strong> (or you may pay the full amount at booking).</p>
+          <p>Fixed-departure group tours have their own terms, in section 2.</p>
 
-          <h2 className="text-xl font-semibold">2. Vehicle Usage</h2>
+          <h2 className="text-xl font-semibold">2. Fixed-Departure Group Tours</h2>
+          <GroupDepartureTerms headingClass="font-semibold text-gray-800 mt-2" />
+
+          <h2 className="text-xl font-semibold">3. Vehicle Usage</h2>
           <ul className="list-disc pl-6">
             <li>Vehicles are provided on a point-to-point basis as per the itinerary.</li>
             <li>Vehicles will not be used beyond the itinerary for personal use such as shopping, meals, or unscheduled activities.</li>
@@ -55,10 +60,10 @@ export default function TermsAndConditions() {
             <li>If a breakdown or technical issue occurs, vehicle replacement time will depend on the distance of the replacement vehicle from the operating base.</li>
           </ul>
 
-          <h2 className="text-xl font-semibold">3. Extra Sightseeing Charges</h2>
+          <h2 className="text-xl font-semibold">4. Extra Sightseeing Charges</h2>
           <p>Any extra sightseeing not mentioned in the itinerary — such as Mana Village, Trijuginarayan, or Ukhimath during Chardham Yatra — will incur additional charges, payable directly to the driver.</p>
 
-          <h2 className="text-xl font-semibold">4. Yatra Duration & Minimum Booking</h2>
+          <h2 className="text-xl font-semibold">5. Yatra Duration & Minimum Booking</h2>
           <ul className="list-disc pl-6">
             <li>Ek Dham Yatra: Minimum 3 Days</li>
             <li>Do Dham Yatra: Minimum 5 Days</li>
@@ -67,13 +72,13 @@ export default function TermsAndConditions() {
           </ul>
           <p>Minimum payment will be charged based on the respective yatra duration.</p>
 
-          <h2 className="text-xl font-semibold">5. Legal Jurisdiction</h2>
+          <h2 className="text-xl font-semibold">6. Legal Jurisdiction</h2>
           <p>All disputes are subject to the jurisdiction of competent courts in India, preferably in the state of Uttarakhand where the operator is registered.</p>
 
           <p className="pt-4">
             Please also review our <a href="/cancellation-policy" className="text-brand-600 underline">Cancellation & Refund Policy</a>.
           </p>
-            <p className="text-[15px] text-gray-400 mt-4">Last updated: July 31, 2025</p>
+            <p className="text-[15px] text-gray-400 mt-4">Last updated: {formatPolicyDate()}</p>
         </section>
       </main>
       <Footer />

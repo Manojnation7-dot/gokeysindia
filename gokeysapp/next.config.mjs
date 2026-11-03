@@ -53,28 +53,41 @@ const nextConfig = {
   },
 
 async headers() {
+  // /book (checkout) gets the same policy plus Razorpay, and is never indexed, cached or sent as a referrer.
+  // Every other page keeps the strict policy without Razorpay.
+  const csp = (razorpay = false) => [
+    "default-src 'self'",
+    "script-src 'self' 'unsafe-inline'" + DEV_EVAL + " https://www.google.com https://www.gstatic.com https://www.googletagmanager.com https://www.jscache.com https://*.tripadvisor.com https://*.tripadvisor.in https://static.tacdn.com https://googleads.g.doubleclick.net https://www.googleadservices.com https://ad.doubleclick.net" + (razorpay ? " https://checkout.razorpay.com" : ""),
+    "style-src 'self' 'unsafe-inline' https://static.tacdn.com",
+    // blob: = previews of photos picked in the review form (URL.createObjectURL)
+    "img-src 'self' data: blob: https://api.gokeys.in" + LOCAL_API + " https://images.unsplash.com https://cdn.pixabay.com https://via.placeholder.com https://source.unsplash.com https://static.tacdn.com https://www.google.com https://www.google.co.in https://www.gstatic.com https://googleads.g.doubleclick.net https://www.googleadservices.com https://ad.doubleclick.net https://www.google-analytics.com" + (razorpay ? " https://cdn.razorpay.com" : ""),
+    "connect-src 'self' https://api.gokeys.in" + LOCAL_API + " https://www.google-analytics.com https://analytics.google.com https://www.googletagmanager.com https://www.google.com https://www.google.co.in https://googleads.g.doubleclick.net https://ad.doubleclick.net https://www.googleadservices.com https://region1.google-analytics.com" + (razorpay ? " https://api.razorpay.com https://checkout.razorpay.com https://lumberjack.razorpay.com" : ""),
+    "frame-src 'self' https://www.google.com https://www.googletagmanager.com https://td.doubleclick.net" + (razorpay ? " https://api.razorpay.com https://checkout.razorpay.com" : ""),
+    "frame-ancestors 'self'",
+  ].join('; ');
+  const common = [
+    { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
+    { key: 'X-Content-Type-Options', value: 'nosniff' },
+  ];
+  const checkout = [
+    ...common,
+    { key: 'Referrer-Policy', value: 'no-referrer' },
+    { key: 'Content-Security-Policy', value: csp(true) },
+    { key: 'X-Robots-Tag', value: 'noindex, nofollow' },
+    { key: 'Cache-Control', value: 'no-store' },
+  ];
   return [
     {
-      source: '/:path*',
+      // every path except /book and /book/...
+      source: '/((?!book(?:/|$)).*)',
       headers: [
-        { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
-        { key: 'X-Content-Type-Options', value: 'nosniff' },
+        ...common,
         { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
-        {
-          key: 'Content-Security-Policy',
-          value: [
-            "default-src 'self'",
-            "script-src 'self' 'unsafe-inline'" + DEV_EVAL + " https://www.google.com https://www.gstatic.com https://www.googletagmanager.com https://www.jscache.com https://*.tripadvisor.com https://*.tripadvisor.in https://static.tacdn.com https://googleads.g.doubleclick.net https://www.googleadservices.com https://ad.doubleclick.net",
-            "style-src 'self' 'unsafe-inline' https://static.tacdn.com",
-            // blob: = previews of photos picked in the review form (URL.createObjectURL)
-            "img-src 'self' data: blob: https://api.gokeys.in" + LOCAL_API + " https://images.unsplash.com https://cdn.pixabay.com https://via.placeholder.com https://source.unsplash.com https://static.tacdn.com https://www.google.com https://www.google.co.in https://www.gstatic.com https://googleads.g.doubleclick.net https://www.googleadservices.com https://ad.doubleclick.net https://www.google-analytics.com",
-            "connect-src 'self' https://api.gokeys.in" + LOCAL_API + " https://www.google-analytics.com https://analytics.google.com https://www.googletagmanager.com https://www.google.com https://www.google.co.in https://googleads.g.doubleclick.net https://ad.doubleclick.net https://www.googleadservices.com https://region1.google-analytics.com",
-            "frame-src 'self' https://www.google.com https://www.googletagmanager.com https://td.doubleclick.net",
-            "frame-ancestors 'self'",
-          ].join('; '),
-        },
+        { key: 'Content-Security-Policy', value: csp(false) },
       ],
     },
+    { source: '/book', headers: checkout },
+    { source: '/book/:path*', headers: checkout },
   ];
 },
 

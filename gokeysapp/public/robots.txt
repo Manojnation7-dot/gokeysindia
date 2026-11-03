@@ -1,4 +1,6 @@
 User-agent: *
 Allow: /
+# Online booking checkout and guest booking pages: never indexed
+Disallow: /book/
 
 Sitemap: https://gokeys.in/sitemap.xml

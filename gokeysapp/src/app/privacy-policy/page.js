@@ -3,6 +3,7 @@ import Footer from "@/components/Footer";
 import { buildMetadata } from "@/lib/seoHelpers";
 import SmartSEO from "@/components/SmartSEO";
 import { buildBreadcrumbList } from "@/lib/seoSchemas";
+import { formatPolicyDate } from "@/lib/policyDates";
   
 
 export async function generateMetadata() {
@@ -89,15 +90,18 @@ export default function Privacy() {
             <li><strong>Website visit records</strong> (including the shortened IP address): deleted after 90 days</li>
             <li><strong>Accounting records</strong> (invoices, payments and refunds): kept for the period required
               by Indian tax and accounting law</li>
+            <li><strong>Lead booker&apos;s contact</strong> (name, phone and email): kept in our customer records for
+              accounting and legal purposes for the same period as the accounting records, even after the other
+              traveller details are anonymised</li>
           </ul>
 
           <h2 className="text-2xl font-semibold mt-8">6. Who We Share It With</h2>
           <p>We do not sell your data. We share only what each service needs to do its job for us:</p>
           <ul className="list-disc pl-6">
             <li><strong>Razorpay</strong>: to take payments and make refunds</li>
-            <li><strong>Our email service provider</strong>: to send booking emails and vouchers</li>
-            <li><strong>Our WhatsApp Business messaging provider</strong>: to send trip messages and vouchers on
-              WhatsApp</li>
+            <li><strong>Google (Gmail)</strong>: to send booking emails and vouchers</li>
+            <li><strong>WhatsApp (Meta)</strong>: when our staff send you your booking details and voucher link from
+              our own WhatsApp number (no automated messaging service)</li>
             <li><strong>Hotels and transport partners</strong>: traveller names and the details they need for
               your rooms and seats</li>
             <li><strong>Google</strong>: reCAPTCHA (spam protection on our forms) and Google Analytics / Google Ads
@@ -105,8 +109,9 @@ export default function Privacy() {
             <li><strong>Government authorities</strong>: only when the law requires it</li>
           </ul>
           <p>
-            Staff see your contact details only when they need them for your enquiry or booking. Full traveller
-            lists are kept in our booking system and are not copied into other tools.
+            Staff see your contact details only when they need them for your enquiry or booking. Traveller details
+            are kept only in our own booking and customer systems on our own server, and are not copied into other
+            tools.
           </p>
 
           <h2 className="text-2xl font-semibold mt-8">7. Children</h2>
@@ -187,7 +192,7 @@ export default function Privacy() {
             🌐 www.gokeys.in
           </p>
 
-          <p className="text-[15px] text-gray-500 mt-6">Last updated: November 2, 2026</p>
+          <p className="text-[15px] text-gray-500 mt-6">Last updated: {formatPolicyDate()}</p>
         </section>
       </main>
       < Footer/>  

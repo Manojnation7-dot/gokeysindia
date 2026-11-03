@@ -1,0 +1,18 @@
+{
+  "version": "2026-11-03",
+  "note": "Fixed-departure group tour rules. The ONLY source of this wording for the Terms page, the cancellation policy, the checkout and the voucher. An identical copy lives in GokeysNext/bookings/group_departure_terms.json (the voucher PDF prints the rupee sign as 'Rs '). Change both together; npm test compares them.",
+  "payment": [
+    "Pay an advance of 25% of the total to confirm your seats, or pay the full amount at booking.",
+    "The balance is due 7 days before departure. Your booking shows the exact date and amount."
+  ],
+  "cancellation": [
+    "If you cancel 30 or more days before departure, we keep ₹2,000 per person and refund the rest of what you paid.",
+    "If you cancel 7 to 29 days before departure, we keep the advance (25% of the total) and refund anything you paid above it.",
+    "If you cancel less than 7 days before departure, or do not show up, there is no refund.",
+    "You may transfer your seat to another person free of charge up to 7 days before departure."
+  ],
+  "minimumGroup": [
+    "Each departure runs with a minimum number of travellers. We confirm every date by its decision date.",
+    "If a date does not reach the minimum, Gokeys cancels it and you choose: a 100% refund within 7 working days, a move to another departure at no fee (any fare difference is paid or refunded), or running it as a private trip by paying the difference."
+  ]
+}

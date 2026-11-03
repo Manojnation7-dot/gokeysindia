@@ -122,3 +122,12 @@ test("'more needed' switched off on the backend (null): no chip, the rest of the
   assert.equal(d.minPax, 15);
   assert.equal(departureChip(d), null);
 });
+
+test("Book now only when the backend says so, for a bookable date with an id", () => {
+  const d = (extra) => getDepartures({ departures: [dep("2026-11-01", extra)] }, BEFORE_MIDNIGHT).list[0];
+  assert.equal(d({ book_online: true }).bookOnline, true);
+  assert.equal(d({ book_online: false }).bookOnline, false);
+  assert.equal(d({}).bookOnline, false);                                   // older backend
+  assert.equal(d({ book_online: true, bookable: false, status: "sold_out" }).bookOnline, false);
+  assert.equal(getDepartures({ departure_dates: ["2026-11-20"] }, BEFORE_MIDNIGHT).list[0].bookOnline, false);
+});

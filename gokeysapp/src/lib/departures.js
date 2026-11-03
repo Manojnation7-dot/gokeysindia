@@ -87,6 +87,8 @@ export function getDepartures(tour, now = new Date()) {
         advancePercent: num(d.advance_percent),
         prices: priceTable(d.prices),
         pickups: pickupList(d.pickups),
+        // Phase 2: online booking switched on and this date can be booked online
+        bookOnline: d.book_online === true && Boolean(d.bookable) && d.id != null,
       }));
   } else if (tour && "departure_dates" in tour) {
     legacy = true;
@@ -96,7 +98,7 @@ export function getDepartures(tour, now = new Date()) {
       .map((date) => ({
         id: null, date, status: "open", label: LABELS.open, seatsLeft: seats, bookable: true, closesOn: null, price: null,
         guaranteed: false, fillingFast: false, moreNeeded: null, minPax: null, decisionDate: null,
-        balanceDueDate: null, advancePercent: null, prices: {}, pickups: [],
+        balanceDueDate: null, advancePercent: null, prices: {}, pickups: [], bookOnline: false,
       }));
   } else {
     return { state: "error", list: [], next: null, legacy: false };
