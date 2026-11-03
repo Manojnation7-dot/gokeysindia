@@ -59,6 +59,8 @@ const Footer = () => {
               { href: "/cabs", label: "Cabs" },
               { href: "/about", label: "About Us" },
               { href: "/contact", label: "Contact Us" },
+              // Guests' own booking page (noindex, Disallowed in robots.txt): nofollow, so crawlers don't spend time on it
+              { href: "/book/check", label: "Check my booking", rel: "nofollow" },
               { href: "/terms-and-conditions", label: "Terms & Conditions" },
               { href: "/cancellation-policy", label: "Cancellation Policy" },
               { href: "/privacy-policy", label: "Privacy Policy" },
@@ -66,6 +68,7 @@ const Footer = () => {
               <li key={item.href}>
                 <Link
                   href={item.href}
+                  rel={item.rel}
                   className="hover:text-white transition"
                 >
                   {item.label}

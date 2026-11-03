@@ -83,6 +83,18 @@ export const sendPaymentCallback = (response) =>
 
 export const getBookingStatus = (token) => call("/api/bookings/status/", { headers: { "X-Booking-Token": token } });
 
+// Check my booking (/book/check): reference + the phone or email used, then a 6-digit code sent to the booking email.
+const json = (body, token) => ({ method: "POST", headers: { "Content-Type": "application/json", ...(token ? { "X-Booking-Token": token } : {}) },
+  body: JSON.stringify(body) });
+export const lookupBooking = (reference, contact) => call("/api/bookings/lookup/", json({ reference, contact }));
+export const verifyBookingCode = (reference, code) => call("/api/bookings/verify/", json({ reference, code }));
+
+// What a guest can do with their link (the backend decides what each link may do; these never send an amount)
+export const requestCancellation = (token) => call("/api/bookings/cancel-request/", json({ confirm: true }, token));
+export const chooseAfterCancellation = (token, choice, targetDepartureId) =>
+  call("/api/bookings/choice/", json({ choice, ...(targetDepartureId ? { target_departure_id: Number(targetDepartureId) } : {}) }, token));
+export const getBalanceLink = (token) => call("/api/bookings/balance-link/", json({}, token));
+
 /** Downloads the voucher PDF with the token in a header (never in a URL). */
 export async function downloadVoucher(token, reference) {
   const res = await fetch(`${API}/api/bookings/voucher/`, { headers: { "X-Booking-Token": token }, cache: "no-store" });

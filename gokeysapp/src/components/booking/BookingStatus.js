@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { downloadVoucher, getBookingStatus, hashValue, rupeesFromPaise } from "@/lib/booking";
 import { formatDepartureDate, formatPickupTime } from "@/lib/departures";
+import BookingActions from "./BookingActions";
 
 const POLL_MS = 3000;
 const POLL_FOR_MS = 3 * 60 * 1000; // the webhook normally arrives within seconds
@@ -16,9 +17,15 @@ export default function BookingStatus() {
   const [downloading, setDownloading] = useState(false);
 
   useEffect(() => {
-    const value = hashValue();
-    if (!value) return setProblem("This link is incomplete. Please open the link from your booking email.");
-    setToken(value);
+    // Read the link after "#"; again when it changes in the same tab (e.g. a second booking link opened here)
+    const read = () => {
+      const value = hashValue();
+      if (!value) return setProblem("This link is incomplete. Please open the link from your booking email.");
+      setProblem(""); setBooking(null); setToken(value);
+    };
+    read();
+    window.addEventListener("hashchange", read);
+    return () => window.removeEventListener("hashchange", read);
   }, []);
 
   useEffect(() => {
@@ -35,7 +42,7 @@ export default function BookingStatus() {
         return;
       }
       setBooking(data);
-      if (data.status === "confirmed" && !reported) {
+      if ((data.status === "confirmed" || data.status === "fully_paid") && !reported && !data.signed_in) {
         reported = true;
         window.dataLayer = window.dataLayer || [];
         window.dataLayer.push({ event: "gokeys_booking_confirmed", tour_slug: data.tour_slug, value: data.paid_paise / 100, currency: "INR" });
@@ -53,7 +60,8 @@ export default function BookingStatus() {
   if (!booking) return <p className="text-slate-ink" aria-live="polite">Loading your booking…</p>;
 
   const b = booking;
-  const confirmed = b.status === "confirmed";
+  const confirmed = b.status === "confirmed" || b.status === "fully_paid";
+  const cancellation = b.refund_reason && b.refund_reason !== "LATE_PAYMENT";
   return (
     <div className="max-w-2xl space-y-4" aria-live="polite">
       {b.is_test && <p className="gk-panel p-3 text-sm bg-amber-50! border-amber-300! text-amber-900"><strong>Test booking</strong> (Razorpay test mode): not a real booking.</p>}
@@ -66,7 +74,15 @@ export default function BookingStatus() {
             {new Date(b.hold_expires_at).toLocaleTimeString("en-IN", { hour: "numeric", minute: "2-digit", timeZone: "Asia/Kolkata" })}.</p></>}
         {b.status === "expired" && <><h1 className="gk-h2">Payment not completed</h1><p className="mt-2 text-ink">The 15-minute hold ended before the payment was made,
           so the seats were released. Nothing was charged. You can book again if seats are still free.</p></>}
-        {(b.status === "refund_pending" || b.status === "refunded") && <><h1 className="gk-h2">Your payment is being refunded</h1>
+        {b.status === "departure_cancelled" && <><p className="gk-eyebrow mb-1">Departure cancelled</p><h1 className="gk-h2">We are sorry: this date did not reach the minimum group size</h1>
+          <p className="mt-2 text-ink">Gokeys has cancelled this departure. Please choose below what you would like to do.</p></>}
+        {b.status === "private_trip" && <><h1 className="gk-h2">Your private trip is being arranged</h1>
+          <p className="mt-2 text-ink">Our team will call you with the price difference and the plan.</p></>}
+        {cancellation && ["refund_pending", "refunded", "cancelled"].includes(b.status) && <><h1 className="gk-h2">Your booking is cancelled</h1>
+          <p className="mt-2 text-ink">{Number(b.refund_amount) > 0 ? `A refund of ${rupeesFromPaise(Math.round(Number(b.refund_amount) * 100))} ${b.status === "refunded" ? "has been processed" : "has been started"}; banks usually take 5 to 7 working days.`
+            : "Under the cancellation rules no refund was due."}</p></>}
+        {!cancellation && b.status === "cancelled" && <><h1 className="gk-h2">This booking is cancelled</h1></>}
+        {!cancellation && (b.status === "refund_pending" || b.status === "refunded") && <><h1 className="gk-h2">Your payment is being refunded</h1>
           <p className="mt-2 text-ink">Your payment arrived after the seat hold had ended and the seats had been taken. We have started a full refund
             {b.status === "refunded" ? " (processed)" : ""}; banks usually take 5 to 7 working days. Please call us to find another date.</p></>}
         {slow && b.status === "pending_payment" && <p className="mt-3 text-sm text-ink">This is taking longer than usual. If you paid, you will get an email as soon as it is confirmed. Questions? Call +91-7830718687.</p>}
@@ -95,8 +111,9 @@ export default function BookingStatus() {
           }}>{downloading ? "Preparing…" : "Download voucher (PDF)"}</button>
         )}
       </section>
+      <BookingActions booking={b} token={token} onChange={setBooking} />
       <p className="text-sm text-slate-ink">Questions? Call or WhatsApp <a className="underline" href="tel:+917830718687">+91-7830718687</a> with your
-        booking reference. <Link href="/terms-and-conditions" className="underline">Terms</Link> · <Link href="/privacy-policy" className="underline">Privacy</Link></p>
+        booking reference. <Link href="/book/check" className="underline">Check my booking</Link> · <Link href="/terms-and-conditions" className="underline">Terms</Link> · <Link href="/privacy-policy" className="underline">Privacy</Link></p>
     </div>
   );
 }

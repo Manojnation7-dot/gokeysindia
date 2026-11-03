@@ -9,8 +9,10 @@ import { POLICY_UPDATED, formatPolicyDate } from "./policyDates.js";
 const app = path.join(path.dirname(fileURLToPath(import.meta.url)), "..", "app");
 
 test("date format", () => {
-  assert.equal(POLICY_UPDATED, "2026-11-03");
-  assert.equal(formatPolicyDate(), "November 3, 2026");
+  // Set to the deploy date when a policy changes (Phase 3: the date-change rules); a real date, not before Phase 2's
+  assert.match(POLICY_UPDATED, /^20\d\d-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/);
+  assert.ok(POLICY_UPDATED >= "2026-11-03");
+  assert.equal(formatPolicyDate("2026-11-03"), "November 3, 2026");
   assert.equal(formatPolicyDate("2025-07-31"), "July 31, 2025");
 });
 
