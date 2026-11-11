@@ -430,8 +430,10 @@ const [isLoading, setIsLoading] = useState(false);
                               <>
                                 <button type="button" onClick={() => reserve(dep)} className="text-sm font-semibold text-teal underline underline-offset-2"
                                   aria-label={`Ask a question about ${formatDate(dep.date)}`}>Ask a question</button>
-                                <Link href={`/book/${dep.id}`} prefetch={false} className="gk-btn gk-btn-sun py-2!"
-                                  aria-label={`Book now: ${formatDate(dep.date)}`}>Book now</Link>
+                                {/* A full page load, never client-side routing: /book has its own security policy that
+                                    allows Razorpay; a client-side move would keep this page's policy and block it */}
+                                <a href={`/book/${dep.id}`} className="gk-btn gk-btn-sun py-2!"
+                                  aria-label={`Book now: ${formatDate(dep.date)}`}>Book now</a>
                               </>
                             ) : dep.bookable ? (
                               <button onClick={() => reserve(dep)} className="gk-btn gk-btn-ink py-2!">Reserve</button>

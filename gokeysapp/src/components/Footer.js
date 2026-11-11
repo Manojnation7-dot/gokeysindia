@@ -66,13 +66,18 @@ const Footer = () => {
               { href: "/privacy-policy", label: "Privacy Policy" },
             ].map((item) => (
               <li key={item.href}>
-                <Link
-                  href={item.href}
-                  rel={item.rel}
-                  className="hover:text-white transition"
-                >
-                  {item.label}
-                </Link>
+                {/* /book pages are always opened with a full page load (their own security policy) */}
+                {item.href.startsWith("/book") ? (
+                  <a href={item.href} rel={item.rel} className="hover:text-white transition">{item.label}</a>
+                ) : (
+                  <Link
+                    href={item.href}
+                    rel={item.rel}
+                    className="hover:text-white transition"
+                  >
+                    {item.label}
+                  </Link>
+                )}
               </li>
             ))}
           </ul>

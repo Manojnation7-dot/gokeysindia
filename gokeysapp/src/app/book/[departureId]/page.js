@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import BookingCheckout from "@/components/booking/BookingCheckout";
+import CheckoutErrorBoundary from "@/components/booking/CheckoutErrorBoundary";
 
 export const dynamic = "force-dynamic";
 
@@ -8,5 +9,5 @@ export const dynamic = "force-dynamic";
 export default async function BookPage({ params }) {
   const { departureId } = await params;
   if (!/^\d{1,9}$/.test(departureId)) notFound();
-  return <BookingCheckout departureId={departureId} />;
+  return <CheckoutErrorBoundary><BookingCheckout departureId={departureId} /></CheckoutErrorBoundary>;
 }

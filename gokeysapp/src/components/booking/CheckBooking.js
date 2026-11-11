@@ -1,13 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { errorMessage, lookupBooking, verifyBookingCode } from "@/lib/booking";
 
 // Step 1: reference + phone or email -> the backend emails a code if they match (same answer either way).
 // Step 2: the 6-digit code -> a 2-hour link to the booking (put after "#", so it never reaches a server log).
 export default function CheckBooking({ initialReference = "" }) {
-  const router = useRouter();
   const [reference, setReference] = useState(initialReference);
   const [contact, setContact] = useState("");
   const [code, setCode] = useState("");
@@ -32,7 +30,7 @@ export default function CheckBooking({ initialReference = "" }) {
     const { ok, data } = await verifyBookingCode(reference.trim().toUpperCase(), code.trim());
     setBusy(false);
     if (!ok) return setError(errorMessage(data));
-    router.push(`/book/booking#${encodeURIComponent(data.booking_token)}`);
+    window.location.assign(`/book/booking#${encodeURIComponent(data.booking_token)}`); // a full page load, like every way into a booking page
   }
 
   return (

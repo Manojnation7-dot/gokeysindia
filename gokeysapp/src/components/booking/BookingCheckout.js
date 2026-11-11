@@ -3,8 +3,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import {
-  TRAVELLER_TYPES, createBooking, errorMessage, getBookingDeparture, getQuote, loadRazorpay, previewToken,
-  rupeesFromPaise, sendPaymentCallback, travellerSlots,
+  TRAVELLER_TYPES, changeCount, createBooking, errorMessage, getBookingDeparture, getQuote, loadRazorpay, previewToken,
+  quoteKey, rupeesFromPaise, sendPaymentCallback, travellerRows, travellerSlots,
 } from "@/lib/booking";
 import { formatDepartureDate, formatPickupTime, SHARING_LABELS } from "@/lib/departures";
 import { startRecaptcha } from "@/lib/recaptcha";
@@ -21,16 +21,17 @@ const EMPTY_TRAVELLER = { full_name: "", age: "", gender: "", medical_note: "" }
 const MIN_PAYMENT_PAISE = 100; // Razorpay's smallest payment (Rs 1)
 const field = "gk-field";
 
+// onChange gets +1 or -1 and is applied to the latest counts, so fast repeated taps all count
 function Counter({ label, hint, value, onChange, min = 0, max = 20 }) {
   return (
     <div className="flex items-center justify-between gap-3 py-2">
       <div><p className="font-semibold text-ink text-sm">{label}</p><p className="text-xs text-slate-ink">{hint}</p></div>
       <div className="flex items-center gap-2">
         <button type="button" className="gk-btn gk-btn-line py-1! px-3!" aria-label={`Fewer ${label}`}
-          onClick={() => onChange(Math.max(min, value - 1))} disabled={value <= min}>−</button>
+          onClick={() => onChange(-1)} disabled={value <= min}>−</button>
         <span className="w-6 text-center font-bold" aria-live="polite">{value}</span>
         <button type="button" className="gk-btn gk-btn-line py-1! px-3!" aria-label={`More ${label}`}
-          onClick={() => onChange(Math.min(max, value + 1))} disabled={value >= max}>+</button>
+          onClick={() => onChange(1)} disabled={value >= max}>+</button>
       </div>
     </div>
   );
@@ -46,19 +47,44 @@ export default function BookingCheckout({ departureId }) {
   const [travellers, setTravellers] = useState([]);
   const [contact, setContact] = useState({ lead_phone: "", lead_email: "", emergency_name: "", emergency_phone: "" });
   const [consent, setConsent] = useState({ consent: false, guardian: false, medical: false });
-  const [quote, setQuote] = useState(null);
-  const [quoteError, setQuoteError] = useState("");
-  const [stage, setStage] = useState("form"); // form | sending | paying | dismissed | confirming
+  // The latest price answer and the inputs it was for: an answer for older inputs is never shown as the price
+  const [priced, setPriced] = useState({ key: "", quote: null, error: "" });
+  const [stage, setStage] = useState("form"); // form | opening | sending | paying | dismissed | confirming
   const [error, setError] = useState("");
   const [booking, setBooking] = useState(null);
-  const [scriptFailed, setScriptFailed] = useState(false); // Razorpay's checkout script could not load here
+  const [scriptFailed, setScriptFailed] = useState(false); // Razorpay's script failed to load or took over 15 s
   const checkoutRef = useRef(null);
+  const formRef = useRef(null);
+  const payPressed = useRef(false);
 
-  // Load Razorpay's script with the page: a network that blocks it is found before any seats are held
-  useEffect(() => { loadRazorpay().then(() => setScriptFailed(false)).catch(() => setScriptFailed(true)); }, []);
+  // Start loading Razorpay's script with the page. A failure here is shown only once the guest presses Pay
+  // (or straight away if it was a real error); while it is still loading, Pay says "Opening secure payment…".
+  useEffect(() => { loadRazorpay().catch(() => setScriptFailed(true)); }, []);
+
+  // Safety net: a page reached without a full page load can carry another page's security policy, which blocks
+  // Razorpay. Reload once, before any seats are held (the form is still empty then).
+  useEffect(() => {
+    const onBlocked = (e) => {
+      if (!String(e.blockedURI || "").includes("checkout.razorpay.com") || payPressed.current) return;
+      try {
+        if (sessionStorage.getItem("gk-book-reloaded")) return;
+        sessionStorage.setItem("gk-book-reloaded", "1");
+      } catch { return; }
+      window.location.reload();
+    };
+    document.addEventListener("securitypolicyviolation", onBlocked);
+    return () => document.removeEventListener("securitypolicyviolation", onBlocked);
+  }, []);
+
+  // Retry: load the script again, then carry on where the guest was (open the window, or press Pay again)
   const retryScript = () => {
-    setScriptFailed(false);
-    loadRazorpay().then(() => setScriptFailed(false)).catch(() => setScriptFailed(true));
+    setScriptFailed(false); setError("");
+    setStage("opening");
+    loadRazorpay().then(() => {
+      if (booking) return openCheckout(booking);
+      setStage("form");
+      if (payPressed.current) formRef.current?.requestSubmit();
+    }).catch(() => { setScriptFailed(true); setStage(booking ? "dismissed" : "form"); });
   };
 
   useEffect(() => {
@@ -78,11 +104,10 @@ export default function BookingCheckout({ departureId }) {
   const sharingOptions = useMemo(() => ["quad", "triple", "double"].filter((s) => priceOf(s, "adult")), [info]); // eslint-disable-line react-hooks/exhaustive-deps
   const typeAllowed = (key) => key === "adult" || (key === "infant" ? minAge < 5 : minAge < 12 && Boolean(priceOf(sharing, key)));
   const slots = travellerSlots(counts);
-
-  // Keep one traveller row per slot (rows keep what was typed when counts change)
-  useEffect(() => {
-    setTravellers((rows) => slots.map((_, i) => rows[i] || { ...EMPTY_TRAVELLER }));
-  }, [slots.join(",")]); // eslint-disable-line react-hooks/exhaustive-deps
+  // Built during render, so there is always exactly one row per traveller (fewer travellers can never leave a row
+  // without a type behind; that crashed the page when a count went down)
+  const rows = travellerRows(slots, travellers);
+  const currentKey = quoteKey({ sharing, counts, pickupId });
 
   // Drop counts of types this sharing or tour does not offer
   useEffect(() => {
@@ -94,10 +119,11 @@ export default function BookingCheckout({ departureId }) {
   useEffect(() => {
     if (!info || !sharing || counts.adult < 1) return;
     let current = true; // an answer that arrives after a newer change is ignored (answers can arrive out of order)
+    const key = quoteKey({ sharing, counts, pickupId });
     const timer = setTimeout(async () => {
       const { ok, data } = await getQuote(departureId, { sharing, counts, pickupId });
       if (!current) return;
-      if (ok) { setQuote(data); setQuoteError(""); } else { setQuote(null); setQuoteError(errorMessage(data, LABELS)); }
+      setPriced(ok ? { key, quote: data, error: "" } : { key, quote: null, error: errorMessage(data, LABELS) });
       // Razorpay takes at least Rs 1: an advance below that is not offered (pay the full amount)
       if (ok && data.advance_paise < MIN_PAYMENT_PAISE) setPayOption("full");
     }, 350);
@@ -116,23 +142,33 @@ export default function BookingCheckout({ departureId }) {
   if (!info) return <p className="text-slate-ink" aria-live="polite">Loading the booking form…</p>;
 
   const dep = info.departure;
-  const anyMinor = travellers.some((t, i) => slots[i] !== "adult" || (t.age !== "" && Number(t.age) < 18));
-  const anyMedical = travellers.some((t) => t.medical_note.trim());
+  const fresh = priced.key === currentKey;
+  const quote = fresh ? priced.quote : null; // the price for exactly what is chosen now
+  const quoteError = fresh ? priced.error : "";
+  const shownQuote = priced.quote; // shown greyed out while the new price is on its way
+  const anyMinor = rows.some((t) => t.type.key !== "adult" || (t.age !== "" && Number(t.age) < 18));
+  const anyMedical = rows.some((t) => t.medical_note.trim());
   const amountNow = quote ? (payOption === "full" ? quote.total_paise : quote.advance_paise) : null;
-  const setTraveller = (i, key, value) => setTravellers((rows) => rows.map((r, j) => (j === i ? { ...r, [key]: value } : r)));
+  const setTraveller = (i, key, value) => setTravellers((typed) => {
+    const next = [...typed];
+    while (next.length <= i) next.push({ ...EMPTY_TRAVELLER });
+    next[i] = { ...next[i], [key]: value };
+    return next;
+  });
 
   function check() {
     if (!sharing) return "Choose a room sharing option.";
     if (dep.pickups.length && !pickupId) return "Choose a pickup point.";
-    for (const [i, t] of travellers.entries()) {
-      const type = TRAVELLER_TYPES.find((x) => x.key === slots[i]);
+    if (!fresh) return "The price is being updated. Please wait a moment.";
+    for (const [i, t] of rows.entries()) {
+      const { type } = t;
       if (!/^[A-Za-z][A-Za-z .'-]+$/.test(t.full_name.trim())) return `Traveller ${i + 1}: enter the full name in English letters, as on the photo ID.`;
       const age = Number(t.age);
       if (t.age === "" || !Number.isInteger(age) || age < type.min || age > type.max) return `Traveller ${i + 1}: age must be ${type.min} to ${type.max} for "${type.label.toLowerCase()}".`;
       if (age < minAge) return `This tour is for travellers aged ${minAge} and over.`;
       if (!t.gender) return `Traveller ${i + 1}: choose a gender.`;
     }
-    if (Number(travellers[0]?.age) < 18) return "Traveller 1 is the lead booker and must be 18 or over.";
+    if (Number(rows[0]?.age) < 18) return "Traveller 1 is the lead booker and must be 18 or over.";
     if (!/^(\+?91[\s-]?)?[6-9]\d{9}$/.test(contact.lead_phone.replace(/[\s-]/g, ""))) return "Enter a 10-digit Indian mobile number.";
     if (!/^[^@\s]+@[^@\s]+\.[A-Za-z]{2,}$/.test(contact.lead_email.trim())) return "Enter a valid email address.";
     if (!contact.emergency_name.trim() || !/^(\+?91)?[6-9]\d{9}$/.test(contact.emergency_phone.replace(/[\s-]/g, ""))) return "Enter an emergency contact who is not travelling, with a 10-digit mobile number.";
@@ -172,12 +208,16 @@ export default function BookingCheckout({ departureId }) {
     setError("");
     const problem = check();
     if (problem) return setError(problem);
+    payPressed.current = true;
     if (scriptFailed) return undefined; // the message and Retry are shown: no seats are held until it loads
+    // Wait for Razorpay's script before holding seats (it is normally loaded long before; up to 15 s on a slow network)
+    setStage("opening");
+    try { await loadRazorpay(); } catch { setStage("form"); return setScriptFailed(true); }
     setStage("sending");
     const { ok, data } = await createBooking({
       departure_id: Number(departureId), sharing, pickup_id: pickupId ? Number(pickupId) : null, pay_option: payOption,
-      travellers: travellers.map((t, i) => ({
-        full_name: t.full_name.trim(), age: Number(t.age), gender: t.gender, traveller_type: slots[i],
+      travellers: rows.map((t) => ({
+        full_name: t.full_name.trim(), age: Number(t.age), gender: t.gender, traveller_type: t.type.key,
         medical_note: t.medical_note.trim(),
       })),
       lead_phone: contact.lead_phone, lead_email: contact.lead_email.trim(), emergency_name: contact.emergency_name.trim(),
@@ -189,12 +229,12 @@ export default function BookingCheckout({ departureId }) {
     openCheckout(data);
   }
 
-  const busy = stage === "sending" || stage === "paying" || stage === "confirming";
+  const busy = stage === "opening" || stage === "sending" || stage === "paying" || stage === "confirming";
   const holdUntil = booking?.hold_expires_at
     ? new Date(booking.hold_expires_at).toLocaleTimeString("en-IN", { hour: "numeric", minute: "2-digit", timeZone: "Asia/Kolkata" }) : "";
 
   return (
-    <form onSubmit={submit} onFocus={startRecaptcha} className="grid gap-6 lg:grid-cols-[1fr_340px] items-start" noValidate>
+    <form ref={formRef} onSubmit={submit} onFocus={startRecaptcha} className="grid gap-6 lg:grid-cols-[1fr_340px] items-start" noValidate>
       <div className="space-y-6 min-w-0">
         {(info.preview || info.payment_mode === "test") && (
           <p className="gk-panel p-3 text-sm bg-amber-50! border-amber-300! text-amber-900">
@@ -242,7 +282,7 @@ export default function BookingCheckout({ departureId }) {
               <Counter key={t.key} label={t.label}
                 hint={`${t.hint}${t.key !== "adult" && t.key !== "infant" && priceOf(sharing, t.key) ? ` · ${rupeesFromPaise(priceOf(sharing, t.key).amount_paise)}` : ""}`}
                 value={counts[t.key]} min={t.key === "adult" ? 1 : 0}
-                onChange={(v) => setCounts((c) => ({ ...c, [t.key]: v }))} />
+                onChange={(delta) => setCounts((c) => changeCount(c, t.key, delta))} />
             ))}
           </div>
           {minAge > 0 && <p className="mt-2 text-xs text-slate-ink">This tour is for travellers aged {minAge} and over.</p>}
@@ -266,8 +306,8 @@ export default function BookingCheckout({ departureId }) {
           <p className="text-sm text-slate-ink mb-3">Names as on each traveller&apos;s photo ID. Traveller 1 is the lead booker (18 or over).
             Please carry an original photo ID for every traveller; we check it at pickup and never ask for ID numbers.</p>
           <div className="space-y-4">
-            {travellers.map((t, i) => {
-              const type = TRAVELLER_TYPES.find((x) => x.key === slots[i]);
+            {rows.map((t, i) => {
+              const { type } = t;
               return (
                 <fieldset key={i} className="rounded-lg border border-line p-3">
                   <legend className="px-1 text-sm font-semibold text-ink">Traveller {i + 1} · {type.label.replace(/s$/, "")} ({type.hint})</legend>
@@ -338,17 +378,18 @@ export default function BookingCheckout({ departureId }) {
 
       <aside id="step-4" className="gk-card p-4 sm:p-5 lg:sticky lg:top-24 scroll-mt-24">
         <h2 className="gk-h3 text-lg! mb-3"><span className="lg:hidden">4. </span>Price and payment</h2>
-        {quote ? (
-          <>
-            <ul className="text-sm space-y-1">
-              {quote.lines.map((l, i) => (
+        {shownQuote && !quoteError ? (
+          <div aria-busy={!fresh}>
+            {!fresh && <p className="text-xs text-slate-ink mb-1" aria-live="polite">Updating the price…</p>}
+            <ul className={`text-sm space-y-1 ${fresh ? "" : "opacity-50"}`}>
+              {shownQuote.lines.map((l, i) => (
                 <li key={i} className="flex justify-between gap-2"><span>{l.label} × {l.count}</span><span>{rupeesFromPaise(l.amount_paise)}</span></li>
               ))}
-              <li className="flex justify-between gap-2 border-t border-line pt-1"><span>Subtotal</span><span>{rupeesFromPaise(quote.subtotal_paise)}</span></li>
-              <li className="flex justify-between gap-2"><span>GST {quote.gst_percent}%</span><span>{rupeesFromPaise(quote.gst_paise)}</span></li>
-              <li className="flex justify-between gap-2 font-bold text-ink"><span>Total</span><span>{rupeesFromPaise(quote.total_paise)}</span></li>
+              <li className="flex justify-between gap-2 border-t border-line pt-1"><span>Subtotal</span><span>{rupeesFromPaise(shownQuote.subtotal_paise)}</span></li>
+              <li className="flex justify-between gap-2"><span>GST {shownQuote.gst_percent}%</span><span>{rupeesFromPaise(shownQuote.gst_paise)}</span></li>
+              <li className="flex justify-between gap-2 font-bold text-ink"><span>Total</span><span>{rupeesFromPaise(shownQuote.total_paise)}</span></li>
             </ul>
-            {dep.advance_percent < 100 && quote.advance_paise >= MIN_PAYMENT_PAISE && (
+            {quote && dep.advance_percent < 100 && quote.advance_paise >= MIN_PAYMENT_PAISE && (
               <fieldset className="mt-4 space-y-2 text-sm">
                 <legend className="gk-label">Pay now</legend>
                 <label className="flex gap-2"><input type="radio" name="pay" checked={payOption === "advance"} onChange={() => setPayOption("advance")} />
@@ -358,8 +399,10 @@ export default function BookingCheckout({ departureId }) {
                   <span>Full amount: <strong>{rupeesFromPaise(quote.total_paise)}</strong></span></label>
               </fieldset>
             )}
-            {!quote.bookable && <p className="mt-3 text-sm text-red-700">{quote.not_bookable_reason}</p>}
-          </>
+            {quote && !quote.bookable && <p className="mt-3 text-sm text-red-700">{quote.not_bookable_reason}</p>}
+          </div>
+        ) : quoteError ? (
+          <p className="text-sm text-red-700" role="alert">{quoteError}</p>
         ) : (
           <p className="text-sm text-slate-ink">{quoteError || "Working out the price…"}</p>
         )}
@@ -367,10 +410,7 @@ export default function BookingCheckout({ departureId }) {
         {scriptFailed && (
           <div className="mt-3 rounded-lg border border-amber-300 bg-amber-50 p-3 text-sm text-amber-900" role="alert">
             <p>The payment window could not load on this network. Try mobile data or another browser.</p>
-            <button type="button" className="gk-btn gk-btn-line py-1.5! mt-2" onClick={() => {
-              retryScript();
-              if (booking) { setError(""); openCheckout(booking); }
-            }}>Retry</button>
+            <button type="button" className="gk-btn gk-btn-line py-1.5! mt-2" onClick={retryScript}>Retry</button>
           </div>
         )}
         {stage === "dismissed" && booking && (
@@ -382,7 +422,7 @@ export default function BookingCheckout({ departureId }) {
           </button>
         ) : (
           <button type="submit" className="gk-btn gk-btn-sun w-full mt-4" disabled={busy || !quote || !quote.bookable}>
-            {stage === "sending" ? "Holding your seats…" : stage === "confirming" ? "Payment received, confirming…"
+            {stage === "opening" ? "Opening secure payment…" : stage === "sending" ? "Holding your seats…" : stage === "confirming" ? "Payment received, confirming…"
               : stage === "paying" ? "Complete the payment…" : amountNow != null ? `Pay ${rupeesFromPaise(amountNow)} securely` : "Pay securely"}
           </button>
         )}
