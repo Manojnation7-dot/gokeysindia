@@ -6,6 +6,10 @@ export const dynamic = "force-dynamic";
 // booking email). Like every /book page: noindex (book/layout.js), Disallowed in robots.txt, not in the sitemap.
 export const metadata = { title: "Check my booking" };
 
-export default function CheckBookingPage() {
-  return <CheckBooking />;
+// ?ref=GK-... (from the voucher QR code and the emails) fills in the reference: never a secret, the code is still needed
+const REFERENCE = /^GK-[A-Z0-9]{4,16}$/;
+
+export default async function CheckBookingPage({ searchParams }) {
+  const ref = String((await searchParams)?.ref || "").trim().toUpperCase();
+  return <CheckBooking initialReference={REFERENCE.test(ref) ? ref : ""} />;
 }

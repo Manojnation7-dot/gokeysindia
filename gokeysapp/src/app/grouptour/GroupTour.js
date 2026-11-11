@@ -5,7 +5,7 @@ import Link from 'next/link';
 import SmartSEO from '@/components/SmartSEO';
 import { buildBreadcrumbList, buildItemListSchema, buildFAQSchema } from '@/lib/seoSchemas';
 import { Breadcrumbs, CtaBand, FaqList, TourCard, Price, Mountains } from '@/components/ui/kit';
-import { getDepartures, formatDepartureDate } from '@/lib/departures';
+import { getDepartures, formatDepartureDate, lowestAdultPrice } from '@/lib/departures';
 
 const faqs = [
   {
@@ -101,6 +101,12 @@ export default function GroupTour({ tours = [] }) {
 
   // Every future departure of every tour, soonest first
   const departuresOf = Object.fromEntries(tours.map((t) => [t.id, getDepartures(t)]));
+  // Phase 5: tours with a date bookable online show "Book online" and the lowest adult price of those dates
+  const onlineOf = Object.fromEntries(tours.map((t) => {
+    const online = departuresOf[t.id].list.filter((d) => d.bookOnline);
+    return [t.id, online.length ? { from: lowestAdultPrice(online) } : null];
+  }));
+  const rupee = (n) => `₹${Number(n).toLocaleString('en-IN', { maximumFractionDigits: 0 })}`;
   const upcoming = tours
     .flatMap((t) => departuresOf[t.id].list.map((dep) => ({ date: dep.date, dep, tour: t })))
     .sort((a, b) => a.date.localeCompare(b.date))
@@ -188,6 +194,7 @@ schemas.push(
                   imgHeight="h-44"
                   badge={tour.trip_types?.[0]?.name || "Group Tour"}
                   chips={[
+                    onlineOf[tour.id] && "Book online",
                     tour.duration && `${tour.duration} days`,
                     departuresOf[tour.id].next
                       ? (departuresOf[tour.id].next.bookable && departuresOf[tour.id].next.seatsLeft != null
@@ -209,7 +216,12 @@ schemas.push(
                   }
                 >
                   <p className="text-xs text-slate-ink">Starting from</p>
-                  <Price tour={tour} />
+                  {onlineOf[tour.id]?.from ? (
+                    <p className="flex flex-wrap items-baseline gap-x-1.5">
+                      <span className="gk-price text-xl">{rupee(onlineOf[tour.id].from)}</span>
+                      <span className="text-xs text-slate-ink">per person + GST</span>
+                    </p>
+                  ) : <Price tour={tour} />}
                 </TourCard>
               </div>
             ))}
@@ -240,9 +252,16 @@ schemas.push(
                             ? <span className="gk-chip gk-chip-sun">{dep.seatsLeft} left</span>
                             : <span className="gk-chip">{dep.label}</span>}
                         </td>
-                        <td className="px-5 py-3"><Price tour={tour} size="text-base" unit="" /></td>
+                        <td className="px-5 py-3">
+                          {dep.bookOnline && lowestAdultPrice([dep])
+                            ? <span className="gk-price text-base">{rupee(lowestAdultPrice([dep]))}</span>
+                            : <Price tour={tour} size="text-base" unit="" />}
+                        </td>
                         <td className="px-5 py-3 text-right">
-                          <Link href={`/grouptour/${tour.slug}`} className="gk-btn gk-btn-ink py-2!">{dep.bookable ? "Reserve" : "View"}</Link>
+                          <Link href={`/grouptour/${tour.slug}#departures`} className={`gk-btn py-2! ${dep.bookOnline ? "gk-btn-sun" : "gk-btn-ink"}`}
+                            aria-label={`${dep.bookOnline ? "Book" : dep.bookable ? "Reserve" : "View"} ${tour.name}, ${formatDate(date)}`}>
+                            {dep.bookOnline ? "Book now" : dep.bookable ? "Reserve" : "View"}
+                          </Link>
                         </td>
                       </tr>
                     ))}

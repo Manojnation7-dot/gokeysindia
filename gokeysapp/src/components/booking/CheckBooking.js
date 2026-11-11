@@ -6,9 +6,9 @@ import { errorMessage, lookupBooking, verifyBookingCode } from "@/lib/booking";
 
 // Step 1: reference + phone or email -> the backend emails a code if they match (same answer either way).
 // Step 2: the 6-digit code -> a 2-hour link to the booking (put after "#", so it never reaches a server log).
-export default function CheckBooking() {
+export default function CheckBooking({ initialReference = "" }) {
   const router = useRouter();
-  const [reference, setReference] = useState("");
+  const [reference, setReference] = useState(initialReference);
   const [contact, setContact] = useState("");
   const [code, setCode] = useState("");
   const [step, setStep] = useState(1);
@@ -39,6 +39,7 @@ export default function CheckBooking() {
     <div className="max-w-md">
       <section className="gk-card p-5">
         <h1 className="gk-h2 mb-2">Check my booking</h1>
+        <p className="text-sm text-slate-ink mb-3">See your booking, pay the balance, download the voucher, or cancel.</p>
         {step === 1 ? (
           <form onSubmit={sendCode} className="space-y-3">
             <p className="text-sm text-ink">Enter your booking reference and the mobile number or email you used when booking. We will email you a

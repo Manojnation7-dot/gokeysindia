@@ -113,7 +113,7 @@ export default function BookingStatus() {
       </section>
       <BookingActions booking={b} token={token} onChange={setBooking} />
       <p className="text-sm text-slate-ink">Questions? Call or WhatsApp <a className="underline" href="tel:+917830718687">+91-7830718687</a> with your
-        booking reference. <Link href="/book/check" className="underline">Check my booking</Link> · <Link href="/terms-and-conditions" className="underline">Terms</Link> · <Link href="/privacy-policy" className="underline">Privacy</Link></p>
+        booking reference. <Link href={`/book/check?ref=${encodeURIComponent(b.reference)}`} className="underline">Manage or cancel your booking</Link> · <Link href="/terms-and-conditions" className="underline">Terms</Link> · <Link href="/privacy-policy" className="underline">Privacy</Link></p>
     </div>
   );
 }

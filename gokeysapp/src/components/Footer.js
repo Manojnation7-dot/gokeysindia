@@ -60,7 +60,7 @@ const Footer = () => {
               { href: "/about", label: "About Us" },
               { href: "/contact", label: "Contact Us" },
               // Guests' own booking page (noindex, Disallowed in robots.txt): nofollow, so crawlers don't spend time on it
-              { href: "/book/check", label: "Check my booking", rel: "nofollow" },
+              { href: "/book/check", label: "Manage or cancel your booking", rel: "nofollow" },
               { href: "/terms-and-conditions", label: "Terms & Conditions" },
               { href: "/cancellation-policy", label: "Cancellation Policy" },
               { href: "/privacy-policy", label: "Privacy Policy" },

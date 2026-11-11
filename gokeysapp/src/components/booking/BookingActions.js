@@ -12,6 +12,7 @@ export default function BookingActions({ booking: b, token, onChange }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [target, setTarget] = useState("");
+  const [understood, setUnderstood] = useState(false);
 
   async function run(fn) {
     setBusy(true); setError("");
@@ -27,11 +28,11 @@ export default function BookingActions({ booking: b, token, onChange }) {
     if (data?.url) window.location.assign(data.url);
   };
 
+  // Phase 5: the cancellation is immediate (seats released); only the refund waits for our approval
   const cancel = async () => {
-    const q = b.cancel_quote;
-    if (!window.confirm(`Ask to cancel booking ${b.reference}? ${q.rule_label}. Refund: ${rupeesFromPaise(q.refund_paise)}. Our office confirms it; nothing changes until then.`)) return;
+    if (!understood) return setError("Please tick the box to confirm.");
     const data = await run(() => requestCancellation(token));
-    if (data) onChange(data);
+    if (data) { setUnderstood(false); onChange(data); }
   };
 
   const choose = async (choice) => {
@@ -43,7 +44,7 @@ export default function BookingActions({ booking: b, token, onChange }) {
   };
 
   const c = b.choice;
-  const anything = b.can_pay_balance || b.balance_link || b.refund_request || b.can_cancel || c;
+  const anything = b.can_pay_balance || b.balance_link || b.refund_request || b.can_cancel || b.trip_started || c;
   if (!anything) return null;
   return (
     <section className="gk-card p-5 space-y-4">
@@ -75,14 +76,33 @@ export default function BookingActions({ booking: b, token, onChange }) {
         <button type="button" className="gk-btn gk-btn-sun mt-2" disabled={busy} onClick={payBalance}>{busy ? "Opening…" : "Pay balance"}</button>
       </div>}
 
-      {b.refund_request && <p className="text-sm text-ink">Your request{b.refund_request.cancels_booking ? " to cancel" : ""} is with our office
-        (refund {Number(b.refund_request.amount) > 0 ? fromRupees(b.refund_request.amount) : "none due"}). We will email you once it is done.</p>}
+      {b.refund_request && (b.status === "cancelled" && !b.refund_request.cancels_booking
+        ? <p className="text-sm text-ink" role="status">Your booking is cancelled. A refund of {fromRupees(b.refund_request.amount)} will be processed within
+          7 working days after approval. We will email you when it is done.</p>
+        : <p className="text-sm text-ink">Your request{b.refund_request.cancels_booking ? " to cancel" : ""} is with our office
+          (refund {Number(b.refund_request.amount) > 0 ? fromRupees(b.refund_request.amount) : "none due"}). We will email you once it is done.</p>)}
 
-      {b.can_cancel && b.cancel_quote && <div>
-        <h2 className="gk-h3 text-lg! mb-1">Cancel this booking</h2>
-        <p className="text-sm text-ink">{b.cancel_quote.days_before} days before departure. {b.cancel_quote.rule_label}: you would get back
-          <strong> {rupeesFromPaise(b.cancel_quote.refund_paise)}</strong>. You can also transfer your seat to someone else free of charge, or change the date, up to 7 days before departure: call us.</p>
-        <button type="button" className="gk-btn gk-btn-line mt-2" disabled={busy} onClick={cancel}>Ask to cancel</button>
+      {b.trip_started && <p className="text-sm text-ink">Your trip has started, so it can no longer be cancelled online. Please call or WhatsApp us.</p>}
+
+      {b.can_cancel && b.cancel_quote && <div aria-labelledby="cancel-heading">
+        <h2 id="cancel-heading" className="gk-h3 text-lg! mb-1">Cancel this booking</h2>
+        <p className="text-sm text-ink">You can also transfer your seat to someone else free of charge, or change the date, up to 7 days before
+          departure: call us before cancelling.</p>
+        <dl className="gk-panel mt-3 p-3 grid grid-cols-[1fr_auto] gap-x-4 gap-y-1 text-sm">
+          <dt>Paid</dt><dd className="text-right font-semibold">{rupeesFromPaise(b.cancel_quote.held_paise)}</dd>
+          <dt>Kept under our rules</dt><dd className="text-right font-semibold">{rupeesFromPaise(b.cancel_quote.keep_paise)}</dd>
+          <dt>Refund to you</dt><dd className="text-right font-bold">{rupeesFromPaise(b.cancel_quote.refund_paise)}</dd>
+        </dl>
+        <p className="mt-2 text-sm text-ink">The rule today ({b.cancel_quote.days_before} days before departure): {b.cancel_quote.rule_label}.</p>
+        <p className="mt-1 text-sm text-ink">{b.cancel_quote.refund_paise > 0
+          ? "Your booking is cancelled at once and its seats are released. The refund is processed within 7 working days after approval, to the same card or account."
+          : "Your booking is cancelled at once and its seats are released. No refund is due under our rules."}</p>
+        <label className="mt-3 flex items-start gap-2 text-sm font-semibold">
+          <input type="checkbox" className="mt-1 h-4 w-4" checked={understood} onChange={(e) => { setUnderstood(e.target.checked); setError(""); }} />
+          <span>I understand my booking will be cancelled and this cannot be undone</span>
+        </label>
+        <button type="button" className="gk-btn gk-btn-line mt-3 border-red-700! text-red-700!" disabled={busy || !understood}
+          onClick={cancel}>{busy ? "Cancelling…" : "Cancel my booking"}</button>
       </div>}
       {error && <p role="alert" className="text-sm text-red-700">{error}</p>}
     </section>

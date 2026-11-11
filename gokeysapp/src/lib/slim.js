@@ -67,6 +67,9 @@ export const slimGroupTour = (t) => ({
     departures: t.departures.map((d) => ({
       id: d.id, date: d.date, status: d.status, status_label: d.status_label,
       seats_left: d.seats_left, bookable: d.bookable, booking_closes_on: d.booking_closes_on, price: d.price,
+      // Phase 5: the listing shows "Book online" and the lowest adult price
+      book_online: d.book_online === true,
+      prices: (Array.isArray(d.prices) ? d.prices : []).filter((p) => p?.traveller_type === "adult"),
     })),
   }),
 });

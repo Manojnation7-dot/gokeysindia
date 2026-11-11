@@ -109,6 +109,12 @@ export function getDepartures(tour, now = new Date()) {
 }
 
 /** The chip a date shows: Guaranteed, Filling fast, or "X more needed to confirm" (null when none applies). */
+/** Lowest adult price (rupees, as a number) over these departures and their room sharings, or null. */
+export function lowestAdultPrice(deps) {
+  const prices = (deps || []).flatMap((d) => SHARING.map((s) => Number(d.prices?.[s]?.adult)).filter((n) => n > 0));
+  return prices.length ? Math.min(...prices) : null;
+}
+
 export function departureChip(dep) {
   if (dep.guaranteed) return { kind: "guaranteed", text: "Guaranteed departure" };
   if (dep.fillingFast && dep.bookable) return { kind: "filling", text: "Filling fast" };

@@ -16,8 +16,10 @@ const validPath = (p) => typeof p === "string" && p.length <= 300 && p.startsWit
 //
 // Body {"paths": ["/tours/x", "/tours", "/"]}: only those pages are refreshed (Django then opens each one, so the next
 // visitor gets a cached page). Body {"all": true} (or no body): content that is not a single page changed (settings,
-// banners, reviews...): every page is marked stale and refreshed in the background on its next visit, without making
-// that visitor wait for a full render.
+// banners, reviews, online booking switched on or off...): the cached API data expires at once and every page is
+// re-rendered on its next visit. ("max" here used to mean stale-while-revalidate: visitors kept getting the old data,
+// e.g. book_online false, until each page was saved again. Django's manage.py refresh_website also sends every page
+// by name.)
 export async function POST(request) {
   const secret = process.env.REVALIDATE_SECRET;
   if (!secret || !sameSecret(request.headers.get("x-revalidate-secret") || "", secret)) {
@@ -35,7 +37,10 @@ export async function POST(request) {
     return NextResponse.json({ revalidated: false, error: `paths: up to ${MAX_PATHS} site paths starting with "/"` }, { status: 400 });
   }
   const all = body.all === true || (!paths.length && body.paths === undefined);
-  if (all) revalidateTag(API_CACHE_TAG, "max"); // stale-while-revalidate for every cached API response
+  if (all) {
+    revalidateTag(API_CACHE_TAG, { expire: 0 }); // every cached API response expires now
+    revalidatePath("/", "layout"); // and every page under the root layout
+  }
   for (const path of new Set(paths)) revalidatePath(path);
   return NextResponse.json({ revalidated: true, all, paths: [...new Set(paths)], at: new Date().toISOString() });
 }

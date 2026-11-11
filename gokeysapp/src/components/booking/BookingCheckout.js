@@ -18,6 +18,7 @@ const LABELS = {
   children_without_bed: "Children without bed", infants: "Under 5", recaptcha: "Security check",
 };
 const EMPTY_TRAVELLER = { full_name: "", age: "", gender: "", medical_note: "" };
+const MIN_PAYMENT_PAISE = 100; // Razorpay's smallest payment (Rs 1)
 const field = "gk-field";
 
 function Counter({ label, hint, value, onChange, min = 0, max = 20 }) {
@@ -50,7 +51,15 @@ export default function BookingCheckout({ departureId }) {
   const [stage, setStage] = useState("form"); // form | sending | paying | dismissed | confirming
   const [error, setError] = useState("");
   const [booking, setBooking] = useState(null);
+  const [scriptFailed, setScriptFailed] = useState(false); // Razorpay's checkout script could not load here
   const checkoutRef = useRef(null);
+
+  // Load Razorpay's script with the page: a network that blocks it is found before any seats are held
+  useEffect(() => { loadRazorpay().then(() => setScriptFailed(false)).catch(() => setScriptFailed(true)); }, []);
+  const retryScript = () => {
+    setScriptFailed(false);
+    loadRazorpay().then(() => setScriptFailed(false)).catch(() => setScriptFailed(true));
+  };
 
   useEffect(() => {
     previewToken(); // keep a staff test token for this tab
@@ -89,6 +98,8 @@ export default function BookingCheckout({ departureId }) {
       const { ok, data } = await getQuote(departureId, { sharing, counts, pickupId });
       if (!current) return;
       if (ok) { setQuote(data); setQuoteError(""); } else { setQuote(null); setQuoteError(errorMessage(data, LABELS)); }
+      // Razorpay takes at least Rs 1: an advance below that is not offered (pay the full amount)
+      if (ok && data.advance_paise < MIN_PAYMENT_PAISE) setPayOption("full");
     }, 350);
     return () => { current = false; clearTimeout(timer); };
   }, [info, departureId, sharing, counts, pickupId]);
@@ -152,7 +163,7 @@ export default function BookingCheckout({ departureId }) {
       checkout.open();
     }).catch(() => {
       setStage("dismissed");
-      setError("The payment window could not be loaded. Please check your connection and press Pay again.");
+      setScriptFailed(true);
     });
   }
 
@@ -161,6 +172,7 @@ export default function BookingCheckout({ departureId }) {
     setError("");
     const problem = check();
     if (problem) return setError(problem);
+    if (scriptFailed) return undefined; // the message and Retry are shown: no seats are held until it loads
     setStage("sending");
     const { ok, data } = await createBooking({
       departure_id: Number(departureId), sharing, pickup_id: pickupId ? Number(pickupId) : null, pay_option: payOption,
@@ -201,7 +213,16 @@ export default function BookingCheckout({ departureId }) {
           {dep.guaranteed && <p className="mt-2"><span className="gk-chip bg-green-50! text-green-800!">Guaranteed departure</span></p>}
         </section>
 
-        <section className="gk-card p-4 sm:p-5">
+        {/* Steps (phones and tablets): jump to each part of the form */}
+        <nav aria-label="Booking steps" className="lg:hidden">
+          <ol className="grid grid-cols-2 gap-2 text-xs font-semibold text-ink">
+            {[["step-1", "1. Rooms and travellers"], ["step-2", "2. Traveller details"], ["step-3", "3. Rules and consent"], ["step-4", "4. Price and payment"]].map(([id, text]) => (
+              <li key={id}><a href={`#${id}`} className="block rounded-lg border border-line bg-white px-3 py-2">{text}</a></li>
+            ))}
+          </ol>
+        </nav>
+
+        <section id="step-1" className="gk-card p-4 sm:p-5 scroll-mt-24">
           <h2 className="gk-h3 text-lg! mb-3">1. Room sharing and travellers</h2>
           <fieldset>
             <legend className="gk-label">Room sharing</legend>
@@ -240,7 +261,7 @@ export default function BookingCheckout({ departureId }) {
           )}
         </section>
 
-        <section className="gk-card p-4 sm:p-5">
+        <section id="step-2" className="gk-card p-4 sm:p-5 scroll-mt-24">
           <h2 className="gk-h3 text-lg! mb-1">2. Traveller details</h2>
           <p className="text-sm text-slate-ink mb-3">Names as on each traveller&apos;s photo ID. Traveller 1 is the lead booker (18 or over).
             Please carry an original photo ID for every traveller; we check it at pickup and never ask for ID numbers.</p>
@@ -280,7 +301,7 @@ export default function BookingCheckout({ departureId }) {
           </div>
         </section>
 
-        <section className="gk-card p-4 sm:p-5">
+        <section id="step-3" className="gk-card p-4 sm:p-5 scroll-mt-24">
           <h2 className="gk-h3 text-lg! mb-2">3. Group tour rules, your data and consent</h2>
           <div className="rounded-lg border border-line p-3 text-sm text-ink mb-3">
             <GroupDepartureTerms headingClass="font-semibold mt-2 first:mt-0" listClass="list-disc pl-5 space-y-0.5" />
@@ -315,8 +336,8 @@ export default function BookingCheckout({ departureId }) {
         </section>
       </div>
 
-      <aside className="gk-card p-4 sm:p-5 lg:sticky lg:top-24">
-        <h2 className="gk-h3 text-lg! mb-3">Price</h2>
+      <aside id="step-4" className="gk-card p-4 sm:p-5 lg:sticky lg:top-24 scroll-mt-24">
+        <h2 className="gk-h3 text-lg! mb-3"><span className="lg:hidden">4. </span>Price and payment</h2>
         {quote ? (
           <>
             <ul className="text-sm space-y-1">
@@ -327,7 +348,7 @@ export default function BookingCheckout({ departureId }) {
               <li className="flex justify-between gap-2"><span>GST {quote.gst_percent}%</span><span>{rupeesFromPaise(quote.gst_paise)}</span></li>
               <li className="flex justify-between gap-2 font-bold text-ink"><span>Total</span><span>{rupeesFromPaise(quote.total_paise)}</span></li>
             </ul>
-            {dep.advance_percent < 100 && (
+            {dep.advance_percent < 100 && quote.advance_paise >= MIN_PAYMENT_PAISE && (
               <fieldset className="mt-4 space-y-2 text-sm">
                 <legend className="gk-label">Pay now</legend>
                 <label className="flex gap-2"><input type="radio" name="pay" checked={payOption === "advance"} onChange={() => setPayOption("advance")} />
@@ -343,6 +364,15 @@ export default function BookingCheckout({ departureId }) {
           <p className="text-sm text-slate-ink">{quoteError || "Working out the price…"}</p>
         )}
         {error && <p className="mt-3 text-sm text-red-700" role="alert">{error}</p>}
+        {scriptFailed && (
+          <div className="mt-3 rounded-lg border border-amber-300 bg-amber-50 p-3 text-sm text-amber-900" role="alert">
+            <p>The payment window could not load on this network. Try mobile data or another browser.</p>
+            <button type="button" className="gk-btn gk-btn-line py-1.5! mt-2" onClick={() => {
+              retryScript();
+              if (booking) { setError(""); openCheckout(booking); }
+            }}>Retry</button>
+          </div>
+        )}
         {stage === "dismissed" && booking && (
           <p className="mt-3 text-sm text-ink">Payment not finished. Your seats are held until <strong>{holdUntil}</strong>.</p>
         )}

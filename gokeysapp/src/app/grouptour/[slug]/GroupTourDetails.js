@@ -35,7 +35,7 @@ import { submitTourEnquiry } from '@/lib/tourEnquiry';
 import ImageGallery from '@/components/ImageGallery';
 import { Breadcrumbs, FaqList } from '@/components/ui/kit';
 import {
-  getDepartures, formatDepartureDate, departureChip, formatPickupTime, SHARING_LABELS,
+  getDepartures, formatDepartureDate, departureChip, formatPickupTime, SHARING_LABELS, lowestAdultPrice,
 } from '@/lib/departures';
 import NextDepartureRequest from '@/components/NextDepartureRequest';
 
@@ -93,6 +93,35 @@ export default function GroupTourDetails({ tourData, baseUrl, documentNumber, cu
   const upcoming = departureInfo.list;
   const formatDate = formatDepartureDate;
   const [reserved, setReserved] = useState(null); // departure picked with "Reserve"
+  // Phase 5: at least one date can be booked online -> "Book now" is the main action (else the enquiry stays it)
+  const onlineDeps = upcoming.filter((d) => d.bookOnline);
+  const bookOnline = onlineDeps.length > 0;
+  const fromPrice = lowestAdultPrice(onlineDeps);
+  const advancePercent = onlineDeps.find((d) => d.advancePercent)?.advancePercent || 25;
+  // Mobile bar: hidden while the departures, the enquiry form or the footer are on screen (never covers them)
+  const [barHidden, setBarHidden] = useState(false);
+  useEffect(() => {
+    if (!bookOnline || typeof IntersectionObserver === 'undefined') return undefined;
+    const targets = [document.getElementById('departures'), document.getElementById('group-enquiry'), document.querySelector('footer')].filter(Boolean);
+    const seen = new Set();
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => (e.isIntersecting ? seen.add(e.target) : seen.delete(e.target)));
+      setBarHidden(seen.size > 0);
+    });
+    targets.forEach((t) => io.observe(t));
+    return () => io.disconnect();
+  }, [bookOnline]);
+  // "Book now" at the top and in the mobile bar: a real link to #departures, scrolled smoothly (no motion if the
+  // visitor asked for less), then the section heading gets focus for keyboard and screen-reader users
+  const toDepartures = (e) => {
+    const target = document.getElementById('departures');
+    if (!target) return;
+    e.preventDefault();
+    const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    target.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+    document.getElementById('departures-heading')?.focus({ preventScroll: true });
+    window.history.replaceState(null, '', '#departures');
+  };
 
   // ✅ ✅ Add the missing states here:
   const [isEnquiryOpen, setIsEnquiryOpen] = useState(false);
@@ -364,8 +393,17 @@ const [isLoading, setIsLoading] = useState(false);
 
             {/* Upcoming departures */}
             {upcoming.length > 0 && (
-              <section>
-                <h2 className="gk-h2 mb-4">Upcoming departures</h2>
+              <section id="departures" className="scroll-mt-24" aria-labelledby="departures-heading">
+                <h2 id="departures-heading" tabIndex={-1} className="gk-h2 mb-4 outline-none">Upcoming departures</h2>
+                {bookOnline && (
+                  <ul className="mb-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-4 text-sm text-ink" aria-label="Booking online">
+                    <li className="gk-panel px-3 py-2"><span className="font-semibold">Secure payment</span> by Razorpay (UPI, cards, net banking)</li>
+                    <li className="gk-panel px-3 py-2"><span className="font-semibold">Pay {advancePercent}% now</span>, the balance 7 days before departure</li>
+                    <li className="gk-panel px-3 py-2"><span className="font-semibold">Clear rules:</span>{' '}
+                      <Link href="/cancellation-policy" className="underline">cancellation and refunds</Link></li>
+                    <li className="gk-panel px-3 py-2"><span className="font-semibold">Instant voucher</span> by email after payment</li>
+                  </ul>
+                )}
                 <ul className="space-y-3">
                   {upcoming.map((dep) => {
                     const chip = departureChip(dep);
@@ -387,11 +425,15 @@ const [isLoading, setIsLoading] = useState(false);
                           ) : (
                             <span className="gk-chip">{dep.label}</span>
                           )}
-                          <div className="ml-auto flex flex-wrap gap-2">
-                            {dep.bookOnline && (
-                              <Link href={`/book/${dep.id}`} prefetch={false} className="gk-btn gk-btn-sun py-2!">Book now</Link>
-                            )}
-                            {dep.bookable ? (
+                          <div className="ml-auto flex flex-wrap items-center gap-x-3 gap-y-2">
+                            {dep.bookOnline ? (
+                              <>
+                                <button type="button" onClick={() => reserve(dep)} className="text-sm font-semibold text-teal underline underline-offset-2"
+                                  aria-label={`Ask a question about ${formatDate(dep.date)}`}>Ask a question</button>
+                                <Link href={`/book/${dep.id}`} prefetch={false} className="gk-btn gk-btn-sun py-2!"
+                                  aria-label={`Book now: ${formatDate(dep.date)}`}>Book now</Link>
+                              </>
+                            ) : dep.bookable ? (
                               <button onClick={() => reserve(dep)} className="gk-btn gk-btn-ink py-2!">Reserve</button>
                             ) : (
                               <span className="text-xs font-semibold text-slate-ink">{dep.label}</span>
@@ -510,9 +552,29 @@ const [isLoading, setIsLoading] = useState(false);
 
           {/* Sidebar */}
           <aside className="lg:sticky lg:top-20">
+            {bookOnline && (
+              <div className="gk-card p-5 mb-4">
+                <p className="flex flex-wrap items-baseline gap-x-2">
+                  {fromPrice ? <>
+                    <span className="text-xs text-slate-ink">From</span>
+                    <span className="gk-price text-3xl">{formatPrice(fromPrice)}</span>
+                    <span className="text-xs text-slate-ink">per person + GST</span>
+                  </> : <span className="gk-price text-2xl">Book online</span>}
+                </p>
+                {fromPrice && <p className="mt-1 text-xs font-semibold text-teal">Book online</p>}
+                <a href="#departures" onClick={toDepartures} className="gk-btn gk-btn-sun w-full mt-3">Book now</a>
+                <p className="mt-2 text-xs text-slate-ink">Choose your date below. Pay {advancePercent}% now, the rest 7 days before departure.</p>
+              </div>
+            )}
             <div id="group-enquiry" className="gk-card p-5 scroll-mt-24">
-              <p className="text-xs text-slate-ink">Group price</p>
-              <p className="flex flex-wrap items-baseline gap-x-2">{priceLine}</p>
+              {bookOnline ? (
+                <p className="text-sm font-semibold text-ink">Have a question? Ask us</p>
+              ) : (
+                <>
+                  <p className="text-xs text-slate-ink">Group price</p>
+                  <p className="flex flex-wrap items-baseline gap-x-2">{priceLine}</p>
+                </>
+              )}
               <form onSubmit={handleEnquirySubmit} className="mt-4">
                 <EnquiryForm
                   isInline={true}
@@ -521,8 +583,8 @@ const [isLoading, setIsLoading] = useState(false);
                   onChange={setEnquiryFormData}
                   onSubmit={handleEnquirySubmit}
                 />
-                <button type="submit" className="gk-btn gk-btn-sun w-full mt-4">
-                  Enquire Now
+                <button type="submit" className={`gk-btn w-full mt-4 ${bookOnline ? 'gk-btn-line' : 'gk-btn-sun'}`}>
+                  {bookOnline ? 'Send question' : 'Enquire Now'}
                 </button>
               </form>
               <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="gk-btn gk-btn-wa w-full mt-2.5">
@@ -553,7 +615,17 @@ const [isLoading, setIsLoading] = useState(false);
         {/* Popular Group Tours Section */}
         <SimilarTours tours={similarTours} />
 
-        {/* Sticky CTA (mobile) */}
+        {/* Sticky CTA (mobile). Bookable online: "From ₹X · Book now" to #departures, out of the way while the
+            departures, the enquiry form or the footer are on screen (it keeps its space: no layout shift). */}
+        {bookOnline ? (
+        <div className={`gk-sticky-cta lg:hidden sticky bottom-0 w-full bg-ink text-white py-3 flex justify-between items-center gap-3 px-4 z-40 shadow-lg transition-opacity duration-200 ${barHidden ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
+          aria-hidden={barHidden || undefined}>
+          <p className="min-w-0 text-[15px] font-semibold">
+            {fromPrice ? <>From {formatPrice(fromPrice)} <span className="text-xs font-normal opacity-80">per person + GST</span></> : 'Book online'}
+          </p>
+          <a href="#departures" onClick={toDepartures} tabIndex={barHidden ? -1 : 0} className="gk-btn gk-btn-sun shrink-0">Book now</a>
+        </div>
+        ) : (
         <div className="gk-sticky-cta lg:hidden sticky bottom-0 w-full bg-ink text-white py-3 flex justify-between items-center gap-3 px-4 z-40 shadow-lg">
           <div className="min-w-0">
             <p className="text-[15px] font-semibold">
@@ -580,6 +652,7 @@ const [isLoading, setIsLoading] = useState(false);
             </button>
           )}
         </div>
+        )}
       </main>
       <EnquiryForm
         isOpen={isEnquiryOpen}
