@@ -62,6 +62,8 @@ export const slimGroupTour = (t) => ({
   available_seats: t.available_seats ?? null,
   starting_from: t.starting_from || "",
   departure_dates: upcomingDates(t.departure_dates),
+  // Destination names for the /grouptour filter (Phase D)
+  destination_names: (t.destination_refs || []).map((d) => d?.name).filter(Boolean),
   // New backend only: approved departures with status and seats (see lib/departures.js)
   ...(Array.isArray(t.departures) && {
     departures: t.departures.map((d) => ({

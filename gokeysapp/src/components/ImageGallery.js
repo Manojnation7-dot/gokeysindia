@@ -34,18 +34,14 @@ export default function ImageGallery({ images, alt: altProp }) {
       <div className={`grid gap-2.5 h-64 sm:h-80 md:h-105 ${list.length > 1 ? "md:grid-cols-[2fr_1fr]" : ""}`}>
         <Tile idx={0} className="h-full" sizes="(max-width: 768px) 100vw, 66vw" priority>
           {list.length > 1 && (
-            <span className="md:hidden absolute bottom-3 right-3 gk-chip bg-white!">View all {list.length} photos</span>
+            <span className="absolute bottom-3 right-3 gk-chip bg-white!">View all {list.length} photos</span>
           )}
         </Tile>
         {list.length > 1 && (
           <div className="hidden md:grid grid-rows-2 gap-2.5">
             <Tile idx={1} sizes="33vw" />
             {list[2] ? (
-              <Tile idx={2} sizes="33vw">
-                {list.length > 3 && (
-                  <span className="absolute bottom-3 left-3 gk-chip bg-white!">View all {list.length} photos</span>
-                )}
-              </Tile>
+              <Tile idx={2} sizes="33vw" />
             ) : (
               <div className="rounded-2xl bg-chip" />
             )}

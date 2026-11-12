@@ -6,33 +6,13 @@ import SmartSEO from '@/components/SmartSEO';
 import { buildBreadcrumbList, buildItemListSchema, buildFAQSchema } from '@/lib/seoSchemas';
 import { Breadcrumbs, CtaBand, FaqList, TourCard, Price, Mountains } from '@/components/ui/kit';
 import { getDepartures, formatDepartureDate, lowestAdultPrice } from '@/lib/departures';
+import GroupTourGrid from '@/components/GroupTourGrid';
+import UpcomingDatesTable from '@/components/UpcomingDatesTable';
+import GuestReviews from '@/components/GuestReviews';
 
-const faqs = [
-  {
-    question: "What is the group size limit for tours?",
-    answer: "Our group tours typically accommodate 10–30 people, but this varies by package. Contact us for specifics!",
-  },
-  {
-    question: "Can we customize our group tour?",
-    answer: "Yes, we offer customizable itineraries to suit your group’s preferences. Reach out to discuss options.",
-  },
-  {
-    question: "What payment options are available?",
-    answer: "We accept credit/debit cards, UPI, and bank transfers. Flexible EMI options are also available.",
-  },
-  {
-    question: "What’s included in the tour packages?",
-    answer: "Packages typically include accommodation, transport, guided tours, and some meals. Check package details for specifics.",
-  },
-];
-
-const FEATURES = [
-  { title: "Budget Friendly", desc: "Save more with group discounts and shared travel costs.", icon: "💰" },
-  { title: "Local Experts", desc: "Explore destinations with knowledgeable local guides.", icon: "🧑‍🏫" },
-  { title: "Hassle-Free", desc: "We manage planning, bookings, and logistics end-to-end.", icon: "📋" },
-  { title: "Customizable", desc: "Trips tailored to your group’s interests and pace.", icon: "⚙️" },
-  { title: "24×7 Support", desc: "On-trip assistance and support whenever you need it.", icon: "🛡️" },
-];
+// The hub's own content (steps, "why choose" cards, FAQs, guest reviews) comes from the admin: Group Tours >
+// Group tours page (/api/group-tour-hub/). A section with nothing in it is not shown.
+const plainText = (html) => String(html || "").replace(/<[^>]*>/g, " ").replace(/&nbsp;/g, " ").replace(/\s+/g, " ").trim();
 
 const GROUPS = [
   { name: "Friends", image: "https://images.unsplash.com/photo-1517457373958-b7bdd4587205" },
@@ -42,40 +22,13 @@ const GROUPS = [
   { name: "Senior Citizens", image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e" },
 ];
 
-const TESTIMONIALS = [
-  {
-    name: "Priya Sharma",
-    location: "Delhi",
-    quote: "Our Manali group trip was incredibly well planned. The coordination, hotels, and guides were all perfect.",
-    rating: 5,
-    image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330",
-  },
-  {
-    name: "Rahul Patel",
-    location: "Mumbai",
-    quote: "The Varanasi tour was a deeply spiritual experience. Everything was smooth and hassle-free.",
-    rating: 4,
-    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d",
-  },
-  {
-    name: "Anita Rao",
-    location: "Bangalore",
-    quote: "Perfect family group tour to Goa. Safe, fun, and very affordable. Highly recommended!",
-    rating: 5,
-    image: "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f",
-  },
-];
-
-const STEPS = [
-  { step: "Choose Your Trip", desc: "Browse and select the group tour that fits your travel style.", icon: "🔍" },
-  { step: "Customize Details", desc: "Personalize dates, hotels, or activities if needed.", icon: "⚙️" },
-  { step: "Confirm & Pay", desc: "Lock your spot with secure and flexible payment options.", icon: "💳" },
-  { step: "Travel & Enjoy", desc: "Relax, explore, and make memories with your group.", icon: "🎉" },
-];
-
 const formatDate = formatDepartureDate;
 
-export default function GroupTour({ tours = [] }) {
+export default function GroupTour({ tours = [], hub = {}, renderedAt }) {
+  const steps = hub.steps || [];
+  const features = hub.features || [];
+  const faqs = (hub.faqs || []).map((f) => (/<[a-z]/i.test(f.answer || "")
+    ? { question: f.question, html: f.answer, answer: plainText(f.answer) } : { question: f.question, answer: f.answer }));
   const isPriceOnRequest = (pricing) => {
     if (!pricing) return true;
     if (pricing.price_on_request) return true;
@@ -110,7 +63,7 @@ export default function GroupTour({ tours = [] }) {
   const upcoming = tours
     .flatMap((t) => departuresOf[t.id].list.map((dep) => ({ date: dep.date, dep, tour: t })))
     .sort((a, b) => a.date.localeCompare(b.date))
-    .slice(0, 8);
+    .slice(0, 12); // the table shows the first 8 still to come (a cached page drops passed dates in the browser)
 
   const schemas = [];
 
@@ -146,8 +99,8 @@ schemas.push(
   })
 );
 
-// FAQPage Schema
-schemas.push(
+// FAQPage Schema (only when the hub has FAQs)
+if (faqs.length) schemas.push(
   buildFAQSchema(
     faqs.map((faq) => ({
       question: faq.question,
@@ -185,9 +138,11 @@ schemas.push(
         <section className="gk-wrap gk-section scroll-mt-16" id="tours">
           <p className="gk-eyebrow mb-2">Fixed departures</p>
           <h2 className="gk-h2 mb-6">Popular Group Tour Packages</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            {tours.map((tour) => (
-              <div key={tour.id}>
+          <GroupTourGrid cards={tours.map((tour) => ({
+            id: tour.id,
+            months: [...new Set(departuresOf[tour.id].list.map((d) => d.date.slice(0, 7)))],
+            destinations: tour.destination_names || [],
+            node: (
                 <TourCard
                   tour={tour}
                   href={`/grouptour/${tour.slug}`}
@@ -224,57 +179,22 @@ schemas.push(
                     </p>
                   ) : <Price tour={tour} showWas={false} />}
                 </TourCard>
-              </div>
-            ))}
-          </div>
+            ),
+          }))} />
 
           {/* Upcoming departures (only dates from today on) */}
-          {upcoming.length > 0 && (
-            <div className="mt-12">
-              <h2 className="gk-h2 mb-5">Upcoming dates</h2>
-              <div className="gk-card overflow-x-auto">
-                <table className="w-full text-sm min-w-140">
-                  <thead className="bg-ink text-white text-left">
-                    <tr>
-                      <th className="px-5 py-3 font-semibold">Date</th>
-                      <th className="px-5 py-3 font-semibold">Trip</th>
-                      <th className="px-5 py-3 font-semibold">Seats</th>
-                      <th className="px-5 py-3 font-semibold">Price</th>
-                      <th className="px-5 py-3"><span className="sr-only">Reserve</span></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {upcoming.map(({ date, dep, tour }) => (
-                      <tr key={`${tour.id}-${date}`} className="border-t border-line">
-                        <td className="px-5 py-3 font-bold text-ink whitespace-nowrap">{formatDate(date)}</td>
-                        <td className="px-5 py-3 font-semibold text-ink">{tour.name}</td>
-                        <td className="px-5 py-3">
-                          {dep.bookable && dep.seatsLeft != null
-                            ? <span className="gk-chip gk-chip-sun">{dep.seatsLeft} left</span>
-                            : <span className="gk-chip">{dep.label}</span>}
-                        </td>
-                        <td className="px-5 py-3">
-                          {dep.bookOnline && lowestAdultPrice([dep])
-                            ? <span className="gk-price text-base">{rupee(lowestAdultPrice([dep]))}</span>
-                            : <Price tour={tour} size="text-base" unit="" showWas={false} />}
-                        </td>
-                        <td className="px-5 py-3 text-right">
-                          <Link href={`/grouptour/${tour.slug}#departures`} className={`gk-btn py-2! ${dep.bookOnline ? "gk-btn-sun" : "gk-btn-ink"}`}
-                            aria-label={`${dep.bookOnline ? "Book" : dep.bookable ? "Reserve" : "View"} ${tour.name}, ${formatDate(date)}`}>
-                            {dep.bookOnline ? "Book now" : dep.bookable ? "Reserve" : "View"}
-                          </Link>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          )}
+          <UpcomingDatesTable renderedAt={renderedAt} rows={upcoming.map(({ date, dep, tour }) => ({
+            key: `${tour.id}-${date}`, date, tourName: tour.name, slug: tour.slug, badge: dep.badge,
+            badgeLabel: dep.badgeLabel, label: dep.label, seatsLeft: dep.seatsLeft, bookable: dep.bookable,
+            bookOnline: dep.bookOnline,
+            price: dep.bookOnline && lowestAdultPrice([dep])
+              ? <span className="gk-price text-base">{rupee(lowestAdultPrice([dep]))}</span>
+              : <Price tour={tour} size="text-base" unit="" showWas={false} />,
+          }))} />
         </section>
 
         {/* 3. Why Choose Our Group Tours */}
-        <section className="bg-white">
+        {features.length > 0 && <section className="bg-white">
           <div className="gk-wrap gk-section">
             <p className="gk-eyebrow mb-2">Why travel in a group</p>
             <h2 className="gk-h2">Why Choose Our Group Tours?</h2>
@@ -282,16 +202,16 @@ schemas.push(
               Thoughtfully designed experiences that balance comfort, cost, and connection.
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-              {FEATURES.map((feature) => (
+              {features.map((feature) => (
                 <div key={feature.title} className="bg-mist rounded-2xl p-5">
                   <div className="text-3xl mb-3">{feature.icon}</div>
                   <h3 className="gk-h3">{feature.title}</h3>
-                  <p className="text-[15px] text-slate-ink mt-1 leading-relaxed">{feature.desc}</p>
+                  <p className="text-[15px] text-slate-ink mt-1 leading-relaxed">{feature.text}</p>
                 </div>
               ))}
             </div>
           </div>
-        </section>
+        </section>}
 
         {/* 4. Who We Cater To */}
         <section className="gk-wrap gk-section">
@@ -317,54 +237,34 @@ schemas.push(
           </div>
         </section>
 
-        {/* 5. Testimonials */}
-        <section className="bg-white">
-          <div className="gk-wrap gk-section">
-            <p className="gk-eyebrow mb-2">Guest Experiences</p>
-            <h2 className="gk-h2">What Our Groups Say</h2>
-            <p className="gk-lead mt-2 mb-7">Real stories from travelers who explored India together with us.</p>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-              {TESTIMONIALS.map((testimonial) => (
-                <div key={testimonial.name} className="bg-mist rounded-2xl p-6 flex flex-col">
-                  <div className="flex mb-3" aria-label={`${testimonial.rating} out of 5`}>
-                    {[...Array(5)].map((_, i) => (
-                      <span key={i} className={i < testimonial.rating ? "text-sun" : "text-slate-300"}>★</span>
-                    ))}
-                  </div>
-                  <p className="text-[15px] text-slate-ink leading-relaxed mb-5">“{testimonial.quote}”</p>
-                  <div className="flex items-center gap-3 mt-auto">
-                    <div className="relative h-11 w-11 rounded-full overflow-hidden bg-chip">
-                      <Image src={testimonial.image} alt={testimonial.name} fill sizes="44px" className="object-cover" />
-                    </div>
-                    <div>
-                      <h4 className="font-bold text-ink text-sm">{testimonial.name}</h4>
-                      <p className="text-xs text-slate-ink">{testimonial.location}</p>
-                    </div>
-                  </div>
-                </div>
-              ))}
+        {/* 5. Guest reviews (typed in by staff in the admin; hidden while there are none) */}
+        {(hub.reviews || []).length > 0 && (
+          <section className="bg-white">
+            <div className="gk-wrap gk-section">
+              <p className="gk-eyebrow mb-2">Guest Experiences</p>
+              <GuestReviews reviews={hub.reviews} title="What Our Groups Say" />
             </div>
-          </div>
-        </section>
+          </section>
+        )}
 
         {/* 6. Your Journey */}
-        <section className="gk-wrap gk-section">
+        {steps.length > 0 && <section className="gk-wrap gk-section">
           <p className="gk-eyebrow mb-2">Simple Process</p>
-          <h2 className="gk-h2">Your Journey in 4 Easy Steps</h2>
+          <h2 className="gk-h2">Your Journey in {steps.length} Easy Steps</h2>
           <p className="gk-lead mt-2 mb-7">From your first enquiry to unforgettable memories — we handle everything.</p>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {STEPS.map((item, index) => (
-              <div key={item.step} className="gk-card p-5">
+            {steps.map((item, index) => (
+              <div key={item.title} className="gk-card p-5">
                 <div className="flex items-center gap-3">
                   <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-sun text-xs font-bold text-ink">{index + 1}</span>
                   <span className="text-2xl">{item.icon}</span>
                 </div>
-                <h3 className="gk-h3 mt-3">{item.step}</h3>
-                <p className="text-[15px] text-slate-ink mt-1 leading-relaxed">{item.desc}</p>
+                <h3 className="gk-h3 mt-3">{item.title}</h3>
+                <p className="text-[15px] text-slate-ink mt-1 leading-relaxed">{item.text}</p>
               </div>
             ))}
           </div>
-        </section>
+        </section>}
 
         {/* 7. CTA */}
         <section className="gk-wrap pb-14">
@@ -379,14 +279,14 @@ schemas.push(
         </section>
 
         {/* 8. FAQ */}
-        <section className="gk-wrap pb-14 grid lg:grid-cols-[1fr_1.5fr] gap-8">
+        {faqs.length > 0 && <section className="gk-wrap pb-14 grid lg:grid-cols-[1fr_1.5fr] gap-8">
           <div>
             <p className="gk-eyebrow mb-2">Need Help?</p>
             <h2 className="gk-h2">Frequently Asked Questions</h2>
             <p className="gk-lead mt-3">Everything you need to know before booking your group tour.</p>
           </div>
           <FaqList items={faqs} />
-        </section>
+        </section>}
 
         {/* 9. Newsletter */}
         <section className="gk-wrap pb-16">

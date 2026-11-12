@@ -11,7 +11,8 @@ import dynamic from 'next/dynamic';
 const ReviewSection = dynamic(() => import('@/components/ReviewSection'), { ssr: false });
 import EnquiryForm from '@/components/EnquiryForm';
 import TourItineraryMain from '@/components/TourItineraryMain';
-import { downloadItinerary } from '@/lib/downloadItinerary';
+import Image from 'next/image';
+import GuestReviews from '@/components/GuestReviews';
 import RelatedContent from '@/components/RelatedContent';
 import {
   CalendarIcon,
@@ -171,18 +172,8 @@ export default function GroupTourDetails({ tourData, baseUrl, documentNumber, cu
       alert(result.message);
     }
   };
-const [isLoading, setIsLoading] = useState(false);
-  // The itinerary PDF is built only on click (src/lib/downloadItinerary.js); it is no longer hidden in the page.
-  const generatePDF = async () => {
-    setIsLoading(true);
-    try {
-      await downloadItinerary(tourData, { tourPath });
-    } catch (err) {
-      alert('Could not prepare the itinerary: ' + (err?.message || err));
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  // Itinerary PDF made on the server from the tour's data (title, dates and prices, days, inclusions, rules, contact)
+  const itineraryPdfUrl = `${process.env.NEXT_PUBLIC_API_URL || 'https://api.gokeys.in'}/api/group-tours/${tourData?.slug}/itinerary.pdf`;
 
   const toggleDay = (index) => {
     setExpandedDay(expandedDay === index ? null : index);
@@ -543,6 +534,75 @@ const [isLoading, setIsLoading] = useState(false);
               </section>
             )}
 
+            {/* Stay plan, vehicle, things to carry, tour manager (admin; each hidden while empty) */}
+            {(tourData.stays || []).length > 0 && (
+              <section aria-labelledby="stays-heading">
+                <h2 id="stays-heading" className="gk-h2 mb-4">Where you stay</h2>
+                <ol className="space-y-3">
+                  {tourData.stays.map((stay, i) => (
+                    <li key={i} className="gk-card p-4 sm:flex gap-4">
+                      <div className="min-w-0 flex-1">
+                        <p className="text-xs font-semibold text-slate-ink">Night {stay.nights} · {stay.town}</p>
+                        <h3 className="gk-h3 text-lg!">{stay.hotel_name}{stay.or_similar && <span className="text-sm font-normal text-slate-ink"> or similar</span>}</h3>
+                        {stay.room_note && <p className="text-sm text-ink mt-1">{stay.room_note}</p>}
+                      </div>
+                      {(stay.photos || []).length > 0 && (
+                        <div className="mt-3 sm:mt-0 flex gap-2 shrink-0">
+                          {stay.photos.slice(0, 3).map((ph) => (
+                            <div key={ph.id} className="relative h-20 w-28 rounded-lg overflow-hidden bg-chip">
+                              <Image src={ph.optimized_card || ph.image} alt={ph.alt_text || `${stay.hotel_name}, ${stay.town}`} fill sizes="112px" className="object-cover" />
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </li>
+                  ))}
+                </ol>
+              </section>
+            )}
+
+            {tourData.vehicle && (
+              <section aria-labelledby="vehicle-heading" className="gk-card p-4 sm:p-5 sm:flex gap-5 items-center">
+                {tourData.vehicle.photo && (
+                  <div className="relative h-32 sm:h-28 sm:w-44 rounded-lg overflow-hidden bg-chip shrink-0 mb-3 sm:mb-0">
+                    <Image src={tourData.vehicle.photo.optimized_card || tourData.vehicle.photo.image}
+                      alt={tourData.vehicle.photo.alt_text || tourData.vehicle.type || 'Tour vehicle'} fill sizes="176px" className="object-cover" />
+                  </div>
+                )}
+                <div>
+                  <h2 id="vehicle-heading" className="gk-h3 mb-1">Your vehicle</h2>
+                  <p className="text-[15px] text-ink">{[tourData.vehicle.type, tourData.vehicle.seats ? `${tourData.vehicle.seats} seats` : '', tourData.vehicle.ac_note].filter(Boolean).join(' · ')}</p>
+                </div>
+              </section>
+            )}
+
+            {(tourData.things_to_carry || []).length > 0 && (
+              <section aria-labelledby="carry-heading">
+                <h2 id="carry-heading" className="gk-h2 mb-3">Things to carry</h2>
+                <ul className="grid sm:grid-cols-2 gap-2 text-[15px] text-ink">
+                  {tourData.things_to_carry.map((item) => (
+                    <li key={item} className="flex items-start gap-2"><span className="mt-0.5 text-teal"><CheckIcon /></span>{item}</li>
+                  ))}
+                </ul>
+              </section>
+            )}
+
+            {tourData.tour_manager && (
+              <section aria-labelledby="manager-heading" className="gk-card p-4 sm:p-5 flex gap-4 items-center">
+                {tourData.tour_manager.photo && (
+                  <div className="relative h-16 w-16 rounded-full overflow-hidden bg-chip shrink-0">
+                    <Image src={tourData.tour_manager.photo.optimized_card || tourData.tour_manager.photo.image}
+                      alt={tourData.tour_manager.photo.alt_text || tourData.tour_manager.name} fill sizes="64px" className="object-cover" />
+                  </div>
+                )}
+                <div>
+                  <h2 id="manager-heading" className="text-xs font-semibold text-slate-ink">Your tour manager</h2>
+                  <p className="gk-h3 text-lg!">{tourData.tour_manager.name}</p>
+                  {tourData.tour_manager.line && <p className="text-sm text-ink">{tourData.tour_manager.line}</p>}
+                </div>
+              </section>
+            )}
+
             {/* FAQ Section */}
             {(tourData.faqs || []).length > 0 && (
               <section>
@@ -580,13 +640,10 @@ const [isLoading, setIsLoading] = useState(false);
               <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="gk-btn gk-btn-wa w-full mt-2.5">
                 Chat on WhatsApp
               </a>
-              <button
-                onClick={generatePDF}
-                disabled={isLoading || !tourData}
-                className="gk-btn gk-btn-line w-full mt-2.5 disabled:opacity-50"
-              >
-                {isLoading ? 'Preparing PDF…' : 'Download Itinerary'}
-              </button>
+              <a href={itineraryPdfUrl} target="_blank" rel="noopener" className="gk-btn gk-btn-line w-full mt-2.5"
+                aria-label={`Download the itinerary of ${tourData.name} (PDF)`}>
+                Download Itinerary (PDF)
+              </a>
               <p className="mt-3 text-center text-slate-ink text-xs leading-relaxed">
                 Need More Information? Call/WhatsApp our Yatra Coordinator on <span className="font-semibold">{site.business.tour_desk_phone}</span>
               </p>
@@ -596,6 +653,9 @@ const [isLoading, setIsLoading] = useState(false);
 
         {/* Blog posts that picked this group tour in the admin */}
         <RelatedContent title="Travel guides for this trip" items={tourData.related_posts} />
+
+        {/* Guest reviews typed in by staff (text only); then the reviews guests sent from the site */}
+        <GuestReviews reviews={tourData.guest_reviews} className="gk-wrap mb-10" />
 
         {/* Reviews Section */}
         <div className="gk-wrap mb-10">
