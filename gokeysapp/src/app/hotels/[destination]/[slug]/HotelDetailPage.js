@@ -12,6 +12,8 @@ const QuoteDialog = dynamic(() => import("@/components/QuoteDialog"), { ssr: fal
 const HotelEnquiryModal = dynamic(() => import("@/components/HotelEnquiryModal"), { ssr: false });
 import { buildBreadcrumbList, buildHotelSchema } from "@/lib/seoSchemas";
 import SmartSEO from "@/components/SmartSEO";
+import { useSiteSettings } from "@/components/SiteSettingsProvider";
+import { whatsappLink } from "@/lib/siteSettings";
 import {
   Wifi,
   ParkingCircle,
@@ -49,6 +51,7 @@ import { Breadcrumbs, TourCard, Price, PlaceCard, cardImage } from "@/components
 
 export default function HotelDetailPage({ hotelData, relatedPlaces, relatedTours, similarHotels }) {
   const [showGalleryModal, setShowGalleryModal] = useState(false);
+  const { business } = useSiteSettings(); // WhatsApp number from the admin (Voucher and email settings)
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
 
@@ -306,7 +309,7 @@ const facilityIconMap = {
                 Check Availability
               </button>
               <a
-                href={`https://wa.me/917830718687?text=${encodeURIComponent(`Hello Gokeys India, I want to enquire about ${hotelData.name}.`)}`}
+                href={whatsappLink(business, `Hello Gokeys India, I want to enquire about ${hotelData.name}.`)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="gk-btn gk-btn-wa w-full mt-2.5"

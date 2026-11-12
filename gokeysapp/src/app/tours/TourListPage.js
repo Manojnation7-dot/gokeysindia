@@ -8,6 +8,8 @@ import { TourCard, Price, CtaBand, Breadcrumbs } from "@/components/ui/kit";
 import Link from "next/link";
 import { buildItemListSchema, buildBreadcrumbList } from "@/lib/seoSchemas";
 import SmartSEO from "@/components/SmartSEO";
+import { useSiteSettings } from "@/components/SiteSettingsProvider";
+import { whatsappLink } from "@/lib/siteSettings";
 
 const PAGE_SIZE = 9;
 const pretty = (slug) => (slug || "").replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
@@ -17,6 +19,7 @@ const priceOf = (t) => {
 };
 
 export default function TourListPage({ tours, tripTypes }) {
+  const { business } = useSiteSettings(); // WhatsApp number from the admin (Voucher and email settings)
   const [selectedType, setSelectedType] = useState("");
   const [selectedDuration, setSelectedDuration] = useState("");
   const [sortBy, setSortBy] = useState("popular");
@@ -160,7 +163,7 @@ const tourListSchema = buildItemListSchema({
                     <>
                       <a href={`/tours/${tour.slug}`} className="gk-btn gk-btn-ink flex-1">View Tour</a>
                       <a
-                        href={`https://wa.me/917830718687?text=${encodeURIComponent(`Hello Gokeys India, I want to enquire about ${tour.name}.`)}`}
+                        href={whatsappLink(business, `Hello Gokeys India, I want to enquire about ${tour.name}.`)}
                         target="_blank"
                         rel="noopener noreferrer"
                         aria-label={`WhatsApp about ${tour.name}`}
@@ -208,7 +211,7 @@ const tourListSchema = buildItemListSchema({
           <div className="mt-12">
             <CtaBand tone="ink" title="Cannot see the trip you want?" text="We build custom itineraries for families, groups and solo travellers. Share your dates and a planner replies with a plan.">
               <a href="/contact" className="gk-btn gk-btn-sun">Request a custom plan</a>
-              <a href="https://wa.me/917830718687" target="_blank" rel="noopener noreferrer" className="gk-btn gk-btn-wa">WhatsApp us</a>
+              <a href={whatsappLink(business)} target="_blank" rel="noopener noreferrer" className="gk-btn gk-btn-wa">WhatsApp us</a>
             </CtaBand>
           </div>
         </div>

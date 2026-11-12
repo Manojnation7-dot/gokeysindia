@@ -3,6 +3,8 @@ import { useState } from "react";
 import { usePathname } from "next/navigation";
 import { Menu, X, Phone } from "lucide-react";
 import Image from "next/image";
+import { useSiteSettings } from "@/components/SiteSettingsProvider";
+import { telHref } from "@/lib/siteSettings";
 
 const NAV = [
   { href: "/", label: "Home" },
@@ -16,6 +18,8 @@ const NAV = [
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
+  // The call button: the main phone of Voucher and email settings (admin), +91-9045916770
+  const mainPhone = useSiteSettings().business.main_phone || "+91-9045916770";
   const pathname = usePathname() || "/";
   const isActive = (href) =>
     href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(`${href}/`);
@@ -58,9 +62,9 @@ export default function Header() {
 
           {/* Desktop Contact */}
           <div className="hidden lg:flex items-center gap-4">
-            <a href="tel:+919045916770" className="flex items-center gap-2 text-[15px] font-semibold text-ink hover:text-teal transition-colors">
+            <a href={telHref(mainPhone)} className="flex items-center gap-2 text-[15px] font-semibold text-ink hover:text-teal transition-colors">
               <Phone size={16} className="text-teal" />
-              +91-9045916770
+              {mainPhone}
             </a>
             <a href="/contact" className="gk-btn gk-btn-sun">Plan my trip</a>
           </div>
@@ -101,9 +105,9 @@ export default function Header() {
                 {item.label}
               </a>
             ))}
-            <a href="tel:+919045916770" className="flex items-center gap-2 pt-6 text-base font-semibold text-white">
+            <a href={telHref(mainPhone)} className="flex items-center gap-2 pt-6 text-base font-semibold text-white">
               <Phone size={17} className="text-sun" />
-              +91-9045916770
+              {mainPhone}
             </a>
             <a href="/contact" onClick={() => setIsOpen(false)} className="gk-btn gk-btn-sun self-start mt-6">
               Plan my trip

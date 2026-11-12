@@ -2,10 +2,13 @@
 
 import { useState } from "react";
 import { errorMessage, lookupBooking, verifyBookingCode } from "@/lib/booking";
+import { useSiteSettings } from "@/components/SiteSettingsProvider";
+import { telHref, whatsappLink } from "@/lib/siteSettings";
 
 // Step 1: reference + phone or email -> the backend emails a code if they match (same answer either way).
 // Step 2: the 6-digit code -> a 2-hour link to the booking (put after "#", so it never reaches a server log).
 export default function CheckBooking({ initialReference = "" }) {
+  const { business } = useSiteSettings(); // tour desk and WhatsApp numbers from the admin (Voucher and email settings)
   const [reference, setReference] = useState(initialReference);
   const [contact, setContact] = useState("");
   const [code, setCode] = useState("");
@@ -61,7 +64,7 @@ export default function CheckBooking({ initialReference = "" }) {
         )}
         {error && <p role="alert" className="mt-3 text-sm text-red-700">{error}</p>}
       </section>
-      <p className="mt-3 text-sm text-slate-ink">No email? Call or WhatsApp <a className="underline" href="tel:+917830718687">+91-7830718687</a> with your
+      <p className="mt-3 text-sm text-slate-ink">No email? Call <a className="underline" href={telHref(business.tour_desk_phone)}>{business.tour_desk_phone}</a> · WhatsApp <a className="underline" href={whatsappLink(business)} target="_blank" rel="noopener noreferrer">{business.whatsapp}</a> with your
         booking reference.</p>
     </div>
   );

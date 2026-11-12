@@ -7,6 +7,7 @@ import SmartSEO from "@/components/SmartSEO";
 import { buildSightseeingPlaceSchema, buildBreadcrumbList, hasValidReviewRating, hasValidSightseeingSlug } from "@/lib/seoSchemas";
 import InquiryFormCard from "@/components/SimpleEnquiryForm";
 import { Breadcrumbs, PLACEHOLDER } from "@/components/ui/kit";
+import { getSiteSettings, whatsappLink } from "@/lib/siteSettings";
 
 const TIPS = [
   "Best time to visit: Early morning to avoid crowds",
@@ -14,7 +15,7 @@ const TIPS = [
   "Wear comfortable shoes for walking",
 ];
 
-export default function SightseeingDetailPage({place,similarPlaces }) {
+export default async function SightseeingDetailPage({place,similarPlaces }) {
 
 if (!place) {
     return (
@@ -50,7 +51,8 @@ const breadcrumbSchema = buildBreadcrumbList([
     Number(place.entry_fee) > 0 && ["Entry Fee", `₹${place.entry_fee}`],
     hasValidReviewRating(place.rating, place.review_count) && ["Visitor Rating", `${place.rating} (${place.review_count} reviews)`],
   ].filter(Boolean);
-  const whatsappUrl = `https://wa.me/917830718687?text=${encodeURIComponent(`Hello Gokeys India, I want a cab to visit ${place.name}.`)}`;
+  const { business } = await getSiteSettings(); // WhatsApp number from the admin (Voucher and email settings)
+  const whatsappUrl = whatsappLink(business, `Hello Gokeys India, I want a cab to visit ${place.name}.`);
 
   return (
     <>

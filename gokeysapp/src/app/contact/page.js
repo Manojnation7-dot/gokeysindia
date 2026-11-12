@@ -7,6 +7,7 @@ import GoogleMap from "@/components/MapIframe";
 import { Breadcrumbs } from "@/components/ui/kit";
 import InquiryFormCard from "@/components/SimpleEnquiryForm";
 import { FaPhoneAlt, FaEnvelope, FaMapMarkerAlt } from "react-icons/fa";
+import { contactNumbers, getSiteSettings, whatsappLink } from "@/lib/siteSettings";
 
 export const metadata = buildMetadata({
   title: "Contact Gokeys India",
@@ -15,7 +16,8 @@ export const metadata = buildMetadata({
   image: "/images/gokeyslogo.png",
 });
 
-export default function Contact() {
+export default async function Contact() {
+  const { business } = await getSiteSettings(); // numbers and WhatsApp from the admin (Voucher and email settings)
   const breadcrumbSchema = buildBreadcrumbList([
     { name: "Home", url: "/" },
     { name: "Contact Us", url: "/contact" },
@@ -58,7 +60,7 @@ const emailAddresses = [
                     <h3 className="gk-label mb-0.5!">Call Us</h3>
                     <p className="text-xs text-slate-ink">Speak directly with our travel experts</p>
                     <p className="text-[15px] font-semibold text-ink mt-1">
-                      +91 9045916770, +91 7830718680, +91 7830718687
+                      {contactNumbers(business).join(", ")}
                     </p>
                   </div>
                 </div>
@@ -87,7 +89,7 @@ const emailAddresses = [
                   </div>
                 </div>
               </div>
-              <a href="https://wa.me/917830718687" target="_blank" rel="noopener noreferrer" className="gk-btn gk-btn-wa w-full mt-6">
+              <a href={whatsappLink(business)} target="_blank" rel="noopener noreferrer" className="gk-btn gk-btn-wa w-full mt-6">
                 Chat on WhatsApp
               </a>
             </div>

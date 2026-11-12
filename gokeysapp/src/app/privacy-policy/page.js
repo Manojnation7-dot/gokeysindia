@@ -1,4 +1,5 @@
 import Header from "@/components/Header";
+import { getSiteSettings } from '@/lib/siteSettings';
 import Footer from "@/components/Footer";
 import { buildMetadata } from "@/lib/seoHelpers";
 import SmartSEO from "@/components/SmartSEO";
@@ -16,7 +17,8 @@ export async function generateMetadata() {
 }
 
 
-export default function Privacy() {
+export default async function Privacy() {
+  const { business } = await getSiteSettings(); // numbers from the admin (Voucher and email settings)
   const breadcrumbSchema = buildBreadcrumbList([
           { name: "Home", url: "/" },
           { name: "Privacy Policy ", url: "/privacy-policy" },
@@ -187,7 +189,7 @@ export default function Privacy() {
             <br />
             📧 <a href="mailto:helpdesk@gokeys.in" className="text-brand-600 underline">helpdesk@gokeys.in</a>
             <br />
-            📞 +91-7830718687
+            📞 {business.tour_desk_phone}, {business.whatsapp}
             <br />
             🌐 www.gokeys.in
           </p>

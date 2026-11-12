@@ -2,7 +2,7 @@
 
 import HeroSection from "@/components/HeroSection";
 import WhyChooseUs, { TrustStrip } from "@/components/WhyChooseUs";
-import { getSiteSettings } from "@/lib/siteSettings";
+import { contactNumbers, getSiteSettings } from "@/lib/siteSettings";
 import KumbhBanner from "@/components/KumbhBanner";
 import FeaturedDestinations from "@/components/FeaturedDestinations";
 import BestSellingTripsWrapper from "@/components/BestSellingTripsWrapper";
@@ -117,7 +117,7 @@ export default async function HomePage() {
                 Haridwar, Uttarakhand, India
               </p>
               <p className="mt-3 text-[15px] text-ink leading-relaxed">
-                📞 +91-9045916770<br />📞 +91-7830718687<br />📞 +91-7830718680
+                {contactNumbers(site.business).map((number, i) => <span key={number}>{i > 0 && <br />}📞 {number}</span>)}
               </p>
               <a
                 href="https://www.google.com/maps/place/Gokeys+(Travel+In+Himalayas)+%7C+Travel+Agency+Haridwar/@29.9441709,78.1485517,17z"

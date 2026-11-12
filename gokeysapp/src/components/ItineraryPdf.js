@@ -2,6 +2,7 @@
 // Lora with the same teal and warm colours. It is never part of the page: src/lib/downloadItinerary.js renders it
 // off-screen only when the visitor clicks, turns it into a PDF and removes it again (so search engines don't see
 // the itinerary twice). Inline styles only, so html2canvas reproduces it exactly.
+import { SITE_DEFAULTS } from "@/lib/siteSettings";
 
 const C = {
   ink: "#17212B", body: "#3A4651", muted: "#6B7480", faint: "#9AA3AC", line: "#E2E8EC", panel: "#F1F4F7",
@@ -106,9 +107,9 @@ function RunningHeader({ name, docNumber }) {
   </div>;
 }
 
-function Footer({ page, total }) {
+function Footer({ page, total, business }) {
   return <div style={{ position: "absolute", left: `${PAGE.side}mm`, right: `${PAGE.side}mm`, bottom: "8mm", display: "flex", justifyContent: "space-between", borderTop: `0.3mm solid ${C.line}`, paddingTop: "2.5mm", fontSize: "7.2pt", color: C.muted }}>
-    <span>Gokeys India · www.gokeys.in · +91 90459 16770 · helpdesk@gokeys.in</span><span>Page {page} of {total}</span>
+    <span>Gokeys India · www.gokeys.in · {business.main_phone} · WhatsApp {business.whatsapp} · helpdesk@gokeys.in</span><span>Page {page} of {total}</span>
   </div>;
 }
 
@@ -136,7 +137,7 @@ function DayLine({ day, first, last, children }) {
  * The document as a flat list of blocks that are never split (header, title, each day's heading, each paragraph,
  * the boxes). `keep: true` keeps a block on the same page as the next one (a heading never ends a page).
  */
-export function itineraryBlocks({ tourData, tourUrl, docNumber, date }) {
+export function itineraryBlocks({ tourData, tourUrl, docNumber, date, business = SITE_DEFAULTS.business }) {
   const days = Array.isArray(tourData.itineraries) ? [...tourData.itineraries].sort((a, b) => (a.order ?? 0) - (b.order ?? 0) || (a.day ?? 0) - (b.day ?? 0)) : [];
   const nights = tourData.duration_nights, dayCount = tourData.duration_days || days.length || null;
   // A bare number (group tours) is a number of days.
@@ -208,7 +209,7 @@ export function itineraryBlocks({ tourData, tourUrl, docNumber, date }) {
       <p style={{ margin: "1mm 0 0", fontSize: "8.4pt", color: C.body }}>Ask for your quotation on WhatsApp or call us. Full details: {tourUrl}</p>
       <p style={{ margin: "1mm 0 0", fontSize: "7.6pt", color: C.muted }}>Hotels and sightseeing are subject to availability and local conditions.</p>
     </div>
-    <div style={{ textAlign: "right", fontSize: "8.6pt", color: C.ink, fontWeight: 700, lineHeight: 1.6, whiteSpace: "nowrap" }}>+91 90459 16770<br /><span style={{ fontWeight: 400, color: C.body }}>helpdesk@gokeys.in</span></div>
+    <div style={{ textAlign: "right", fontSize: "8.6pt", color: C.ink, fontWeight: 700, lineHeight: 1.6, whiteSpace: "nowrap" }}>{business.main_phone}<br />WhatsApp {business.whatsapp}<br /><span style={{ fontWeight: 400, color: C.body }}>helpdesk@gokeys.in</span></div>
   </div></div>);
   return { blocks, name };
 }
@@ -229,7 +230,7 @@ export default function ItineraryPdf({ pages, ...props }) {
       padding: `${PAGE.top}mm ${PAGE.side}mm ${PAGE.bottom}mm`, background: "#fff", pageBreakBefore: p ? "always" : "auto" }}>
       {p > 0 && <RunningHeader name={name} docNumber={props.docNumber} />}
       {indexes.map(i => <div key={blocks[i].key}>{blocks[i].node}</div>)}
-      <Footer page={p + 1} total={pages.length} />
+      <Footer page={p + 1} total={pages.length} business={props.business || SITE_DEFAULTS.business} />
     </div>)}
   </div>;
 }

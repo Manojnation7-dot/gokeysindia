@@ -41,7 +41,7 @@ import NextDepartureRequest from '@/components/NextDepartureRequest';
 import PriceBox from '@/components/PriceBox';
 import StatusBadge from '@/components/StatusBadge';
 import { useSiteSettings } from '@/components/SiteSettingsProvider';
-import { googleLine, whatsappLink } from '@/lib/siteSettings';
+import { callWhatsapp, googleLine, whatsappLink } from '@/lib/siteSettings';
 
 import SmartSEO from '@/components/SmartSEO'; 
 import {
@@ -650,7 +650,7 @@ export default function GroupTourDetails({ tourData, baseUrl, documentNumber, cu
                 Download Itinerary (PDF)
               </a>
               <p className="mt-3 text-center text-slate-ink text-xs leading-relaxed">
-                Need More Information? Call/WhatsApp our Yatra Coordinator on <span className="font-semibold">{site.business.tour_desk_phone}</span>
+                Need More Information? Our Yatra Coordinator: <span className="font-semibold">{callWhatsapp(site.business)}</span>
               </p>
             </div>
           </aside>

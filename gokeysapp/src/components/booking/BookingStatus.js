@@ -5,11 +5,14 @@ import Link from "next/link";
 import { downloadVoucher, getBookingStatus, hashValue, rupeesFromPaise } from "@/lib/booking";
 import { formatDepartureDate, formatPickupTime } from "@/lib/departures";
 import BookingActions from "./BookingActions";
+import { useSiteSettings } from "@/components/SiteSettingsProvider";
+import { telHref, whatsappLink } from "@/lib/siteSettings";
 
 const POLL_MS = 3000;
 const POLL_FOR_MS = 3 * 60 * 1000; // the webhook normally arrives within seconds
 
 export default function BookingStatus() {
+  const { business } = useSiteSettings(); // tour desk and WhatsApp numbers from the admin (Voucher and email settings)
   const [token, setToken] = useState("");
   const [booking, setBooking] = useState(null);
   const [problem, setProblem] = useState("");
@@ -113,7 +116,7 @@ export default function BookingStatus() {
         )}
       </section>
       <BookingActions booking={b} token={token} onChange={setBooking} />
-      <p className="text-sm text-slate-ink">Questions? Call or WhatsApp <a className="underline" href="tel:+917830718687">+91-7830718687</a> with your
+      <p className="text-sm text-slate-ink">Questions? Call <a className="underline" href={telHref(business.tour_desk_phone)}>{business.tour_desk_phone}</a> · WhatsApp <a className="underline" href={whatsappLink(business)} target="_blank" rel="noopener noreferrer">{business.whatsapp}</a> with your
         booking reference. <a href={`/book/check?ref=${encodeURIComponent(b.reference)}`} className="underline">Manage or cancel your booking</a> · <Link href="/terms-and-conditions" className="underline">Terms</Link> · <Link href="/privacy-policy" className="underline">Privacy</Link></p>
     </div>
   );

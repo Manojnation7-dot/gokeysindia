@@ -5,6 +5,8 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import SimilarTours from "@/components/SimilarTours";
 import { downloadItinerary } from "@/lib/downloadItinerary";
+import { useSiteSettings } from "@/components/SiteSettingsProvider";
+import { callWhatsapp, whatsappLink } from "@/lib/siteSettings";
 import dynamic from "next/dynamic";
 // Loaded after the page: reviews sit at the bottom (and load in the browser anyway); dialogs open only on a click
 const ReviewSection = dynamic(() => import("@/components/ReviewSection"), { ssr: false });
@@ -113,10 +115,11 @@ export default function TourDetailClient({ tourData,baseUrl,tourPath,similarTour
 
   // The itinerary PDF is built only on click (src/lib/downloadItinerary.js); it is no longer hidden in the page.
   const [downloading, setDownloading] = useState(false);
+  const { business } = useSiteSettings(); // numbers and WhatsApp from the admin (Voucher and email settings)
   const generatePDF = async () => {
     setDownloading(true);
     try {
-      await downloadItinerary(tourData, { tourPath });
+      await downloadItinerary(tourData, { tourPath, business });
     } catch (err) {
       alert("Could not prepare the itinerary: " + (err?.message || err));
     } finally {
@@ -170,7 +173,7 @@ const faqSchema = tourData.faqs?.length > 0
 
   const included = (tourData.inclusions_exclusions || []).filter((item) => item.is_inclusion);
   const excluded = (tourData.inclusions_exclusions || []).filter((item) => !item.is_inclusion);
-  const whatsappUrl = `https://wa.me/917830718687?text=${encodeURIComponent(`Hello Gokeys India, I want to enquire about ${tourData.name}.`)}`;
+  const whatsappUrl = whatsappLink(business, `Hello Gokeys India, I want to enquire about ${tourData.name}.`);
   const durationText = `${tourData.duration_nights ? `${tourData.duration_nights} Nights ` : ""}${tourData.duration_days ? `${tourData.duration_days} Days` : ""}`;
   const facts = [
     ["Duration", durationText],
@@ -357,7 +360,7 @@ const faqSchema = tourData.faqs?.length > 0
                 {downloading ? "Preparing PDF…" : "Download Itinerary"}
               </button>
               <p className="mt-3 text-center text-slate-ink text-xs leading-relaxed">
-                Need More Information? Call/WhatsApp our Yatra Expert on <span className="font-semibold">+91-78307-18687</span>
+                Need More Information? Our Yatra Expert: <span className="font-semibold">{callWhatsapp(business)}</span>
               </p>
             </div>
           </aside>

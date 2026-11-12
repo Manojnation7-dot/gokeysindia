@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { getSiteSettings, whatsappLink } from "@/lib/siteSettings";
 import Link from "next/link";
 import { Mountains } from "@/components/ui/kit";
 import { CACHED } from "@/lib/api";
@@ -31,7 +32,7 @@ async function getPromo() {
 const safeLink = (link) => (/^(\/(?!\/)|https:\/\/)/.test(link || "") ? link : "/tours");
 
 export default async function KumbhBanner() {
-  const promo = await getPromo();
+  const [promo, { business }] = await Promise.all([getPromo(), getSiteSettings()]);
   if (!promo?.title) return null;
 
   const href = safeLink(promo.button_link);
@@ -52,7 +53,7 @@ export default async function KumbhBanner() {
             )}
             {promo.whatsapp_message && (
               <a
-                href={`https://wa.me/917830718687?text=${encodeURIComponent(promo.whatsapp_message)}`}
+                href={whatsappLink(business, promo.whatsapp_message)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="gk-btn gk-btn-wa"

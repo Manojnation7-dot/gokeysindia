@@ -1,8 +1,11 @@
 "use client";
 
 import { FaWhatsapp } from "react-icons/fa";
+import { useSiteSettings } from "@/components/SiteSettingsProvider";
+import { whatsappDigits } from "@/lib/siteSettings";
 
 export default function WhatsAppFloat() {
+  const { business } = useSiteSettings(); // WhatsApp number and message from the admin (Voucher and email settings)
   const openWhatsApp = () => {
 
     // --- Google Ads Conversion (Direct gtag) ---
@@ -22,8 +25,8 @@ export default function WhatsAppFloat() {
       });
     }
 
-    const phone = "917830718687";
-    const message = "Hello Gokeys India, I want to enquire about a tour.";
+    const phone = whatsappDigits(business);
+    const message = business.whatsapp_message || "Hello Gokeys India, I want to enquire about a tour.";
 
     const isMobile = /Android|iPhone|iPad|iPod|Opera Mini|IEMobile/i.test(
       navigator.userAgent

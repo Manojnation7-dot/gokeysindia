@@ -22,11 +22,16 @@ export const processingFeePercent = (group) => (Number(group?.processing_fee_per
 const GROUP = { advance_percent: 25, balance_due_days: 7, default_min_pax: 12, gokeys_cancel_refund_days: 7,
   filling_fast_percent: 50, few_seats_left: 5, hide_seats_below_booked: 5, processing_fee_percent: "0", terms_changed_on: null };
 
+const CONTACT_NUMBERS = ["+91-9045916770", "+91-7830718687", "+91-7830718680", "+91-9286600115"];
+
 export const SITE_DEFAULTS = {
   group: GROUP,
   trust: { experience_years: 10, owner_experience_years: 15, founded_year: 2019, google_rating: "4.8", google_review_count: 180 },
-  business: { name: "Gokeys India", email: "gokeysindia@gmail.com", phone: "+91-9045916770, +91-7830718680",
-    whatsapp: "+91-7830718687", website: "gokeys.in", gstin: "", tourism_registration: "", tour_desk_phone: "+91-7830718687",
+  business: { name: "Gokeys India", email: "gokeysindia@gmail.com",
+    // Voucher and email settings (Django admin): the numbers every page lists, in this order, and the WhatsApp number
+    main_phone: "+91-9045916770", contact_numbers: CONTACT_NUMBERS, phone: CONTACT_NUMBERS.join(", "),
+    whatsapp: "+91-9286600115", whatsapp_message: "Hello Gokeys India, I want to enquire about a tour.",
+    website: "gokeys.in", gstin: "", tourism_registration: "", tour_desk_phone: "+91-7830718687",
     office_address: "4th Shop, Zila Panchayat Market, Railway Road, Haridwar, Uttarakhand, India" },
   cancellation_rules: [
     { from_days: 30, to_days: null, charge: "₹2,000 per person", charge_base: "of what you paid",
@@ -67,9 +72,27 @@ export async function getSiteSettings() {
 /** "4.8 · 180 Google reviews" */
 export const googleLine = (trust) => `${trust.google_rating} · ${trust.google_review_count} Google reviews`;
 
-/** wa.me link for the business WhatsApp number with a prefilled message. */
-export function whatsappLink(business, text) {
-  const digits = String(business?.whatsapp || "").replace(/\D/g, "");
-  const number = digits.length === 10 ? `91${digits}` : digits;
-  return `https://wa.me/${number}?text=${encodeURIComponent(text)}`;
+/** The WhatsApp number as wa.me wants it: "+91-9286600115" -> "919286600115". */
+export function whatsappDigits(business) {
+  const digits = String(business?.whatsapp || SITE_DEFAULTS.business.whatsapp).replace(/\D/g, "");
+  return digits.length === 10 ? `91${digits}` : digits;
 }
+
+/** wa.me link for the business WhatsApp number, with a prefilled message when one is given. */
+export function whatsappLink(business, text) {
+  const base = `https://wa.me/${whatsappDigits(business)}`;
+  return text ? `${base}?text=${encodeURIComponent(text)}` : base;
+}
+
+/** The numbers every page lists, in the admin's order (Voucher and email settings). */
+export function contactNumbers(business) {
+  const list = Array.isArray(business?.contact_numbers) ? business.contact_numbers.filter(Boolean) : [];
+  return list.length ? list : SITE_DEFAULTS.business.contact_numbers;
+}
+
+/** "Call +91-7830718687 · WhatsApp +91-9286600115": the tour desk to call, and the WhatsApp number. */
+export const callWhatsapp = (business) =>
+  `Call ${business?.tour_desk_phone || SITE_DEFAULTS.business.tour_desk_phone} · WhatsApp ${business?.whatsapp || SITE_DEFAULTS.business.whatsapp}`;
+
+/** "tel:+917830718687" */
+export const telHref = (number) => `tel:${String(number || "").replace(/[^\d+]/g, "")}`;

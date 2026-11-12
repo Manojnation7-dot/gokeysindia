@@ -23,7 +23,7 @@ test("the policy pages take both dates from one place, never a typed date", () =
   for (const page of ["terms-and-conditions", "cancellation-policy"]) {
     assert.ok(source(page).includes("Last updated: {formatPolicyDate(updated)}"), page);
     assert.ok(source(page).includes("dateModified: updated"), page);
-    assert.ok(source(page).includes("policyUpdated((await getSiteSettings()).group)"), page);
+    assert.match(source(page), /policyUpdated\(\(await getSiteSettings\(\)\)\.group\)|const site = await getSiteSettings\(\);\s+const updated = policyUpdated\(site\.group\)/, page);
   }
   for (const page of ["terms-and-conditions", "cancellation-policy", "privacy-policy"]) {
     assert.ok(!/Last updated: [A-Z][a-z]+ \d/.test(source(page)), `${page} has a typed date`);

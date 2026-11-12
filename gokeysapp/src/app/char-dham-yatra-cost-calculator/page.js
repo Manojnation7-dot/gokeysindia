@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { getSiteSettings, whatsappLink } from "@/lib/siteSettings";
 import { PHASE_PRODUCTION_BUILD } from "next/constants";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -84,7 +85,7 @@ const Note = ({ children }) => <p className="text-sm italic text-slate-ink">{chi
 
 // ---------------------------------------------------------------- page
 export default async function CostCalculatorPage() {
-  const { config, data, input, quote } = await loadPage();
+  const [{ config, data, input, quote }, { business }] = await Promise.all([loadPage(), getSiteSettings()]);
   const year = data?.year || 2027;
   const pagePath = CALC_PATH;
 
@@ -114,7 +115,7 @@ export default async function CostCalculatorPage() {
             <h1 className="gk-h1">Char Dham Yatra Cost Calculator {year}</h1>
             <p className="gk-lead mt-4 max-w-2xl">
               The calculator is being updated. Send us your dates and group size on{" "}
-              <a className="font-bold text-teal underline" href="https://wa.me/917830718687">WhatsApp</a> for the exact price.
+              <a className="font-bold text-teal underline" href={whatsappLink(business)}>WhatsApp</a> for the exact price.
             </p>
           </div>
         </main>

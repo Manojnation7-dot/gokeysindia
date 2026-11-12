@@ -38,7 +38,8 @@ const pageSchema = (updated) => [
 ];
 
 export default async function CancellationPolicy() {
-  const updated = policyUpdated((await getSiteSettings()).group);
+  const site = await getSiteSettings();
+  const updated = policyUpdated(site.group);
   return (
     <>
       <SmartSEO schema={pageSchema(updated)} />
@@ -65,7 +66,7 @@ export default async function CancellationPolicy() {
           <h2 className="text-xl font-semibold">4. Contact for Cancellations</h2>
           <p>To initiate a cancellation or request a refund, please contact us at:</p>
           <ul className="pl-6">
-            <li>📞 Phone: +91-7830718687</li>
+            <li>📞 Phone: {site.business.tour_desk_phone}, {site.business.whatsapp}</li>
             <li>📧 Email: <a href="mailto:helpdesk@gokeys.in" className="text-brand-600 underline">helpdesk@gokeys.in</a></li>
           </ul>
 

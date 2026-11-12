@@ -6,6 +6,7 @@ import SmartSEO from "@/components/SmartSEO";
 import GoogleMap from "@/components/MapIframe";
 import Link from "next/link";
 import { Breadcrumbs, CtaBand } from "@/components/ui/kit";
+import { contactNumbers, getSiteSettings, whatsappLink } from "@/lib/siteSettings";
 
 export async function generateMetadata() {
   return buildMetadata({
@@ -34,7 +35,8 @@ export async function generateMetadata() {
   });
 }
 
-export default function About() {
+export default async function About() {
+  const { business } = await getSiteSettings(); // numbers and WhatsApp from the admin (Voucher and email settings)
 const breadcrumbSchema = buildBreadcrumbList([
     { name: "Home", url: "/" },
     { name: "About Us", url: "/about" },
@@ -122,7 +124,7 @@ const breadcrumbSchema = buildBreadcrumbList([
             <div className="space-y-2 text-gray-800">
               <p><strong>Address:</strong>  4th Shop, Zila Panchayat Market, Railway Road,  
             Haridwar, Uttarakhand, India - 249401</p>
-              <p><strong>Phone:</strong> +91 9045916770, 7830718687, 7830718680</p>
+              <p><strong>Phone:</strong> {contactNumbers(business).join(", ")}</p>
               <p><strong>Email:</strong> gokeysindia@gmail.com, helpdesk@gokeys.in</p>
               <p><strong>Website:</strong> www.gokeys.in</p>
             </div>
@@ -133,7 +135,7 @@ const breadcrumbSchema = buildBreadcrumbList([
         <section className="gk-wrap pb-16">
           <CtaBand title="Ready to plan your Himalayan trip?" text="Tell us where and when. We reply with a plan and a price.">
             <Link href="/contact" className="gk-btn gk-btn-ink">Contact us</Link>
-            <a href="https://wa.me/917830718687" target="_blank" rel="noopener noreferrer" className="gk-btn gk-btn-wa">WhatsApp</a>
+            <a href={whatsappLink(business)} target="_blank" rel="noopener noreferrer" className="gk-btn gk-btn-wa">WhatsApp</a>
           </CtaBand>
         </section>
       </main>

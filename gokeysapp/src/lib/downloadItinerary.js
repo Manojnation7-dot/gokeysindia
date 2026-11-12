@@ -34,7 +34,7 @@ async function settle(host) {
   await Promise.all([...host.querySelectorAll("img")].map(img => img.complete ? null : new Promise(r => { img.onload = img.onerror = r; })));
 }
 
-export async function downloadItinerary(tourData, { tourPath = "tours" } = {}) {
+export async function downloadItinerary(tourData, { tourPath = "tours", business } = {}) {
   if (!tourData) throw new Error("Tour details are not available. Please try again later.");
   const [{ createRoot }, { flushSync }, { default: html2pdf }, { default: ItineraryPdf, itineraryBlocks, PAGE }] = await Promise.all([
     import("react-dom/client"), import("react-dom"), import("html2pdf.js"), import("@/components/ItineraryPdf"),
@@ -45,6 +45,7 @@ export async function downloadItinerary(tourData, { tourPath = "tours" } = {}) {
     tourUrl: `${siteUrl.replace(/^https?:\/\//, "")}/${tourPath}/${tourData.slug ?? ""}`,
     docNumber: `GK-${String(tourData.slug ?? "TOUR").slice(0, 4).toUpperCase()}-${randomCode(6)}`,
     date: new Date().toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric", timeZone: "Asia/Kolkata" }),
+    business, // main phone and WhatsApp from the admin (Voucher and email settings)
   };
 
   // Off-screen, at A4 width, outside the page content.

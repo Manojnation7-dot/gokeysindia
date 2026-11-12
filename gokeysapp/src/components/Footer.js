@@ -5,6 +5,7 @@ import { FaFacebookF, FaTwitter, FaInstagram } from "react-icons/fa";
 import Image from "next/image";
 import Script from "next/script";
 import { useSiteSettings } from "@/components/SiteSettingsProvider";
+import { contactNumbers } from "@/lib/siteSettings";
 
 const Footer = () => {
   const { business } = useSiteSettings(); // support email from the admin (Voucher and email settings)
@@ -26,9 +27,10 @@ const Footer = () => {
             Haridwar, Uttarakhand, India
           </p>
           <p className="text-[15px]">📧 {business.email}</p>
-          <p className="text-[15px] mt-2">📞 +91-9045916770</p>
-          <p className="text-[15px]">📞 +91-7830718687</p>
-          <p className="text-[15px]">📞 +91-7830718680</p>
+          {/* The numbers from the admin (Voucher and email settings), in its order */}
+          {contactNumbers(business).map((number, i) => (
+            <p key={number} className={`text-[15px]${i === 0 ? " mt-2" : ""}`}>📞 {number}</p>
+          ))}
         </div>
 
         {/* Explore */}
