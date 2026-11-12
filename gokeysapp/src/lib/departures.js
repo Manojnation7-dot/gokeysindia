@@ -37,6 +37,19 @@ function priceTable(rows) {
   return table;
 }
 
+// { quad: 2400000 } : the admin's optional "was" price per adult, in paise (only when higher than the price)
+function compareAtTable(rows) {
+  const table = {};
+  for (const row of Array.isArray(rows) ? rows : []) {
+    if (row?.traveller_type === "adult" && SHARING.includes(row.sharing) && Number(row.compare_at_paise) > 0) {
+      table[row.sharing] = Number(row.compare_at_paise);
+    }
+  }
+  return table;
+}
+
+const BADGES = ["open", "filling_fast", "few_left", "guaranteed", "sold_out", "enquiry"];
+
 function pickupList(rows) {
   return (Array.isArray(rows) ? rows : [])
     .filter((p) => p && typeof p.name === "string" && p.name)
@@ -86,6 +99,10 @@ export function getDepartures(tour, now = new Date()) {
         balanceDueDate: typeof d.balance_due_date === "string" ? d.balance_due_date : null,
         advancePercent: num(d.advance_percent),
         prices: priceTable(d.prices),
+        compareAt: compareAtTable(d.prices),
+        // One status badge per date, worked out by the backend (thresholds in the admin's Group tour settings)
+        badge: BADGES.includes(d.badge) ? d.badge : null,
+        badgeLabel: BADGES.includes(d.badge) && typeof d.badge_label === "string" ? d.badge_label : null,
         pickups: pickupList(d.pickups),
         // Phase 2: online booking switched on and this date can be booked online
         bookOnline: d.book_online === true && Boolean(d.bookable) && d.id != null,
@@ -98,7 +115,8 @@ export function getDepartures(tour, now = new Date()) {
       .map((date) => ({
         id: null, date, status: "open", label: LABELS.open, seatsLeft: seats, bookable: true, closesOn: null, price: null,
         guaranteed: false, fillingFast: false, moreNeeded: null, minPax: null, decisionDate: null,
-        balanceDueDate: null, advancePercent: null, prices: {}, pickups: [], bookOnline: false,
+        balanceDueDate: null, advancePercent: null, prices: {}, compareAt: {}, badge: null, badgeLabel: null,
+        pickups: [], bookOnline: false,
       }));
   } else {
     return { state: "error", list: [], next: null, legacy: false };

@@ -34,13 +34,15 @@ export function tourPrice(tour) {
 
 export const rupees = (n) => `₹${Number(n).toLocaleString("en-IN")}`;
 
-export function Price({ tour, size = "text-xl", unit = "per person" }) {
+// showWas=false: group tours, whose old package price is not a "was" price (they strike only the admin's compare-at
+// price, in the price box on the tour page)
+export function Price({ tour, size = "text-xl", unit = "per person", showWas = true }) {
   const { onRequest, value, original } = tourPrice(tour);
   if (onRequest || !value) return <p className="text-[15px] font-bold text-slate-ink">Price on request</p>;
   return (
     <p className="flex flex-wrap items-baseline gap-x-1.5">
       <span className={`gk-price ${size}`}>{rupees(value)}</span>
-      {original && <span className="text-xs text-slate-400 line-through">{rupees(original)}</span>}
+      {showWas && original && <span className="text-xs text-slate-400 line-through">{rupees(original)}</span>}
       <span className="text-xs text-slate-ink">{unit}</span>
     </p>
   );
@@ -48,7 +50,7 @@ export function Price({ tour, size = "text-xl", unit = "per person" }) {
 
 // `footer` renders below the linked area (for extra buttons such as WhatsApp or Quote),
 // so buttons never sit on top of each other and links are not nested.
-export function TourCard({ tour, href, chips = [], imgHeight = "h-40", priority = false, badge, footer, children }) {
+export function TourCard({ tour, href, chips = [], imgHeight = "h-40", priority = false, badge, footer, children, showWas = true }) {
   const list = chips.filter(Boolean);
   const body = (
     <>
@@ -72,7 +74,7 @@ export function TourCard({ tour, href, chips = [], imgHeight = "h-40", priority 
           </div>
         )}
         <h3 className="gk-h3 mb-3 line-clamp-3">{tour.name}</h3>
-        <div className="mt-auto">{children || <Price tour={tour} />}</div>
+        <div className="mt-auto">{children || <Price tour={tour} showWas={showWas} />}</div>
       </div>
     </>
   );

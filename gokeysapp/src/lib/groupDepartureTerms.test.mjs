@@ -5,6 +5,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { fillTerms } from "./siteSettings.js";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const app = path.join(here, "..", "app");
@@ -16,8 +17,10 @@ test("the backend's copy (used by the voucher PDF) is identical", (t) => {
   assert.deepEqual(JSON.parse(fs.readFileSync(backend, "utf8")), terms);
 });
 
-test("the rules say what the decisions file says", () => {
-  const all = [...terms.payment, ...terms.cancellation, ...terms.minimumGroup].join(" ");
+test("the rules say what the decisions file says (numbers filled with today's Group tour settings)", () => {
+  const filled = fillTerms({ advance_percent: 25, balance_due_days: 7, refund_days: 7 }, terms);
+  const all = [...filled.payment, ...filled.cancellation, ...filled.minimumGroup].join(" ");
+  assert.ok(!/\{\w+\}/.test(all), "every placeholder is filled");
   for (const part of ["25% of the total", "7 days before departure", "30 or more days", "₹2,000 per person",
     "7 to 29 days", "keep the advance", "less than 7 days", "no refund", "transfer your seat", "100% refund within 7 working days",
     "move to another departure", "private trip"]) {

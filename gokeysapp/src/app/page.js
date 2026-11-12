@@ -2,6 +2,7 @@
 
 import HeroSection from "@/components/HeroSection";
 import WhyChooseUs, { TrustStrip } from "@/components/WhyChooseUs";
+import { getSiteSettings } from "@/lib/siteSettings";
 import KumbhBanner from "@/components/KumbhBanner";
 import FeaturedDestinations from "@/components/FeaturedDestinations";
 import BestSellingTripsWrapper from "@/components/BestSellingTripsWrapper";
@@ -44,6 +45,7 @@ async function getFeaturedDestinations() {
 
 export default async function HomePage() {
   const destinations = await getFeaturedDestinations();
+  const site = await getSiteSettings();
     
   const pageSchemas = [
       
@@ -77,7 +79,7 @@ export default async function HomePage() {
       <Header />
 
       <HeroSection />
-      <TrustStrip />
+      <TrustStrip years={site.trust.experience_years} />
 
       <FeaturedDestinations initialDestinations={destinations} />
 

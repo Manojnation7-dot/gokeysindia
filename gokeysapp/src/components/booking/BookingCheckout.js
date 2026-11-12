@@ -9,6 +9,7 @@ import {
 import { formatDepartureDate, formatPickupTime, SHARING_LABELS } from "@/lib/departures";
 import { startRecaptcha } from "@/lib/recaptcha";
 import GroupDepartureTerms from "@/components/GroupDepartureTerms";
+import BookingSummary from "@/components/BookingSummary";
 
 const LABELS = {
   departure_id: "Date", travellers: "Travellers", lead_phone: "Mobile number", lead_email: "Email",
@@ -46,7 +47,7 @@ export default function BookingCheckout({ departureId }) {
   const [payOption, setPayOption] = useState("advance");
   const [travellers, setTravellers] = useState([]);
   const [contact, setContact] = useState({ lead_phone: "", lead_email: "", emergency_name: "", emergency_phone: "" });
-  const [consent, setConsent] = useState({ consent: false, guardian: false, medical: false });
+  const [consent, setConsent] = useState({ consent: false, terms: false, guardian: false, medical: false });
   // The latest price answer and the inputs it was for: an answer for older inputs is never shown as the price
   const [priced, setPriced] = useState({ key: "", quote: null, error: "" });
   const [stage, setStage] = useState("form"); // form | opening | sending | paying | dismissed | confirming
@@ -93,7 +94,13 @@ export default function BookingCheckout({ departureId }) {
       if (!ok) return setLoadError(data?.detail || "Online booking is not available for this date.");
       setInfo(data);
       const withAdult = ["quad", "triple", "double"].filter((s) => data.departure.prices.some((p) => p.sharing === s && p.traveller_type === "adult"));
-      setSharing(withAdult[0] || "");
+      // Choices made in the price box on the tour page (?sharing=&adults=...); the server prices them again
+      const ask = new URLSearchParams(window.location.search);
+      setSharing(withAdult.includes(ask.get("sharing")) ? ask.get("sharing") : withAdult[0] || "");
+      const count = (name, min) => { const n = Number(ask.get(name)); return Number.isInteger(n) && n >= min && n <= 20 ? n : null; };
+      const asked = { adult: count("adults", 1), child_with_bed: count("children_with_bed", 0),
+        child_no_bed: count("children_without_bed", 0), infant: count("infants", 0) };
+      if (asked.adult) setCounts((c) => Object.fromEntries(Object.entries(c).map(([k, v]) => [k, asked[k] ?? v])));
       if (data.departure.pickups.length === 1) setPickupId(String(data.departure.pickups[0].id));
       if (data.departure.advance_percent >= 100) setPayOption("full");
     });
@@ -173,6 +180,7 @@ export default function BookingCheckout({ departureId }) {
     if (!/^[^@\s]+@[^@\s]+\.[A-Za-z]{2,}$/.test(contact.lead_email.trim())) return "Enter a valid email address.";
     if (!contact.emergency_name.trim() || !/^(\+?91)?[6-9]\d{9}$/.test(contact.emergency_phone.replace(/[\s-]/g, ""))) return "Enter an emergency contact who is not travelling, with a 10-digit mobile number.";
     if (!consent.consent) return "Please read the notice and tick the box to agree.";
+    if (!consent.terms) return "Please tick the box to agree to the Group Tour Terms and Cancellation Policy.";
     if (anyMinor && !consent.guardian) return "Please confirm you are the parent or guardian of every traveller under 18.";
     if (anyMedical && !consent.medical) return "Please tick the box for the medical notes, or leave them empty.";
     if (quoteError) return quoteError;
@@ -221,7 +229,7 @@ export default function BookingCheckout({ departureId }) {
         medical_note: t.medical_note.trim(),
       })),
       lead_phone: contact.lead_phone, lead_email: contact.lead_email.trim(), emergency_name: contact.emergency_name.trim(),
-      emergency_phone: contact.emergency_phone, consent: consent.consent, consent_text_version: info.consent_text_version,
+      emergency_phone: contact.emergency_phone, consent: consent.consent && consent.terms, consent_text_version: info.consent_text_version,
       guardian_confirmed: consent.guardian, medical_consent: consent.medical,
     });
     if (!ok) { setStage("form"); return setError(errorMessage(data, LABELS)); }
@@ -275,7 +283,7 @@ export default function BookingCheckout({ departureId }) {
                 </label>
               ))}
             </div>
-            <p className="mt-2 text-xs text-slate-ink">Single room: on request (please send an enquiry). Prices exclude 5% GST.</p>
+            <p className="mt-2 text-xs text-slate-ink">Single room: on request (please send an enquiry). Prices exclude {quote ? Number(quote.gst_percent) : 5}% GST.</p>
           </fieldset>
           <div className="mt-4 divide-y divide-line">
             {TRAVELLER_TYPES.filter((t) => typeAllowed(t.key)).map((t) => (
@@ -343,6 +351,9 @@ export default function BookingCheckout({ departureId }) {
 
         <section id="step-3" className="gk-card p-4 sm:p-5 scroll-mt-24">
           <h2 className="gk-h3 text-lg! mb-2">3. Group tour rules, your data and consent</h2>
+          <BookingSummary headingLevel={3} className="rounded-lg border border-line p-3 mb-3" dep={{
+            advancePercent: dep.advance_percent, balanceDueDate: dep.balance_due_date, minPax: dep.min_pax,
+            decisionDate: dep.decision_date, guaranteed: dep.guaranteed === true }} />
           <div className="rounded-lg border border-line p-3 text-sm text-ink mb-3">
             <GroupDepartureTerms headingClass="font-semibold mt-2 first:mt-0" listClass="list-disc pl-5 space-y-0.5" />
           </div>
@@ -360,6 +371,11 @@ export default function BookingCheckout({ departureId }) {
             <input type="checkbox" checked={consent.consent} onChange={(e) => setConsent({ ...consent, consent: e.target.checked })} className="mt-1" />
             <span>I agree to Gokeys processing these traveller details to run this trip, and I confirm I may share the details of
               everyone in this booking. I accept the <Link href="/terms-and-conditions" className="underline" target="_blank">Terms and Conditions</Link>.</span>
+          </label>
+          <label className="flex gap-2 items-start mt-2 text-sm">
+            <input type="checkbox" checked={consent.terms} onChange={(e) => setConsent({ ...consent, terms: e.target.checked })} className="mt-1" required />
+            <span>I agree to the <Link href="/terms-and-conditions" className="underline" target="_blank">Group Tour Terms</Link> and{" "}
+              <Link href="/cancellation-policy" className="underline" target="_blank">Cancellation Policy</Link>.</span>
           </label>
           {anyMinor && (
             <label className="flex gap-2 items-start mt-2 text-sm">

@@ -5,6 +5,8 @@ import SmartSEO from "@/components/SmartSEO";
 import { buildOrganizationSchema, buildWebsiteSchema } from "@/lib/seoSchemas";
 import Script from "next/script";
 import WhatsAppFloat from "@/components/WhatsAppFloat";
+import { getSiteSettings } from "@/lib/siteSettings";
+import { SiteSettingsProvider } from "@/components/SiteSettingsProvider";
 
 
 // Fonts (new UI): Figtree for text, Bricolage Grotesque for headings
@@ -98,7 +100,8 @@ const siteSchemas = [
   }),
 ];
 
-export default function RootLayout({ children }) {
+export default async function RootLayout({ children }) {
+  const site = await getSiteSettings(); // Group tour settings etc. from the admin, for every page (cached)
   return (
     <html lang="en" className={`${figtree.variable} ${bricolage.variable}`}>
       <head>
@@ -127,8 +130,10 @@ export default function RootLayout({ children }) {
       <body className="font-sans antialiased">
         {/* reCAPTCHA is loaded by the forms when a visitor starts filling one in (src/lib/recaptcha.js) */}
         <Tracker />
-        {children}
-        <WhatsAppFloat />
+        <SiteSettingsProvider value={site}>
+          {children}
+          <WhatsAppFloat />
+        </SiteSettingsProvider>
       </body>
     </html>
   );

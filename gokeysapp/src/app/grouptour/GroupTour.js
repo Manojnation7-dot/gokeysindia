@@ -192,6 +192,7 @@ schemas.push(
                   tour={tour}
                   href={`/grouptour/${tour.slug}`}
                   imgHeight="h-44"
+                  showWas={false}
                   badge={tour.trip_types?.[0]?.name || "Group Tour"}
                   chips={[
                     onlineOf[tour.id] && "Book online",
@@ -221,7 +222,7 @@ schemas.push(
                       <span className="gk-price text-xl">{rupee(onlineOf[tour.id].from)}</span>
                       <span className="text-xs text-slate-ink">per person + GST</span>
                     </p>
-                  ) : <Price tour={tour} />}
+                  ) : <Price tour={tour} showWas={false} />}
                 </TourCard>
               </div>
             ))}
@@ -255,7 +256,7 @@ schemas.push(
                         <td className="px-5 py-3">
                           {dep.bookOnline && lowestAdultPrice([dep])
                             ? <span className="gk-price text-base">{rupee(lowestAdultPrice([dep]))}</span>
-                            : <Price tour={tour} size="text-base" unit="" />}
+                            : <Price tour={tour} size="text-base" unit="" showWas={false} />}
                         </td>
                         <td className="px-5 py-3 text-right">
                           <Link href={`/grouptour/${tour.slug}#departures`} className={`gk-btn py-2! ${dep.bookOnline ? "gk-btn-sun" : "gk-btn-ink"}`}

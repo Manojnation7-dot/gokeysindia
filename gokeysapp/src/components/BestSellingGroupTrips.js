@@ -13,6 +13,7 @@ export default function BestSellingGroupTrips({ tours }) {
               key={tour.id}
               tour={tour}
               href={`/grouptour/${tour.slug}`}
+              showWas={false}
               chips={["Group departure"]}
             />
           ))}

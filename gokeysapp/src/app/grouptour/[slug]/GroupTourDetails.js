@@ -29,7 +29,6 @@ import {
   isPriceOnRequest,
   formatPrice,
   getEffectivePrice,
-  getSavings,
 } from '@/lib/pricingUtils';
 import { submitTourEnquiry } from '@/lib/tourEnquiry';
 import ImageGallery from '@/components/ImageGallery';
@@ -38,6 +37,10 @@ import {
   getDepartures, formatDepartureDate, departureChip, formatPickupTime, SHARING_LABELS, lowestAdultPrice,
 } from '@/lib/departures';
 import NextDepartureRequest from '@/components/NextDepartureRequest';
+import PriceBox from '@/components/PriceBox';
+import StatusBadge from '@/components/StatusBadge';
+import { useSiteSettings } from '@/components/SiteSettingsProvider';
+import { googleLine, whatsappLink } from '@/lib/siteSettings';
 
 import SmartSEO from '@/components/SmartSEO'; 
 import {
@@ -97,7 +100,9 @@ export default function GroupTourDetails({ tourData, baseUrl, documentNumber, cu
   const onlineDeps = upcoming.filter((d) => d.bookOnline);
   const bookOnline = onlineDeps.length > 0;
   const fromPrice = lowestAdultPrice(onlineDeps);
-  const advancePercent = onlineDeps.find((d) => d.advancePercent)?.advancePercent || 25;
+  // Policy and trust numbers from the admin (Group tour settings), via the root layout
+  const site = useSiteSettings();
+  const advancePercent = onlineDeps.find((d) => d.advancePercent)?.advancePercent || site.group.advance_percent;
   // Mobile bar: hidden while the departures, the enquiry form or the footer are on screen (never covers them)
   const [barHidden, setBarHidden] = useState(false);
   useEffect(() => {
@@ -253,13 +258,14 @@ const [isLoading, setIsLoading] = useState(false);
   const included = (tourData.inclusions_exclusions || []).filter((item) => item.is_inclusion);
   const excluded = (tourData.inclusions_exclusions || []).filter((item) => !item.is_inclusion);
   const destinationNames = (tourData.destinations || []).filter((dest) => dest && typeof dest === "string");
-  const whatsappUrl = `https://wa.me/917830718687?text=${encodeURIComponent(`Hello Gokeys India, I want to enquire about ${tourData.name} (Group Tour).`)}`;
+  const whatsappUrl = whatsappLink(site.business, `Hello ${site.business.name}, I want to enquire about ${tourData.name} (Group Tour).`);
   const reserve = (dep) => {
     setReserved(dep.id ? { id: dep.id, date: dep.date } : null);
     setEnquiryFormData((prev) => ({ ...prev, travelDate: dep.date }));
     document.getElementById("group-enquiry")?.scrollIntoView({ behavior: "smooth", block: "center" });
   };
   const noDates = departureInfo.state === "none";
+  const anyBookable = upcoming.some((d) => d.bookable); // none: WhatsApp and the enquiry form are the way in
   const facts = [
     ["Next Departure", departureInfo.state === "error" ? "Please enquire" : upcoming[0] ? formatDate(upcoming[0].date) : "Dates coming soon"],
     ["Duration", tourData.duration ? `${tourData.duration} Days` : "N/A"],
@@ -268,16 +274,13 @@ const [isLoading, setIsLoading] = useState(false);
       "Reviews",
       hasValidReviewRating(tourData.rating, tourData.reviews_count)
         ? `${tourData.rating} (${tourData.reviews_count} Tour Reviews)`
-        : "Gokeys India — 4.8 · 164 Google Reviews",
+        : `${site.business.name} — ${googleLine(site.trust)}`,
     ],
   ];
   const priceLine = isPriceOnRequest(selectedPackage) ? (
     <span className="gk-price text-3xl">Price on Request</span>
   ) : (
     <>
-      {getSavings(selectedPackage) && (
-        <span className="text-sm text-slate-400 line-through">{formatPrice(selectedPackage?.price)}</span>
-      )}
       <span className="gk-price text-3xl">{formatPrice(basePrice)}</span>
       <span className="text-xs text-slate-ink">Per Adult</span>
     </>
@@ -331,15 +334,13 @@ const [isLoading, setIsLoading] = useState(false);
                 dangerouslySetInnerHTML={{ __html: tourData.content }}
               />
 
-              {/* Package Selection */}
-              {Array.isArray(tourData.pricing) && tourData.pricing.length > 0 && (
+              {/* Package Selection (tours not bookable online; a bookable tour's prices are in the price box) */}
+              {!bookOnline && Array.isArray(tourData.pricing) && tourData.pricing.length > 0 && (
                 <div className="mt-8">
                   <h3 className="gk-h3 mb-3">Choose Your Package</h3>
                   <div className="flex flex-wrap gap-3">
                     {tourData.pricing.map((pkg, index) => {
                       const active = selectedPackage?.package_type === pkg.package_type;
-                      const isDiscounted =
-                        Number(pkg.discount_price) && Number(pkg.discount_price) < Number(pkg.price);
                       return (
                         <button
                           key={index}
@@ -355,16 +356,8 @@ const [isLoading, setIsLoading] = useState(false);
                           <div className="text-sm mt-0.5">
                             {isPriceOnRequest(pkg) ? (
                               <span className="font-bold">Price on Request</span>
-                            ) : isDiscounted ? (
-                              <>
-                                <span className="line-through opacity-60">{formatPrice(pkg.price)}</span>{' '}
-                                <span className="font-bold">{formatPrice(pkg.discount_price)}</span>
-                                {getSavings(pkg) && (
-                                  <div className={`text-xs ${active ? "text-sun" : "text-wa"}`}>Save {getSavings(pkg)}</div>
-                                )}
-                              </>
                             ) : (
-                              <span className="font-bold">{formatPrice(pkg.price)}</span>
+                              <span className="font-bold">{formatPrice(getEffectivePrice(pkg))}</span>
                             )}
                           </div>
                         </button>
@@ -398,7 +391,7 @@ const [isLoading, setIsLoading] = useState(false);
                 {bookOnline && (
                   <ul className="mb-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-4 text-sm text-ink" aria-label="Booking online">
                     <li className="gk-panel px-3 py-2"><span className="font-semibold">Secure payment</span> by Razorpay (UPI, cards, net banking)</li>
-                    <li className="gk-panel px-3 py-2"><span className="font-semibold">Pay {advancePercent}% now</span>, the balance 7 days before departure</li>
+                    <li className="gk-panel px-3 py-2"><span className="font-semibold">Pay {advancePercent}% now</span>, the balance {site.group.balance_due_days} days before departure</li>
                     <li className="gk-panel px-3 py-2"><span className="font-semibold">Clear rules:</span>{' '}
                       <Link href="/cancellation-policy" className="underline">cancellation and refunds</Link></li>
                     <li className="gk-panel px-3 py-2"><span className="font-semibold">Instant voucher</span> by email after payment</li>
@@ -415,16 +408,20 @@ const [isLoading, setIsLoading] = useState(false);
                       <li key={dep.date} className="gk-card p-4 sm:p-5">
                         <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
                           <p className="font-bold text-ink text-base whitespace-nowrap">{formatDate(dep.date)}</p>
-                          {chip?.kind === "guaranteed" && (
-                            <span className="gk-chip bg-green-50! text-green-800!">{chip.text}</span>
-                          )}
-                          {chip?.kind === "filling" && <span className="gk-chip gk-chip-sun">{chip.text}</span>}
+                          {/* One status badge (backend; thresholds in the admin). The seat number only once enough
+                              are booked: the backend sends none before that */}
+                          {dep.badge ? <StatusBadge kind={dep.badge} label={dep.badgeLabel} /> : <>
+                            {chip?.kind === "guaranteed" && (
+                              <span className="gk-chip bg-green-50! text-green-800!">{chip.text}</span>
+                            )}
+                            {chip?.kind === "filling" && <span className="gk-chip gk-chip-sun">{chip.text}</span>}
+                          </>}
                           {chip?.kind === "needed" && <span className="gk-chip">{chip.text}</span>}
                           {dep.bookable && dep.seatsLeft != null ? (
-                            <span className="gk-chip gk-chip-sun">{dep.seatsLeft} seats left</span>
-                          ) : (
+                            <span className="gk-chip">{dep.seatsLeft} seats left</span>
+                          ) : !dep.badge ? (
                             <span className="gk-chip">{dep.label}</span>
-                          )}
+                          ) : null}
                           <div className="ml-auto flex flex-wrap items-center gap-x-3 gap-y-2">
                             {dep.bookOnline ? (
                               <>
@@ -437,6 +434,9 @@ const [isLoading, setIsLoading] = useState(false);
                               </>
                             ) : dep.bookable ? (
                               <button onClick={() => reserve(dep)} className="gk-btn gk-btn-ink py-2!">Reserve</button>
+                            ) : !anyBookable ? (
+                              <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="gk-btn gk-btn-wa py-2!"
+                                aria-label={`Enquire on WhatsApp about ${tourData.name}`}>Enquire on WhatsApp</a>
                             ) : (
                               <span className="text-xs font-semibold text-slate-ink">{dep.label}</span>
                             )}
@@ -554,20 +554,8 @@ const [isLoading, setIsLoading] = useState(false);
 
           {/* Sidebar */}
           <aside className="lg:sticky lg:top-20">
-            {bookOnline && (
-              <div className="gk-card p-5 mb-4">
-                <p className="flex flex-wrap items-baseline gap-x-2">
-                  {fromPrice ? <>
-                    <span className="text-xs text-slate-ink">From</span>
-                    <span className="gk-price text-3xl">{formatPrice(fromPrice)}</span>
-                    <span className="text-xs text-slate-ink">per person + GST</span>
-                  </> : <span className="gk-price text-2xl">Book online</span>}
-                </p>
-                {fromPrice && <p className="mt-1 text-xs font-semibold text-teal">Book online</p>}
-                <a href="#departures" onClick={toDepartures} className="gk-btn gk-btn-sun w-full mt-3">Book now</a>
-                <p className="mt-2 text-xs text-slate-ink">Choose your date below. Pay {advancePercent}% now, the rest 7 days before departure.</p>
-              </div>
-            )}
+            {/* Price box: the backend's quote for the chosen date, sharing and travellers (the same as /book) */}
+            {bookOnline && <PriceBox deps={onlineDeps} minAge={tourData.min_age || 0} />}
             <div id="group-enquiry" className="gk-card p-5 scroll-mt-24">
               {bookOnline ? (
                 <p className="text-sm font-semibold text-ink">Have a question? Ask us</p>
@@ -600,7 +588,7 @@ const [isLoading, setIsLoading] = useState(false);
                 {isLoading ? 'Preparing PDF…' : 'Download Itinerary'}
               </button>
               <p className="mt-3 text-center text-slate-ink text-xs leading-relaxed">
-                Need More Information? Call/WhatsApp our Yatra Coordinator on <span className="font-semibold">+91-7830718687</span>
+                Need More Information? Call/WhatsApp our Yatra Coordinator on <span className="font-semibold">{site.business.tour_desk_phone}</span>
               </p>
             </div>
           </aside>
@@ -623,9 +611,15 @@ const [isLoading, setIsLoading] = useState(false);
         <div className={`gk-sticky-cta lg:hidden sticky bottom-0 w-full bg-ink text-white py-3 flex justify-between items-center gap-3 px-4 z-40 shadow-lg transition-opacity duration-200 ${barHidden ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
           aria-hidden={barHidden || undefined}>
           <p className="min-w-0 text-[15px] font-semibold">
-            {fromPrice ? <>From {formatPrice(fromPrice)} <span className="text-xs font-normal opacity-80">per person + GST</span></> : 'Book online'}
+            {fromPrice ? <>From {formatPrice(fromPrice)} <span className="text-xs font-normal opacity-80">+ GST</span></> : 'Book online'}
           </p>
-          <a href="#departures" onClick={toDepartures} tabIndex={barHidden ? -1 : 0} className="gk-btn gk-btn-sun shrink-0">Book now</a>
+          <div className="flex items-center gap-2 shrink-0">
+            <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" tabIndex={barHidden ? -1 : 0}
+              className="gk-btn gk-btn-wa px-3!" aria-label={`WhatsApp us about ${tourData.name}`}>
+              <svg aria-hidden="true" viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3a.5.5 0 0 0 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.9 11.9 0 0 0 4.6 4c1.7.7 2.4.8 3.2.7a2.8 2.8 0 0 0 1.8-1.3 2.3 2.3 0 0 0 .2-1.3c-.1-.1-.3-.2-.5-.3z"/></svg>
+            </a>
+            <a href="#departures" onClick={toDepartures} tabIndex={barHidden ? -1 : 0} className="gk-btn gk-btn-sun">Book now</a>
+          </div>
         </div>
         ) : (
         <div className="gk-sticky-cta lg:hidden sticky bottom-0 w-full bg-ink text-white py-3 flex justify-between items-center gap-3 px-4 z-40 shadow-lg">
@@ -636,9 +630,6 @@ const [isLoading, setIsLoading] = useState(false);
               ) : (
                 <>
                   {formatPrice(basePrice)} • {tourData.duration} Days
-                  {getSavings(selectedPackage) && (
-                    <span className="text-xs text-sun"> Save {getSavings(selectedPackage)}</span>
-                  )}
                 </>
               )}
             </p>

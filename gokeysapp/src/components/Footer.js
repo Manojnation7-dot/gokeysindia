@@ -1,9 +1,13 @@
+"use client";
+
 import Link from "next/link";
 import { FaFacebookF, FaTwitter, FaInstagram } from "react-icons/fa";
 import Image from "next/image";
 import Script from "next/script";
+import { useSiteSettings } from "@/components/SiteSettingsProvider";
 
 const Footer = () => {
+  const { business } = useSiteSettings(); // support email from the admin (Voucher and email settings)
   return (
     <footer className="bg-ink-2 text-slate-300 pt-16">
       <div className="gk-wrap grid grid-cols-2 md:grid-cols-3 lg:grid-cols-[1.3fr_0.9fr_1fr_1.25fr_1.2fr_0.9fr] gap-x-8 gap-y-10">
@@ -21,7 +25,7 @@ const Footer = () => {
             4th Shop, Zila Panchayat Market, Railway Road,  
             Haridwar, Uttarakhand, India
           </p>
-          <p className="text-[15px]">📧 gokeysindia@gmail.com</p>
+          <p className="text-[15px]">📧 {business.email}</p>
           <p className="text-[15px] mt-2">📞 +91-9045916770</p>
           <p className="text-[15px]">📞 +91-7830718687</p>
           <p className="text-[15px]">📞 +91-7830718680</p>

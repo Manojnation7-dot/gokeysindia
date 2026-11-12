@@ -14,6 +14,7 @@ export default function SimilarTours({ tours }) {
               key={tour.id}
               tour={tour}
               href={`/grouptour/${tour.slug}`}
+              showWas={false}
               chips={["Group departure", tour.duration && `${tour.duration} Days`]}
             />
           ))}

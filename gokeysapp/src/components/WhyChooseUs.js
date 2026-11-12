@@ -1,13 +1,14 @@
 import { ShieldCheck, Clock3, BadgeIndianRupee, Headphones } from "lucide-react";
 
-const items = [
+// years: the team's years of experience from the admin (Group tour settings); 10 = "10+ Years of Expertise"
+const trustItems = (years) => [
   {
     title: "Registered Travel Agent in Haridwar",
     desc: "Authorized & recognized by Uttarakhand Tourism",
     Icon: ShieldCheck,
   },
   {
-    title: "10+ Years of Expertise",
+    title: `${years}+ Years of Expertise`,
     desc: "Successfully delivered 1000+ spiritual & leisure journeys",
     Icon: Clock3,
   },
@@ -24,7 +25,8 @@ const items = [
 ];
 
 // Thin trust bar under the home hero
-export function TrustStrip() {
+export function TrustStrip({ years = 10 }) {
+  const items = trustItems(years);
   return (
     <section className="bg-white border-b border-line">
       <div className="gk-wrap py-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
