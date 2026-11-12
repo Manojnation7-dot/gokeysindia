@@ -7,14 +7,20 @@ import { CACHED } from "./api.js";
 const API = process.env.NEXT_PUBLIC_API_URL || "https://api.gokeys.in";
 const TERM_KEYS = ["payment", "cancellation", "minimumGroup"];
 
-/** The shared rule wording with its {placeholders} filled in (the backend does the same for the voucher). */
+/** The shared rule wording with its {placeholders} filled in (the backend does the same for the voucher). Lines about
+ * the payment processing charge are left out while it is 0 (off). */
 export function fillTerms(values, source = TERMS) {
   const fill = (line) => line.replace(/\{(\w+)\}/g, (all, key) => (values[key] != null ? String(values[key]) : all));
-  return Object.fromEntries(TERM_KEYS.map((key) => [key, source[key].map(fill)]));
+  const off = !(Number(values.processing_fee_percent) > 0);
+  const keep = (line) => !(off && line.includes("{processing_fee_percent}"));
+  return Object.fromEntries(TERM_KEYS.map((key) => [key, source[key].filter(keep).map(fill)]));
 }
 
+/** "2" when the payment processing charge is on (Group tour settings), else "" (0 = off). */
+export const processingFeePercent = (group) => (Number(group?.processing_fee_percent) > 0 ? String(group.processing_fee_percent) : "");
+
 const GROUP = { advance_percent: 25, balance_due_days: 7, default_min_pax: 12, gokeys_cancel_refund_days: 7,
-  filling_fast_percent: 50, few_seats_left: 5, hide_seats_below_booked: 5 };
+  filling_fast_percent: 50, few_seats_left: 5, hide_seats_below_booked: 5, processing_fee_percent: "0", terms_changed_on: null };
 
 export const SITE_DEFAULTS = {
   group: GROUP,

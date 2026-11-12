@@ -71,7 +71,7 @@ export default function BookingActions({ booking: b, token, onChange }) {
 
       {(b.can_pay_balance || b.balance_link) && b.balance_paise > 0 && <div>
         <h2 className="gk-h3 text-lg! mb-1">Pay the balance</h2>
-        <p className="text-sm text-ink">{rupeesFromPaise(b.balance_paise)}{b.balance_due_date ? `, due by ${formatDepartureDate(b.balance_due_date)}` : ""}. Secure payment with Razorpay
+        <p className="text-sm text-ink">{rupeesFromPaise(b.balance_paise)}{b.balance_fee_paise > 0 ? ` + ${rupeesFromPaise(b.balance_fee_paise)} payment processing charge (${b.processing_fee_percent}%) = ${rupeesFromPaise(b.balance_paise + b.balance_fee_paise)}` : ""}{b.balance_due_date ? `, due by ${formatDepartureDate(b.balance_due_date)}` : ""}. Secure payment with Razorpay
           (UPI, cards, net banking).</p>
         <button type="button" className="gk-btn gk-btn-sun mt-2" disabled={busy} onClick={payBalance}>{busy ? "Opening…" : "Pay balance"}</button>
       </div>}
@@ -89,11 +89,12 @@ export default function BookingActions({ booking: b, token, onChange }) {
         <p className="text-sm text-ink">You can also transfer your seat to someone else free of charge, or change the date, up to 7 days before
           departure: call us before cancelling.</p>
         <dl className="gk-panel mt-3 p-3 grid grid-cols-[1fr_auto] gap-x-4 gap-y-1 text-sm">
-          <dt>Paid</dt><dd className="text-right font-semibold">{rupeesFromPaise(b.cancel_quote.held_paise)}</dd>
+          <dt>Paid{b.cancel_quote.fees_paise > 0 ? " (tour price)" : ""}</dt><dd className="text-right font-semibold">{rupeesFromPaise(b.cancel_quote.held_paise)}</dd>
           <dt>Kept under our rules</dt><dd className="text-right font-semibold">{rupeesFromPaise(b.cancel_quote.keep_paise)}</dd>
           <dt>Refund to you</dt><dd className="text-right font-bold">{rupeesFromPaise(b.cancel_quote.refund_paise)}</dd>
         </dl>
         <p className="mt-2 text-sm text-ink">The rule today ({b.cancel_quote.days_before} days before departure): {b.cancel_quote.rule_label}.</p>
+        {b.cancel_quote.fees_paise > 0 && <p className="mt-1 text-sm text-ink">The payment processing charges you paid ({rupeesFromPaise(b.cancel_quote.fees_paise)}) are not refunded when you cancel.</p>}
         <p className="mt-1 text-sm text-ink">{b.cancel_quote.refund_paise > 0
           ? "Your booking is cancelled at once and its seats are released. The refund is processed within 7 working days after approval, to the same card or account."
           : "Your booking is cancelled at once and its seats are released. No refund is due under our rules."}</p>

@@ -158,7 +158,7 @@ export function buildBlogPostSchema({
 // ✅ FIXED: TOUR PACKAGE — now takes pricingTiers/rating/reviewsCount
 // and outputs a Product schema with a real AggregateOffer, instead of
 // a single hardcoded "price": "0".
-// One Offer per departure date that can be booked: its lowest adult price per person (GST extra), in INR, with
+// One Offer per departure date that can be booked: its lowest adult price per person (no GST), in INR, with
 // availability from the date's status badge and the day it was put on sale. deps: lib/departures.js list.
 export function buildDepartureOffers(deps, tourUrl) {
   return (Array.isArray(deps) ? deps : [])

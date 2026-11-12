@@ -4,7 +4,8 @@ import Footer from '@/components/Footer';
 import SmartSEO from '@/components/SmartSEO';
 import { buildBreadcrumbList } from '@/lib/seoSchemas';
 import { SITE_URL, SITE_NAME } from '@/lib/seoHelpers';
-import { POLICY_UPDATED, formatPolicyDate } from '@/lib/policyDates';
+import { formatPolicyDate, policyUpdated } from '@/lib/policyDates';
+import { getSiteSettings } from '@/lib/siteSettings';
 import GroupDepartureTerms from '@/components/GroupDepartureTerms';
 
 const DESCRIPTION =
@@ -17,7 +18,8 @@ export const metadata = buildMetadata({
   image: "/images/gokeyslogo.png",
 });
 
-const schema = [
+// updated: the "Last updated" date (policyUpdated: the later of POLICY_UPDATED and the admin's last rule change)
+const pageSchema = (updated) => [
   {
     "@type": "WebPage",
     "@id": `${SITE_URL}/terms-and-conditions#webpage`,
@@ -25,7 +27,7 @@ const schema = [
     name: "Terms & Conditions",
     description: DESCRIPTION,
     inLanguage: "en-IN",
-    dateModified: POLICY_UPDATED, // the same date as "Last updated" on the page (src/lib/policyDates.js)
+    dateModified: updated, // the same date as "Last updated" on the page (src/lib/policyDates.js)
     isPartOf: { "@type": "WebSite", name: SITE_NAME, url: SITE_URL },
     publisher: { "@type": "TravelAgency", name: SITE_NAME, url: SITE_URL },
   },
@@ -35,10 +37,11 @@ const schema = [
   ]),
 ];
 
-export default function TermsAndConditions() {
+export default async function TermsAndConditions() {
+  const updated = policyUpdated((await getSiteSettings()).group);
   return (
     <>
-      <SmartSEO schema={schema} />
+      <SmartSEO schema={pageSchema(updated)} />
       <Header/>
       <main className="max-w-4xl mx-auto px-4 py-12 text-slate-ink">
         <h1 className="gk-h1 text-4xl! mb-6">Terms & Conditions</h1>
@@ -78,7 +81,7 @@ export default function TermsAndConditions() {
           <p className="pt-4">
             Please also review our <a href="/cancellation-policy" className="text-brand-600 underline">Cancellation & Refund Policy</a>.
           </p>
-            <p className="text-[15px] text-gray-400 mt-4">Last updated: {formatPolicyDate()}</p>
+            <p className="text-[15px] text-gray-400 mt-4">Last updated: {formatPolicyDate(updated)}</p>
         </section>
       </main>
       <Footer />

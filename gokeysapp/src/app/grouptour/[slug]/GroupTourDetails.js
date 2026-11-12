@@ -452,7 +452,7 @@ export default function GroupTourDetails({ tourData, baseUrl, documentNumber, cu
                             <p className="mt-2 text-xs text-slate-ink">
                               Per adult (12+) · {child.child_with_bed && <>Child 5–11 with bed {formatPrice(child.child_with_bed)} · </>}
                               {child.child_no_bed && <>Child 5–11 without bed {formatPrice(child.child_no_bed)} · </>}
-                              Under 5 free · Single room on request · GST 5% extra
+                              Under 5 free · Single room on request
                             </p>
                           </div>
                         ) : (
@@ -676,7 +676,7 @@ export default function GroupTourDetails({ tourData, baseUrl, documentNumber, cu
         <div className={`gk-sticky-cta lg:hidden sticky bottom-0 w-full bg-ink text-white py-3 flex justify-between items-center gap-3 px-4 z-40 shadow-lg transition-opacity duration-200 ${barHidden ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
           aria-hidden={barHidden || undefined}>
           <p className="min-w-0 text-[15px] font-semibold">
-            {fromPrice ? <>From {formatPrice(fromPrice)} <span className="text-xs font-normal opacity-80">+ GST</span></> : 'Book online'}
+            {fromPrice ? <>From {formatPrice(fromPrice)} <span className="text-xs font-normal opacity-80">per person</span></> : 'Book online'}
           </p>
           <div className="flex items-center gap-2 shrink-0">
             <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" tabIndex={barHidden ? -1 : 0}

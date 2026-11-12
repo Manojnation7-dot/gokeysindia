@@ -155,7 +155,12 @@ export default function BookingCheckout({ departureId }) {
   const shownQuote = priced.quote; // shown greyed out while the new price is on its way
   const anyMinor = rows.some((t) => t.type.key !== "adult" || (t.age !== "" && Number(t.age) < 18));
   const anyMedical = rows.some((t) => t.medical_note.trim());
-  const amountNow = quote ? (payOption === "full" ? quote.total_paise : quote.advance_paise) : null;
+  // What Razorpay will ask for: the advance or the full amount plus its payment processing charge (the server's quote)
+  const option = quote ? (payOption === "full"
+    ? { label: "Full amount", paise: quote.total_paise, fee: quote.full_fee_paise || 0, toPay: quote.full_to_pay_paise ?? quote.total_paise }
+    : { label: `Advance ${dep.advance_percent}%`, paise: quote.advance_paise, fee: quote.advance_fee_paise || 0, toPay: quote.advance_to_pay_paise ?? quote.advance_paise })
+    : null;
+  const amountNow = option ? option.toPay : null;
   const setTraveller = (i, key, value) => setTravellers((typed) => {
     const next = [...typed];
     while (next.length <= i) next.push({ ...EMPTY_TRAVELLER });
@@ -283,7 +288,7 @@ export default function BookingCheckout({ departureId }) {
                 </label>
               ))}
             </div>
-            <p className="mt-2 text-xs text-slate-ink">Single room: on request (please send an enquiry). Prices exclude {quote ? Number(quote.gst_percent) : 5}% GST.</p>
+            <p className="mt-2 text-xs text-slate-ink">Single room: on request (please send an enquiry).</p>
           </fieldset>
           <div className="mt-4 divide-y divide-line">
             {TRAVELLER_TYPES.filter((t) => typeAllowed(t.key)).map((t) => (
@@ -401,19 +406,30 @@ export default function BookingCheckout({ departureId }) {
               {shownQuote.lines.map((l, i) => (
                 <li key={i} className="flex justify-between gap-2"><span>{l.label} × {l.count}</span><span>{rupeesFromPaise(l.amount_paise)}</span></li>
               ))}
-              <li className="flex justify-between gap-2 border-t border-line pt-1"><span>Subtotal</span><span>{rupeesFromPaise(shownQuote.subtotal_paise)}</span></li>
-              <li className="flex justify-between gap-2"><span>GST {shownQuote.gst_percent}%</span><span>{rupeesFromPaise(shownQuote.gst_paise)}</span></li>
-              <li className="flex justify-between gap-2 font-bold text-ink"><span>Total</span><span>{rupeesFromPaise(shownQuote.total_paise)}</span></li>
+              {shownQuote.gst_paise > 0 && <>
+                <li className="flex justify-between gap-2 border-t border-line pt-1"><span>Subtotal</span><span>{rupeesFromPaise(shownQuote.subtotal_paise)}</span></li>
+                <li className="flex justify-between gap-2"><span>GST {shownQuote.gst_percent}%</span><span>{rupeesFromPaise(shownQuote.gst_paise)}</span></li>
+              </>}
+              <li className={`flex justify-between gap-2 font-bold text-ink ${shownQuote.gst_paise > 0 ? "" : "border-t border-line pt-1"}`}><span>Total</span><span>{rupeesFromPaise(shownQuote.total_paise)}</span></li>
             </ul>
             {quote && dep.advance_percent < 100 && quote.advance_paise >= MIN_PAYMENT_PAISE && (
               <fieldset className="mt-4 space-y-2 text-sm">
                 <legend className="gk-label">Pay now</legend>
                 <label className="flex gap-2"><input type="radio" name="pay" checked={payOption === "advance"} onChange={() => setPayOption("advance")} />
                   <span>Advance {dep.advance_percent}%: <strong>{rupeesFromPaise(quote.advance_paise)}</strong>
-                    <span className="block text-xs text-slate-ink">Balance {rupeesFromPaise(quote.balance_paise)}{quote.balance_due_date ? ` due by ${formatDepartureDate(quote.balance_due_date)}` : ""}</span></span></label>
+                    <span className="block text-xs text-slate-ink">Balance {rupeesFromPaise(quote.balance_paise)}{quote.balance_due_date ? ` due by ${formatDepartureDate(quote.balance_due_date)}` : ""}
+                      {quote.advance_fee_paise > 0 ? ` (plus the ${quote.processing_fee_percent}% payment processing charge when paid online)` : ""}</span></span></label>
                 <label className="flex gap-2"><input type="radio" name="pay" checked={payOption === "full"} onChange={() => setPayOption("full")} />
                   <span>Full amount: <strong>{rupeesFromPaise(quote.total_paise)}</strong></span></label>
               </fieldset>
+            )}
+            {option && option.fee > 0 && (
+              <ul className="mt-4 text-sm space-y-1 border-t border-line pt-3" aria-label="Amount to pay now">
+                <li className="flex justify-between gap-2"><span>{option.label}</span><span>{rupeesFromPaise(option.paise)}</span></li>
+                <li className="flex justify-between gap-2"><span>Payment processing charge ({quote.processing_fee_percent}%)</span><span>{rupeesFromPaise(option.fee)}</span></li>
+                <li className="flex justify-between gap-2 font-bold text-ink"><span>To pay now</span><span>{rupeesFromPaise(option.toPay)}</span></li>
+                <li className="text-xs text-slate-ink">The processing charge is not part of the tour price. It is not refunded if you cancel; it is refunded if Gokeys cancels the date.</li>
+              </ul>
             )}
             {quote && !quote.bookable && <p className="mt-3 text-sm text-red-700">{quote.not_bookable_reason}</p>}
           </div>

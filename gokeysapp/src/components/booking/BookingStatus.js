@@ -98,8 +98,9 @@ export default function BookingStatus() {
           <div><dt className="text-slate-ink">Travellers</dt><dd className="font-semibold">{b.travellers.map((t) => `${t.name} (${t.age})`).join(", ")}</dd></div>
         </dl>
         <ul className="mt-4 text-sm space-y-1 border-t border-line pt-3">
-          <li className="flex justify-between"><span>Total (incl. GST {Number(b.gst_percent)}%)</span><span className="font-semibold">{rupeesFromPaise(b.total_paise)}</span></li>
+          <li className="flex justify-between"><span>Total{Number(b.gst_percent) > 0 ? ` (incl. GST ${Number(b.gst_percent)}%)` : ""}</span><span className="font-semibold">{rupeesFromPaise(b.total_paise)}</span></li>
           <li className="flex justify-between"><span>Paid</span><span className="font-semibold">{rupeesFromPaise(b.paid_paise)}</span></li>
+          {b.fees_paise > 0 && <li className="flex justify-between text-slate-ink"><span>Payment processing charges paid (not part of the tour price)</span><span>{rupeesFromPaise(b.fees_paise)}</span></li>}
           {confirmed && b.balance_paise > 0 && <li className="flex justify-between"><span>Balance{b.balance_due_date ? `, due by ${formatDepartureDate(b.balance_due_date)}` : ""}</span>
             <span className="font-semibold">{rupeesFromPaise(b.balance_paise)}</span></li>}
         </ul>

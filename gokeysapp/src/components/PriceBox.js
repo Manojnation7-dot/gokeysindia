@@ -9,8 +9,8 @@ import StatusBadge from "@/components/StatusBadge";
 const SHARING = ["quad", "triple", "double"];
 const QUERY = { adult: "adults", child_with_bed: "children_with_bed", child_no_bed: "children_without_bed", infant: "infants" };
 
-// Price box on a group tour page: date, room sharing and travellers -> base price, GST, total, the advance to pay now
-// and the balance date. Every amount is the backend's quote (GET /api/departures/<id>/quote/), the same calculation
+// Price box on a group tour page: date, room sharing and travellers -> base price, total, the advance, the payment
+// processing charge on it (its own line, when switched on), what is paid now and the balance date. Every amount is the backend's quote (GET /api/departures/<id>/quote/), the same calculation
 // /book charges with; nothing is worked out here. "Book now" opens /book with these choices filled in.
 // deps: the dates bookable online (lib/departures.js), minAge: the tour's minimum age.
 export default function PriceBox({ deps, minAge = 0 }) {
@@ -52,7 +52,7 @@ export default function PriceBox({ deps, minAge = 0 }) {
       <p className="flex flex-wrap items-baseline gap-x-2">
         {was > adultPaise && <span className="text-sm text-slate-400 line-through">{rupeesFromPaise(was)}</span>}
         <span className="gk-price text-3xl">{rupeesFromPaise(adultPaise)}</span>
-        <span className="text-xs text-slate-ink">per adult + GST · {SHARING_LABELS[shown]}</span>
+        <span className="text-xs text-slate-ink">per adult · {SHARING_LABELS[shown]}</span>
       </p>
 
       {deps.length > 1 ? (
@@ -104,11 +104,16 @@ export default function PriceBox({ deps, minAge = 0 }) {
             {quote.lines.map((l, i) => (
               <li key={i} className="flex justify-between gap-2"><span>{l.label} × {l.count}</span><span>{rupeesFromPaise(l.amount_paise)}</span></li>
             ))}
-            <li className="flex justify-between gap-2"><span>GST {Number(quote.gst_percent)}%</span><span>{rupeesFromPaise(quote.gst_paise)}</span></li>
+            {quote.gst_paise > 0 && <li className="flex justify-between gap-2"><span>GST {Number(quote.gst_percent)}%</span><span>{rupeesFromPaise(quote.gst_paise)}</span></li>}
             <li className="flex justify-between gap-2 font-bold text-ink border-t border-line pt-1"><span>Total</span><span>{rupeesFromPaise(quote.total_paise)}</span></li>
-            {quote.advance_percent < 100 && <>
-              <li className="flex justify-between gap-2 font-semibold"><span>Pay now ({quote.advance_percent}%)</span><span>{rupeesFromPaise(quote.advance_paise)}</span></li>
+            {quote.advance_percent < 100 ? <>
+              <li className="flex justify-between gap-2"><span>Advance ({quote.advance_percent}%)</span><span>{rupeesFromPaise(quote.advance_paise)}</span></li>
+              {quote.advance_fee_paise > 0 && <li className="flex justify-between gap-2"><span>Payment processing charge ({quote.processing_fee_percent}%)</span><span>{rupeesFromPaise(quote.advance_fee_paise)}</span></li>}
+              <li className="flex justify-between gap-2 font-semibold"><span>Pay now</span><span>{rupeesFromPaise(quote.advance_to_pay_paise ?? quote.advance_paise)}</span></li>
               <li className="flex justify-between gap-2 text-slate-ink"><span>Balance{quote.balance_due_date ? ` due by ${formatDepartureDate(quote.balance_due_date)}` : ""}</span><span>{rupeesFromPaise(quote.balance_paise)}</span></li>
+            </> : quote.full_fee_paise > 0 && <>
+              <li className="flex justify-between gap-2"><span>Payment processing charge ({quote.processing_fee_percent}%)</span><span>{rupeesFromPaise(quote.full_fee_paise)}</span></li>
+              <li className="flex justify-between gap-2 font-semibold"><span>Pay now</span><span>{rupeesFromPaise(quote.full_to_pay_paise)}</span></li>
             </>}
           </ul>
         ) : fresh && priced.error ? (
@@ -117,6 +122,7 @@ export default function PriceBox({ deps, minAge = 0 }) {
           <p className="text-sm text-slate-ink">Working out the price…</p>
         )}
         {quote && !quote.bookable && <p className="mt-2 text-sm text-red-700">{quote.not_bookable_reason}</p>}
+        {quote?.advance_fee_paise > 0 && quote.advance_percent < 100 && <p className="mt-2 text-xs text-slate-ink">A {quote.processing_fee_percent}% payment processing charge is added to each online payment, the balance included.</p>}
         {extraPickups && <p className="mt-2 text-xs text-slate-ink">Some pickup points cost extra: you choose yours on the next step.</p>}
       </div>
 

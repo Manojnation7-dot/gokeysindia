@@ -4,7 +4,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { POLICY_UPDATED, formatPolicyDate } from "./policyDates.js";
+import { POLICY_UPDATED, formatPolicyDate, policyUpdated } from "./policyDates.js";
 
 const app = path.join(path.dirname(fileURLToPath(import.meta.url)), "..", "app");
 
@@ -16,11 +16,23 @@ test("date format", () => {
   assert.equal(formatPolicyDate("2025-07-31"), "July 31, 2025");
 });
 
-test("the policy pages take both dates from the constant, never a typed date", () => {
-  for (const page of ["terms-and-conditions", "cancellation-policy", "privacy-policy"]) {
-    const source = fs.readFileSync(path.join(app, page, "page.js"), "utf8");
-    assert.ok(source.includes("Last updated: {formatPolicyDate()}"), page);
-    assert.ok(!/Last updated: [A-Z][a-z]+ \d/.test(source), `${page} has a typed date`);
-    if (source.includes("dateModified")) assert.ok(source.includes("dateModified: POLICY_UPDATED"), page);
+test("the policy pages take both dates from one place, never a typed date", () => {
+  const source = (page) => fs.readFileSync(path.join(app, page, "page.js"), "utf8");
+  assert.ok(source("privacy-policy").includes("Last updated: {formatPolicyDate()}"));
+  // The group tour rules follow Group tour settings: the date moves when the admin changes a number in them
+  for (const page of ["terms-and-conditions", "cancellation-policy"]) {
+    assert.ok(source(page).includes("Last updated: {formatPolicyDate(updated)}"), page);
+    assert.ok(source(page).includes("dateModified: updated"), page);
+    assert.ok(source(page).includes("policyUpdated((await getSiteSettings()).group)"), page);
   }
+  for (const page of ["terms-and-conditions", "cancellation-policy", "privacy-policy"]) {
+    assert.ok(!/Last updated: [A-Z][a-z]+ \d/.test(source(page)), `${page} has a typed date`);
+  }
+});
+
+test("the later of the constant and the admin's last rule change", () => {
+  assert.equal(policyUpdated({ terms_changed_on: null }), POLICY_UPDATED);
+  assert.equal(policyUpdated(undefined), POLICY_UPDATED);
+  assert.equal(policyUpdated({ terms_changed_on: "2020-01-01" }), POLICY_UPDATED);
+  assert.equal(policyUpdated({ terms_changed_on: "2099-02-03" }), "2099-02-03");
 });

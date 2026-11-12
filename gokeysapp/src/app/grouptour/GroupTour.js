@@ -175,7 +175,7 @@ if (faqs.length) schemas.push(
                   {onlineOf[tour.id]?.from ? (
                     <p className="flex flex-wrap items-baseline gap-x-1.5">
                       <span className="gk-price text-xl">{rupee(onlineOf[tour.id].from)}</span>
-                      <span className="text-xs text-slate-ink">per person + GST</span>
+                      <span className="text-xs text-slate-ink">per person</span>
                     </p>
                   ) : <Price tour={tour} showWas={false} />}
                 </TourCard>

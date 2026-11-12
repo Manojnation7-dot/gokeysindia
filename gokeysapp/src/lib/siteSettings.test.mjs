@@ -4,7 +4,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { SITE_DEFAULTS, fillTerms, googleLine, mergeSiteSettings, whatsappLink } from "./siteSettings.js";
+import { SITE_DEFAULTS, fillTerms, googleLine, mergeSiteSettings, processingFeePercent, whatsappLink } from "./siteSettings.js";
 import { getDepartures } from "./departures.js";
 
 const src = path.join(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -24,6 +24,32 @@ test("numbers follow the settings; an unknown placeholder is left visible, never
   assert.ok(t.payment[1].includes("due 10 days before"));
   assert.ok(t.minimumGroup.join(" ").includes("within 5 working days"));
   assert.equal(fillTerms({}, { payment: ["{x}"], cancellation: [], minimumGroup: [] }).payment[0], "{x}");
+});
+
+test("the payment processing charge: its lines only while it is on, never with GST", () => {
+  const on = fillTerms({ advance_percent: 25, balance_due_days: 7, refund_days: 7, processing_fee_percent: "2" });
+  assert.ok(on.payment.join(" ").includes("payment processing charge of 2% of that payment"));
+  assert.ok(on.cancellation.join(" ").includes("The payment processing charge (2%) is not refunded when you cancel"));
+  for (const off of ["0", 0, undefined]) {
+    const t = fillTerms({ advance_percent: 25, balance_due_days: 7, refund_days: 7, processing_fee_percent: off });
+    assert.ok(!JSON.stringify(t).includes("processing"), String(off));
+    assert.ok(!/\{\w+\}/.test(Object.values(t).flat().join(" ")), String(off)); // no placeholder left
+  }
+  assert.ok(!JSON.stringify(SITE_DEFAULTS.terms).includes("processing"), "off when the API cannot be reached");
+  assert.equal(processingFeePercent({ processing_fee_percent: "2" }), "2");
+  assert.equal(processingFeePercent({ processing_fee_percent: "0" }), "");
+  assert.equal(processingFeePercent(undefined), "");
+  for (const file of [["components", "PriceBox.js"], ["components", "booking", "BookingCheckout.js"],
+    ["app", "grouptour", "GroupTour.js"], ["app", "grouptour", "[slug]", "GroupTourDetails.js"]]) {
+    assert.ok(!/\+ GST|GST 5%|exclude[s]? .*GST/.test(read(...file)), `${file.join("/")} still adds GST`);
+  }
+});
+
+test("the checkout pays what the server quoted, the charge included", () => {
+  const checkout = read("components", "booking", "BookingCheckout.js");
+  assert.match(checkout, /quote\.full_to_pay_paise/);
+  assert.match(checkout, /quote\.advance_to_pay_paise/);
+  assert.match(checkout, /Payment processing charge \(\{quote\.processing_fee_percent\}%\)/);
 });
 
 test("a missing or broken API answer falls back to today's values", () => {
