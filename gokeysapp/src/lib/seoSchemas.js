@@ -158,6 +158,27 @@ export function buildBlogPostSchema({
 // ✅ FIXED: TOUR PACKAGE — now takes pricingTiers/rating/reviewsCount
 // and outputs a Product schema with a real AggregateOffer, instead of
 // a single hardcoded "price": "0".
+// One Offer per departure date that can be booked: its lowest adult price per person (GST extra), in INR, with
+// availability from the date's status badge and the day it was put on sale. deps: lib/departures.js list.
+export function buildDepartureOffers(deps, tourUrl) {
+  return (Array.isArray(deps) ? deps : [])
+    .filter((d) => d && d.bookable && d.id != null)
+    .map((d) => {
+      const prices = ["quad", "triple", "double"].map((s) => Number(d.prices?.[s]?.adult)).filter((n) => n > 0);
+      if (!prices.length) return null;
+      return {
+        "@type": "Offer",
+        name: `Departure on ${d.date}`,
+        price: String(Math.min(...prices)),
+        priceCurrency: "INR",
+        availability: d.badge === "few_left" ? "https://schema.org/LimitedAvailability" : "https://schema.org/InStock",
+        ...(d.listedOn ? { validFrom: d.listedOn } : {}),
+        url: tourUrl,
+      };
+    })
+    .filter(Boolean);
+}
+
 export function buildTourSchema({
   slug,
   tourPath = "tours",
@@ -168,9 +189,11 @@ export function buildTourSchema({
   rating,               // pass tourData.rating
   reviewsCount,         // pass tourData.reviews_count
   itineraryItems = [],
+  departures,           // group tours: lib/departures.js list -> one Offer per bookable date (else the package prices)
 }) {
   if (!slug || !["tours", "grouptour"].includes(tourPath)) return null;
   const tourUrl = `${SITE_URL}/${tourPath}/${slug}`;
+  const dated = departures ? buildDepartureOffers(departures, tourUrl) : [];
 
   const offers = (Array.isArray(pricingTiers) ? pricingTiers : [])
     .filter((tier) => tier && ![true, "true"].includes(tier.price_on_request))
@@ -201,7 +224,7 @@ export function buildTourSchema({
       "@type": "Organization",
       name: "Gokeys India",
     },
-    offers: offers.length
+    offers: dated.length ? dated : offers.length
       ? {
           "@type": "AggregateOffer",
           priceCurrency: "INR",
@@ -358,12 +381,12 @@ export function buildBreadcrumbList(items) {
 }
 
 // ✅ IMAGE OBJECT
+// width/height only when known (the media library does not store them: never a made-up size)
 export function buildImageObject({ url, width, height }) {
   return {
     "@type": "ImageObject",
     url: url.startsWith("http") ? url : `${SITE_URL}${url}`,
-    width,
-    height
+    ...(Number(width) > 0 && Number(height) > 0 ? { width, height } : {}),
   };
 }
 

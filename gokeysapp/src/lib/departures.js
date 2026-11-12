@@ -90,6 +90,7 @@ export function getDepartures(tour, now = new Date()) {
         seatsLeft: Number.isFinite(d.seats_left) ? d.seats_left : null,
         bookable: Boolean(d.bookable) && (!d.booking_closes_on || d.booking_closes_on >= today),
         closesOn: d.booking_closes_on || null,
+        listedOn: typeof d.listed_on === "string" ? d.listed_on : null, // on sale since (Offer validFrom)
         price: d.price ?? null,
         guaranteed: d.guaranteed === true,
         fillingFast: d.filling_fast === true,

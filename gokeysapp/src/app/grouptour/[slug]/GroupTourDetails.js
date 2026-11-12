@@ -52,6 +52,10 @@ import {
 } from '@/lib/seoSchemas';
 import { buildFAQSchema } from '@/lib/seoSchemas';
 
+// Empty headings typed in the editor (e.g. <h2>&nbsp;</h2>) are dropped: they break the page's heading outline
+const withoutEmptyHeadings = (html) =>
+  String(html || '').replace(/<h([1-6])\b[^>]*>(?:\s|&nbsp;|&#160;|<br\s*\/?>)*<\/h\1>/gi, '');
+
 export default function GroupTourDetails({ tourData, baseUrl, documentNumber, currentDate,tourPath,similarTours, renderedAt }) {
   const [expandedDay, setExpandedDay] = useState(null);
   const [activeTab, setActiveTab] = useState('overview');
@@ -192,8 +196,8 @@ export default function GroupTourDetails({ tourData, baseUrl, documentNumber, cu
         description: tourData.meta_description || tourData.content.replace(/<\/?[^>]+(>|$)/g, ''),
         imageUrl: tourData.featured_image?.image || 'https://via.placeholder.com/600x400',
         pricingTiers: tourData.pricing,
-        rating: tourData.rating,
-        reviewsCount: tourData.reviews_count,
+        // One Offer per bookable date (price, INR, availability, on sale since); no rating or review markup
+        departures: upcoming,
         itineraryItems: (tourData.itineraries || []).map((item) => ({
           name: item.title,
           description: item.description.replace(/<\/?[^>]+(>|$)/g, ''),
@@ -215,8 +219,8 @@ export default function GroupTourDetails({ tourData, baseUrl, documentNumber, cu
     schemas.push(
       buildImageObject({
         url: tourData.featured_image.image,
-        width: tourData.featured_image.width || 600,
-        height: tourData.featured_image.height || 400,
+        width: tourData.featured_image.width,
+        height: tourData.featured_image.height,
       })
     );
   }
@@ -302,6 +306,7 @@ export default function GroupTourDetails({ tourData, baseUrl, documentNumber, cu
               tourData.featured_image?.optimized_banner || tourData.featured_image?.image || '/images/banner-image.png',
               ...(tourData.gallery_images?.map((img) => img.optimized || img.image) || []),
             ]}
+            alts={[tourData.featured_image?.alt_text, ...(tourData.gallery_images || []).map((img) => img.alt_text)]}
           />
         </div>
 
@@ -322,7 +327,7 @@ export default function GroupTourDetails({ tourData, baseUrl, documentNumber, cu
               <h2 className="gk-h2 mb-4">Tour Overview</h2>
               <div
                 className="tour-content text-gray-800 prose max-w-none"
-                dangerouslySetInnerHTML={{ __html: tourData.content }}
+                dangerouslySetInnerHTML={{ __html: withoutEmptyHeadings(tourData.content) }}
               />
 
               {/* Package Selection (tours not bookable online; a bookable tour's prices are in the price box) */}
@@ -360,7 +365,7 @@ export default function GroupTourDetails({ tourData, baseUrl, documentNumber, cu
 
               {/* Tour Highlights */}
               <div className="mt-8">
-                <h3 className="gk-h3 mb-3">Tour Highlights</h3>
+                <h2 className="gk-h3 mb-3">Tour Highlights</h2>
                 <div className="grid sm:grid-cols-2 gap-3">
                   {(tourData.highlights || []).map((highlight, index) => (
                     <div key={index} className="flex items-start gap-2.5 text-sm">

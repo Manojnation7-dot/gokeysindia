@@ -124,7 +124,7 @@ export default function PriceBox({ deps, minAge = 0 }) {
       <a href={`/book/${dep.id}?${params}`} className={`gk-btn gk-btn-sun w-full mt-4 ${quote && quote.bookable ? "" : "pointer-events-none opacity-60"}`}
         aria-disabled={!(quote && quote.bookable)}>Book now</a>
 
-      <BookingSummary dep={dep} className="mt-4 border-t border-line pt-3" />
+      <BookingSummary dep={dep} headingLevel={2} className="mt-4 border-t border-line pt-3" />
     </div>
   );
 }

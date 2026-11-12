@@ -3,12 +3,14 @@ import { useState } from "react";
 import Image from "next/image";
 
 // Big photo + two stacked thumbnails; every photo opens in the lightbox.
-export default function ImageGallery({ images, alt: altProp }) {
+// alts: optional alt text per image (from the media library); missing ones fall back to "<alt> 2", "<alt> 3"...
+export default function ImageGallery({ images, alt: altProp, alts = [] }) {
   const alt = altProp || "Tour photo";
   const [selected, setSelected] = useState(null);
   const list = (images || []).filter(Boolean);
 
   if (list.length === 0) return null;
+  const altOf = (idx) => alts[idx] || (idx === 0 ? alt : `${alt} ${idx + 1}`);
 
   const Tile = ({ idx, className = "", sizes, priority = false, children }) => (
     <button
@@ -19,7 +21,7 @@ export default function ImageGallery({ images, alt: altProp }) {
     >
       <Image
         src={list[idx]}
-        alt={idx === 0 ? alt : `${alt} ${idx + 1}`}
+        alt={altOf(idx)}
         fill
         priority={priority}
         sizes={sizes}
@@ -63,7 +65,7 @@ export default function ImageGallery({ images, alt: altProp }) {
             ‹
           </button>
           <div className="relative w-[90%] max-w-5xl h-[80vh]">
-            <Image src={list[selected]} alt={`${alt} ${selected + 1}`} fill sizes="90vw" className="object-contain" />
+            <Image src={list[selected]} alt={altOf(selected)} fill sizes="90vw" className="object-contain" />
           </div>
           <button
             onClick={() => setSelected((selected + 1) % list.length)}

@@ -16,10 +16,16 @@ async function getHub() {
 
 export const revalidate = 86400; // 24 h safety net; admin saves refresh the page at once (api/revalidate)
 
+// Title and description from the admin (Group Tours > Group tours page); these are the fallbacks and the old values.
+// The layout adds " | Gokeys India" once (pageTitle skips it when the title already names Gokeys).
+const DEFAULT_TITLE = "Group Tours in India";
+const DEFAULT_DESCRIPTION = "Explore affordable group tour packages with Gokeys India. Find the best group trips for adventure, trekking, cultural tours, and more.";
+
 export async function generateMetadata() {
+  const hub = await getHub();
   return buildMetadata({
-    title: "Group Tours in India",
-    description: "Explore affordable group tour packages with Gokeys India. Find the best group trips for adventure, trekking, cultural tours, and more.",
+    title: hub.meta_title?.trim() || DEFAULT_TITLE,
+    description: hub.meta_description?.trim() || DEFAULT_DESCRIPTION,
     path: "/grouptour",
     image: "/images/gokeyslogo.png",
   });
