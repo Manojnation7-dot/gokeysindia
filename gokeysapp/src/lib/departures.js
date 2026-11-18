@@ -107,6 +107,8 @@ export function getDepartures(tour, now = new Date()) {
         pickups: pickupList(d.pickups),
         // Phase 2: online booking switched on and this date can be booked online
         bookOnline: d.book_online === true && Boolean(d.bookable) && d.id != null,
+        // Women-only batch: only female travellers can book it (the backend checks it again)
+        womenOnly: d.women_only === true,
       }));
   } else if (tour && "departure_dates" in tour) {
     legacy = true;
@@ -117,7 +119,7 @@ export function getDepartures(tour, now = new Date()) {
         id: null, date, status: "open", label: LABELS.open, seatsLeft: seats, bookable: true, closesOn: null, price: null,
         guaranteed: false, fillingFast: false, moreNeeded: null, minPax: null, decisionDate: null,
         balanceDueDate: null, advancePercent: null, prices: {}, compareAt: {}, badge: null, badgeLabel: null,
-        pickups: [], bookOnline: false,
+        pickups: [], bookOnline: false, womenOnly: false,
       }));
   } else {
     return { state: "error", list: [], next: null, legacy: false };

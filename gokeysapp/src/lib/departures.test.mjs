@@ -131,3 +131,12 @@ test("Book now only when the backend says so, for a bookable date with an id", (
   assert.equal(d({ book_online: true, bookable: false, status: "sold_out" }).bookOnline, false);
   assert.equal(getDepartures({ departure_dates: ["2026-11-20"] }, BEFORE_MIDNIGHT).list[0].bookOnline, false);
 });
+
+test("women-only batches: flag from the backend, off for older backends and legacy dates", () => {
+  const d = (extra) => getDepartures({ departures: [dep("2026-11-01", extra)] }, BEFORE_MIDNIGHT).list[0];
+  assert.equal(d({ women_only: true }).womenOnly, true);
+  assert.equal(d({ women_only: false }).womenOnly, false);
+  assert.equal(d({}).womenOnly, false);
+  assert.equal(d({ women_only: "yes" }).womenOnly, false);  // only a real true
+  assert.equal(getDepartures({ departure_dates: ["2026-11-20"] }, BEFORE_MIDNIGHT).list[0].womenOnly, false);
+});

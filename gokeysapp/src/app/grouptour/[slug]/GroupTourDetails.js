@@ -413,6 +413,7 @@ export default function GroupTourDetails({ tourData, baseUrl, documentNumber, cu
                             {chip?.kind === "filling" && <span className="gk-chip gk-chip-sun">{chip.text}</span>}
                           </>}
                           {chip?.kind === "needed" && <span className="gk-chip">{chip.text}</span>}
+                          {dep.womenOnly && <span className="gk-chip bg-pink-50! text-pink-800!">Women only</span>}
                           {dep.bookable && dep.seatsLeft != null ? (
                             <span className="gk-chip">{dep.seatsLeft} seats left</span>
                           ) : !dep.badge ? (
@@ -425,8 +426,9 @@ export default function GroupTourDetails({ tourData, baseUrl, documentNumber, cu
                                   aria-label={`Ask a question about ${formatDate(dep.date)}`}>Ask a question</button>
                                 {/* A full page load, never client-side routing: /book has its own security policy that
                                     allows Razorpay; a client-side move would keep this page's policy and block it */}
+                                {dep.womenOnly && <span className="gk-chip bg-pink-50! text-pink-800!">Women only</span>}
                                 <a href={`/book/${dep.id}`} className="gk-btn gk-btn-sun py-2!"
-                                  aria-label={`Book now: ${formatDate(dep.date)}`}>Book now</a>
+                                  aria-label={`Book now: ${formatDate(dep.date)}${dep.womenOnly ? " (women only)" : ""}`}>Book now</a>
                               </>
                             ) : dep.bookable ? (
                               <button onClick={() => reserve(dep)} className="gk-btn gk-btn-ink py-2!">Reserve</button>

@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import {
   TRAVELLER_TYPES, changeCount, createBooking, errorMessage, getBookingDeparture, getQuote, loadRazorpay, previewToken,
-  quoteKey, rupeesFromPaise, sendPaymentCallback, travellerRows, travellerSlots,
+  quoteKey, rupeesFromPaise, sendPaymentCallback, travellerRows, travellerSlots, WOMEN_ONLY_MESSAGE,
 } from "@/lib/booking";
 import { formatDepartureDate, formatPickupTime, SHARING_LABELS } from "@/lib/departures";
 import { startRecaptcha } from "@/lib/recaptcha";
@@ -168,6 +168,11 @@ export default function BookingCheckout({ departureId }) {
     return next;
   });
 
+  // Women-only batch: every traveller, the lead booker included, must be female (the backend checks it again)
+  const womenOnly = dep.women_only === true;
+  const notFemale = (t) => womenOnly && t.gender !== "" && t.gender !== "female";
+  const womenOnlyBlocked = rows.some(notFemale);
+
   function check() {
     if (!sharing) return "Choose a room sharing option.";
     if (dep.pickups.length && !pickupId) return "Choose a pickup point.";
@@ -179,6 +184,7 @@ export default function BookingCheckout({ departureId }) {
       if (t.age === "" || !Number.isInteger(age) || age < type.min || age > type.max) return `Traveller ${i + 1}: age must be ${type.min} to ${type.max} for "${type.label.toLowerCase()}".`;
       if (age < minAge) return `This tour is for travellers aged ${minAge} and over.`;
       if (!t.gender) return `Traveller ${i + 1}: choose a gender.`;
+      if (notFemale(t)) return WOMEN_ONLY_MESSAGE;
     }
     if (Number(rows[0]?.age) < 18) return "Traveller 1 is the lead booker and must be 18 or over.";
     if (!/^(\+?91[\s-]?)?[6-9]\d{9}$/.test(contact.lead_phone.replace(/[\s-]/g, ""))) return "Enter a 10-digit Indian mobile number.";
@@ -264,6 +270,8 @@ export default function BookingCheckout({ departureId }) {
             {dep.seats_left != null && <> · <span className="font-semibold">{dep.seats_left} seats left</span></>}
           </p>
           {dep.guaranteed && <p className="mt-2"><span className="gk-chip bg-green-50! text-green-800!">Guaranteed departure</span></p>}
+          {womenOnly && <p className="mt-2 text-sm text-ink"><span className="gk-chip bg-pink-50! text-pink-800! mr-2">Women only</span>
+            Only women can book this batch.</p>}
         </section>
 
         {/* Steps (phones and tablets): jump to each part of the form */}
@@ -335,6 +343,7 @@ export default function BookingCheckout({ departureId }) {
                         <option value="">Choose</option><option value="female">Female</option><option value="male">Male</option><option value="other">Other</option>
                       </select></label>
                   </div>
+                  {notFemale(t) && <p className="mt-2 text-sm text-red-700" role="alert">{WOMEN_ONLY_MESSAGE}</p>}
                   <label className="block mt-2"><span className="gk-label">Medical note (optional, max 200 characters)</span>
                     <input className={field} value={t.medical_note} onChange={(e) => setTraveller(i, "medical_note", e.target.value)} maxLength={200}
                       placeholder="e.g. asthma, carries inhaler" /></label>
@@ -453,10 +462,13 @@ export default function BookingCheckout({ departureId }) {
             Pay {rupeesFromPaise(booking.amount_due_now_paise)} now
           </button>
         ) : (
-          <button type="submit" className="gk-btn gk-btn-sun w-full mt-4" disabled={busy || !quote || !quote.bookable}>
+          <>
+          {womenOnly && <p className="mt-4 text-sm text-ink"><span className="gk-chip bg-pink-50! text-pink-800! mr-2">Women only</span>Only women can book this batch.</p>}
+          <button type="submit" className="gk-btn gk-btn-sun w-full mt-4" disabled={busy || !quote || !quote.bookable || womenOnlyBlocked}>
             {stage === "opening" ? "Opening secure payment…" : stage === "sending" ? "Holding your seats…" : stage === "confirming" ? "Payment received, confirming…"
               : stage === "paying" ? "Complete the payment…" : amountNow != null ? `Pay ${rupeesFromPaise(amountNow)} securely` : "Pay securely"}
           </button>
+          </>
         )}
         <p className="mt-3 text-xs text-slate-ink">Seats are held for {info.hold_minutes} minutes while you pay. Secure payment by Razorpay
           (UPI, cards, net banking). By paying you accept the <Link href="/terms-and-conditions" className="underline" target="_blank">Terms</Link>.</p>

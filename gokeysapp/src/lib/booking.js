@@ -144,6 +144,9 @@ export function loadRazorpay({ timeoutMs = RAZORPAY_TIMEOUT_MS } = {}) {
 }
 
 /** The first message of a DRF error answer, labelled for the guest. */
+/** The backend's answer for a women-only batch (bookings/women_only.py); shown to the guest exactly as sent. */
+export const WOMEN_ONLY_MESSAGE = "This batch is only for women. Please choose our mixed batch or contact us on WhatsApp.";
+
 export function errorMessage(data, labels = {}) {
   if (!data || typeof data !== "object") return "Something went wrong. Please try again.";
   const key = Object.keys(data)[0];
@@ -151,6 +154,7 @@ export function errorMessage(data, labels = {}) {
   let value = data[key];
   while (Array.isArray(value)) value = value[0];
   if (value && typeof value === "object") return errorMessage(value, labels);
+  if (value === WOMEN_ONLY_MESSAGE) return value;  // a full sentence for the guest: no "Travellers:" in front
   const label = key === "detail" || key === "non_field_errors" ? "" : `${labels[key] || key.replace(/_/g, " ")}: `;
   return `${label}${value}`;
 }

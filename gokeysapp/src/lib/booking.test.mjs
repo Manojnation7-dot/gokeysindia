@@ -1,7 +1,7 @@
 // Run: npm test
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { errorMessage, hashValue, rupeesFromPaise, travellerSlots } from "./booking.js";
+import { WOMEN_ONLY_MESSAGE, errorMessage, hashValue, rupeesFromPaise, travellerSlots } from "./booking.js";
 
 test("rupees from paise", () => {
   assert.equal(rupeesFromPaise(1470000), "₹14,700");
@@ -27,4 +27,12 @@ test("API error messages for the guest", () => {
     "Mobile number: Enter a 10-digit Indian mobile number.");
   assert.equal(errorMessage({ travellers: [{ age: ["Age 13 does not match"] }] }), "age: Age 13 does not match");
   assert.equal(errorMessage({ detail: "Online booking is not open yet." }), "Online booking is not open yet.");
+});
+
+test("the women-only refusal is shown exactly as the backend sends it", () => {
+  const labels = { travellers: "Travellers" };
+  assert.equal(errorMessage({ travellers: WOMEN_ONLY_MESSAGE }, labels), WOMEN_ONLY_MESSAGE);
+  assert.equal(errorMessage({ travellers: [WOMEN_ONLY_MESSAGE] }, labels), WOMEN_ONLY_MESSAGE);
+  assert.equal(WOMEN_ONLY_MESSAGE, "This batch is only for women. Please choose our mixed batch or contact us on WhatsApp.");
+  assert.equal(errorMessage({ travellers: "Something else" }, labels), "Travellers: Something else");  // others keep the label
 });
