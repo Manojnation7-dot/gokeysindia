@@ -133,11 +133,11 @@ export function CtaBand({ title, text, tone = "sun", children }) {
 }
 
 // Accordion built on <details>, so answers stay in the HTML for search engines
-export function FaqList({ items, white = true }) {
+export function FaqList({ items, white = true, openFirst = true }) {
   return (
     <div className="space-y-3">
       {items.map((f, i) => (
-        <details key={i} className={`gk-faq rounded-xl ${white ? "bg-white" : "bg-mist"} border border-line`} open={i === 0}>
+        <details key={i} className={`gk-faq rounded-xl ${white ? "bg-white" : "bg-mist"} border border-line`} open={openFirst && i === 0}>
           <summary className="flex items-center justify-between gap-4 px-5 py-4 text-sm font-bold text-ink">
             {f.question}
             {/* The chevron is drawn by CSS (globals.css .gk-faq-chevron): an inline icon in every FAQ added ~380 bytes each */}

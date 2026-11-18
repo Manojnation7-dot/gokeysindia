@@ -10,7 +10,8 @@ import dynamic from 'next/dynamic';
 // Loaded after the page: reviews sit at the bottom (and load in the browser anyway); dialogs open only on a click
 const ReviewSection = dynamic(() => import('@/components/ReviewSection'), { ssr: false });
 import EnquiryForm from '@/components/EnquiryForm';
-import TourItineraryMain from '@/components/TourItineraryMain';
+import GroupItineraryAccordion from '@/components/GroupItineraryAccordion';
+import ReadMoreHtml from '@/components/ReadMoreHtml';
 import Image from 'next/image';
 import GuestReviews from '@/components/GuestReviews';
 import RelatedContent from '@/components/RelatedContent';
@@ -51,6 +52,32 @@ import {
   buildImageObject,
 } from '@/lib/seoSchemas';
 import { buildFAQSchema } from '@/lib/seoSchemas';
+
+// Inclusions / exclusions: the first 5 items, then "See all (N)" opens the rest. A native <details>, so every item is
+// in the server-rendered HTML and it works without JavaScript; the button goes away once the list is open.
+const SHORT_LIST = 5;
+function ShortList({ items, icon }) {
+  const row = (item, index) => (
+    <li key={index} className="flex items-start gap-2.5 text-sm text-gray-800">
+      {icon}
+      {item.description}
+    </li>
+  );
+  const rest = items.slice(SHORT_LIST);
+  return (
+    <>
+      <ul className="space-y-2.5">{items.slice(0, SHORT_LIST).map(row)}</ul>
+      {rest.length > 0 && (
+        <details className="group">
+          <summary className="mt-1 inline-flex min-h-[44px] cursor-pointer list-none items-center text-sm font-semibold text-teal underline underline-offset-2 group-open:hidden [&::-webkit-details-marker]:hidden">
+            See all ({items.length})
+          </summary>
+          <ul className="space-y-2.5 mt-2.5">{rest.map((item, i) => row(item, SHORT_LIST + i))}</ul>
+        </details>
+      )}
+    </>
+  );
+}
 
 // Empty headings typed in the editor (e.g. <h2>&nbsp;</h2>) are dropped: they break the page's heading outline
 const withoutEmptyHeadings = (html) =>
@@ -325,10 +352,8 @@ export default function GroupTourDetails({ tourData, baseUrl, documentNumber, cu
             {/* Overview */}
             <section>
               <h2 className="gk-h2 mb-4">Tour Overview</h2>
-              <div
-                className="tour-content text-gray-800 prose max-w-none"
-                dangerouslySetInnerHTML={{ __html: withoutEmptyHeadings(tourData.content) }}
-              />
+              {/* First ~5 lines with "Read more"; the whole overview stays in the HTML */}
+              <ReadMoreHtml className="tour-content text-gray-800 prose max-w-none" html={withoutEmptyHeadings(tourData.content)} />
 
               {/* Package Selection (tours not bookable online; a bookable tour's prices are in the price box) */}
               {!bookOnline && Array.isArray(tourData.pricing) && tourData.pricing.length > 0 && (
@@ -511,32 +536,18 @@ export default function GroupTourDetails({ tourData, baseUrl, documentNumber, cu
             )}
 
             {/* Itinerary */}
-            <TourItineraryMain tourData={{ ...tourData, itinerary: tourData.itineraries }} />
+            <GroupItineraryAccordion days={tourData.itineraries} />
 
             {/* Inclusions */}
             {(included.length > 0 || excluded.length > 0) && (
               <section className="grid sm:grid-cols-2 gap-4">
                 <div className="gk-panel p-5">
                   <h2 className="gk-h3 mb-4">What's Included</h2>
-                  <ul className="space-y-2.5">
-                    {included.map((item, index) => (
-                      <li key={index} className="flex items-start gap-2.5 text-sm text-gray-800">
-                        <span className="mt-0.5 text-teal"><CheckIcon /></span>
-                        {item.description}
-                      </li>
-                    ))}
-                  </ul>
+                  <ShortList items={included} icon={<span className="mt-0.5 text-teal"><CheckIcon /></span>} />
                 </div>
                 <div className="gk-panel p-5">
                   <h2 className="gk-h3 mb-4">What's Not Included</h2>
-                  <ul className="space-y-2.5">
-                    {excluded.map((item, index) => (
-                      <li key={index} className="flex items-start gap-2.5 text-sm text-gray-800">
-                        <span className="mt-0.5 text-[#d9603b]"><XIcon /></span>
-                        {item.description}
-                      </li>
-                    ))}
-                  </ul>
+                  <ShortList items={excluded} icon={<span className="mt-0.5 text-[#d9603b]"><XIcon /></span>} />
                 </div>
               </section>
             )}
@@ -614,7 +625,7 @@ export default function GroupTourDetails({ tourData, baseUrl, documentNumber, cu
             {(tourData.faqs || []).length > 0 && (
               <section>
                 <h2 className="gk-h2 mb-5">Frequently Asked Questions</h2>
-                <FaqList items={tourData.faqs.map((faq) => ({ question: faq.question, html: faq.answer }))} />
+                <FaqList openFirst={false} items={tourData.faqs.map((faq) => ({ question: faq.question, html: faq.answer }))} />
               </section>
             )}
           </div>
