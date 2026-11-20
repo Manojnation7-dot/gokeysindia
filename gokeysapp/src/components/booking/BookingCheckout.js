@@ -10,6 +10,7 @@ import { formatDepartureDate, formatPickupTime, SHARING_LABELS } from "@/lib/dep
 import { startRecaptcha } from "@/lib/recaptcha";
 import GroupDepartureTerms from "@/components/GroupDepartureTerms";
 import BookingSummary from "@/components/BookingSummary";
+import { trackPurchaseOnce } from "@/lib/tracking";
 
 const LABELS = {
   departure_id: "Date", travellers: "Travellers", lead_phone: "Mobile number", lead_email: "Email",
@@ -56,6 +57,7 @@ export default function BookingCheckout({ departureId }) {
   const [scriptFailed, setScriptFailed] = useState(false); // Razorpay's script failed to load or took over 15 s
   const checkoutRef = useRef(null);
   const formRef = useRef(null);
+  const paidNowRef = useRef(0); // Meta Purchase value (paise), set when the booking is made
   const payPressed = useRef(false);
 
   // Start loading Razorpay's script with the page. A failure here is shown only once the guest presses Pay
@@ -207,7 +209,10 @@ export default function BookingCheckout({ departureId }) {
         notes: { booking: result.reference },
         handler: async (response) => {
           setStage("confirming");
-          await sendPaymentCallback(response); // only checks the payment; the booking is confirmed by Razorpay's webhook
+          const verified = await sendPaymentCallback(response); // only checks the payment; the booking is confirmed by Razorpay's webhook
+          // Meta Pixel "Purchase" once the server verified the payment: the tour amount paid now (without the payment
+          // processing charge) in INR; nothing else. Fired here, not on /book/booking, whose address has the booking token.
+          if (verified?.ok) trackPurchaseOnce(result.reference, paidNowRef.current);
           window.location.assign(`/book/booking#${result.booking_token}`);
         },
         modal: { ondismiss: () => setStage((s) => (s === "confirming" ? s : "dismissed")) },
@@ -244,6 +249,7 @@ export default function BookingCheckout({ departureId }) {
       guardian_confirmed: consent.guardian, medical_consent: consent.medical,
     });
     if (!ok) { setStage("form"); return setError(errorMessage(data, LABELS)); }
+    paidNowRef.current = option ? option.paise : 0; // advance or full amount, without the processing charge
     setBooking(data);
     openCheckout(data);
   }

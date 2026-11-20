@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { FaPhone, FaEnvelope, FaQuestionCircle } from "react-icons/fa";
 import { getCSRFToken } from "@/lib/getCSRFToken";
+import { trackLead } from "@/lib/tracking";
 import { RECAPTCHA_RETRY_MESSAGE, getRecaptchaToken, startRecaptcha } from "@/lib/recaptcha";
 export default function InquiryFormCard({ placeName = "this place" }) {
   const [formData, setFormData] = useState({
@@ -74,6 +75,7 @@ export default function InquiryFormCard({ placeName = "this place" }) {
       }
 
       setSuccess(true);
+      trackLead(); // Meta Pixel "Lead" (only with the Pixel on and the visitor's Accept)
       setFormData({
       name: "",
       email: "",

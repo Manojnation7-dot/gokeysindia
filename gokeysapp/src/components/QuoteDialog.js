@@ -6,6 +6,7 @@ import { XIcon } from "@/components/Icons";
 import { isPriceOnRequest, formatPrice, getSavings } from "@/lib/pricingUtils";
 import { getCSRFToken } from "@/lib/getCSRFToken";
 import { currentPageUrl } from "@/lib/tourEnquiry";
+import { trackLead } from "@/lib/tracking";
 import { RECAPTCHA_RETRY_MESSAGE, getRecaptchaToken, startRecaptcha } from "@/lib/recaptcha";
 
 export default function QuoteDialog({
@@ -89,6 +90,7 @@ export default function QuoteDialog({
       });
 
       if (res.ok) {
+        trackLead(); // Meta Pixel "Lead" (only with the Pixel on and the visitor's Accept)
         console.log("Quote enquiry submitted successfully");
        // GOOGLE ADS / GTM CONVERSION EVENT
           // --- Google Ads Conversion (Direct gtag) ---

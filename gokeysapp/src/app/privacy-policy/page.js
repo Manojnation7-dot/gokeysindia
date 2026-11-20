@@ -123,11 +123,20 @@ export default async function Privacy() {
             tracking or advertising.
           </p>
 
-          <h2 className="text-2xl font-semibold mt-8">8. Cookies & Website Statistics</h2>
+          <h2 id="cookies" className="text-2xl font-semibold mt-8 scroll-mt-24">8. Cookies & Website Statistics</h2>
           <p>
             We use cookies and tools like Google Analytics to understand how our website is used and to improve it.
             You can block or delete cookies in your browser settings; the website will still work, though some
             features may not.
+          </p>
+          <p>
+            <strong>Meta Pixel.</strong> Only if you press &ldquo;Accept&rdquo; on our cookie notice, we use the Meta
+            (Facebook/Instagram) Pixel to measure which of our ads lead to enquiries and bookings. Meta then receives your
+            IP address, your browser information (the browser and device type it reports) and its cookie identifiers,
+            and the fact that an enquiry was sent or a booking paid (with the amount). We do not send your name, phone
+            number, email address or booking details. If you press &ldquo;Decline&rdquo;, or make no choice, the Pixel
+            is not loaded. To change your choice later, clear this website&apos;s cookies in your browser and choose
+            again. The Google tools described above are not affected by this choice.
           </p>
 
           <h2 className="text-2xl font-semibold mt-8">9. Your Rights Under the DPDP Act</h2>

@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { XIcon } from "@/components/Icons";
 import { getCSRFToken } from "@/lib/getCSRFToken";
 import { currentPageUrl } from "@/lib/tourEnquiry";
+import { trackLead } from "@/lib/tracking";
 import { RECAPTCHA_RETRY_MESSAGE, getRecaptchaToken, startRecaptcha } from "@/lib/recaptcha";
 
 export default function EnquiryForm({
@@ -87,6 +88,7 @@ export default function EnquiryForm({
       });
 
       if (res.ok) {
+        trackLead(); // Meta Pixel "Lead" (only with the Pixel on and the visitor's Accept)
         console.log("Enquiry submitted successfully");
         // GOOGLE ADS / GTM CONVERSION EVENT
           if (typeof window !== "undefined") {

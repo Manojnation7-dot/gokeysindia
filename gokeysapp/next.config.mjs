@@ -55,13 +55,18 @@ const nextConfig = {
 async headers() {
   // /book (checkout) gets the same policy plus Razorpay, and is never indexed, cached or sent as a referrer.
   // Every other page keeps the strict policy without Razorpay.
+  // Meta Pixel (Phase F): its script, its tracking request and the 1x1 image fallback. Loaded only after "Accept"
+  // (components/Analytics.js); on every page including /book. Nothing else from Meta is allowed.
+  const META_SCRIPT = " https://connect.facebook.net";
+  const META_IMG = " https://www.facebook.com";
+  const META_CONNECT = " https://www.facebook.com https://connect.facebook.net";
   const csp = (razorpay = false) => [
     "default-src 'self'",
-    "script-src 'self' 'unsafe-inline'" + DEV_EVAL + " https://www.google.com https://www.gstatic.com https://www.googletagmanager.com https://www.jscache.com https://*.tripadvisor.com https://*.tripadvisor.in https://static.tacdn.com https://googleads.g.doubleclick.net https://www.googleadservices.com https://ad.doubleclick.net" + (razorpay ? " https://checkout.razorpay.com" : ""),
+    "script-src 'self' 'unsafe-inline'" + DEV_EVAL + " https://www.google.com https://www.gstatic.com https://www.googletagmanager.com https://www.jscache.com https://*.tripadvisor.com https://*.tripadvisor.in https://static.tacdn.com https://googleads.g.doubleclick.net https://www.googleadservices.com https://ad.doubleclick.net" + META_SCRIPT + (razorpay ? " https://checkout.razorpay.com" : ""),
     "style-src 'self' 'unsafe-inline' https://static.tacdn.com",
     // blob: = previews of photos picked in the review form (URL.createObjectURL)
-    "img-src 'self' data: blob: https://api.gokeys.in" + LOCAL_API + " https://images.unsplash.com https://cdn.pixabay.com https://via.placeholder.com https://source.unsplash.com https://static.tacdn.com https://www.google.com https://www.google.co.in https://www.gstatic.com https://googleads.g.doubleclick.net https://www.googleadservices.com https://ad.doubleclick.net https://www.google-analytics.com" + (razorpay ? " https://cdn.razorpay.com" : ""),
-    "connect-src 'self' https://api.gokeys.in" + LOCAL_API + " https://www.google-analytics.com https://analytics.google.com https://www.googletagmanager.com https://www.google.com https://www.google.co.in https://googleads.g.doubleclick.net https://ad.doubleclick.net https://www.googleadservices.com https://region1.google-analytics.com" + (razorpay ? " https://api.razorpay.com https://checkout.razorpay.com https://lumberjack.razorpay.com" : ""),
+    "img-src 'self' data: blob: https://api.gokeys.in" + LOCAL_API + " https://images.unsplash.com https://cdn.pixabay.com https://via.placeholder.com https://source.unsplash.com https://static.tacdn.com https://www.google.com https://www.google.co.in https://www.gstatic.com https://googleads.g.doubleclick.net https://www.googleadservices.com https://ad.doubleclick.net https://www.google-analytics.com" + META_IMG + (razorpay ? " https://cdn.razorpay.com" : ""),
+    "connect-src 'self' https://api.gokeys.in" + LOCAL_API + " https://www.google-analytics.com https://analytics.google.com https://www.googletagmanager.com https://www.google.com https://www.google.co.in https://googleads.g.doubleclick.net https://ad.doubleclick.net https://www.googleadservices.com https://region1.google-analytics.com" + META_CONNECT + (razorpay ? " https://api.razorpay.com https://checkout.razorpay.com https://lumberjack.razorpay.com" : ""),
     "frame-src 'self' https://www.google.com https://www.googletagmanager.com https://td.doubleclick.net" + (razorpay ? " https://api.razorpay.com https://checkout.razorpay.com" : ""),
     "frame-ancestors 'self'",
   ].join('; ');

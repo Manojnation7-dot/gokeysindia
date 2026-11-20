@@ -1,6 +1,8 @@
 import { Figtree, Bricolage_Grotesque } from "next/font/google";
 import "./globals.css";
 import Tracker from "@/components/Tracker";
+import Analytics from "@/components/Analytics";
+import ConsentBanner from "@/components/ConsentBanner";
 import SmartSEO from "@/components/SmartSEO";
 import { buildOrganizationSchema, buildWebsiteSchema } from "@/lib/seoSchemas";
 import Script from "next/script";
@@ -130,10 +132,14 @@ export default async function RootLayout({ children }) {
       <body className="font-sans antialiased">
         {/* reCAPTCHA is loaded by the forms when a visitor starts filling one in (src/lib/recaptcha.js) */}
         <Tracker />
+        {/* Meta Pixel and its cookie notice (Phase F): only with NEXT_PUBLIC_META_PIXEL_ID, the Pixel only after
+            "Accept". Google (above) is not affected by either. */}
+        <Analytics />
         <SiteSettingsProvider value={site}>
           {children}
           <WhatsAppFloat />
         </SiteSettingsProvider>
+        <ConsentBanner />
       </body>
     </html>
   );

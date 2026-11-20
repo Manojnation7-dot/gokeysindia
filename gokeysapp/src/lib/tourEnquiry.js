@@ -1,4 +1,5 @@
 import { getCSRFToken } from "@/lib/getCSRFToken";
+import { trackLead } from "@/lib/tracking";
 
 // The page the enquiry form was sent from (no query string or #fragment), for the team's CRM.
 // Optional for the backend: older backends ignore it.
@@ -32,6 +33,7 @@ export async function submitTourEnquiry({ tourName, packageType, packagePrice, f
     });
 
     if (res.ok) {
+      trackLead(); // Meta Pixel "Lead" (only with the Pixel on and the visitor's Accept)
       // Same GTM / Google Ads conversion event as the popup enquiry form
       if (typeof window !== "undefined") {
         window.dataLayer = window.dataLayer || [];

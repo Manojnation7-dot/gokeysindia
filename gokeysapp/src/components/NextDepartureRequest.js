@@ -5,6 +5,7 @@ import { CalendarClock, CheckCircle2 } from "lucide-react";
 import { getCSRFToken } from "@/lib/getCSRFToken";
 import { todayIST } from "@/lib/departures";
 import { currentPageUrl } from "@/lib/tourEnquiry";
+import { trackLead } from "@/lib/tracking";
 import { RECAPTCHA_RETRY_MESSAGE, getRecaptchaToken, startRecaptcha } from "@/lib/recaptcha";
 
 const LABELS = {
@@ -73,6 +74,7 @@ export default function NextDepartureRequest({ tourSlug, tourName, compact = fal
         }),
       });
       if (res.ok) {
+        trackLead(); // Meta Pixel "Lead" (only with the Pixel on and the visitor's Accept)
         setState("done");
         if (typeof window !== "undefined") {
           window.dataLayer = window.dataLayer || [];
