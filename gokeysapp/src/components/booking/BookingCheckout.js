@@ -9,7 +9,9 @@ import {
 import { formatDepartureDate, formatPickupTime, SHARING_LABELS } from "@/lib/departures";
 import { startRecaptcha } from "@/lib/recaptcha";
 import GroupDepartureTerms from "@/components/GroupDepartureTerms";
-import BookingSummary from "@/components/BookingSummary";
+import { useSiteSettings } from "@/components/SiteSettingsProvider";
+import { processingFeePercent } from "@/lib/siteSettings";
+import { rulesSummary } from "@/lib/checkoutSummary";
 import { trackPurchaseOnce } from "@/lib/tracking";
 
 const LABELS = {
@@ -48,7 +50,8 @@ export default function BookingCheckout({ departureId }) {
   const [payOption, setPayOption] = useState("advance");
   const [travellers, setTravellers] = useState([]);
   const [contact, setContact] = useState({ lead_phone: "", lead_email: "", emergency_name: "", emergency_phone: "" });
-  const [consent, setConsent] = useState({ consent: false, terms: false, guardian: false, medical: false });
+  // One box for the booking rules and the privacy policy; the guardian / medical boxes only when they apply
+  const [consent, setConsent] = useState({ consent: false, guardian: false, medical: false });
   // The latest price answer and the inputs it was for: an answer for older inputs is never shown as the price
   const [priced, setPriced] = useState({ key: "", quote: null, error: "" });
   const [stage, setStage] = useState("form"); // form | opening | sending | paying | dismissed | confirming
@@ -59,6 +62,28 @@ export default function BookingCheckout({ departureId }) {
   const formRef = useRef(null);
   const paidNowRef = useRef(0); // Meta Purchase value (paise), set when the booking is made
   const payPressed = useRef(false);
+  const rulesRef = useRef(null);       // the "Read full booking rules" dialog
+  const consentRef = useRef(null);     // the consent box(es) just above Pay
+  const [payButton, setPayButton] = useState(null);
+  const [payVisible, setPayVisible] = useState(false); // the real Pay button is on screen: no sticky bar
+  const [typing, setTyping] = useState(false);         // an input has focus (phone keyboard open): no sticky bar
+  const site = useSiteSettings();
+
+  useEffect(() => {
+    const field = (el) => el && el.matches?.("input:not([type=checkbox]):not([type=radio]), select, textarea");
+    const onIn = (e) => setTyping(field(e.target));
+    const onOut = () => setTyping(false);
+    document.addEventListener("focusin", onIn);
+    document.addEventListener("focusout", onOut);
+    return () => { document.removeEventListener("focusin", onIn); document.removeEventListener("focusout", onOut); };
+  }, []);
+
+  useEffect(() => {
+    if (!payButton || typeof IntersectionObserver === "undefined") return undefined;
+    const seen = new IntersectionObserver(([entry]) => setPayVisible(entry.isIntersecting), { threshold: 0.5 });
+    seen.observe(payButton);
+    return () => seen.disconnect();
+  }, [payButton]);
 
   // Start loading Razorpay's script with the page. A failure here is shown only once the guest presses Pay
   // (or straight away if it was a real error); while it is still loading, Pay says "Opening secure payment…".
@@ -157,6 +182,15 @@ export default function BookingCheckout({ departureId }) {
   const shownQuote = priced.quote; // shown greyed out while the new price is on its way
   const anyMinor = rows.some((t) => t.type.key !== "adult" || (t.age !== "" && Number(t.age) < 18));
   const anyMedical = rows.some((t) => t.medical_note.trim());
+  // "Booking rules" in 3 lines: the same settings, departure and cancellation rules as the full text
+  const shortRules = rulesSummary({
+    dep: { advancePercent: dep.advance_percent, guaranteed: dep.guaranteed === true, minPax: dep.min_pax,
+      balanceDueDateText: dep.balance_due_date ? formatDepartureDate(dep.balance_due_date) : "",
+      decisionDateText: dep.decision_date ? formatDepartureDate(dep.decision_date) : "" },
+    group: site.group, rules: site.cancellation_rules, fee: processingFeePercent(site.group),
+    minimumGroupFallback: site.terms.minimumGroup[0],
+  });
+  const openRules = () => rulesRef.current?.showModal?.();
   // What Razorpay will ask for: the advance or the full amount plus its payment processing charge (the server's quote)
   const option = quote ? (payOption === "full"
     ? { label: "Full amount", paise: quote.total_paise, fee: quote.full_fee_paise || 0, toPay: quote.full_to_pay_paise ?? quote.total_paise }
@@ -175,7 +209,8 @@ export default function BookingCheckout({ departureId }) {
   const notFemale = (t) => womenOnly && t.gender !== "" && t.gender !== "female";
   const womenOnlyBlocked = rows.some(notFemale);
 
-  function check() {
+  // skipConsent: the sticky bar shows once everything else is filled in (the boxes are just above the Pay button)
+  function check(skipConsent = false) {
     if (!sharing) return "Choose a room sharing option.";
     if (dep.pickups.length && !pickupId) return "Choose a pickup point.";
     if (!fresh) return "The price is being updated. Please wait a moment.";
@@ -192,10 +227,9 @@ export default function BookingCheckout({ departureId }) {
     if (!/^(\+?91[\s-]?)?[6-9]\d{9}$/.test(contact.lead_phone.replace(/[\s-]/g, ""))) return "Enter a 10-digit Indian mobile number.";
     if (!/^[^@\s]+@[^@\s]+\.[A-Za-z]{2,}$/.test(contact.lead_email.trim())) return "Enter a valid email address.";
     if (!contact.emergency_name.trim() || !/^(\+?91)?[6-9]\d{9}$/.test(contact.emergency_phone.replace(/[\s-]/g, ""))) return "Enter an emergency contact who is not travelling, with a 10-digit mobile number.";
-    if (!consent.consent) return "Please read the notice and tick the box to agree.";
-    if (!consent.terms) return "Please tick the box to agree to the Group Tour Terms and Cancellation Policy.";
-    if (anyMinor && !consent.guardian) return "Please confirm you are the parent or guardian of every traveller under 18.";
-    if (anyMedical && !consent.medical) return "Please tick the box for the medical notes, or leave them empty.";
+    if (!skipConsent && !consent.consent) return "Please tick the box to agree to the booking rules and the privacy policy.";
+    if (!skipConsent && anyMinor && !consent.guardian) return "Please confirm you are the parent or guardian of every traveller under 18.";
+    if (!skipConsent && anyMedical && !consent.medical) return "Please tick the box for the medical notes, or leave them empty.";
     if (quoteError) return quoteError;
     return "";
   }
@@ -245,7 +279,7 @@ export default function BookingCheckout({ departureId }) {
         medical_note: t.medical_note.trim(),
       })),
       lead_phone: contact.lead_phone, lead_email: contact.lead_email.trim(), emergency_name: contact.emergency_name.trim(),
-      emergency_phone: contact.emergency_phone, consent: consent.consent && consent.terms, consent_text_version: info.consent_text_version,
+      emergency_phone: contact.emergency_phone, consent: consent.consent, consent_text_version: info.consent_text_version,
       guardian_confirmed: consent.guardian, medical_consent: consent.medical,
     });
     if (!ok) { setStage("form"); return setError(errorMessage(data, LABELS)); }
@@ -259,7 +293,7 @@ export default function BookingCheckout({ departureId }) {
     ? new Date(booking.hold_expires_at).toLocaleTimeString("en-IN", { hour: "numeric", minute: "2-digit", timeZone: "Asia/Kolkata" }) : "";
 
   return (
-    <form ref={formRef} onSubmit={submit} onFocus={startRecaptcha} className="grid gap-6 lg:grid-cols-[1fr_340px] items-start" noValidate>
+    <form ref={formRef} onSubmit={submit} onFocus={startRecaptcha} className="grid gap-6 lg:grid-cols-[1fr_340px] items-start pb-24 lg:pb-0" noValidate>
       <div className="space-y-6 min-w-0">
         {(info.preview || info.payment_mode === "test") && (
           <p className="gk-panel p-3 text-sm bg-amber-50! border-amber-300! text-amber-900">
@@ -283,7 +317,7 @@ export default function BookingCheckout({ departureId }) {
         {/* Steps (phones and tablets): jump to each part of the form */}
         <nav aria-label="Booking steps" className="lg:hidden">
           <ol className="grid grid-cols-2 gap-2 text-xs font-semibold text-ink">
-            {[["step-1", "1. Rooms and travellers"], ["step-2", "2. Traveller details"], ["step-3", "3. Rules and consent"], ["step-4", "4. Price and payment"]].map(([id, text]) => (
+            {[["step-1", "1. Rooms and travellers"], ["step-2", "2. Traveller details"], ["step-3", "3. Booking rules"], ["step-4", "4. Price and payment"]].map(([id, text]) => (
               <li key={id}><a href={`#${id}`} className="block rounded-lg border border-line bg-white px-3 py-2">{text}</a></li>
             ))}
           </ol>
@@ -370,45 +404,35 @@ export default function BookingCheckout({ departureId }) {
         </section>
 
         <section id="step-3" className="gk-card p-4 sm:p-5 scroll-mt-24">
-          <h2 className="gk-h3 text-lg! mb-2">3. Group tour rules, your data and consent</h2>
-          <BookingSummary headingLevel={3} className="rounded-lg border border-line p-3 mb-3" dep={{
-            advancePercent: dep.advance_percent, balanceDueDate: dep.balance_due_date, minPax: dep.min_pax,
-            decisionDate: dep.decision_date, guaranteed: dep.guaranteed === true }} />
-          <div className="rounded-lg border border-line p-3 text-sm text-ink mb-3">
-            <GroupDepartureTerms headingClass="font-semibold mt-2 first:mt-0" listClass="list-disc pl-5 space-y-0.5" />
+          <h2 className="gk-h3 text-lg! mb-2">3. Booking rules</h2>
+          {/* In short (3 lines). The full rules and how we use your details are one tap away, without leaving the page */}
+          <ul className="list-disc pl-5 space-y-1 text-sm text-ink" aria-label="Booking rules in short">
+            {shortRules.map((line) => <li key={line}>{line}</li>)}
+          </ul>
+          <button type="button" onClick={openRules} className="mt-1 min-h-[44px] text-sm font-semibold text-teal underline underline-offset-2">
+            Read full booking rules
+          </button>
+          <dialog ref={rulesRef} aria-labelledby="rules-title" onClick={(e) => { if (e.target === e.currentTarget) e.currentTarget.close(); }}
+            className="m-auto w-[calc(100%-2rem)] max-w-2xl max-h-[85vh] rounded-xl p-0 backdrop:bg-black/50">
+            <div className="sticky top-0 z-10 flex items-center justify-between gap-3 border-b border-line bg-white px-4 py-2">
+              <h2 id="rules-title" className="gk-h3 text-lg!">Booking rules</h2>
+              <button type="button" onClick={() => rulesRef.current?.close()} className="gk-btn gk-btn-line py-1.5! min-h-[44px]">Close</button>
+            </div>
+            <div className="px-4 py-3 text-sm text-ink">
+              <GroupDepartureTerms headingClass="font-semibold mt-2 first:mt-0" listClass="list-disc pl-5 space-y-0.5" />
+              <h3 className="font-semibold mt-4 mb-1">Your details</h3>
+          <div className="rounded-lg bg-slate-50 p-3 text-sm text-ink space-y-1">
+            <p><strong>What we store:</strong> each traveller&apos;s name, age and gender; the lead booker&apos;s mobile and email;
+              one emergency contact; the pickup point; and any medical note you add. We never ask for or store ID numbers or ID copies.</p>
+            <p><strong>Why:</strong> to run your trip (hotels, transport, pickup, safety) and to contact you about it.</p>
+            <p><strong>How long:</strong> medical notes are deleted 7 days after the trip; traveller details are removed 6 months after
+              the trip. Payment records, and the lead booker&apos;s name, phone and email as our customer record, are kept for the
+              period Indian tax and accounting law requires.</p>
+            <p><strong>Who sees it:</strong> our staff, and hotels and transport partners for your rooms and seats. Payments go through
+              Razorpay; booking emails through Google (Gmail). See our <Link href="/privacy-policy" className="underline" target="_blank">Privacy Policy</Link>.</p>
           </div>
-          <div className="rounded-lg bg-slate-50 p-3 text-sm text-ink space-y-1">
-            <p><strong>What we store:</strong> each traveller&apos;s name, age and gender; the lead booker&apos;s mobile and email;
-              one emergency contact; the pickup point; and any medical note you add. We never ask for or store ID numbers or ID copies.</p>
-            <p><strong>Why:</strong> to run your trip (hotels, transport, pickup, safety) and to contact you about it.</p>
-            <p><strong>How long:</strong> medical notes are deleted 7 days after the trip; traveller details are removed 6 months after
-              the trip. Payment records, and the lead booker&apos;s name, phone and email as our customer record, are kept for the
-              period Indian tax and accounting law requires.</p>
-            <p><strong>Who sees it:</strong> our staff, and hotels and transport partners for your rooms and seats. Payments go through
-              Razorpay; booking emails through Google (Gmail). See our <Link href="/privacy-policy" className="underline" target="_blank">Privacy Policy</Link>.</p>
-          </div>
-          <label className="flex gap-2 items-start mt-3 text-sm">
-            <input type="checkbox" checked={consent.consent} onChange={(e) => setConsent({ ...consent, consent: e.target.checked })} className="mt-1" />
-            <span>I agree to Gokeys processing these traveller details to run this trip, and I confirm I may share the details of
-              everyone in this booking. I accept the <Link href="/terms-and-conditions" className="underline" target="_blank">Terms and Conditions</Link>.</span>
-          </label>
-          <label className="flex gap-2 items-start mt-2 text-sm">
-            <input type="checkbox" checked={consent.terms} onChange={(e) => setConsent({ ...consent, terms: e.target.checked })} className="mt-1" required />
-            <span>I agree to the <Link href="/terms-and-conditions" className="underline" target="_blank">Group Tour Terms</Link> and{" "}
-              <Link href="/cancellation-policy" className="underline" target="_blank">Cancellation Policy</Link>.</span>
-          </label>
-          {anyMinor && (
-            <label className="flex gap-2 items-start mt-2 text-sm">
-              <input type="checkbox" checked={consent.guardian} onChange={(e) => setConsent({ ...consent, guardian: e.target.checked })} className="mt-1" />
-              <span>I am the parent or legal guardian of every traveller under 18 in this booking, and they travel with me.</span>
-            </label>
-          )}
-          {anyMedical && (
-            <label className="flex gap-2 items-start mt-2 text-sm">
-              <input type="checkbox" checked={consent.medical} onChange={(e) => setConsent({ ...consent, medical: e.target.checked })} className="mt-1" />
-              <span>I agree to Gokeys keeping the medical notes above to look after the travellers on this trip (deleted 7 days after it).</span>
-            </label>
-          )}
+            </div>
+          </dialog>
         </section>
       </div>
 
@@ -470,7 +494,26 @@ export default function BookingCheckout({ departureId }) {
         ) : (
           <>
           {womenOnly && <p className="mt-4 text-sm text-ink"><span className="gk-chip bg-pink-50! text-pink-800! mr-2">Women only</span>Only women can book this batch.</p>}
-          <button type="submit" className="gk-btn gk-btn-sun w-full mt-4" disabled={busy || !quote || !quote.bookable || womenOnlyBlocked}>
+          <div ref={consentRef} className="mt-4 space-y-2 text-sm scroll-mt-24">
+            <label className="flex gap-2 items-start">
+              <input type="checkbox" checked={consent.consent} onChange={(e) => setConsent({ ...consent, consent: e.target.checked })} className="mt-0.5 size-5 shrink-0" required />
+              <span>I agree to the <button type="button" onClick={openRules} className="underline">booking rules</button> and the{" "}
+                <Link href="/privacy-policy" className="underline" target="_blank">privacy policy</Link>.</span>
+            </label>
+            {anyMinor && (
+              <label className="flex gap-2 items-start">
+                <input type="checkbox" checked={consent.guardian} onChange={(e) => setConsent({ ...consent, guardian: e.target.checked })} className="mt-0.5 size-5 shrink-0" />
+                <span>I am the parent or legal guardian of every traveller under 18 in this booking, and they travel with me.</span>
+              </label>
+            )}
+            {anyMedical && (
+              <label className="flex gap-2 items-start">
+                <input type="checkbox" checked={consent.medical} onChange={(e) => setConsent({ ...consent, medical: e.target.checked })} className="mt-0.5 size-5 shrink-0" />
+                <span>I agree to Gokeys keeping the medical notes above to look after the travellers on this trip (deleted 7 days after it).</span>
+              </label>
+            )}
+          </div>
+          <button ref={setPayButton} type="submit" className="gk-btn gk-btn-sun w-full mt-4" disabled={busy || !quote || !quote.bookable || womenOnlyBlocked || !consent.consent}>
             {stage === "opening" ? "Opening secure payment…" : stage === "sending" ? "Holding your seats…" : stage === "confirming" ? "Payment received, confirming…"
               : stage === "paying" ? "Complete the payment…" : amountNow != null ? `Pay ${rupeesFromPaise(amountNow)} securely` : "Pay securely"}
           </button>
@@ -479,6 +522,31 @@ export default function BookingCheckout({ departureId }) {
         <p className="mt-3 text-xs text-slate-ink">Seats are held for {info.hold_minutes} minutes while you pay. Secure payment by Razorpay
           (UPI, cards, net banking). By paying you accept the <Link href="/terms-and-conditions" className="underline" target="_blank">Terms</Link>.</p>
       </aside>
+      {/* Phones: the amount and Pay at the bottom once everything is filled in; hidden while typing (keyboard) and while
+          the real Pay button, its boxes and messages are on screen, so it never covers them */}
+      {!booking && stage === "form" && amountNow != null && quote?.bookable && !womenOnlyBlocked && !typing && !payVisible
+        && check(true) === "" && <PayBar amount={rupeesFromPaise(amountNow)} onPay={() => {
+          if (check() === "") return formRef.current?.requestSubmit();
+          consentRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+          consentRef.current?.querySelector("input:not(:checked)")?.focus({ preventScroll: true });
+        }} />}
     </form>
+  );
+}
+
+// Phones only: a bar fixed to the bottom with the amount to pay now and Pay. While it shows, the page's WhatsApp
+// button moves up above it (globals.css: body.gk-paybar), so nothing is covered.
+function PayBar({ amount, onPay }) {
+  useEffect(() => {
+    document.body.classList.add("gk-paybar");
+    return () => document.body.classList.remove("gk-paybar");
+  }, []);
+  return (
+    <div className="lg:hidden fixed inset-x-0 bottom-0 z-40 border-t border-line bg-white px-4 py-3 shadow-[0_-4px_12px_rgba(0,0,0,0.08)]">
+      <div className="mx-auto flex max-w-xl items-center gap-3">
+        <p className="min-w-0 flex-1 text-sm text-slate-ink">To pay now<span className="block text-lg font-bold text-ink">{amount}</span></p>
+        <button type="button" onClick={onPay} className="gk-btn gk-btn-sun min-h-[44px] px-5!">Pay {amount}</button>
+      </div>
+    </div>
   );
 }
