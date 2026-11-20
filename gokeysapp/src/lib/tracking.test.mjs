@@ -82,12 +82,12 @@ test("checkout: Purchase after the verified payment, with the price without the 
 test("security policy: only the Meta hosts the Pixel needs; Razorpay still on /book only", () => {
   const config = read("../next.config.mjs");
   assert.match(config, /const META_SCRIPT = " https:\/\/connect\.facebook\.net";/);
-  assert.match(config, /const META_IMG = " https:\/\/www\.facebook\.com";/);
+  assert.match(config, /const META_IMG = " https:\/\/www\.facebook\.com https:\/\/connect\.facebook\.net";/);
   assert.match(config, /const META_CONNECT = " https:\/\/www\.facebook\.com https:\/\/connect\.facebook\.net";/);
   assert.match(config, /"script-src [^\n]*\+ META_SCRIPT \+ \(razorpay \? " https:\/\/checkout\.razorpay\.com" : ""\)/);
   assert.match(config, /"img-src [^\n]*\+ META_IMG \+ \(razorpay \? " https:\/\/cdn\.razorpay\.com" : ""\)/);
   assert.match(config, /"connect-src [^\n]*\+ META_CONNECT \+ \(razorpay \? /);
-  assert.equal((config.match(/https:\/\/[a-z.]*facebook\.(com|net)/g) || []).length, 4); // no other Meta host
+  assert.equal((config.match(/https:\/\/[a-z.]*facebook\.(com|net)/g) || []).length, 5); // no other Meta host
   assert.ok(!/frame-src[^\n]*facebook/.test(config));
   assert.ok(config.split("\n").filter((l) => l.includes("razorpay.com")).every((l) => /razorpay \? "/.test(l)));
   assert.match(config, /source: '\/book', headers: checkout/);

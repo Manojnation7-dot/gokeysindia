@@ -58,7 +58,7 @@ async headers() {
   // Meta Pixel (Phase F): its script, its tracking request and the 1x1 image fallback. Loaded only after "Accept"
   // (components/Analytics.js); on every page including /book. Nothing else from Meta is allowed.
   const META_SCRIPT = " https://connect.facebook.net";
-  const META_IMG = " https://www.facebook.com";
+  const META_IMG = " https://www.facebook.com https://connect.facebook.net";
   const META_CONNECT = " https://www.facebook.com https://connect.facebook.net";
   const csp = (razorpay = false) => [
     "default-src 'self'",
