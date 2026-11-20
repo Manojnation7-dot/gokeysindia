@@ -67,7 +67,9 @@ async headers() {
     // blob: = previews of photos picked in the review form (URL.createObjectURL)
     "img-src 'self' data: blob: https://api.gokeys.in" + LOCAL_API + " https://images.unsplash.com https://cdn.pixabay.com https://via.placeholder.com https://source.unsplash.com https://static.tacdn.com https://www.google.com https://www.google.co.in https://www.gstatic.com https://googleads.g.doubleclick.net https://www.googleadservices.com https://ad.doubleclick.net https://www.google-analytics.com" + META_IMG + (razorpay ? " https://cdn.razorpay.com" : ""),
     "connect-src 'self' https://api.gokeys.in" + LOCAL_API + " https://www.google-analytics.com https://analytics.google.com https://www.googletagmanager.com https://www.google.com https://www.google.co.in https://googleads.g.doubleclick.net https://ad.doubleclick.net https://www.googleadservices.com https://region1.google-analytics.com" + META_CONNECT + (razorpay ? " https://api.razorpay.com https://checkout.razorpay.com https://lumberjack.razorpay.com" : ""),
-    "frame-src 'self' https://www.google.com https://www.googletagmanager.com https://td.doubleclick.net" + (razorpay ? " https://api.razorpay.com https://checkout.razorpay.com" : ""),
+    
+"frame-src 'self' https://www.google.com https://www.googletagmanager.com https://td.doubleclick.net https://www.facebook.com" + (razorpay ? " https://api.razorpay.com https://checkout.razorpay.com" : ""),
+
     "frame-ancestors 'self'",
   ].join('; ');
   const common = [
