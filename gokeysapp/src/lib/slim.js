@@ -72,9 +72,11 @@ export const slimGroupTour = (t) => ({
       // Phase 5: the listing shows "Book online" and the lowest adult price
       book_online: d.book_online === true,
       badge: d.badge ?? null, badge_label: d.badge_label ?? null,
+      // Date-limited discount (prices below already include it while it runs)
+      offer: d.offer ?? null,
       prices: (Array.isArray(d.prices) ? d.prices : []).filter((p) => p?.traveller_type === "adult")
         .map((p) => ({ sharing: p.sharing, traveller_type: p.traveller_type, amount: p.amount,
-          compare_at_paise: p.compare_at_paise ?? null })),
+          compare_at_paise: p.compare_at_paise ?? null, discount_paise: p.discount_paise ?? 0 })),
     })),
   }),
 });

@@ -26,11 +26,26 @@ const TRAVELLERS = ["adult", "child_with_bed", "child_no_bed"];
 const num = (v) => (Number.isFinite(v) ? v : null);
 const money = (v) => (v != null && v !== "" && Number.isFinite(Number(v)) ? String(v) : null);
 
+// The date-limited offer while it runs today: { perPersonPaise, till }. The server stops it after its last day; a
+// cached page can be up to a day old, so the date is checked here too (then the normal price is shown again).
+export function offerFor(d, today) {
+  const o = d?.offer;
+  if (!o || typeof o.valid_till !== "string" || o.valid_till < today || !(Number(o.per_person_paise) > 0)) return null;
+  return { perPersonPaise: Number(o.per_person_paise), till: o.valid_till };
+}
+
+// A row's price: what customers pay today; with `undo` (an offer that has ended) the normal price again
+const rowAmount = (row, undo) => {
+  const amount = money(row?.amount);
+  if (!amount || !undo || !(Number(row?.discount_paise) > 0)) return amount;
+  return (Number(amount) + Number(row.discount_paise) / 100).toFixed(2);
+};
+
 // { quad: { adult: "20500.00", child_with_bed: "15000.00" }, triple: {...}, double: {...} } (known keys only)
-function priceTable(rows) {
+function priceTable(rows, undo = false) {
   const table = {};
   for (const row of Array.isArray(rows) ? rows : []) {
-    const amount = money(row?.amount);
+    const amount = rowAmount(row, undo);
     if (!amount || !SHARING.includes(row.sharing) || !TRAVELLERS.includes(row.traveller_type)) continue;
     (table[row.sharing] ||= {})[row.traveller_type] = amount;
   }
@@ -38,10 +53,12 @@ function priceTable(rows) {
 }
 
 // { quad: 2400000 } : the admin's optional "was" price per adult, in paise (only when higher than the price)
-function compareAtTable(rows) {
+function compareAtTable(rows, undo = false) {
   const table = {};
   for (const row of Array.isArray(rows) ? rows : []) {
     if (row?.traveller_type === "adult" && SHARING.includes(row.sharing) && Number(row.compare_at_paise) > 0) {
+      // an ended offer: the struck-through price was the normal price, now shown as the price itself
+      if (undo && Number(row.compare_at_paise) <= Math.round(Number(rowAmount(row, true)) * 100)) continue;
       table[row.sharing] = Number(row.compare_at_paise);
     }
   }
@@ -99,8 +116,10 @@ export function getDepartures(tour, now = new Date()) {
         decisionDate: typeof d.decision_date === "string" ? d.decision_date : null,
         balanceDueDate: typeof d.balance_due_date === "string" ? d.balance_due_date : null,
         advancePercent: num(d.advance_percent),
-        prices: priceTable(d.prices),
-        compareAt: compareAtTable(d.prices),
+        // Date-limited discount: prices already include it while it runs (offerFor checks the date again)
+        offer: offerFor(d, today),
+        prices: priceTable(d.prices, Boolean(d.offer) && !offerFor(d, today)),
+        compareAt: compareAtTable(d.prices, Boolean(d.offer) && !offerFor(d, today)),
         // One status badge per date, worked out by the backend (thresholds in the admin's Group tour settings)
         badge: BADGES.includes(d.badge) ? d.badge : null,
         badgeLabel: BADGES.includes(d.badge) && typeof d.badge_label === "string" ? d.badge_label : null,
@@ -118,7 +137,7 @@ export function getDepartures(tour, now = new Date()) {
       .map((date) => ({
         id: null, date, status: "open", label: LABELS.open, seatsLeft: seats, bookable: true, closesOn: null, price: null,
         guaranteed: false, fillingFast: false, moreNeeded: null, minPax: null, decisionDate: null,
-        balanceDueDate: null, advancePercent: null, prices: {}, compareAt: {}, badge: null, badgeLabel: null,
+        balanceDueDate: null, advancePercent: null, prices: {}, compareAt: {}, offer: null, badge: null, badgeLabel: null,
         pickups: [], bookOnline: false, womenOnly: false,
       }));
   } else {
@@ -131,6 +150,27 @@ export function getDepartures(tour, now = new Date()) {
 
 /** The chip a date shows: Guaranteed, Filling fast, or "X more needed to confirm" (null when none applies). */
 /** Lowest adult price (rupees, as a number) over these departures and their room sharings, or null. */
+/** "Save ₹1,000 per person · Offer till 30 Nov 2026" for an offer ({ perPersonPaise, till }), else "". */
+export function offerText(offer) {
+  if (!offer) return "";
+  const save = `₹${(offer.perPersonPaise / 100).toLocaleString("en-IN", { maximumFractionDigits: 2 })}`;
+  return `Save ${save} per person · Offer till ${formatDepartureDate(offer.till)}`;
+}
+
+/** The lowest adult price of these dates and its normal (struck-through) price: { from, was } (rupees), or null. */
+export function fromPriceWithWas(deps) {
+  let best = null;
+  for (const d of deps || []) {
+    for (const s of SHARING) {
+      const price = Number(d.prices?.[s]?.adult);
+      if (!(price > 0) || (best && price >= best.from)) continue;
+      const was = Number(d.compareAt?.[s] || 0) / 100;
+      best = { from: price, was: was > price ? was : null, offer: d.offer || null };
+    }
+  }
+  return best;
+}
+
 export function lowestAdultPrice(deps) {
   const prices = (deps || []).flatMap((d) => SHARING.map((s) => Number(d.prices?.[s]?.adult)).filter((n) => n > 0));
   return prices.length ? Math.min(...prices) : null;

@@ -87,8 +87,10 @@ test("security policy: only the Meta hosts the Pixel needs; Razorpay still on /b
   assert.match(config, /"script-src [^\n]*\+ META_SCRIPT \+ \(razorpay \? " https:\/\/checkout\.razorpay\.com" : ""\)/);
   assert.match(config, /"img-src [^\n]*\+ META_IMG \+ \(razorpay \? " https:\/\/cdn\.razorpay\.com" : ""\)/);
   assert.match(config, /"connect-src [^\n]*\+ META_CONNECT \+ \(razorpay \? /);
-  assert.equal((config.match(/https:\/\/[a-z.]*facebook\.(com|net)/g) || []).length, 5); // no other Meta host
-  assert.ok(!/frame-src[^\n]*facebook/.test(config));
+  assert.equal((config.match(/https:\/\/[a-z.]*facebook\.(com|net)/g) || []).length, 6); // no other Meta host
+  // frames: www.facebook.com only (added in commit b4522e9), never connect.facebook.net
+  assert.match(config, /"frame-src [^\n]*https:\/\/www\.facebook\.com"/);
+  assert.ok(!/"frame-src [^\n]*connect\.facebook\.net/.test(config));
   assert.ok(config.split("\n").filter((l) => l.includes("razorpay.com")).every((l) => /razorpay \? "/.test(l)));
   assert.match(config, /source: '\/book', headers: checkout/);
   assert.match(config, /value: csp\(false\)/);

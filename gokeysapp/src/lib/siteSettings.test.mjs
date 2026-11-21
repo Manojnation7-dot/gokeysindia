@@ -80,7 +80,11 @@ test("no hardcoded trust numbers, contacts or policy numbers left on the group t
     const text = read(...f);
     assert.ok(!/164 Google|4\.8 ·|gokeysindia@gmail\.com|wa\.me\/917830718687|balance 7 days|rest 7 days/.test(text), f.join("/"));
   }
-  assert.ok(!/line-through/.test(read("app", "grouptour", "[slug]", "GroupTourDetails.js")), "struck prices only in the price box");
+  // Struck prices: the price box, and (since the date-limited discount) each departure tile's normal price, only while
+  // a higher normal / "was" price exists. Nothing else on the tour page is struck through.
+  const page = read("app", "grouptour", "[slug]", "GroupTourDetails.js");
+  assert.equal((page.match(/line-through/g) || []).length, 1, "struck prices only in the price box and the departure tiles");
+  assert.match(page, /Number\(dep\.compareAt\?\.\[s\]\) \/ 100 > Number\(dep\.prices\[s\]\.adult\) && \(/);
   assert.match(read("components", "WhyChooseUs.js"), /\$\{years\}\+ Years of Expertise/);
 });
 

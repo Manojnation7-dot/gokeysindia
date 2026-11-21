@@ -5,7 +5,7 @@ import Link from 'next/link';
 import SmartSEO from '@/components/SmartSEO';
 import { buildBreadcrumbList, buildItemListSchema, buildFAQSchema } from '@/lib/seoSchemas';
 import { Breadcrumbs, CtaBand, FaqList, TourCard, Price, Mountains } from '@/components/ui/kit';
-import { getDepartures, formatDepartureDate, lowestAdultPrice } from '@/lib/departures';
+import { getDepartures, formatDepartureDate, fromPriceWithWas, lowestAdultPrice, offerText } from '@/lib/departures';
 import GroupTourGrid from '@/components/GroupTourGrid';
 import UpcomingDatesTable from '@/components/UpcomingDatesTable';
 import GuestReviews from '@/components/GuestReviews';
@@ -57,7 +57,7 @@ export default function GroupTour({ tours = [], hub = {}, renderedAt }) {
   // Phase 5: tours with a date bookable online show "Book online" and the lowest adult price of those dates
   const onlineOf = Object.fromEntries(tours.map((t) => {
     const online = departuresOf[t.id].list.filter((d) => d.bookOnline);
-    return [t.id, online.length ? { from: lowestAdultPrice(online) } : null];
+    return [t.id, online.length ? fromPriceWithWas(online) : null];
   }));
   const rupee = (n) => `₹${Number(n).toLocaleString('en-IN', { maximumFractionDigits: 0 })}`;
   const upcoming = tours
@@ -173,10 +173,14 @@ if (faqs.length) schemas.push(
                 >
                   <p className="text-xs text-slate-ink">Starting from</p>
                   {onlineOf[tour.id]?.from ? (
+                    <>
                     <p className="flex flex-wrap items-baseline gap-x-1.5">
+                      {onlineOf[tour.id].was && <span className="text-sm text-slate-400 line-through">{rupee(onlineOf[tour.id].was)}</span>}
                       <span className="gk-price text-xl">{rupee(onlineOf[tour.id].from)}</span>
                       <span className="text-xs text-slate-ink">per person</span>
                     </p>
+                    {onlineOf[tour.id].offer && <p className="text-xs font-semibold text-green-700">{offerText(onlineOf[tour.id].offer)}</p>}
+                    </>
                   ) : <Price tour={tour} showWas={false} />}
                 </TourCard>
             ),

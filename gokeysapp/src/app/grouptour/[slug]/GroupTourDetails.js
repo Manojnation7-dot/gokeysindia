@@ -32,11 +32,11 @@ import {
   formatPrice,
   getEffectivePrice,
 } from '@/lib/pricingUtils';
-import { submitTourEnquiry } from '@/lib/tourEnquiry';
+import { enquiryProblem, submitTourEnquiry } from '@/lib/tourEnquiry';
 import ImageGallery from '@/components/ImageGallery';
 import { Breadcrumbs, FaqList } from '@/components/ui/kit';
 import {
-  getDepartures, formatDepartureDate, departureChip, formatPickupTime, SHARING_LABELS, lowestAdultPrice,
+  getDepartures, formatDepartureDate, departureChip, formatPickupTime, SHARING_LABELS, lowestAdultPrice, offerText, todayIST,
 } from '@/lib/departures';
 import NextDepartureRequest from '@/components/NextDepartureRequest';
 import PriceBox from '@/components/PriceBox';
@@ -179,6 +179,9 @@ export default function GroupTourDetails({ tourData, baseUrl, documentNumber, cu
   // needs a reCAPTCHA token this form never sent, so every submission was rejected).
   const handleEnquirySubmit = async (e) => {
     e?.preventDefault?.();
+    // Every field is required on group tour pages; no travel date before today (India)
+    const problem = enquiryProblem(enquiryFormData, { today: todayIST(), requireMessage: true });
+    if (problem) return alert(problem);
     const result = await submitTourEnquiry({
       tourName: `${tourData.name} (Group Tour)`,
       packageType: capitalizeFirst(selectedPackage?.package_type || ''),
@@ -439,6 +442,7 @@ export default function GroupTourDetails({ tourData, baseUrl, documentNumber, cu
                           </>}
                           {chip?.kind === "needed" && <span className="gk-chip">{chip.text}</span>}
                           {dep.womenOnly && <span className="gk-chip bg-pink-50! text-pink-800!">Women only</span>}
+                          {dep.offer && <span className="gk-chip bg-green-50! text-green-800!">{offerText(dep.offer)}</span>}
                           {dep.bookable && dep.seatsLeft != null ? (
                             <span className="gk-chip">{dep.seatsLeft} seats left</span>
                           ) : !dep.badge ? (
@@ -472,7 +476,13 @@ export default function GroupTourDetails({ tourData, baseUrl, documentNumber, cu
                               {sharing.map((s) => (
                                 <div key={s} className="rounded-lg bg-slate-50 px-3 py-2">
                                   <dt className="text-xs text-slate-ink">{SHARING_LABELS[s]}</dt>
-                                  <dd className="font-semibold">{formatPrice(dep.prices[s].adult)}</dd>
+                                  <dd className="font-semibold">
+                                    {/* the normal price struck through while a date-limited offer (or a higher "was" price) applies */}
+                                    {Number(dep.compareAt?.[s]) / 100 > Number(dep.prices[s].adult) && (
+                                      <span className="block text-xs font-normal text-slate-400 line-through">{formatPrice(Number(dep.compareAt[s]) / 100)}</span>
+                                    )}
+                                    {formatPrice(dep.prices[s].adult)}
+                                  </dd>
                                 </div>
                               ))}
                             </dl>
@@ -646,6 +656,7 @@ export default function GroupTourDetails({ tourData, baseUrl, documentNumber, cu
               <form onSubmit={handleEnquirySubmit} className="mt-4">
                 <EnquiryForm
                   isInline={true}
+                  allRequired
                   showSubmitButton={false}
                   formData={enquiryFormData}
                   onChange={setEnquiryFormData}
@@ -727,6 +738,7 @@ export default function GroupTourDetails({ tourData, baseUrl, documentNumber, cu
       </main>
       <EnquiryForm
         isOpen={isEnquiryOpen}
+        allRequired
         onClose={() => setIsEnquiryOpen(false)}
         tourName={tourData.name}
         packageType={capitalizeFirst(selectedPackage?.package_type || '')}

@@ -55,3 +55,21 @@ export async function submitTourEnquiry({ tourName, packageType, packagePrice, f
     return { ok: false, message: "Network error. Please check your connection and try again." };
   }
 }
+
+/**
+ * What is wrong with an enquiry before it is sent, as a message for the visitor, or "" when it can be sent.
+ * today: YYYY-MM-DD in India (no travel date before it). requireMessage: the group tour form asks for every field.
+ */
+export function enquiryProblem(formData, { today, requireMessage = false } = {}) {
+  const f = formData || {};
+  if ((f.name || "").trim().length < 2) return "Please enter your full name.";
+  if (!/^[^@\s]+@[^@\s]+\.[A-Za-z]{2,}$/.test((f.email || "").trim())) return "Please enter a valid email address.";
+  const digits = (f.contactNo || "").replace(/\D/g, "");
+  if (!(digits.length === 10 || (digits.length === 12 && digits.startsWith("91")))) return "Please enter a 10-digit mobile number.";
+  const persons = Number(f.totalPersons);
+  if (!Number.isInteger(persons) || persons < 1 || persons > 100) return "Please enter the number of people (1 or more).";
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(f.travelDate || "")) return "Please choose your travel date.";
+  if (today && f.travelDate < today) return "Please choose a travel date from today onwards.";
+  if (requireMessage && !(f.message || "").trim()) return "Please write your question or requirements in the message.";
+  return "";
+}

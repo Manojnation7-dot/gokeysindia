@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import {
   TRAVELLER_TYPES, changeCount, createBooking, errorMessage, getBookingDeparture, getQuote, loadRazorpay, previewToken,
-  quoteKey, rupeesFromPaise, sendPaymentCallback, travellerRows, travellerSlots, WOMEN_ONLY_MESSAGE,
+  quoteKey, rupeesFromPaise, sendPaymentCallback, applyCoupon, travellerRows, travellerSlots, WOMEN_ONLY_MESSAGE,
 } from "@/lib/booking";
 import { formatDepartureDate, formatPickupTime, SHARING_LABELS } from "@/lib/departures";
 import { startRecaptcha } from "@/lib/recaptcha";
@@ -19,7 +19,7 @@ const LABELS = {
   emergency_name: "Emergency contact", emergency_phone: "Emergency contact number", consent: "Consent",
   guardian_confirmed: "Parent or guardian", medical_consent: "Medical note", sharing: "Room sharing",
   pickup_id: "Pickup point", adults: "Adults", children_with_bed: "Children with bed",
-  children_without_bed: "Children without bed", infants: "Under 5", recaptcha: "Security check",
+  children_without_bed: "Children without bed", infants: "Under 5", recaptcha: "Security check", coupon_code: "Coupon",
 };
 const EMPTY_TRAVELLER = { full_name: "", age: "", gender: "", medical_note: "" };
 const MIN_PAYMENT_PAISE = 100; // Razorpay's smallest payment (Rs 1)
@@ -58,6 +58,11 @@ export default function BookingCheckout({ departureId }) {
   const [error, setError] = useState("");
   const [booking, setBooking] = useState(null);
   const [scriptFailed, setScriptFailed] = useState(false); // Razorpay's script failed to load or took over 15 s
+  // Coupon: typed code, the code the server accepted, and its message. The server prices it; nothing here does.
+  const [couponInput, setCouponInput] = useState("");
+  const [coupon, setCoupon] = useState("");
+  const [couponMsg, setCouponMsg] = useState("");
+  const [couponBusy, setCouponBusy] = useState(false);
   const checkoutRef = useRef(null);
   const formRef = useRef(null);
   const paidNowRef = useRef(0); // Meta Purchase value (paise), set when the booking is made
@@ -141,7 +146,7 @@ export default function BookingCheckout({ departureId }) {
   // Built during render, so there is always exactly one row per traveller (fewer travellers can never leave a row
   // without a type behind; that crashed the page when a count went down)
   const rows = travellerRows(slots, travellers);
-  const currentKey = quoteKey({ sharing, counts, pickupId });
+  const currentKey = `${quoteKey({ sharing, counts, pickupId })}|${coupon}`;
 
   // Drop counts of types this sharing or tour does not offer
   useEffect(() => {
@@ -153,16 +158,21 @@ export default function BookingCheckout({ departureId }) {
   useEffect(() => {
     if (!info || !sharing || counts.adult < 1) return;
     let current = true; // an answer that arrives after a newer change is ignored (answers can arrive out of order)
-    const key = quoteKey({ sharing, counts, pickupId });
+    const key = `${quoteKey({ sharing, counts, pickupId })}|${coupon}`;
     const timer = setTimeout(async () => {
-      const { ok, data } = await getQuote(departureId, { sharing, counts, pickupId });
+      let { ok, data } = coupon
+        ? await applyCoupon(departureId, coupon, { sharing, counts, pickupId }).then((r) => (r.ok ? { ok: true, data: r.data.quote } : r))
+        : await getQuote(departureId, { sharing, counts, pickupId });
       if (!current) return;
+      if (coupon && !ok && data?.coupon_code) { // the code no longer applies (e.g. used up): back to the normal price
+        setCouponMsg(data.coupon_code); setCoupon(""); return;
+      }
       setPriced(ok ? { key, quote: data, error: "" } : { key, quote: null, error: errorMessage(data, LABELS) });
       // Razorpay takes at least Rs 1: an advance below that is not offered (pay the full amount)
       if (ok && data.advance_paise < MIN_PAYMENT_PAISE) setPayOption("full");
     }, 350);
     return () => { current = false; clearTimeout(timer); };
-  }, [info, departureId, sharing, counts, pickupId]);
+  }, [info, departureId, sharing, counts, pickupId, coupon]);
 
   if (loadError) {
     return (
@@ -281,6 +291,8 @@ export default function BookingCheckout({ departureId }) {
       lead_phone: contact.lead_phone, lead_email: contact.lead_email.trim(), emergency_name: contact.emergency_name.trim(),
       emergency_phone: contact.emergency_phone, consent: consent.consent, consent_text_version: info.consent_text_version,
       guardian_confirmed: consent.guardian, medical_consent: consent.medical,
+      // only with a coupon: a backend without coupons refuses fields it does not know (deploy order, rollback)
+      ...(coupon ? { coupon_code: coupon } : {}),
     });
     if (!ok) { setStage("form"); return setError(errorMessage(data, LABELS)); }
     paidNowRef.current = option ? option.paise : 0; // advance or full amount, without the processing charge
@@ -445,12 +457,44 @@ export default function BookingCheckout({ departureId }) {
               {shownQuote.lines.map((l, i) => (
                 <li key={i} className="flex justify-between gap-2"><span>{l.label} × {l.count}</span><span>{rupeesFromPaise(l.amount_paise)}</span></li>
               ))}
+              {shownQuote.discount_paise > 0 && (
+                <li className="flex justify-between gap-2 text-green-700"><span>Discount ({rupeesFromPaise(shownQuote.discount_per_person_paise)} per person
+                  {shownQuote.discount_valid_till ? `, offer till ${formatDepartureDate(shownQuote.discount_valid_till)}` : ""})</span>
+                  <span className="whitespace-nowrap">-{rupeesFromPaise(shownQuote.discount_paise)}</span></li>
+              )}
+              {shownQuote.coupon_paise > 0 && (
+                <li className="flex justify-between gap-2 text-green-700"><span>Coupon {shownQuote.coupon_code}</span><span className="whitespace-nowrap">-{rupeesFromPaise(shownQuote.coupon_paise)}</span></li>
+              )}
               {shownQuote.gst_paise > 0 && <>
                 <li className="flex justify-between gap-2 border-t border-line pt-1"><span>Subtotal</span><span>{rupeesFromPaise(shownQuote.subtotal_paise)}</span></li>
                 <li className="flex justify-between gap-2"><span>GST {shownQuote.gst_percent}%</span><span>{rupeesFromPaise(shownQuote.gst_paise)}</span></li>
               </>}
               <li className={`flex justify-between gap-2 font-bold text-ink ${shownQuote.gst_paise > 0 ? "" : "border-t border-line pt-1"}`}><span>Total</span><span>{rupeesFromPaise(shownQuote.total_paise)}</span></li>
             </ul>
+            {/* Coupon: checked and priced by the server; the new breakdown replaces the one above */}
+            <div className="mt-3 text-sm">
+              {coupon ? (
+                <p className="flex flex-wrap items-center gap-x-2 text-green-700">Coupon {coupon} applied.
+                  <button type="button" className="underline text-ink min-h-[44px]" onClick={() => { setCoupon(""); setCouponMsg(""); }}>Remove</button></p>
+              ) : (
+                <div className="flex gap-2">
+                  <label className="sr-only" htmlFor="coupon-code">Coupon code</label>
+                  <input id="coupon-code" className="gk-field mt-0! flex-1 uppercase" value={couponInput} maxLength={20} autoComplete="off"
+                    placeholder="Coupon code" onChange={(e) => { setCouponInput(e.target.value); setCouponMsg(""); }}
+                    onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); e.currentTarget.nextSibling?.click(); } }} />
+                  <button type="button" className="gk-btn gk-btn-line py-2! min-h-[44px]" disabled={couponBusy || !couponInput.trim() || !sharing}
+                    onClick={async () => {
+                      setCouponBusy(true); setCouponMsg("");
+                      const { ok, data } = await applyCoupon(departureId, couponInput.trim(), { sharing, counts, pickupId });
+                      setCouponBusy(false);
+                      if (!ok) return setCouponMsg(data?.coupon_code || data?.detail || "This coupon code could not be checked. Please try again.");
+                      setPriced({ key: `${quoteKey({ sharing, counts, pickupId })}|${data.coupon_code}`, quote: data.quote, error: "" });
+                      setCoupon(data.coupon_code);
+                    }}>{couponBusy ? "Checking…" : "Apply"}</button>
+                </div>
+              )}
+              {couponMsg && <p className="mt-1 text-red-700" role="alert">{couponMsg}</p>}
+            </div>
             {quote && dep.advance_percent < 100 && quote.advance_paise >= MIN_PAYMENT_PAISE && (
               <fieldset className="mt-4 space-y-2 text-sm">
                 <legend className="gk-label">Pay now</legend>

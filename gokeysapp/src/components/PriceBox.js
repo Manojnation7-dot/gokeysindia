@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { TRAVELLER_TYPES, changeCount, getQuote, quoteKey, rupeesFromPaise } from "@/lib/booking";
-import { formatDepartureDate, SHARING_LABELS } from "@/lib/departures";
+import { formatDepartureDate, offerText, SHARING_LABELS } from "@/lib/departures";
 import BookingSummary from "@/components/BookingSummary";
 import StatusBadge from "@/components/StatusBadge";
 
@@ -54,6 +54,7 @@ export default function PriceBox({ deps, minAge = 0 }) {
         <span className="gk-price text-3xl">{rupeesFromPaise(adultPaise)}</span>
         <span className="text-xs text-slate-ink">per adult · {SHARING_LABELS[shown]}</span>
       </p>
+      {dep.offer && <p className="mt-1 text-sm font-semibold text-green-700">{offerText(dep.offer)}</p>}
 
       {deps.length > 1 ? (
         <label className="block mt-3"><span className="gk-label">Date</span>
@@ -104,6 +105,10 @@ export default function PriceBox({ deps, minAge = 0 }) {
             {quote.lines.map((l, i) => (
               <li key={i} className="flex justify-between gap-2"><span>{l.label} × {l.count}</span><span>{rupeesFromPaise(l.amount_paise)}</span></li>
             ))}
+            {quote.discount_paise > 0 && (
+              <li className="flex justify-between gap-2 text-green-700"><span>Discount ({rupeesFromPaise(quote.discount_per_person_paise)} per person)</span>
+                <span className="whitespace-nowrap">-{rupeesFromPaise(quote.discount_paise)}</span></li>
+            )}
             {quote.gst_paise > 0 && <li className="flex justify-between gap-2"><span>GST {Number(quote.gst_percent)}%</span><span>{rupeesFromPaise(quote.gst_paise)}</span></li>}
             <li className="flex justify-between gap-2 font-bold text-ink border-t border-line pt-1"><span>Total</span><span>{rupeesFromPaise(quote.total_paise)}</span></li>
             {quote.advance_percent < 100 ? <>

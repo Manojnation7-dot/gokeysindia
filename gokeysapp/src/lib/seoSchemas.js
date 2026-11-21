@@ -173,6 +173,8 @@ export function buildDepartureOffers(deps, tourUrl) {
         priceCurrency: "INR",
         availability: d.badge === "few_left" ? "https://schema.org/LimitedAvailability" : "https://schema.org/InStock",
         ...(d.listedOn ? { validFrom: d.listedOn } : {}),
+        // A date-limited discount: the price above is the offer price until its last day
+        ...(d.offer?.till ? { priceValidUntil: d.offer.till } : {}),
         url: tourUrl,
       };
     })

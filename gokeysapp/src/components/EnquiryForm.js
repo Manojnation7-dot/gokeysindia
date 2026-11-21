@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { XIcon } from "@/components/Icons";
 import { getCSRFToken } from "@/lib/getCSRFToken";
-import { currentPageUrl } from "@/lib/tourEnquiry";
+import { currentPageUrl, enquiryProblem } from "@/lib/tourEnquiry";
+import { todayIST } from "@/lib/departures";
 import { trackLead } from "@/lib/tracking";
 import { RECAPTCHA_RETRY_MESSAGE, getRecaptchaToken, startRecaptcha } from "@/lib/recaptcha";
 
@@ -20,6 +21,7 @@ export default function EnquiryForm({
   formData: externalFormData,
   onChange: externalOnChange,
   onSubmit: externalOnSubmit,
+  allRequired = false, // group tour pages: every field must be filled in (the message too), marked with *
 }) {
   const [internalFormData, setInternalFormData] = useState({
     name: "",
@@ -31,6 +33,10 @@ export default function EnquiryForm({
   });
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  // No travel date before today (India), set in the browser: a page built yesterday would otherwise allow yesterday
+  const [minDate, setMinDate] = useState("");
+  useEffect(() => { setMinDate(todayIST()); }, []);
+  const star = allRequired ? <span className="text-red-600" aria-hidden="true"> *</span> : null;
 
   // The popup sends with reCAPTCHA: start loading it when the popup opens (the inline form is sent by its page)
   useEffect(() => {
@@ -53,6 +59,8 @@ export default function EnquiryForm({
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const problem = enquiryProblem(formData, { today: todayIST(), requireMessage: allRequired });
+    if (problem) return setError(problem); // checked again here: spaces only, a past date, a short number
     setIsLoading(true);
     setError(null);
 
@@ -135,7 +143,7 @@ export default function EnquiryForm({
       )}
       <div>
         <label className="gk-label" htmlFor="name">
-          Name
+          Name{star}
         </label>
         <input
           id="name"
@@ -151,7 +159,7 @@ export default function EnquiryForm({
       </div>
       <div>
         <label className="gk-label" htmlFor="email">
-          Email
+          Email{star}
         </label>
         <input
           id="email"
@@ -167,7 +175,7 @@ export default function EnquiryForm({
       </div>
       <div>
         <label className="gk-label" htmlFor="contactNo">
-          Contact No.
+          Contact No.{star}
         </label>
         <input
           id="contactNo"
@@ -184,7 +192,7 @@ export default function EnquiryForm({
       <div className="grid grid-cols-2 gap-4">
         <div>
           <label className="gk-label" htmlFor="totalPersons">
-            Total Persons
+            Total Persons{star}
           </label>
           <input
             id="totalPersons"
@@ -201,7 +209,7 @@ export default function EnquiryForm({
         </div>
         <div>
           <label className="gk-label" htmlFor="travelDate">
-            Travel Date
+            Travel Date{star}
           </label>
           <input
             id="travelDate"
@@ -209,6 +217,7 @@ export default function EnquiryForm({
             name="travelDate"
             value={formData.travelDate}
             onChange={handleChange}
+            min={minDate || undefined}
             required
             aria-label="Travel date"
             className="gk-field"
@@ -217,7 +226,7 @@ export default function EnquiryForm({
       </div>
       <div>
         <label className="gk-label" htmlFor="message">
-          Message
+          Message{star}
         </label>
         <textarea
           id="message"
@@ -226,6 +235,7 @@ export default function EnquiryForm({
           onChange={handleChange}
           placeholder="Any specific requirements or questions?"
           rows="4"
+          required={allRequired}
           aria-label="Message"
           className="gk-field"
         />

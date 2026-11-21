@@ -62,6 +62,17 @@ export function getQuote(departureId, { sharing, counts, pickupId }) {
   return call(`/api/departures/${encodeURIComponent(departureId)}/quote/?${params}`);
 }
 
+/** A coupon checked and priced by the server for these choices: { ok, data: { coupon_code, quote } } or a message
+ *  ({ coupon_code: "..." } / { detail }). The browser never sends an amount. */
+export function applyCoupon(departureId, code, { sharing, counts, pickupId }) {
+  return call("/api/bookings/coupon/", {
+    method: "POST", headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ departure_id: Number(departureId), code, sharing, adults: counts.adult,
+      children_with_bed: counts.child_with_bed, children_without_bed: counts.child_no_bed, infants: counts.infant,
+      pickup_id: pickupId ? Number(pickupId) : null }),
+  });
+}
+
 export async function createBooking(body) {
   let recaptcha_token;
   try {
